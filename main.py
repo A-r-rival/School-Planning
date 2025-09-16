@@ -1,8 +1,9 @@
 import sys
 import sqlite3
+import os
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QLineEdit, QPushButton, QTimeEdit, QVBoxLayout, 
-    QListWidget, QComboBox, QLabel, QHBoxLayout, QCompleter
+    QListWidget, QComboBox, QLabel, QHBoxLayout, QCompleter, QMessageBox
 )
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtCore import QRegExp
@@ -34,14 +35,21 @@ class GenelArayuz(QWidget):
         layout.addWidget(self.gun_input)
 
         # Time inputs
+        # Improved time input ergonomics
         saat_layout = QHBoxLayout()
         self.saat_baslangic = QTimeEdit()
         self.saat_baslangic.setDisplayFormat("HH:mm")
+        self.saat_baslangic.setTime(self.saat_baslangic.minimumTime())
         self.saat_bitis = QTimeEdit()
         self.saat_bitis.setDisplayFormat("HH:mm")
+        self.saat_bitis.setTime(self.saat_bitis.minimumTime())
         
+        # Auto-fill end time when start time changes
+        self.saat_baslangic.timeChanged.connect(self.auto_fill_end_time)
+        
+        saat_layout.addWidget(QLabel("Başlangıç:"))
         saat_layout.addWidget(self.saat_baslangic)
-        saat_layout.addWidget(QLabel(" - "))
+        saat_layout.addWidget(QLabel("Bitiş:"))
         saat_layout.addWidget(self.saat_bitis)
         layout.addLayout(saat_layout)
 
@@ -62,16 +70,34 @@ class GenelArayuz(QWidget):
         self.eski_verileri_yukle()
         self.hoca_input.setCompleter(QCompleter(self.hocalari_getir()))
 
+    def auto_fill_end_time(self):
+        """Automatically set end time to 50 minutes after start time"""
+        start_time = self.saat_baslangic.time()
+        end_time = start_time.addSecs(55 * 60)  # Add 50 minutes
+        self.saat_bitis.setTime(end_time)
+
     def ders_ekle(self):
         ders = self.ders_input.text().strip()
         hoca = self.hoca_input.text().strip()
         gun = self.gun_input.currentText()
         bas = self.saat_baslangic.time().toString("HH:mm")
         bit = self.saat_bitis.time().toString("HH:mm")
-        saat = f"{bas}-{bit}"
-
+        
+        # Validation
         if not ders or not hoca:
-            return  # Don't add empty entries
+            self.show_error("Ders adı ve hoca adı boş olamaz!")
+            return
+        
+        if self.saat_baslangic.time() >= self.saat_bitis.time():
+            self.show_error("Başlangıç saati bitiş saatinden önce olmalıdır!")
+            return
+            
+        # Check for time conflicts
+        if self.zaman_cakismasi_kontrol(gun, bas, bit):
+            self.show_error("Bu saat aralığında zaten bir ders var!")
+            return
+        
+        saat = f"{bas}-{bit}"
 
         # Add to database
         self.cursor.execute("INSERT INTO dersler (ders, hoca, gun, saat) VALUES (?, ?, ?, ?)",
@@ -117,7 +143,10 @@ class GenelArayuz(QWidget):
         return [satir[0] for satir in self.cursor.fetchall()]
 
     def veritabani_olustur(self):
-        self.conn = sqlite3.connect("dersler.db")
+        # Get the directory where the script is located
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        db_path = os.path.join(script_dir, "dersler.db")
+        self.conn = sqlite3.connect(db_path)
         self.cursor = self.conn.cursor()
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS dersler (
@@ -135,6 +164,22 @@ class GenelArayuz(QWidget):
         for ders, hoca, gun, saat in self.cursor.fetchall():
             bilgi = f"{ders} - {hoca} - {gun} {saat}"
             self.ders_listesi.addItem(bilgi)
+
+    def show_error(self, message):
+        """Show error message to user"""
+        QMessageBox.warning(self, "Hata", message)
+    
+    def zaman_cakismasi_kontrol(self, gun, baslangic, bitis):
+        """Check for time conflicts on the same day"""
+        self.cursor.execute("SELECT saat FROM dersler WHERE gun = ?", (gun,))
+        mevcut_saatler = self.cursor.fetchall()
+        
+        for (saat_str,) in mevcut_saatler:
+            mevcut_bas, mevcut_bit = saat_str.split('-')
+            # Check if time ranges overlap
+            if (baslangic < mevcut_bit and bitis > mevcut_bas):
+                return True
+        return False
 
     def closeEvent(self, event):
         self.conn.close()
