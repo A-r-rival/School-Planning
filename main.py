@@ -3,10 +3,18 @@ import sqlite3
 import os
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QLineEdit, QPushButton, QTimeEdit, QVBoxLayout, 
-    QListWidget, QComboBox, QLabel, QHBoxLayout, QCompleter, QMessageBox
+    QListWidget, QComboBox, QLabel, QHBoxLayout, QCompleter, QMessageBox, QInputDialog
 )
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtCore import QRegExp
+import importlib.util
+import sys
+
+# Import the DbManager from sql to py.py
+spec = importlib.util.spec_from_file_location("sql_to_py", "sql to py.py")
+sql_to_py = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(sql_to_py)
+DbManager = sql_to_py.DbManager
 
 class GenelArayuz(QWidget):
     def __init__(self):
@@ -65,6 +73,15 @@ class GenelArayuz(QWidget):
         # Course list
         self.ders_listesi = QListWidget()
         layout.addWidget(self.ders_listesi)
+
+        # Add buttons for advanced features
+        self.fakulte_ekle_button = QPushButton("Fakülte Ekle")
+        self.fakulte_ekle_button.clicked.connect(self.fakulte_ekle_dialog)
+        layout.addWidget(self.fakulte_ekle_button)
+
+        self.bolum_ekle_button = QPushButton("Bölüm Ekle")
+        self.bolum_ekle_button.clicked.connect(self.bolum_ekle_dialog)
+        layout.addWidget(self.bolum_ekle_button)
 
         self.setLayout(layout)
         self.eski_verileri_yukle()
@@ -143,10 +160,13 @@ class GenelArayuz(QWidget):
         return [satir[0] for satir in self.cursor.fetchall()]
 
     def veritabani_olustur(self):
-        # Get the directory where the script is located
+        # Initialize the advanced database manager
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        db_path = os.path.join(script_dir, "dersler.db")
-        self.conn = sqlite3.connect(db_path)
+        db_path = os.path.join(script_dir, "okul_veritabani.db")
+        self.db_manager = DbManager(db_path)
+        
+        # Keep simple table for backward compatibility
+        self.conn = sqlite3.connect(os.path.join(script_dir, "dersler.db"))
         self.cursor = self.conn.cursor()
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS dersler (
@@ -181,8 +201,49 @@ class GenelArayuz(QWidget):
                 return True
         return False
 
+    def fakulte_ekle_dialog(self):
+        """Dialog to add a new faculty"""
+        fakulte_adi, ok = QInputDialog.getText(self, 'Fakülte Ekle', 'Fakülte Adı:')
+        if ok and fakulte_adi.strip():
+            try:
+                fakulte_id = self.db_manager.fakulte_ekle(fakulte_adi.strip())
+                QMessageBox.information(self, "Başarılı", f"Fakülte eklendi! ID: {fakulte_id}")
+            except Exception as e:
+                QMessageBox.warning(self, "Hata", f"Fakülte eklenirken hata oluştu: {str(e)}")
+
+    def bolum_ekle_dialog(self):
+        """Dialog to add a new department"""
+        # First get available faculties
+        try:
+            self.db_manager.c.execute("SELECT fakulte_num, fakulte_adi FROM Fakulteler ORDER BY fakulte_adi")
+            fakulteler = self.db_manager.c.fetchall()
+            
+            if not fakulteler:
+                QMessageBox.warning(self, "Hata", "Önce bir fakülte eklemeniz gerekiyor!")
+                return
+            
+            # Create faculty selection dialog
+            fakulte_items = [f"{fakulte[1]} (ID: {fakulte[0]})" for fakulte in fakulteler]
+            fakulte_secim, ok1 = QInputDialog.getItem(self, 'Fakülte Seç', 'Fakülte seçin:', fakulte_items, 0, False)
+            
+            if not ok1:
+                return
+                
+            # Extract faculty ID from selection
+            fakulte_id = int(fakulte_secim.split('ID: ')[1].split(')')[0])
+            
+            # Get department name
+            bolum_adi, ok2 = QInputDialog.getText(self, 'Bölüm Ekle', 'Bölüm Adı:')
+            if ok2 and bolum_adi.strip():
+                bolum_num = self.db_manager.bolum_ekle(fakulte_id, bolum_adi.strip())
+                QMessageBox.information(self, "Başarılı", f"Bölüm eklendi! Numara: {bolum_num}")
+                
+        except Exception as e:
+            QMessageBox.warning(self, "Hata", f"Bölüm eklenirken hata oluştu: {str(e)}")
+
     def closeEvent(self, event):
         self.conn.close()
+        self.db_manager.close()
         event.accept()
 
 if __name__ == "__main__":

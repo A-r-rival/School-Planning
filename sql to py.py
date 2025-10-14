@@ -8,6 +8,7 @@ class DbManager:
     def __init__(self, db_path="okul_veritabani.db"):
         self.conn = sqlite3.connect(db_path)
         self.c = self.conn.cursor()
+        self.c.execute("PRAGMA foreign_keys = ON")
         self._create_tables()
 
     def _create_tables(self):
@@ -18,32 +19,33 @@ class DbManager:
             )''',
 
             '''CREATE TABLE IF NOT EXISTS Bolumler (
-                bolum_num INTEGER NOT NULL DEFAULT 0,
-                --why no autoincremnet?
+                bolum_id INTEGER PRIMARY KEY,
+                bolum_num INTEGER NOT NULL,
                 bolum_adi TEXT NOT NULL,
                 fakulte_num INTEGER NOT NULL,
-                PRIMARY KEY (fakulte_num, bolum_num),
+                UNIQUE (fakulte_num, bolum_num),
                 FOREIGN KEY (fakulte_num) REFERENCES Fakulteler(fakulte_num)
                 --make a new code from primary key and add that to bolum
             )''',
 
-            '''CREATE TABLE IF NOT EXISTS Siniflar (
-                sinif_num INTEGER,
+            '''CREATE TABLE IF NOT EXISTS Ogrenci_Siniflari (
+                sinif_num INTEGER PRIMARY KEY,
                 sinif_duzeyi INTEGER NOT NULL CHECK (sinif_duzeyi BETWEEN 1 AND 4),
                 bolum_num INTEGER NOT NULL,
-                PRIMARY KEY (sinif_duzeyi, bolum_num),
-                FOREIGN KEY (bolum_num) REFERENCES Bolumler(bolum_num)
+                UNIQUE (sinif_duzeyi, bolum_num),
+                FOREIGN KEY (bolum_num) REFERENCES Bolumler(bolum_id)
             )''',
 
             '''CREATE TABLE IF NOT EXISTS Dersler (
                 ders_kodu TEXT,
-                ders_instance INTEGER NOT NULL DEFAULT 0,
+                ders_instance INTEGER NOT NULL,
+                --method zaten otomatik en küçükten vermeye çalisiyor
                 ders_adi TEXT NOT NULL,
                 teori_odasi INTEGER,
                 lab_odasi INTEGER,
-                PRIMARY KEY (ders_adi, ders_instance),
-                FOREIGN KEY (teori_odasi) REFERENCES Derslikler(derslik_num),
-                FOREIGN KEY (lab_odasi) REFERENCES Derslikler(derslik_num)
+                PRIMARY KEY (ders_instance, ders_adi),
+                FOREIGN KEY (teori_odasi) REFERENCES Derslikler(derslik_num) ON DELETE SET NULL,
+                FOREIGN KEY (lab_odasi) REFERENCES Derslikler(derslik_num) ON DELETE SET NULL
                 -- ders_tarihi ders_dönemi+ders_yili?????
                 -- teorik müfredat dersleri her dönemki dersleri ayri tablo mu yapsak?
             )''',
@@ -54,7 +56,7 @@ class DbManager:
                 sinif_num TEXT,
                 PRIMARY KEY (ders_instance, sinif_num, ders_adi),
                 FOREIGN KEY (ders_instance, ders_adi) REFERENCES Dersler(ders_instance, ders_adi) ON DELETE CASCADE,
-                FOREIGN KEY (sinif_num) REFERENCES Siniflar(sinif_num)
+                FOREIGN KEY (sinif_num) REFERENCES Ogrenci_Siniflari(sinif_num)
             )''',
 
             '''CREATE TABLE IF NOT EXISTS Ogrenciler (
@@ -63,17 +65,17 @@ class DbManager:
                 soyad TEXT NOT NULL,
                 girme_senesi INTEGER NOT NULL,
                 kacinci_donem INTEGER NOT NULL,
-                sinif_duzeyi INTEGER NOT NULL CHECK (sinif_duzeyi BETWEEN 0 AND 4),
-                bolumu TEXT NOT NULL,
+                bolum_num INTEGER NOT NULL,
+                fakulte_num INTEGER NOT NULL,
                 mezun_durumu INTEGER DEFAULT 0, -- 0: Hazirlik, 1: Okuyor, 2: Mezun
                 --Yandal/ÇAP
-                ikinci_bolumu TEXT,
-                ikinci_bolum_turu TEXT CHECK(ikinci_bolum_turu IN ('Yandal', 'Anadal')), --Null eklemeye gerek yok, true false da unknown verir o da geçerli kabul edilir
+                ikinci_bolum_num INTEGER,
+                ikinci_bolum_turu TEXT CHECK(ikinci_bolum_turu IN ('Yandal', 'Anadal')),
                 ogrenci_num2 INTEGER,
                 girme_senesi2 INTEGER,
                 kacinci_donem2 INTEGER,
-                FOREIGN KEY (bolumu) REFERENCES Bolumler(bolum_adi),
-                FOREIGN KEY (ikinci_bolumu) REFERENCES Bolumler(bolum_adi)
+                FOREIGN KEY (bolum_num) REFERENCES Bolumler(bolum_id),
+                FOREIGN KEY (ikinci_bolum_num) REFERENCES Bolumler(bolum_id)
             )''',
 
             '''CREATE TABLE IF NOT EXISTS Verilen_Dersler (
@@ -81,21 +83,23 @@ class DbManager:
                 ders_listesi TEXT --burada dersleri string olarak yanyana koyup saklayacak
             )''',
 
-            '''CREATE TABLE IF NOT EXISTS Alınan_Dersler (
+            '''CREATE TABLE IF NOT EXISTS Alinan_Dersler (
                 ders_adi TEXT,
                 ders_instance INTEGER,
                 sinif_num TEXT,
                 PRIMARY KEY (ders_instance, sinif_num, ders_adi),
                 FOREIGN KEY (ders_instance, ders_adi) REFERENCES Dersler(ders_instance, ders_adi) ON DELETE CASCADE,
-                FOREIGN KEY (sinif_num) REFERENCES Siniflar(sinif_num)
+                FOREIGN KEY (sinif_num) REFERENCES Ogrenci_Siniflari(sinif_num)
             )''',
 
             '''CREATE TABLE IF NOT EXISTS Derslikler (
                 derslik_num INTEGER PRIMARY KEY AUTOINCREMENT,
-                derslik_adi TEXT NOT NULL UNIQUE,
+                derslik_adi TEXT NOT NULL,
                 tip TEXT NOT NULL CHECK (tip IN ('lab', 'amfi')),
                 kapasite INTEGER NOT NULL,
-                ozellikler TEXT
+                ozellikler TEXT,
+                silindi BOOLEAN DEFAULT 0,
+                silinme_tarihi DATETIME
             )''',
 
             '''CREATE TABLE IF NOT EXISTS Ogretmenler (
@@ -112,11 +116,30 @@ class DbManager:
                 sinif_num TEXT,
                 PRIMARY KEY (ders_instance, sinif_num, ders_adi),
                 FOREIGN KEY (ders_instance, ders_adi) REFERENCES Dersler(ders_instance, ders_adi) ON DELETE CASCADE,
-                FOREIGN KEY (sinif_num) REFERENCES Siniflar(sinif_num)
+                FOREIGN KEY (sinif_num) REFERENCES Ogrenci_Siniflari(sinif_num)
             )'''
         ]
         for sql in db_create:
             self.c.execute(sql)
+        
+        # Index'leri oluştur
+        indexes = [
+            # Kısmi unique index - sadece aktif derslikler için
+            "CREATE UNIQUE INDEX IF NOT EXISTS idx_derslik_adi_active ON Derslikler(derslik_adi) WHERE silindi = 0",
+            
+            # Performans index'leri
+            "CREATE INDEX IF NOT EXISTS idx_bolumler_fakulte ON Bolumler(fakulte_num)",
+            "CREATE INDEX IF NOT EXISTS idx_ogrenci_siniflari_bolum ON Ogrenci_Siniflari(bolum_num)",
+            "CREATE INDEX IF NOT EXISTS idx_ders_sinif_iliskisi_sinif ON Ders_Sinif_Iliskisi(sinif_num)",
+            "CREATE INDEX IF NOT EXISTS idx_dersler_adi ON Dersler(ders_adi)",
+            "CREATE INDEX IF NOT EXISTS idx_dersler_instance ON Dersler(ders_instance)",
+            "CREATE INDEX IF NOT EXISTS idx_ogrenciler_bolum ON Ogrenciler(bolum_num)",
+            "CREATE INDEX IF NOT EXISTS idx_ogrenciler_fakulte ON Ogrenciler(fakulte_num)"
+        ]
+        
+        for index_sql in indexes:
+            self.c.execute(index_sql)
+        
         self.conn.commit()
 
     def fakulte_numarasini_al(self, ogrenci_num2: int) -> int:
@@ -137,6 +160,26 @@ class DbManager:
         else:
             raise ValueError(f"{bolum_adi} adında ve {fakulte_num} fakülte numarasında bir bölüm bulunamadı.")
 
+    def _format_ogrenci_num(self, girme_senesi, fakulte_num, bolum_num, program_tipi, sira):
+        """Öğrenci numarası formatını oluştur: YY0FBBPSSS"""
+        year_part = str(girme_senesi)[-2:]  # YY
+        faculty_part = f"{fakulte_num:02d}"  # FF
+        dept_part = f"{bolum_num:02d}"       # BB
+        program_part = str(program_tipi)     # P
+        sequence_part = f"{sira:03d}"        # SSS
+        return int(f"{year_part}0{faculty_part}{dept_part}{program_part}{sequence_part}")
+
+    def _parse_ogrenci_num(self, ogrenci_num):
+        """Öğrenci numarasını parse et"""
+        num_str = str(ogrenci_num).zfill(10)
+        return {
+            'year': int(num_str[0:2]),
+            'faculty': int(num_str[2:4]),
+            'dept': int(num_str[4:6]),
+            'program': int(num_str[6:7]),
+            'sequence': int(num_str[7:10])
+        }
+
 
     # Fakülte ekle
     def fakulte_ekle(self, fakulte_adi):
@@ -145,55 +188,58 @@ class DbManager:
         return self.c.lastrowid
     
 
-    # Bölüm ekle (otomatik bolum_num ataması)
-    def bolum_ekle(self, fakulte_identifier, bolum_adi, by_name=False):
+    # Bölüm ekle (otomatik 4-digit global bolum_id ataması)
+    def bolum_ekle(self, fakulte_identifier: int | str, bolum_adi: str, by_name: bool = False) -> int:
         """
         Bolum ekler.
         :param fakulte_identifier: Fakulte numarası (int) veya fakulte adı (str)
         :param bolum_adi: Eklenecek bölümün adı (str)
         :param by_name: True ise fakulte_identifier fakulte adı olarak değerlendirilir.
                         False ise fakulte numarası olarak değerlendirilir.
-        :return: Yeni bölüm numarası (int)
+        :return: Yeni 4-digit global bolum_id (int)
         """
-        if by_name:
-            # Fakülte adından numarasını bul
-            self.c.execute('SELECT fakulte_num FROM Fakulteler WHERE fakulte_adi = ?', (fakulte_identifier,))
-            res = self.c.fetchone()
-            if res is None:
-                raise ValueError(f"Fakulte adi '{fakulte_identifier}' bulunamadi.")
-            fakulte_num = res[0]
-        else:
-            fakulte_num = fakulte_identifier
+        with self.conn:
+            if by_name:
+                # Fakülte adından numarasını bul
+                self.c.execute('SELECT fakulte_num FROM Fakulteler WHERE fakulte_adi = ?', (fakulte_identifier,))
+                res = self.c.fetchone()
+                if res is None:
+                    raise ValueError(f"Fakulte adi '{fakulte_identifier}' bulunamadi.")
+                fakulte_num = res[0]
+            else:
+                fakulte_num = fakulte_identifier
 
-        # Bölüm numarasını hesapla
-        self.c.execute('SELECT COALESCE(MAX(bolum_num), 0) + 1 FROM Bolumler WHERE fakulte_num = ?', (fakulte_num,))
-        yeni_bolum_num = self.c.fetchone()[0]
+            # Fakülte içi bölüm numarasını hesapla
+            self.c.execute('SELECT COALESCE(MAX(bolum_num), 0) + 1 FROM Bolumler WHERE fakulte_num = ?', (fakulte_num,))
+            yeni_bolum_num = self.c.fetchone()[0]
 
-        # Bölüm ekle
-        self.c.execute('''
-            INSERT INTO Bolumler (bolum_num, bolum_adi, fakulte_num)
-            VALUES (?, ?, ?)
-        ''', (yeni_bolum_num, bolum_adi, fakulte_num))
-        self.conn.commit()
-        return yeni_bolum_num
+            # 4-digit global bolum_id oluştur: FFBB (Fakülte 2-digit + Bölüm 2-digit)
+            global_bolum_id = int(f"{fakulte_num:02d}{yeni_bolum_num:02d}")
+
+            # Bölüm ekle
+            self.c.execute('''
+                INSERT INTO Bolumler (bolum_id, bolum_num, bolum_adi, fakulte_num)
+                VALUES (?, ?, ?, ?)
+            ''', (global_bolum_id, yeni_bolum_num, bolum_adi, fakulte_num))
+            return global_bolum_id
     
 
-    # Sınıf ekle (otomatik sinif_num hesaplaması)
-    def sinif_ekle(self, bolum_num, sinif_duzeyi):
-        self.c.execute('SELECT fakulte_num FROM Bolumler WHERE bolum_num = ?', (bolum_num,))
-        result = self.c.fetchone()
-        if not result:
-            raise ValueError("Bölüm bulunamadı.")
-        fakulte_num = result[0]
+    # Öğrenci sınıfı ekle (otomatik sinif_num hesaplaması)
+    def ogrenci_sinifi_ekle(self, bolum_id: int, sinif_duzeyi: int) -> int:
+        with self.conn:
+            self.c.execute('SELECT fakulte_num, bolum_num FROM Bolumler WHERE bolum_id = ?', (bolum_id,))
+            result = self.c.fetchone()
+            if not result:
+                raise ValueError("Bölüm bulunamadı.")
+            fakulte_num, bolum_num = result
 
-        sinif_num = int(f"{fakulte_num}{bolum_num}0{sinif_duzeyi}")
+            sinif_num = int(f"{fakulte_num}{bolum_num}0{sinif_duzeyi}")
 
-        self.c.execute('''
-            INSERT INTO Siniflar (sinif_num, sinif_duzeyi, bolum_num) 
-            VALUES (?, ?, ?)
-        ''', (sinif_num, sinif_duzeyi, bolum_num))
-        self.conn.commit()
-        return sinif_num
+            self.c.execute('''
+                INSERT INTO Ogrenci_Siniflari (sinif_num, sinif_duzeyi, bolum_num) 
+                VALUES (?, ?, ?)
+            ''', (sinif_num, sinif_duzeyi, bolum_id))
+            return sinif_num
     
 
     # Ders ekle (ders_instance otomatik atanır)
@@ -229,7 +275,7 @@ class DbManager:
         ''', (girme_senesi, bolum_num, fakulte_num))
         sira = self.c.fetchone()[0] + 1
 
-        ogrenci_num = int(f"{str(girme_senesi)[-2:]}0{fakulte_num:02d}{bolum_num:02d}{program_tipi}{sira:03d}")
+        ogrenci_num = self._format_ogrenci_num(girme_senesi, fakulte_num, bolum_num, program_tipi, sira)
 
         self.c.execute('''
             INSERT INTO Ogrenciler (
@@ -261,30 +307,32 @@ class DbManager:
 
         #Otomatik döenm atlama getir FNORD!
 
-        fakulte_num = self.fakulte_numarasini_al(ogrenci_num)
-        bolum_num2 = self.bolum_numarasini_al(ikinci_bolumu, fakulte_num)
+        # İkinci bölüm farklı fakülteden olabilir, fakulte_num'u ikinci bölümden al
+        self.c.execute('SELECT fakulte_num FROM Bolumler WHERE bolum_adi = ?', (ikinci_bolumu,))
+        fakulte_result = self.c.fetchone()
+        if not fakulte_result:
+            raise ValueError(f"İkinci bölüm '{ikinci_bolumu}' bulunamadı.")
+        fakulte_num2 = fakulte_result[0]
+        
+        bolum_num2 = self.bolum_numarasini_al(ikinci_bolumu, fakulte_num2)
 
         # Aynı yıl, fakülte, bölüm ve program tipinde kaç kişi kayıtlı?
         self.c.execute('''
             SELECT COUNT(*) FROM Ogrenciler
             WHERE girme_senesi2 = ?
-              AND bolum_num2 = ?
-              AND fakulte_num = ?
-              AND (
-                  (? = 8 AND ikinci_bolum_turu = 'Yandal') OR
-                  (? = 9 AND ikinci_bolum_turu = 'Anadal')
-              )
-        ''', (girme_senesi2, bolum_num, fakulte_num, program_tipi, program_tipi, program_tipi))
+              AND ikinci_bolum_num = ?
+              AND ikinci_bolum_turu = ?
+        ''', (girme_senesi2, bolum_num2, ikinci_bolum_turu))
         sira = self.c.fetchone()[0] + 1
 
-        # Öğrenci numarası: YY0FBBPSSS
-        ogrenci_num2 = int(f"{str(girme_senesi2)[-2:]}0{fakulte_num:02d}{bolum_num:02d}{program_tipi}{sira:03d}")
+        # Öğrenci numarası: YY0FBBPSSS (ikinci fakülte numarası kullanılır)
+        ogrenci_num2 = self._format_ogrenci_num(girme_senesi2, fakulte_num2, bolum_num2, program_tipi, sira)
 
         self.c.execute('''
             UPDATE Ogrenciler
-            SET ikinci_bolumu = ?, ikinci_bolum_turu = ?, ogrenci_num2 = ?, girme_senesi2 = ?, kacinci_donem2 = ?
+            SET ikinci_bolum_num = ?, ikinci_bolum_turu = ?, ogrenci_num2 = ?, girme_senesi2 = ?, kacinci_donem2 = ?
             WHERE ogrenci_num = ?
-        ''', (ikinci_bolumu, ikinci_bolum_turu, ogrenci_num2, girme_senesi2, kacinci_donem2, ogrenci_num))
+        ''', (bolum_num2, ikinci_bolum_turu, ogrenci_num2, girme_senesi2, kacinci_donem2, ogrenci_num))
 
         self.conn.commit()
         return ogrenci_num2
@@ -318,15 +366,44 @@ class DbManager:
 
     def alinan_ders_ekle(self, ders_adi, ders_instance, sinif_num):
         self.c.execute('''
-            INSERT OR IGNORE INTO Alınan_Dersler (ders_adi, ders_instance, sinif_num)
+            INSERT OR IGNORE INTO Alinan_Dersler (ders_adi, ders_instance, sinif_num)
             VALUES (?, ?, ?)
         ''', (ders_adi, ders_instance, sinif_num))
         self.conn.commit()
 
     def alinan_dersleri_getir(self, sinif_num):
-        self.c.execute('SELECT ders_adi, ders_instance FROM Alınan_Dersler WHERE sinif_num = ?', (sinif_num,))
+        self.c.execute('SELECT ders_adi, ders_instance FROM Alinan_Dersler WHERE sinif_num = ?', (sinif_num,))
         return self.c.fetchall()
     
+
+    def derslik_ekle(self, derslik_adi, tip, kapasite, ozellikler=None):
+        """Derslik ekle"""
+        self.c.execute('''
+            INSERT INTO Derslikler (derslik_adi, tip, kapasite, ozellikler)
+            VALUES (?, ?, ?, ?)
+        ''', (derslik_adi, tip, kapasite, ozellikler))
+        self.conn.commit()
+        return self.c.lastrowid
+
+    def derslik_sil(self, derslik_num):
+        """Derslik soft delete - gerçekten silmez, sadece işaretler"""
+        from datetime import datetime
+        self.c.execute('''
+            UPDATE Derslikler 
+            SET silindi = 1, silinme_tarihi = ?
+            WHERE derslik_num = ?
+        ''', (datetime.now(), derslik_num))
+        self.conn.commit()
+
+    def aktif_derslikleri_getir(self):
+        """Sadece aktif (silinmemiş) derslikleri getir"""
+        self.c.execute('SELECT derslik_num, derslik_adi, tip, kapasite FROM Derslikler WHERE silindi = 0')
+        return self.c.fetchall()
+
+    def tum_derslikleri_getir(self):
+        """Tüm derslikleri getir (silinmiş olanlar dahil)"""
+        self.c.execute('SELECT derslik_num, derslik_adi, tip, kapasite, silindi, silinme_tarihi FROM Derslikler')
+        return self.c.fetchall()
 
     def close(self):
         self.conn.close()
@@ -337,19 +414,19 @@ if __name__ == "__main__":
     db = DbManager()
 
     # Fakulte numarasına göre
-    bolum_num1 = db.bolum_ekle(1, "Makine Mühendisliği")
+    bolum_id1 = db.bolum_ekle(1, "Makine Mühendisliği")
     # Fakulte adına göre
-    bolum_num2 = db.bolum_ekle("Mühendislik Fakültesi", "Elektrik Mühendisliği", by_name=True)
+    bolum_id2 = db.bolum_ekle("Mühendislik Fakültesi", "Elektrik Mühendisliği", by_name=True)
 
     fakulte_id = db.fakulte_ekle("Mühendislik Fakültesi")
-    bolum_num = db.bolum_ekle(fakulte_id, "Bilgisayar Mühendisliği")
+    bolum_id = db.bolum_ekle(fakulte_id, "Bilgisayar Mühendisliği")
 
-    sinif_num = db.sinif_ekle(bolum_num, 3)
+    sinif_num = db.ogrenci_sinifi_ekle(bolum_id, 3)
 
     ders_instance = db.ders_ekle("Matematik", ders_kodu="MAT101")
 
     print(f"Fakulte ID: {fakulte_id}")
-    print(f"Bolum No: {bolum_num}")
+    print(f"Bolum ID: {bolum_id} (4-digit global ID)")
     print(f"Sinif No: {sinif_num}")
     print(f"Ders Instance: {ders_instance}")
 
