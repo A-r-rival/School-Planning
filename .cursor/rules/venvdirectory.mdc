@@ -1,0 +1,16 @@
+---
+alwaysApply: true
+
+{
+  "language": "python",
+  "settings": {
+    "interpreterPath": "venv\\Scripts\\python.exe",
+    "venv": "venv",
+    "importPaths": ["./"]
+  },
+  "runtime": {
+    "useVenv": true
+  }
+}
+
+---

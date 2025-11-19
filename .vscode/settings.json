@@ -1,0 +1,11 @@
+{
+    "CodeGPT.apiKey": "OpenAI",
+    "python.defaultInterpreterPath": "venv\\Scripts\\python.exe",
+    "python.terminal.activateEnvironment": true,
+    "python.analysis.extraPaths": ["./"],
+    "python.analysis.autoImportCompletions": true,
+    "cursorpyright.analysis.autoImportCompletions": true,
+    "cursorpyright.analysis.extraPaths": [
+        "./"
+    ]
+}
