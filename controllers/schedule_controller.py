@@ -52,7 +52,7 @@ class ScheduleController:
     def _initialize_view(self):
         """Initialize view with existing data from model"""
         # Load existing courses
-        courses = self.model.get_all_courses()
+        courses = self.model.get_all_courses_complex()
         self.view.display_courses(courses)
         
         # Load teachers for autocomplete
@@ -67,7 +67,7 @@ class ScheduleController:
             course_data: Dictionary containing course information
         """
         # Model will handle validation and database operations
-        success = self.model.add_course(course_data)
+        success = self.model.add_course_complex(course_data)
         
         if success:
             # Clear inputs on successful addition
@@ -85,7 +85,7 @@ class ScheduleController:
             course_info: Course information string
         """
         # Model will handle database operations
-        success = self.model.remove_course(course_info)
+        success = self.model.remove_course_complex(course_info)
         
         if success:
             # Update teacher completer after removal
@@ -136,7 +136,7 @@ class ScheduleController:
     def refresh_data(self):
         """Refresh all data from model to view"""
         # Reload courses
-        courses = self.model.get_all_courses()
+        courses = self.model.get_all_courses_complex()
         self.view.display_courses(courses)
         
         # Reload teachers
@@ -191,7 +191,7 @@ class ScheduleController:
         Returns:
             Dictionary with statistics
         """
-        courses = self.model.get_all_courses()
+        courses = self.model.get_all_courses_complex()
         teachers = self.model.get_teachers()
         
         stats = {
