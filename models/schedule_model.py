@@ -818,3 +818,67 @@ class ScheduleModel(QObject):
         except Exception as e:
             print(f"Error fetching grades: {e}")
             return []
+
+    def get_students(self, filters: Dict[str, any] = None) -> List[tuple]:
+        """
+        Get students based on filters.
+        filters: {'fakulte_id': int, 'bolum_id': int, 'sinif': int, 'search': str}
+        Returns: List of (ogrenci_num, ad, soyad, bolum_adi, sinif)
+        """
+        try:
+            query = '''
+                SELECT o.ogrenci_num, o.ad, o.soyad, b.bolum_adi, o.kacinci_donem
+                FROM Ogrenciler o
+                JOIN Bolumler b ON o.bolum_num = b.bolum_id
+                WHERE 1=1
+            '''
+            params = []
+
+            if filters:
+                if filters.get('fakulte_id'):
+                    query += " AND o.fakulte_num = ?"
+                    params.append(filters['fakulte_id'])
+                
+                if filters.get('bolum_id'):
+                    query += " AND o.bolum_num = ?"
+                    params.append(filters['bolum_id'])
+                
+                if filters.get('sinif'):
+                    # kacinci_donem is semester count (1-8). Year = (kacinci_donem + 1) // 2
+                    # So Year 1: 1,2; Year 2: 3,4; etc.
+                    target_year = filters['sinif']
+                    min_sem = (target_year * 2) - 1
+                    max_sem = target_year * 2
+                    query += " AND o.kacinci_donem BETWEEN ? AND ?"
+                    params.extend([min_sem, max_sem])
+                
+                if filters.get('search'):
+                    search_term = f"%{filters['search']}%"
+                    query += " AND (o.ad LIKE ? OR o.soyad LIKE ? OR CAST(o.ogrenci_num AS TEXT) LIKE ?)"
+                    params.extend([search_term, search_term, search_term])
+
+            query += " ORDER BY o.ad, o.soyad"
+            
+            self.c.execute(query, params)
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching students: {e}")
+            return []
+
+    def get_all_faculties(self) -> List[tuple]:
+        """Get all faculties (id, name)"""
+        try:
+            self.c.execute("SELECT fakulte_num, fakulte_adi FROM Fakulteler")
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching faculties: {e}")
+            return []
+
+    def get_all_departments(self) -> List[tuple]:
+        """Get all departments (id, name)"""
+        try:
+            self.c.execute("SELECT bolum_id, bolum_adi FROM Bolumler")
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching departments: {e}")
+            return []

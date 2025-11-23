@@ -24,6 +24,7 @@ class ScheduleView(QWidget):
     faculty_add_requested = pyqtSignal(str)  # Emits faculty name when add faculty requested
     department_add_requested = pyqtSignal(int, str)  # Emits faculty_id, department_name when add department requested
     open_calendar_requested = pyqtSignal() # Emits when calendar button clicked
+    open_student_view_requested = pyqtSignal() # Emits when student panel button clicked
     
     def __init__(self):
         super().__init__()
@@ -91,13 +92,6 @@ class ScheduleView(QWidget):
         saat_layout.addWidget(QLabel("Başlangıç:"))
         saat_layout.addWidget(self.saat_baslangic)
         saat_layout.addWidget(QLabel("Bitiş:"))
-        saat_layout.addWidget(self.saat_bitis)
-        
-        layout.addLayout(saat_layout)
-        
-        # Connect auto-fill end time
-        self.saat_baslangic.timeChanged.connect(self._auto_fill_end_time)
-    
     def _create_action_buttons(self, layout: QVBoxLayout):
         """Create action buttons"""
         # Add course button
@@ -141,7 +135,7 @@ class ScheduleView(QWidget):
             }
         """)
         layout.addWidget(self.sil_button)
-    
+
     def _create_course_list(self, layout: QVBoxLayout):
         """Create course list widget"""
         # Course list label
@@ -230,7 +224,26 @@ class ScheduleView(QWidget):
             }
         """)
         layout.addWidget(self.calendar_button)
-    
+
+        # Open Student Panel button
+        self.student_button = QPushButton("Öğrenci Paneli")
+        self.student_button.setStyleSheet("""
+            QPushButton {
+                background-color: #009688;
+                color: white;
+                border: none;
+                padding: 8px;
+                font-size: 12px;
+                border-radius: 3px;
+            }
+            QPushButton:hover {
+                background-color: #00796B;
+            }
+        """)
+        layout.addWidget(self.student_button)
+
+        layout.addWidget(self.student_button)
+
     def _connect_signals(self):
         """Connect internal signals"""
         self.ekle_button.clicked.connect(self._on_add_course_clicked)
@@ -238,7 +251,8 @@ class ScheduleView(QWidget):
         self.fakulte_ekle_button.clicked.connect(self._on_add_faculty_clicked)
         self.bolum_ekle_button.clicked.connect(self._on_add_department_clicked)
         self.calendar_button.clicked.connect(self.open_calendar_requested.emit)
-    
+        self.student_button.clicked.connect(self.open_student_view_requested.emit)
+
     def _auto_fill_end_time(self):
         """Automatically set end time to 50 minutes after start time"""
         start_time = self.saat_baslangic.time()
