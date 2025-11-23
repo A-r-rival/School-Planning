@@ -33,7 +33,7 @@ def verify():
         'bitis': '12:00'
     }
     
-    success = model.add_course_complex(course_data)
+    success = model.add_course(course_data)
     if success:
         print("✅ Course added successfully")
     else:
@@ -42,7 +42,7 @@ def verify():
 
     # Test 2: Get Courses
     print("\nTest 2: Listing Courses...")
-    courses = model.get_all_courses_complex()
+    courses = model.get_all_courses()
     print(f"Courses found: {courses}")
     
     expected_str = "Advanced Python - Guido van Rossum - Pazartesi 10:00-12:00"
@@ -54,7 +54,7 @@ def verify():
 
     # Test 3: Remove Course
     print("\nTest 3: Removing Course...")
-    success = model.remove_course_complex(expected_str)
+    success = model.remove_course(expected_str)
     if success:
         print("✅ Course removed successfully")
     else:
@@ -62,7 +62,7 @@ def verify():
         return
 
     # Verify removal
-    courses_after = model.get_all_courses_complex()
+    courses_after = model.get_all_courses()
     if len(courses_after) == 0:
         print("✅ Course list empty after removal")
     else:

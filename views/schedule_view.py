@@ -23,6 +23,7 @@ class ScheduleView(QWidget):
     course_remove_requested = pyqtSignal(str)  # Emits course info when remove button clicked
     faculty_add_requested = pyqtSignal(str)  # Emits faculty name when add faculty requested
     department_add_requested = pyqtSignal(int, str)  # Emits faculty_id, department_name when add department requested
+    open_calendar_requested = pyqtSignal() # Emits when calendar button clicked
     
     def __init__(self):
         super().__init__()
@@ -211,6 +212,24 @@ class ScheduleView(QWidget):
             }
         """)
         layout.addWidget(self.bolum_ekle_button)
+
+        # Open Calendar button
+        self.calendar_button = QPushButton("Takvimi Göster")
+        self.calendar_button.setStyleSheet("""
+            QPushButton {
+                background-color: #673AB7;
+                color: white;
+                border: none;
+                padding: 8px;
+                font-size: 12px;
+                border-radius: 3px;
+                margin-top: 5px;
+            }
+            QPushButton:hover {
+                background-color: #5E35B1;
+            }
+        """)
+        layout.addWidget(self.calendar_button)
     
     def _connect_signals(self):
         """Connect internal signals"""
@@ -218,6 +237,7 @@ class ScheduleView(QWidget):
         self.sil_button.clicked.connect(self._on_remove_course_clicked)
         self.fakulte_ekle_button.clicked.connect(self._on_add_faculty_clicked)
         self.bolum_ekle_button.clicked.connect(self._on_add_department_clicked)
+        self.calendar_button.clicked.connect(self.open_calendar_requested.emit)
     
     def _auto_fill_end_time(self):
         """Automatically set end time to 50 minutes after start time"""

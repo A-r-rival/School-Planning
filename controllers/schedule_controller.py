@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from models.schedule_model import ScheduleModel
     from views.schedule_view import ScheduleView
+from views.calendar_view import CalendarView
 
 
 class ScheduleController:
@@ -33,6 +34,9 @@ class ScheduleController:
         
         # Initialize view with existing data
         self._initialize_view()
+        
+        # Calendar View (Lazy initialization)
+        self.calendar_view = None
     
     def _connect_model_signals(self):
         """Connect model signals to view methods"""
@@ -48,11 +52,12 @@ class ScheduleController:
         self.view.course_remove_requested.connect(self.handle_remove_course)
         self.view.faculty_add_requested.connect(self.handle_add_faculty)
         self.view.department_add_requested.connect(self.handle_add_department)
+        self.view.open_calendar_requested.connect(self.open_calendar_view)
     
     def _initialize_view(self):
         """Initialize view with existing data from model"""
         # Load existing courses
-        courses = self.model.get_all_courses_complex()
+        courses = self.model.get_all_courses()
         self.view.display_courses(courses)
         
         # Load teachers for autocomplete
@@ -67,7 +72,7 @@ class ScheduleController:
             course_data: Dictionary containing course information
         """
         # Model will handle validation and database operations
-        success = self.model.add_course_complex(course_data)
+        success = self.model.add_course(course_data)
         
         if success:
             # Clear inputs on successful addition
@@ -85,7 +90,7 @@ class ScheduleController:
             course_info: Course information string
         """
         # Model will handle database operations
-        success = self.model.remove_course_complex(course_info)
+        success = self.model.remove_course(course_info)
         
         if success:
             # Update teacher completer after removal
@@ -136,7 +141,7 @@ class ScheduleController:
     def refresh_data(self):
         """Refresh all data from model to view"""
         # Reload courses
-        courses = self.model.get_all_courses_complex()
+        courses = self.model.get_all_courses()
         self.view.display_courses(courses)
         
         # Reload teachers
@@ -191,7 +196,7 @@ class ScheduleController:
         Returns:
             Dictionary with statistics
         """
-        courses = self.model.get_all_courses_complex()
+        courses = self.model.get_all_courses()
         teachers = self.model.get_teachers()
         
         stats = {
@@ -209,3 +214,54 @@ class ScheduleController:
                 stats['courses_per_day'][day] = stats['courses_per_day'].get(day, 0) + 1
         
         return stats
+        return stats
+
+    def open_calendar_view(self):
+        """Open the weekly calendar view"""
+        if not self.calendar_view:
+            self.calendar_view = CalendarView()
+            self.calendar_view.filter_changed.connect(self.handle_calendar_filter)
+            
+        # Populate initial filters (Teachers)
+        self.handle_calendar_filter("type_changed", {"type": "Öğretmen"})
+        
+        self.calendar_view.show()
+        
+    def handle_calendar_filter(self, event_type, data):
+        """Handle filter changes from calendar view"""
+        if event_type == "type_changed":
+            view_type = data["type"]
+            if view_type == "Öğretmen":
+                items = self.model.get_all_teachers_with_ids()
+                self.calendar_view.update_filter_options(1, items)
+            elif view_type == "Derslik":
+                items = self.model.get_all_classrooms_with_ids()
+                self.calendar_view.update_filter_options(1, items)
+            elif view_type == "Öğrenci Grubu":
+                items = self.model.get_faculties()
+                self.calendar_view.update_filter_options(1, items)
+                
+        elif event_type == "filter_selected":
+            # Handle specific selections
+            schedule_data = []
+            
+            if "teacher_id" in data and data["teacher_id"]:
+                schedule_data = self.model.get_schedule_by_teacher(data["teacher_id"])
+                
+            elif "classroom_id" in data and data["classroom_id"]:
+                schedule_data = self.model.get_schedule_by_classroom(data["classroom_id"])
+                
+            elif "faculty_id" in data:
+                # If only faculty selected, update departments
+                if "dept_id" not in data or not data["dept_id"]:
+                    items = self.model.get_departments_by_faculty(data["faculty_id"])
+                    self.calendar_view.update_filter_options(2, items)
+                # If dept selected and year selected, fetch schedule
+                elif "year" in data and data["year"]:
+                     schedule_data = self.model.get_schedule_by_student_group(data["dept_id"], int(data["year"]))
+            
+            if schedule_data:
+                self.calendar_view.display_schedule(schedule_data)
+            else:
+                # Clear if no valid selection or no data
+                self.calendar_view.display_schedule([])

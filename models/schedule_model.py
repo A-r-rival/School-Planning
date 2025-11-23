@@ -38,7 +38,7 @@ class ScheduleModel(QObject):
         self._create_tables()
         
         # Create simple tables if they don't exist
-        self._create_simple_tables()
+        # self._create_simple_tables() # Removed legacy call
     
     def _create_tables(self):
         """Create all database tables"""
@@ -58,7 +58,7 @@ class ScheduleModel(QObject):
             )''',
 
             '''CREATE TABLE IF NOT EXISTS Ogrenci_Donemleri (       --bunu dönemle alakali yap!!!!
-                donem_sinif_num INTEGER PRIMARY KEY,      --mesela "210507"
+                donem_sinif_num TEXT PRIMARY KEY,      --mesela "210507"
                 baslangic_yili INTEGER,                   --otomatize et, fnord
                 bolum_num INTEGER NOT NULL,
                 sinif_duzeyi INTEGER NOT NULL CHECK (sinif_duzeyi BETWEEN 0 AND 5), --0: Hazirlik, 1: 1. Sinif, 2: 2. Sinif, 3: 3. Sinif, 4: 4. Sinif, 5: Mezun
@@ -75,16 +75,6 @@ class ScheduleModel(QObject):
                 PRIMARY KEY (ders_instance, ders_adi),
                 FOREIGN KEY (teori_odasi) REFERENCES Derslikler(derslik_num) ON DELETE SET NULL,
                 FOREIGN KEY (lab_odasi) REFERENCES Derslikler(derslik_num) ON DELETE SET NULL
-            )''',
-
-            '''CREATE TABLE IF NOT EXISTS dersler (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                ders TEXT NOT NULL,
-                hoca TEXT NOT NULL,
-                gun TEXT NOT NULL,
-                saat TEXT NOT NULL,
-                silindi BOOLEAN DEFAULT 0,
-                silinme_tarihi DATETIME
             )''',
 
             '''CREATE TABLE IF NOT EXISTS Ders_Sinif_Iliskisi (
@@ -165,13 +155,25 @@ class ScheduleModel(QObject):
                 bitis TEXT NOT NULL,
                 FOREIGN KEY (ders_instance, ders_adi) REFERENCES Dersler(ders_instance, ders_adi),
                 FOREIGN KEY (ogretmen_id) REFERENCES Ogretmenler(ogretmen_num)
-            )'''
+            )''',
 
+            '''CREATE TABLE IF NOT EXISTS Ogrenci_Notlari (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                ogrenci_num INTEGER NOT NULL,
+                ders_kodu TEXT,
+                ders_adi TEXT NOT NULL,
+                harf_notu TEXT,
+                durum TEXT,
+                donem TEXT,
+                onceki_not_id INTEGER,
+                FOREIGN KEY (ogrenci_num) REFERENCES Ogrenciler(ogrenci_num),
+                FOREIGN KEY (onceki_not_id) REFERENCES Ogrenci_Notlari(id)
+            )'''
         ]
+
         for sql in db_create:
             self.c.execute(sql)
-        
-        # Index'leri oluştur
+
         indexes = [
             "CREATE UNIQUE INDEX IF NOT EXISTS idx_derslik_adi_active ON Derslikler(derslik_adi) WHERE silindi = 0",
             "CREATE INDEX IF NOT EXISTS idx_bolumler_fakulte ON Bolumler(fakulte_num)",
@@ -188,20 +190,6 @@ class ScheduleModel(QObject):
         
         self.conn.commit()
     
-    def _create_simple_tables(self):
-        """Create simple course table for backward compatibility"""
-        try:
-            # Mevcut tabloya silindi kolonu ekle (eğer yoksa)
-            self.c.execute("ALTER TABLE dersler ADD COLUMN silindi BOOLEAN DEFAULT 0")
-            self.conn.commit()
-        except:
-            pass  # Kolon zaten varsa hata vermez
-        
-        try:
-            self.c.execute("ALTER TABLE dersler ADD COLUMN silinme_tarihi DATETIME")
-            self.conn.commit()
-        except:
-            pass  # Kolon zaten varsa hata vermez
     
     def add_course(self, course_data: Dict[str, str]) -> bool:
         """
@@ -223,25 +211,50 @@ class ScheduleModel(QObject):
             if self._check_time_conflict(course_data['gun'], course_data['baslangic'], course_data['bitis']):
                 self.error_occurred.emit("Bu saat aralığında zaten bir ders var!")
                 return False
-            
-            # Add to database directly
-            success = self.basit_ders_ekle(
-                course_data['ders'], 
-                course_data['hoca'], 
-                course_data['gun'], 
-                course_data['baslangic'], 
-                course_data['bitis']
-            )
-            
-            if success:
-                # Emit signal for successful addition
-                saat = f"{course_data['baslangic']}-{course_data['bitis']}"
-                course_info = f"{course_data['ders']} - {course_data['hoca']} - {course_data['gun']} {saat}"
-                self.course_added.emit(course_info)
-                return True
+
+            ders_adi = course_data['ders']
+            hoca_adi = course_data['hoca']
+            gun = course_data['gun']
+            baslangic = course_data['baslangic']
+            bitis = course_data['bitis']
+
+            # 1. Ensure Teacher exists
+            self.c.execute("SELECT ogretmen_num FROM Ogretmenler WHERE ad || ' ' || soyad = ?", (hoca_adi,))
+            teacher_row = self.c.fetchone()
+            if not teacher_row:
+                # Simple name splitting for ad/soyad
+                parts = hoca_adi.split(' ')
+                ad = parts[0]
+                soyad = ' '.join(parts[1:]) if len(parts) > 1 else ''
+                self.c.execute("INSERT INTO Ogretmenler (ad, soyad, bolum_adi) VALUES (?, ?, ?)", (ad, soyad, "Genel"))
+                ogretmen_id = self.c.lastrowid
             else:
-                self.error_occurred.emit("Ders eklenirken veritabanı hatası oluştu!")
-                return False
+                ogretmen_id = teacher_row[0]
+
+            # 2. Ensure Course exists
+            self.c.execute("SELECT ders_instance FROM Dersler WHERE ders_adi = ?", (ders_adi,))
+            course_rows = self.c.fetchall()
+            
+            if not course_rows:
+                # Create new course entry
+                instance = self.ders_ekle(ders_adi, ders_kodu="CODE", teori_odasi=None, lab_odasi=None)
+            else:
+                # Use the first instance found
+                instance = course_rows[0][0]
+
+            # 3. Add to Ders_Programi
+            self.c.execute('''
+                INSERT INTO Ders_Programi (ders_adi, ders_instance, ogretmen_id, gun, baslangic, bitis)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (ders_adi, instance, ogretmen_id, gun, baslangic, bitis))
+            
+            self.conn.commit()
+            
+            # Emit signal
+            saat = f"{baslangic}-{bitis}"
+            course_info = f"{ders_adi} - {hoca_adi} - {gun} {saat}"
+            self.course_added.emit(course_info)
+            return True
             
         except Exception as e:
             self.error_occurred.emit(f"Ders eklenirken hata oluştu: {str(e)}")
@@ -258,27 +271,44 @@ class ScheduleModel(QObject):
             bool: True if successful, False otherwise
         """
         try:
-            # Parse course information
+            # Parse info: "Matematik - Ahmet Hoca - Pazartesi 09:00-09:50"
             parts = course_info.split(" - ")
             if len(parts) != 3:
-                raise ValueError("Geçersiz ders bilgisi formatı")
+                raise ValueError("Format hatası")
             
-            ders, hoca, time_info = parts
-            gun, saat = time_info.split(" ", 1)
+            ders_adi = parts[0]
+            hoca_adi = parts[1]
+            time_part = parts[2] # "Pazartesi 09:00-09:50"
             
-            # Remove from database directly
-            success = self.basit_ders_sil(ders, hoca, gun, saat)
+            gun = time_part.split(' ')[0]
+            saat_araligi = time_part.split(' ')[1]
+            baslangic = saat_araligi.split('-')[0]
             
-            if success:
-                # Emit signal for successful removal
+            # Find IDs to delete specific entry
+            query = '''
+                SELECT dp.program_id
+                FROM Ders_Programi dp
+                JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
+                WHERE dp.ders_adi = ? 
+                AND (o.ad || ' ' || o.soyad) = ?
+                AND dp.gun = ?
+                AND dp.baslangic = ?
+            '''
+            self.c.execute(query, (ders_adi, hoca_adi, gun, baslangic))
+            row = self.c.fetchone()
+            
+            if row:
+                program_id = row[0]
+                self.c.execute("DELETE FROM Ders_Programi WHERE program_id = ?", (program_id,))
+                self.conn.commit()
                 self.course_removed.emit(course_info)
                 return True
             else:
-                self.error_occurred.emit("Ders silinirken veritabanı hatası oluştu!")
+                self.error_occurred.emit("Silinecek ders bulunamadı!")
                 return False
-            
+                
         except Exception as e:
-            self.error_occurred.emit(f"Ders silinirken hata oluştu: {str(e)}")
+            self.error_occurred.emit(f"Ders silinirken hata: {str(e)}")
             return False
     
     def get_all_courses(self) -> List[str]:
@@ -289,14 +319,22 @@ class ScheduleModel(QObject):
             List[str]: List of course information strings
         """
         try:
-            courses_data = self.basit_dersleri_getir()
+            query = '''
+                SELECT dp.ders_adi, o.ad || ' ' || o.soyad, dp.gun, dp.baslangic, dp.bitis
+                FROM Ders_Programi dp
+                JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
+            '''
+            self.c.execute(query)
+            rows = self.c.fetchall()
+            
             courses = []
-            for ders, hoca, gun, saat in courses_data:
+            for ders, hoca, gun, baslangic, bitis in rows:
+                saat = f"{baslangic}-{bitis}"
                 course_info = f"{ders} - {hoca} - {gun} {saat}"
                 courses.append(course_info)
             return courses
         except Exception as e:
-            self.error_occurred.emit(f"Dersler yüklenirken hata oluştu: {str(e)}")
+            self.error_occurred.emit(f"Dersler yüklenirken hata: {str(e)}")
             return []
     
     def get_teachers(self) -> List[str]:
@@ -307,7 +345,8 @@ class ScheduleModel(QObject):
             List[str]: List of teacher names
         """
         try:
-            return self.basit_hocalari_getir()
+            self.c.execute("SELECT ad || ' ' || soyad FROM Ogretmenler")
+            return [row[0] for row in self.c.fetchall()]
         except Exception as e:
             self.error_occurred.emit(f"Öğretmenler yüklenirken hata oluştu: {str(e)}")
             return []
@@ -358,10 +397,94 @@ class ScheduleModel(QObject):
             bool: True if conflict exists, False otherwise
         """
         try:
-            return self.basit_zaman_cakismasi_kontrol(gun, baslangic, bitis)
+            self.c.execute("SELECT baslangic, bitis FROM Ders_Programi WHERE gun = ?", (gun,))
+            existing_times = self.c.fetchall()
+            
+            for exist_start, exist_end in existing_times:
+                if (baslangic < exist_end and bitis > exist_start):
+                    return True
+            return False
         except Exception as e:
-            self.error_occurred.emit(f"Zaman çakışması kontrolünde hata: {str(e)}")
-            return True  # Return True to be safe
+            print(f"Conflict check error: {e}")
+            return True
+
+    def get_schedule_by_teacher(self, teacher_id: int) -> List[tuple]:
+        """Get schedule for a specific teacher"""
+        try:
+            query = '''
+                SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, 
+                       (SELECT derslik_adi FROM Derslikler WHERE derslik_num = d.teori_odasi) as oda
+                FROM Ders_Programi dp
+                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                WHERE dp.ogretmen_id = ?
+            '''
+            self.c.execute(query, (teacher_id,))
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching teacher schedule: {e}")
+            return []
+
+    def get_schedule_by_classroom(self, classroom_id: int) -> List[tuple]:
+        """Get schedule for a specific classroom"""
+        try:
+            query = '''
+                SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi,
+                       (SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = dp.ogretmen_id) as hoca
+                FROM Ders_Programi dp
+                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                WHERE d.teori_odasi = ? OR d.lab_odasi = ?
+            '''
+            self.c.execute(query, (classroom_id, classroom_id))
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching classroom schedule: {e}")
+            return []
+
+    def get_schedule_by_student_group(self, bolum_id: int, sinif_duzeyi: int) -> List[tuple]:
+        """Get schedule for a specific student group (Department + Year)"""
+        try:
+            query = '''
+                SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi,
+                       (SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = dp.ogretmen_id) as hoca,
+                       (SELECT derslik_adi FROM Derslikler WHERE derslik_num = d.teori_odasi) as oda
+                FROM Ders_Programi dp
+                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
+                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                WHERE od.bolum_num = ? AND od.sinif_duzeyi = ?
+            '''
+            self.c.execute(query, (bolum_id, sinif_duzeyi))
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching student schedule: {e}")
+            return []
+
+    def get_all_teachers_with_ids(self) -> List[Tuple[int, str]]:
+        """Get all teachers with their IDs"""
+        try:
+            self.c.execute("SELECT ogretmen_num, ad || ' ' || soyad FROM Ogretmenler ORDER BY ad")
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching teachers: {e}")
+            return []
+            
+    def get_all_classrooms_with_ids(self) -> List[Tuple[int, str]]:
+        """Get all classrooms with their IDs"""
+        try:
+            self.c.execute("SELECT derslik_num, derslik_adi FROM Derslikler WHERE silindi = 0 ORDER BY derslik_adi")
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching classrooms: {e}")
+            return []
+
+    def get_departments_by_faculty(self, faculty_id: int) -> List[Tuple[int, str]]:
+        """Get departments for a faculty"""
+        try:
+            self.c.execute("SELECT bolum_id, bolum_adi FROM Bolumler WHERE fakulte_num = ? ORDER BY bolum_adi", (faculty_id,))
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching departments: {e}")
+            return []  # Return True to be safe
     
     # Advanced database operations using DbManager
     def add_faculty(self, faculty_name: str) -> Optional[int]:
@@ -670,260 +793,28 @@ class ScheduleModel(QObject):
         self.c.execute('SELECT derslik_num, derslik_adi, tip, kapasite, silindi, silinme_tarihi FROM Derslikler')
         return self.c.fetchall()
 
-    # Basit ders programı yönetimi metodları
-    def basit_ders_ekle(self, ders_adi, hoca_adi, gun, baslangic_saati, bitis_saati):
+
+
+    def get_student_grades(self, student_id: int, show_history: bool = False) -> List[tuple]:
         """
-        Basit ders programı için ders ekleme
-        
-        Args:
-            ders_adi: Ders adı
-            hoca_adi: Öğretmen adı
-            gun: Gün (Pazartesi, Salı, vb.)
-            baslangic_saati: Başlangıç saati (HH:MM)
-            bitis_saati: Bitiş saati (HH:MM)
-        
-        Returns:
-            bool: Başarılı ise True
+        Get student grades.
+        If show_history is False, returns only the latest attempt for each course.
         """
         try:
-            saat = f"{baslangic_saati}-{bitis_saati}"
-            self.c.execute("""
-                INSERT INTO dersler (ders, hoca, gun, saat) 
-                VALUES (?, ?, ?, ?)
-            """, (ders_adi, hoca_adi, gun, saat))
-            self.conn.commit()
-            return True
-        except Exception as e:
-            print(f"Ders eklenirken hata: {e}")
-            return False
-    
-    def basit_ders_sil(self, ders_adi, hoca_adi, gun, saat):
-        """
-        Basit ders programından ders silme
-        
-        Args:
-            ders_adi: Ders adı
-            hoca_adi: Öğretmen adı
-            gun: Gün
-            saat: Saat aralığı
-        
-        Returns:
-            bool: Başarılı ise True
-        """
-        try:
-            self.c.execute("""
-                DELETE FROM dersler 
-                WHERE ders=? AND hoca=? AND gun=? AND saat=?
-            """, (ders_adi, hoca_adi, gun, saat))
-            self.conn.commit()
-            return True
-        except Exception as e:
-            print(f"Ders silinirken hata: {e}")
-            return False
-    
-    def basit_dersleri_getir(self):
-        """
-        Tüm basit dersleri getir
-        
-        Returns:
-            List: Ders bilgileri listesi
-        """
-        try:
-            self.c.execute("SELECT ders, hoca, gun, saat FROM dersler")
+            if show_history:
+                query = "SELECT * FROM Ogrenci_Notlari WHERE ogrenci_num = ? ORDER BY donem DESC"
+                self.c.execute(query, (student_id,))
+            else:
+                # Filter out grades that are referenced as 'previous' by another grade
+                query = '''
+                    SELECT t1.*
+                    FROM Ogrenci_Notlari t1
+                    LEFT JOIN Ogrenci_Notlari t2 ON t1.id = t2.onceki_not_id
+                    WHERE t1.ogrenci_num = ? AND t2.id IS NULL
+                    ORDER BY t1.donem DESC
+                '''
+                self.c.execute(query, (student_id,))
             return self.c.fetchall()
         except Exception as e:
-            print(f"Dersler getirilirken hata: {e}")
+            print(f"Error fetching grades: {e}")
             return []
-    
-    def basit_hocalari_getir(self):
-        """
-        Tüm öğretmenleri getir
-        
-        Returns:
-            List: Öğretmen adları listesi
-        """
-        try:
-            self.c.execute("SELECT DISTINCT hoca FROM dersler WHERE hoca IS NOT NULL AND hoca != ''")
-            return [row[0] for row in self.c.fetchall()]
-        except Exception as e:
-            print(f"Öğretmenler getirilirken hata: {e}")
-            return []
-    
-    def basit_zaman_cakismasi_kontrol(self, gun, baslangic, bitis):
-        """
-        Aynı günde zaman çakışması kontrolü
-        
-        Args:
-            gun: Gün
-            baslangic: Başlangıç saati
-            bitis: Bitiş saati
-        
-        Returns:
-            bool: Çakışma varsa True
-        """
-        try:
-            self.c.execute("SELECT saat FROM dersler WHERE gun = ?", (gun,))
-            existing_times = self.c.fetchall()
-            
-            for (existing_time_str,) in existing_times:
-                existing_start, existing_end = existing_time_str.split('-')
-                
-                # Zaman aralıkları çakışıyor mu kontrol et
-                if (baslangic < existing_end and bitis > existing_start):
-                    return True
-            
-            return False
-        except Exception as e:
-            print(f"Zaman çakışması kontrolünde hata: {e}")
-            return True  # Güvenli tarafta kal
-
-    # Complex Schema Methods
-    def add_course_complex(self, course_data: Dict[str, str]) -> bool:
-        """
-        Add a new course using the complex relational schema
-        
-        Args:
-            course_data: Dictionary containing course information
-        
-        Returns:
-            bool: True if successful, False otherwise
-        """
-        try:
-            # Validate input data
-            if not self._validate_course_data(course_data):
-                return False
-            
-            # Check for time conflicts (using complex check)
-            if self._check_time_conflict_complex(course_data['gun'], course_data['baslangic'], course_data['bitis']):
-                self.error_occurred.emit("Bu saat aralığında zaten bir ders var!")
-                return False
-
-            ders_adi = course_data['ders']
-            hoca_adi = course_data['hoca']
-            gun = course_data['gun']
-            baslangic = course_data['baslangic']
-            bitis = course_data['bitis']
-
-            # 1. Ensure Teacher exists
-            self.c.execute("SELECT ogretmen_num FROM Ogretmenler WHERE ad || ' ' || soyad = ?", (hoca_adi,))
-            teacher_row = self.c.fetchone()
-            if not teacher_row:
-                # Simple name splitting for ad/soyad
-                parts = hoca_adi.split(' ')
-                ad = parts[0]
-                soyad = ' '.join(parts[1:]) if len(parts) > 1 else ''
-                self.c.execute("INSERT INTO Ogretmenler (ad, soyad, bolum_adi) VALUES (?, ?, ?)", (ad, soyad, "Genel"))
-                ogretmen_id = self.c.lastrowid
-            else:
-                ogretmen_id = teacher_row[0]
-
-            # 2. Ensure Course exists
-            self.c.execute("SELECT ders_instance FROM Dersler WHERE ders_adi = ?", (ders_adi,))
-            course_rows = self.c.fetchall()
-            
-            if not course_rows:
-                # Create new course entry
-                instance = self.ders_ekle(ders_adi, ders_kodu="CODE", teori_odasi=None, lab_odasi=None)
-            else:
-                # Use the first instance found
-                instance = course_rows[0][0]
-
-            # 3. Add to Ders_Programi
-            self.c.execute('''
-                INSERT INTO Ders_Programi (ders_adi, ders_instance, ogretmen_id, gun, baslangic, bitis)
-                VALUES (?, ?, ?, ?, ?, ?)
-            ''', (ders_adi, instance, ogretmen_id, gun, baslangic, bitis))
-            
-            self.conn.commit()
-            
-            # Emit signal
-            saat = f"{baslangic}-{bitis}"
-            course_info = f"{ders_adi} - {hoca_adi} - {gun} {saat}"
-            self.course_added.emit(course_info)
-            return True
-
-        except Exception as e:
-            self.error_occurred.emit(f"Karmaşık şema ile ders eklenirken hata: {str(e)}")
-            return False
-
-    def get_all_courses_complex(self) -> List[str]:
-        """
-        Get all courses using complex schema joins
-        """
-        try:
-            query = '''
-                SELECT dp.ders_adi, o.ad || ' ' || o.soyad, dp.gun, dp.baslangic, dp.bitis
-                FROM Ders_Programi dp
-                JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
-            '''
-            self.c.execute(query)
-            rows = self.c.fetchall()
-            
-            courses = []
-            for ders, hoca, gun, baslangic, bitis in rows:
-                saat = f"{baslangic}-{bitis}"
-                course_info = f"{ders} - {hoca} - {gun} {saat}"
-                courses.append(course_info)
-            return courses
-        except Exception as e:
-            self.error_occurred.emit(f"Dersler yüklenirken hata (Complex): {str(e)}")
-            return []
-
-    def remove_course_complex(self, course_info: str) -> bool:
-        """
-        Remove course using complex schema
-        """
-        try:
-            # Parse info: "Matematik - Ahmet Hoca - Pazartesi 09:00-09:50"
-            parts = course_info.split(" - ")
-            if len(parts) != 3:
-                raise ValueError("Format hatası")
-            
-            ders_adi = parts[0]
-            hoca_adi = parts[1]
-            time_part = parts[2] # "Pazartesi 09:00-09:50"
-            
-            gun = time_part.split(' ')[0]
-            saat_araligi = time_part.split(' ')[1]
-            baslangic = saat_araligi.split('-')[0]
-            
-            # Find IDs to delete specific entry
-            query = '''
-                SELECT dp.program_id
-                FROM Ders_Programi dp
-                JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
-                WHERE dp.ders_adi = ? 
-                AND (o.ad || ' ' || o.soyad) = ?
-                AND dp.gun = ?
-                AND dp.baslangic = ?
-            '''
-            self.c.execute(query, (ders_adi, hoca_adi, gun, baslangic))
-            row = self.c.fetchone()
-            
-            if row:
-                program_id = row[0]
-                self.c.execute("DELETE FROM Ders_Programi WHERE program_id = ?", (program_id,))
-                self.conn.commit()
-                self.course_removed.emit(course_info)
-                return True
-            else:
-                self.error_occurred.emit("Silinecek ders bulunamadı!")
-                return False
-                
-        except Exception as e:
-            self.error_occurred.emit(f"Ders silinirken hata (Complex): {str(e)}")
-            return False
-
-    def _check_time_conflict_complex(self, gun, baslangic, bitis):
-        """Check time conflict in Ders_Programi table"""
-        try:
-            self.c.execute("SELECT baslangic, bitis FROM Ders_Programi WHERE gun = ?", (gun,))
-            existing_times = self.c.fetchall()
-            
-            for exist_start, exist_end in existing_times:
-                if (baslangic < exist_end and bitis > exist_start):
-                    return True
-            return False
-        except Exception as e:
-            print(f"Conflict check error: {e}")
-            return True
