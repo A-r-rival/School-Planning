@@ -72,6 +72,7 @@ class ScheduleModel(QObject):
                 ders_adi TEXT NOT NULL,
                 teori_odasi INTEGER,
                 lab_odasi INTEGER,
+                akts INTEGER,
                 PRIMARY KEY (ders_instance, ders_adi),
                 FOREIGN KEY (teori_odasi) REFERENCES Derslikler(derslik_num) ON DELETE SET NULL,
                 FOREIGN KEY (lab_odasi) REFERENCES Derslikler(derslik_num) ON DELETE SET NULL

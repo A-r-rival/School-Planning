@@ -11,8 +11,8 @@ def verify():
     print("Verifying Course Codes...")
     model = ScheduleModel()
     
-    # Check for specific codes (Core and Electives)
-    codes_to_check = ["WIN311", "WIN309", "WIN320", "INF501", "ETE414"]
+    # Check for specific codes
+    codes_to_check = ["ETE101", "PHY101", "ETE201", "SDII"]
     
     for code in codes_to_check:
         model.c.execute("SELECT count(*) FROM Ogrenci_Notlari WHERE ders_kodu = ?", (code,))
