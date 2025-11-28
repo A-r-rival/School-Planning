@@ -1,0 +1,225 @@
+====================================================================================================
+                        İKTİSAT (EKONOMİ) LİSANS ÖĞRETİM PLANI (VWL)
+====================================================================================================
+
+| AÇIKLAMA: D=Öğretim Dili (A: Almanca, İ: İngilizce, TR: Türkçe) | T=Teori | U=Uygulama |
++--------+------------------------------------------------------------+---+---+---+------+
+| YARIYIL| DERSİN ADI                                                 | D | T | U | AKTS |
++--------+------------------------------------------------------------+---+---+---+------+
+| 1. YARIYIL (1. YIL)                                                                              |
++--------+------------------------------------------------------------+---+---+---+------+
+| VWL101 | İktisada Giriş 1 (Introduction to Economics 1)             | A | 2 | 2 |   6  |
+| VWL103 | Matematik 1 (Mathematics 1)                                | A | 2 | 2 |   5  |
+| VWL105 | İstatistik 1 (Statistics 1)                                | A | 2 | 2 |   5  |
+| HUK931 | Hukuka Giriş (Introduction to Law)                         | A | 2 | 0 |   3  |
+| BWL181 | İşletmeye Giriş (Introduction to Business Administration)  | A | 2 | 2 |   6  |
+| DEU111 | İktisatçılar için Almanca 1 (Business German 1)            | A | 2 | 0 |   3  |
+| ENG101 | İngilizce 1 (English 1)                                    | İ | 3 | 0 |   2  |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM |                                                            |   |15 | 8 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+| 2. YARIYIL (1. YIL)                                                                              |
++--------+------------------------------------------------------------+---+---+---+------+
+| VWL102 | İktisada Giriş 2 (Introduction to Economics 2)             | A | 2 | 2 |   6  |
+| VWL104 | Matematik 2 (Mathematics 2)                                | A | 2 | 2 |   5  |
+| VWL106 | İstatistik 2 (Statistics 2)                                | A | 2 | 2 |   5  |
+| VWL108 | Bilimsel Çalışma Yöntemleri (Scientific Study Methods)     | A | 2 | 0 |   3  |
+| VWL110 | Bilgisayar Programlaması ve Kullanımına Giriş              | A | 0 | 2 |   3  |
+| VWL112 | Toplum Bilimine Giriş (Introduction to Sociology)          | A | 3 | 0 |   3  |
+| DEU112 | İktisatçılar için Almanca 2 (Business German 2)            | A | 2 | 0 |   3  |
+| ENG102 | İngilizce 2 (English 2)                                    | İ | 3 | 0 |   2  |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM |                                                            |   |16 | 6 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+| 3. YARIYIL (2. YIL)                                                                              |
++--------+------------------------------------------------------------+---+---+---+------+
+| VWL201 | Mikro İktisat (Microeconomics)                             | A | 2 | 2 |   6  |
+| BWL183 | Muhasebenin Temelleri (Accounting)                         | TR| 2 | 2 |   5  |
+| VWL203 | İktisadi Tarih (Economic History)                          | A | 3 | 0 |   6  |
+| VWL205 | Ekonometri I (Econometrics I)                              | A | 2 | 2 |   6  |
+| POL191 | Siyaset Bilimine Giriş (Introduction to Political Science) | A | 3 | 0 |   5  |
+| ENG201 | İngilizce 3 (English 3)                                    | İ | 3 | 0 |   2  |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM |                                                            |   |15 | 6 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+| 4. YARIYIL (2. YIL)                                                                              |
++--------+------------------------------------------------------------+---+---+---+------+
+| VWL202 | Makro İktisat (Macroeconomics)                             | A | 2 | 2 |   6  |
+| VWL204 | Oyun Teorisi (Game Theory)                                 | A | 2 | 2 |   5  |
+| VWL206 | Ekonometri II (Econometrics II)                            | A | 2 | 2 |   6  |
+| VWL208 | Çevre ve Doğal Kaynaklar İktisadı                          | A | 3 | 0 |   5  |
+| VWL210 | Para, Banka ve Finans Piyasaları                           | A | 2 | 2 |   6  |
+| ENG202 | İngilizce 4 (English 4)                                    | İ | 3 | 0 |   2  |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM |                                                            |   |14 | 8 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+| 5. YARIYIL (3. YIL)                                                                              |
++--------+------------------------------------------------------------+---+---+---+------+
+| VWL301 | Uluslararası İktisat I (International Economics I)         | A | 3 | 1 |   6  |
+| VWL303 | Kamu Maliyesi ve Kamu İktisadı                             | A | 3 | 0 |   5  |
+| TUR001 | Türkçe 1 (Turkish 1)                                       | TR| 2 | 0 |   2  |
+| ENG301 | İleri İngilizce 1 (Advanced English)                       | İ | 3 | 0 |   2  |
+| VWLSD5 I | Seçimlik Ders I (Havuzdan Seçilir)                       | A/İ| - | - | 5/6  |
+| VWLSD5 II| Seçimlik Ders II (Havuzdan Seçilir)                      | A/İ| - | - | 5/6  |
+| VWLSD5 III| Seçimlik Ders III (Havuzdan Seçilir)                    | A/İ| - | - | 5/6  |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM | (Seçmeliler 5 veya 6 AKTS'dir)                             |   |11 | 1 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+| 6. YARIYIL (3. YIL)                                                                              |
++--------+------------------------------------------------------------+---+---+---+------+
+| VWL304 | İktisadi Düşünceler Tarihi                                 | A | 3 | 0 |   5  |
+| VWL306 | İktisadi Büyüme ve Kalkınma                                | A | 3 | 1 |   5  |
+| VWL308 | Sanayi ve Yenilik İktisadı                                 | A | 3 | 0 |   5  |
+| VWL310 | Seminer                                                    | A | 2 | 0 |   5  |
+| TUR002 | Türkçe 2 (Turkish 2)                                       | TR| 2 | 0 |   2  |
+| ENG302 | İleri İngilizce 2 (Advanced English 2)                     | İ | 3 | 0 |   2  |
+| VWLSD6 I | Seçimlik Ders IV (Havuzdan Seçilir)                      | A/İ| - | - | 5/6  |
+| VWLSD6 II| Seçimlik Ders V (Havuzdan Seçilir)                       | A/İ| - | - | 5/6  |
+| VWLSD6 III| Seçimlik Ders VI (Havuzdan Seçilir)                     | A/İ| - | - | 5/6  |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM | (Seçmeliler 5 veya 6 AKTS'dir)                             |   |16 | 1 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+| 7. YARIYIL (4. YIL)                                                                              |
++--------+------------------------------------------------------------+---+---+---+------+
+| VWLSD7 I | Seçimlik Ders VII (Havuzdan Seçilir)                     | A/İ| - | - | 5/6  |
+| VWLSD7 II| Seçimlik Ders VIII (Havuzdan Seçilir)                    | A/İ| - | - | 5/6  |
+| VWLSD7 III| Seçimlik Ders IX (Havuzdan Seçilir)                     | A/İ| - | - | 5/6  |
+| VWLSD7 IV| Seçimlik Ders X (Havuzdan Seçilir)                       | A/İ| - | - | 5/6  |
+| AIT001 | Atatürk İlkeleri ve İnkilapları Tarihi 1                   | TR| 2 | 0 |   2  |
+| ÜSD000 | Üniversite Seçmeli Ders Havuzu (ÜSD)                       | A/İ| - | - |   4* |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM | (Seçmeliler 5/6 AKTS'dir)                                  |   | 2 | 0 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+| 8. YARIYIL (4. YIL)                                                                              |
++--------+------------------------------------------------------------+---+---+---+------+
+| VWL410 | Bitirme Tezi ve Kollogyum (Bachelor Thesis)                | A | 2 | 0 |  12  |
+| AIT002 | Atatürk İlkeleri ve İnkılapları Tarihi II                  | TR| 2 | 0 |   2  |
+| VWLSD8 I | Seçimlik Ders XI (Havuzdan Seçilir)                      | A/İ| - | - | 5/6**|
+| VWLSD8 II| Seçimlik Ders XII (Havuzdan Seçilir)                     | A/İ| - | - | 5/6**|
+| VWLSD8 III| Seçimlik Ders XIII (Havuzdan Seçilir)                   | A/İ| - | - | 5/6**|
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM | (Seçmeliler 5/6 AKTS'dir)                                  |   | 4 | 0 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+ORTAK SEÇMELİ DERS HAVUZU (VWLSD)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+---+---+---+------+
+| KODU   | DERSİN ADI                                                 | D | T | U | AKTS |
++--------+------------------------------------------------------------+---+---+---+------+
+| VWL302 | Uluslararası İktisat II                                    | A | 3 | 1 |   6  |
+| VWL305 | Davranışsal İktisat                                        | A | 3 | 0 |   5  |
+| VWL321 | SAP Uygulamaları                                           | A/İ| 2 | 2 |   5  |
+| VWL323 | Para Teorisi ve Politikası                                 | A/İ| 2 | 0 |   5  |
+| VWL325 | Tarım İktisadı                                             | A/İ| 2 | 0 |   5  |
+| VWL327 | Çalışma İktisadı                                           | A/İ| 2 | 0 |   5  |
+| VWL329 | Eğitim İktisadı                                            | A/İ| 2 | 0 |   5  |
+| VWL331 | Dijital Ekonomi                                            | A/İ| 2 | 0 |   5  |
+| VWL322 | Enerji İktisadı                                            | A/İ| 2 | 0 |   5  |
+| VWL324 | Cinsiyet İktisadı                                          | A/İ| 2 | 0 |   5  |
+| VWL326 | Sağlık İktisadı                                            | A/İ| 2 | 0 |   5  |
+| VWL328 | Kurumsal İktisat                                           | A/İ| 2 | 0 |   5  |
+| VWL419 | Türkiye Ekonomisinin Gelişimi                              | A/İ| 3 | 0 |   6  |
+| VWL421 | Dünya Ekonomisinin Güncel Sorunları                        | A/İ| 3 | 0 |   6  |
+| VWL423 | Staj (Internship)                                          | A/İ| 0 | 0 |   6  |
+| VWL425 | Uluslararası Finans                                        | A/İ| 2 | 0 |   5  |
+| VWL427 | İslami Finans                                              | A/İ| 2 | 0 |   5  |
+| VWL429 | İslam İktisadı                                             | A/İ| 2 | 0 |   5  |
+| VWL431 | Kültür ve Sanat İktisadı                                   | A/İ| 2 | 0 |   5  |
+| VWL433 | Turizm İktisadı                                            | A/İ| 2 | 0 |   5  |
+| VWL435 | Finansal Aracılık ve Finans Mühendisliği                    | A/İ| 2 | 0 |   5  |
+| VWL437 | Sunum ve Görselleştirme                                    | A/İ| 2 | 2 |   6  |
+| VWL441 | Bilimde Sözlü ve Yazılı İletişim                           | A/İ| 2 | 2 |   6  |
+| VWL443 | Ekonomistler İçin İngilizce                                | İ  | 2 | 2 |   6  |
+| VWL445 | Metin Madenciliği                                          | A/İ| 2 | 2 |   6  |
+| VWL447 | Uluslararası Ekonomi Politik                               | A/İ| 3 | 0 |   5  |
+| VWL449 | Medeni Hukuka Giriş ve Başlangıç Hükümleri                 | A/İ| 2 | 0 |   5  |
+| VWL451 | Yatırım ve Finansman                                       | A/İ| 2 | 2 |   6  |
+| VWL453 | Pazarlamanın Temelleri                                     | A/İ| 2 | 0 |   5  |
+| VWL455 | Yöneylem Araştırması                                       | A/İ| 2 | 0 |   6  |
+| VWL426 | Demografi ve Göç İktisadı                                  | A/İ| 2 | 0 |   5  |
+| VWL428 | Avrupa Bütünleşmesinin İktisadı                            | A/İ| 2 | 0 |   5  |
+| VWL430 | Coğrafya ve Ulaştırma İktisadı                             | A/İ| 2 | 0 |   5  |
+| VWL432 | Spor İktisadı                                              | A/İ| 2 | 0 |   5  |
+| VWL434 | Bölgesel İktisat                                           | A/İ| 2 | 0 |   5  |
+| VWL436 | İktisatta Güncel Meseleler 1                               | A/İ| 2 | 2 |   5  |
+| VWL438 | İktisatta Güncel Meseleler 2                               | A/İ| 2 | 2 |   5  |
+| VWL439 | Akademik Yazma Becerileri                                  | A/İ| 2 | 2 |   6  |
+| VWL440 | İktisatta Güncel Meseleler 3                               | A/İ| 2 | 2 |   5  |
+| VWL442 | İktisatta Güncel Meseleler 4                               | A/İ| 2 | 2 |   5  |
+| VWL444 | İktisatta Güncel Meseleler 5                               | A/İ| 2 | 2 |   5  |
+| VWL446 | İktisatta Güncel Meseleler 6                               | A/İ| 2 | 2 |   5  |
+| VWL448 | Ampirik Ekonomi Politikası                                 | A/İ| 2 | 0 |   5  |
+| VWL450 | R ile Ampirik İktisat                                      | A/İ| 2 | 2 |   5  |
+| VWL452 | Ampirik İktisat ve İktisat Tarihinde Güncel Konular        | A/İ| 2 | 0 |   5  |
+| VWL454 | Ekonometri ve İktisadi Tarih                               | A/İ| 2 | 0 |   5  |
+| VWL456 | Stratejik Pazarlama                                        | A/İ| 2 | 0 |   5  |
+| VWL457 | Pazar Araştırması                                          | A/İ| 2 | 2 |   6  |
+| VWL458 | Organizasyon                                               | A/İ| 2 | 0 |   5  |
+| VWL459 | Dijital Pazarlama                                          | A/İ| 2 | 2 |   6  |
+| VWL460 | İş Oyunu                                                   | A/İ| 4 | 0 |   5  |
+| VWL461 | İş Etiği                                                   | A  | 1 | 1 |   3  |
+| VWL462 | E-iş                                                       | A/İ| 2 | 0 |   5  |
+| VWL463 | Karar Teorisi                                              | A/İ| 2 | 2 |   6  |
+| VWL464 | Kültürlerarası İletişim                                    | A/İ| 2 | 0 |   5  |
+| VWL465 | Veritabanı Sistemleri                                      | A  | 2 | 2 |   6  |
+| VWL466 | Dijital Tedarik Zinciri Yönetimi                           | A/İ| 2 | 2 |   6  |
+| VWL467 | Veri Madenciliği                                           | A/İ| 2 | 2 |   6  |
+| VWL468 | Çok Değişkenli İstatistik Yöntemler                        | A/İ| 2 | 2 |   6  |
+| VWL469 | İşletmesel Veri Analizi                                    | A/İ| 2 | 2 |   6  |
+| VWL470 | İşletme Finansı                                            | A  | 2 | 2 |   6  |
+| VWL471 | Akıllı Sistemler                                           | A/İ| 2 | 2 |   6  |
+| VWL472 | Veri Analizi Yöntemleri                                    | A/İ| 2 | 2 |   6  |
+| VWL473 | Yapay Sinir Ağları                                         | A/İ| 2 | 2 |   6  |
+| VWL474 | Makine Öğrenmesi                                           | A/İ| 2 | 2 |   6  |
+| VWL475 | Derin Öğrenme                                              | A/İ| 2 | 2 |   6  |
+| VWL476 | Kültürlerarası Yeterlilik Gelişimi                         | A/İ| 2 | 2 |   6  |
+| VWL477 | Oyun Tasarımı                                              | A/İ| 2 | 0 |   5  |
+| VWL478 | Kültürel ve Yaratıcı Sanayiler/Kurumlar                    | A  | 2 | 1 |   4  |
+| VWL480 | Uluslararası Örgütler                                      | A  | 3 | 0 |   5  |
+| VWL481 | Kültür Endüstrisinde Etkinlik Yönetimi                     | A  | 3 | 0 |   4  |
+| VWL482 | Almanya, Türkiye ve AB için Güncel Siyasal Sorunlar        | A/İ| 3 | 0 |   5  |
+| VWL483 | Türkiye-Avrupa İlişkilerinde Güncel Meseleler              | A  | 2 | 0 |   3  |
+| VWL484 | Küresel İklim Politikası                                   | A/İ| 3 | 0 |   5  |
+| VWL485 | Türk-Alman İlişkileri: Ekonomi, Politika ve Toplum         | A/İ| 3 | 0 |   5  |
+| VWL486 | Türk Ekonomisinin Kurumları                                | A/İ| 2 | 0 |   5  |
+| VWL487 | Küreselleşme                                               | A/İ| 3 | 0 |   5  |
+| VWL489 | Uluslararası Enerji Siyaseti                               | A/İ| 3 | 0 |   5  |
+| VWL491 | Kentleşme Sorunları                                        | A/İ| 3 | 0 |   5  |
+| VWL493 | Marka Yönetimi                                             | A/İ| 2 | 2 |   6  |
+| VWL495 | Kurumsal 2.0                                               | A/İ| 2 | 2 |   6  |
++--------+------------------------------------------------------------+---+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+ÜNİVERSİTE ORTAK SEÇMELİ DERS HAVUZU (ÜSD)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+---+---+---+------+
+| KODU   | DERSİN ADI                                                 | D | T | U | AKTS |
++--------+------------------------------------------------------------+---+---+---+------+
+| ÜSDENG111| Akademik İngilizce                                       | İ | 3 | 0 |   4  |
+| ÜSDENG120| İngilizce Etkili İletişim Becerileri                     | İ | 3 | 0 |   3  |
+| ÜSDTGH111| Türkiye'de Gündelik Hayatın Tarihi                       | T | 2 | 0 |   2  |
+| ÜSDTUR111| Yabancılar İçin Türkçe I                                 | T | 2 | 0 |   2  |
+| ÜSDTUR009| Yabancılar İçin Akademik Türkçe I                        | T | 2 | 0 |   2  |
+| ÜSDKAR123| Kariyer Planlama                                         | T | 2 | 0 |   2  |
+| HUK553 | Fikri Mülkiyet Hukuku                                      | T | 2 | 0 |   2  |
+| HUK175 | Etik                                                       | T | 2 | 0 |   2  |
+| KKW321 | Felsefe Tarihi                                             | T | 3 | 0 |   4  |
+| VWL203 | İktisadi Tarih                                             | A | 6 | 0 |   3  |
+| POL550 | Osmanlıca I                                                | T | 3 | 0 |   3  |
+| BWL201 | Pazarlamanın Temelleri                                     | A | 5 | 0 |   4  |
+| BWL309 | Stratejik Yönetim                                          | A | 4 | 0 |   3  |
+| INF101 | Bilgisayar Bilimine ve Programlamaya Giriş                 | A | 2 | 0 |   6  |
+| ETE091 | Elektrik Elektronik Mühendisliğine Giriş                   | A | 2 | 1 |   2  |
+| ETE101 | Sayısal Tasarım                                            | A | 6 | 0 |   4  |
+| WIN091 | Endüstri Mühendisliğine Giriş                              | A | 2 | 0 |   2  |
+| BAU091 | İnşaat Mühendisliğine Giriş                                | A | 2 | 0 |   2  |
+| MAB091 | Makine Mühendisliğine Giriş                                | A | 2 | 0 |   2  |
+| MAB109 | Statik                                                     | A | 6 | 0 |   5  |
+| MAB207 | Malzeme Teknolojisi I                                      | A | 6 | 0 |   5  |
+| ÜSDBAU449| Doğal Afetler                                            | A | 2 | 0 |   2  |
+| ÜSDMBT371| Doğa Bilimlerinde Girişimcilik                           | A | 2 | 0 |   3  |
+| EBT309 | Kuantum Enerjisi Sistemlerine Giriş                        | A | 3 | 0 |   6  |
+| ÜSDMBT369| Doğa Bilimlerinde Yapay Zeka                             | A | 2 | 0 |   3  |
+| (Kalan ÜSD dersleri bu formatta listelenmemiştir)                   | - | - | - |   2-6|
++--------+------------------------------------------------------------+---+---+---+------+

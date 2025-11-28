@@ -1,0 +1,129 @@
+====================================================================================================
+               KÜLTÜR VE İLETİŞİM BİLİMLERİ LİSANS ÖĞRETİM PLANI (KKW)
+====================================================================================================
+
+| AÇIKLAMA: T = Teori, U = Uygulama, L = Laboratuvar | Z = Zorunlu, S = Seçmeli |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| YARIYIL| DERSİN ADI                                                 | Z/S    | T | U | L | AKTS |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 1. GÜZ | AIT001 - Atatürk İlkeleri ve İnkılap Tarihi I              | Z      | 2 | - | - |   2  |
+|        | ENG101 - İngilizce I                                       | Z      | 3 | - | - |   2  |
+|        | KKW101 - Sosyal Bilimlerin Temelleri                       | Z      | 2 | 1 | - |   6  |
+|        | KKW103 - İletişim Bilimlerine Giriş                        | Z      | 3 | - | - |   6  |
+|        | KKW105 - Kültür Bilimlerine Giriş                          | Z      | 3 | - | - |   6  |
+|        | KKW121 - Çalışma Teknikleri: Bilimsel Çalışmalar           | Z      | 2 | - | - |   4  |
+|        | KKW161 - Mesleki Almanca I: Kültür Bilimleri               | Z      | 3 | - | - |   2  |
+|        | TUR001 - Türkçe I                                          | Z      | 2 | - | - |   2  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |20 | 1 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 2. BAHAR| AIT002 - Atatürk İlkeleri ve İnkılap Tarihi II             | Z      | 2 | - | - |   2  |
+|        | ENG102 - İngilizce II                                      | Z      | 3 | - | - |   2  |
+|        | KKW102 - Kültür Bilimleri Araştırma Yöntemleri             | Z      | 3 | 1 | - |   6  |
+|        | KKW106 - Kültür Kuramları                                  | Z      | 3 | - | - |   5  |
+|        | KKW118 - İletişim Bil. Niceliksel ve Niteliksel Araştırma Y.| Z      | 2 | 1 | - |   6  |
+|        | KKW150 - İletişim Kuramları I                              | Z      | 3 | - | - |   5  |
+|        | KKW162 - Mesleki Almanca II: İletişim Bilimleri            | Z      | 3 | - | - |   2  |
+|        | TUR002 - Türkçe II                                         | Z      | 2 | - | - |   2  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |21 | 2 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 3. GÜZ | ENG201 - İngilizce III                                     | Z      | 3 | - | - |   2  |
+|        | KKW209 - Kültür Üretiminin Araçları Olarak Edebiyat ve Sanat| Z      | 2 | - | - |   4  |
+|        | KKW219 - Yeni Medya Teknolojileri                          | Z      | 1 | 2 | - |   3  |
+|        | KKW221 - Kültür Tarihi                                     | Z      | 2 | 1 | - |   4  |
+|        | KKW251 - İletişim Kuramları II                             | Z      | 3 | - | - |   5  |
+|        | KKW261 - Mesleki Almanca III: Kültürlerarası İletişim      | Z      | 3 | - | - |   2  |
+|        | KKWSDI - Seçmeli Ders I (Seçmeli)                          | S      | - | - | - |  10  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |14 | 3 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 4. BAHAR| ENG202 - İngilizce IV                                      | Z      | 3 | - | - |   2  |
+|        | KKW212 - Kültürel Hafızanın Taşıyıcısı Olarak Edebiyat ve Sanat| Z | 2 | - | - |   4  |
+|        | KKW216 - Kültür, Toplum ve Gazetecilik                     | Z      | 2 | - | - |   4  |
+|        | KKW218 - Göç ve Kültür                                     | Z      | 2 | - | - |   4  |
+|        | KKW226 - Kültür ve Küreselleşme                            | Z      | 2 | - | - |   4  |
+|        | KKW262 - Mesleki Almanca IV: Metin Analizi                 | Z      | 3 | - | - |   2  |
+|        | KKWSDII - Seçmeli Ders II (Seçmeli)                        | S      | - | - | - |  10  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |14 | 0 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 5. GÜZ | ENG301 - İleri İngilizce I                                 | Z      | 3 | - | - |   2  |
+|        | KKW317 - Halkla İlişkiler                                  | Z      | 2 | 1 | - |   6  |
+|        | KKW329 - Dijital Medya Laboratuvarı I                      | Z      | - | - | 3 |   4  |
+|        | KKW361 - Mesleki Almanca V: Metin Üretimi I                | Z      | 3 | - | - |   2  |
+|        | KKWSDIII - Seçmeli Dersler III (Seçmeli)                   | S      | - | - | - |  16  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        | 8 | 1 | 3 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 6. BAHAR| ENG302 - İleri İngilizce II                                | Z      | 3 | - | - |   2  |
+|        | KKW324 - Kültürel Bellek                                   | Z      | 3 | - | - |   6  |
+|        | KKW332 - Dijital Medya Laboratuvarı II                     | Z      | - | - | 3 |   4  |
+|        | KKW362 - Mesleki Almanca VI: Metin Üretimi II              | Z      | 3 | - | - |   2  |
+|        | KKWSDIV - Seçmeli Dersler IV (Seçmeli)                     | S      | - | - | - |  16  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        | 9 | 0 | 3 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 7. GÜZ | KKW415 - Kültür ve Mekan                                   | Z      | 3 | - | - |   6  |
+|        | KKW419 - Staj                                              | Z      | - | - | - |   6  |
+|        | KKW437 - Araştırma Semineri                                | Z      | 2 | - | - |   6  |
+|        | KKW439 - Bilgi ve İletişim Hukuku                          | Z      | 3 | - | - |   4  |
+|        | KKW441 - Müzeler ve Koleksiyonlar                          | Z      | 3 | - | - |   5  |
+|        | KKWSDV - Seçmeli Dersler V (Seçmeli)                       | S      | - | - | - |   3  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |11 | 0 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 8. BAHAR| KKW424 - Kültürel ve Yaratıcı Endüstriler / Kurumlar       | Z      | 2 | 1 | - |   4  |
+|        | KKW426 - Bitirme Projesi                                   | Z      | - | - | - |  12  |
+|        | KKW428 - Kültür ve Medya Ekonomisi                         | Z      | 2 | - | - |   4  |
+|        | KKWSDVI - Seçmeli Ders VI (Seçmeli)                        | S      | - | - | - |   4  |
+|        | ÜSD000 - Üniversite Seçmeli Ders Havuzu (Seçmeli)          | S      | - | - | - |   6  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        | 4 | 1 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+II. SEÇMELİ DERS HAVUZLARI
+----------------------------------------------------------------------------------------------------
+| AÇIKLAMA: Bu havuzlar ana ders grupları ve ÜSD listelerinin birleştirilmiş halidir.                 |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| KODU   | DERSİN ADI                                                 | S/Z    | T | U | L | AKTS |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| KKW Ana Seçmeli Havuzu (KKWSDI-KKWSDV Grupları)                                                 |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| KKW001 | Almanya'da Göçmen Edebiyatı                                | S      | 2 | - | - |   3  |
+| KKW220 | Görsel Kültür ve İletişim Araştırmaları                    | S      | 3 | - | - |   6  |
+| KKW223 | Medya Tarihi                                               | S      | 2 | - | - |   4  |
+| KKW228 | Kültürlerarası İletişim                                    | S      | 3 | - | - |   4  |
+| KKW233 | Medya ve Kültür Bilimleri                                  | S      | 3 | - | - |   6  |
+| KKW302 | Medya Okuryazarlığı                                        | S      | 2 | 1 | - |   6  |
+| KKW306 | Medya ve Etik                                              | S      | 3 | - | - |   5  |
+| KKW307 | Alımlama ve Medya Etkileri Araştırmaları                   | S      | 3 | - | - |   6  |
+| KKW325 | Edebiyat ve Metinlerarasılık                               | S      | 2 | 1 | - |   6  |
+| KKW341 | Siyasal İletişim ve Medya                                  | S      | 3 | - | - |   4  |
+| KKW342 | Karşılaştırmalı Edebiyat                                   | S      | 3 | - | - |   5  |
+| KKW344 | Kültür Politikası                                          | S      | 3 | - | - |   5  |
+| KKW346 | Estetik                                                    | S      | 3 | - | - |   5  |
+| KKW348 | Teori ve Uygulamada Çeviri                                 | S      | 3 | - | - |   5  |
+| KKW422 | Kurumsal İletişim                                          | S      | 2 | 1 | - |   4  |
+| KKW431 | Dil Felsefesi                                              | S      | 2 | - | - |   3  |
+| KKW433 | Sosyal Medya Yönetimi                                      | S      | 3 | - | - |   3  |
+| KKW443 | Dil ve İletişim                                            | S      | 3 | - | - |   5  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| ÜSD (ÜNİVERSİTE SEÇMELİ DERSLERİ) Havuzu - Örnekler                                           |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| BAU091 | İnşaat Mühendisliğine Giriş                                | S      | 2 | - | - |   2  |
+| BWL034 | Uluslararası İşletme                                       | S      | 1 | 1 | - |   6  |
+| BWL102 | Organizasyon                                               | Z      | 2 | - | - |   3  |
+| BWL201 | Pazarlamanın Temelleri                                     | S      | 2 | 2 | - |   5  |
+| BWL212 | Stratejik Pazarlama                                        | S      | 2 | 2 | - |   5  |
+| ETE091 | Elektrik-Elektronik Mühendisliğine Giriş                   | S      | 2 | 1 | - |   2  |
+| HUK175 | Etik                                                       | S      | 2 | - | - |   2  |
+| ING404 | Girişimcilik                                               | S      | 2 | - | - |   2  |
+| INF101 | Bilgisayar Bilimine ve Programlamaya Giriş                 | S      | 2 | - | 2 |   6  |
+| MAB109 | Statik                                                     | S      | 3 | 2 | - |   6  |
+| SOZ027 | Sosyoloji ve Yapay Zeka                                    | S      | 3 | - | - |   6  |
+| ÜSDAFY101| Afet Yönetimi                                            | S      | 1 | 1 | - |   3  |
+| ÜSDINF406| Dijital İnovasyon Yönetimi                               | S      | 2 | 2 | - |   6  |
+| ÜSDKKW434| Kültürel Miras Yönetimi                                  | S      | 3 | - | - |   6  |
++--------+------------------------------------------------------------+--------+---+---+---+------+

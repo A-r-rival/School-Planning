@@ -1,0 +1,172 @@
+====================================================================================================
+            SİYASET BİLİMİ VE ULUSLARARASI İLİŞKİLER LİSANS ÖĞRETİM PLANI (POL)
+====================================================================================================
+
+| AÇIKLAMA: T = Teori, U = Uygulama, L = Laboratuvar | Z = Zorunlu, S = Seçmeli |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| YARIYIL| DERSİN ADI                                                 | Z/S    | T | U | L | AKTS |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 1. GÜZ | AIT001 - Atatürk İlkeleri ve İnkılap Tarihi I              | Z      | 2 | - | - |   2  |
+|        | DEU121 - Siyaset Bilimi için Almanca I                     | Z      | 4 | - | - |   3  |
+|        | ENG103 - İngilizce I                                       | Z      | 3 | - | - |   3  |
+|        | POL101 - Siyaset Bilimine Giriş                            | Z      | 3 | - | - |   5  |
+|        | POL105 - Uluslararası İlişkiler Tarihi                     | Z      | 3 | - | - |   5  |
+|        | POL107 - Bilimsel Çalışmaya Giriş                          | Z      | 3 | - | - |   5  |
+|        | TUR001 - Türkçe I                                          | Z      | 2 | - | - |   2  |
+|        | VWL191 - İktisada Giriş I                                  | Z      | 4 | - | - |   5  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |24 | 0 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 2. BAHAR| AIT002 - Atatürk İlkeleri ve İnkılap Tarihi II             | Z      | 2 | - | - |   2  |
+|        | DEU122 - Siyaset Bilimi için Almanca II                    | Z      | 4 | - | - |   3  |
+|        | ENG104 - İngilizce II                                      | Z      | 3 | - | - |   3  |
+|        | POL104 - Siyasal Düşünceler Tarihi                         | Z      | 3 | - | - |   5  |
+|        | POL106 - Uluslararası İlişkilere Giriş                     | Z      | 3 | - | - |   5  |
+|        | POL108 - Sosyolojiye Giriş                                 | Z      | 3 | - | - |   5  |
+|        | TUR002 - Türkçe II                                         | Z      | 2 | - | - |   2  |
+|        | VWL192 - İktisada Giriş II                                 | Z      | 4 | - | - |   5  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |24 | 0 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 3. GÜZ | ENG203 - İngilizce III                                     | Z      | 3 | - | - |   3  |
+|        | HUK921 - Hukuka Giriş                                      | Z      | 2 | - | - |   4  |
+|        | POL203 - Sosyal Bilimlerde Nitel Yöntemler                 | Z      | 3 | - | - |   5  |
+|        | POL205 - Uluslararası İlişkiler Teorileri                  | Z      | 3 | - | - |   5  |
+|        | POL211 - Karşılaştırmalı Siyaset Bilimi                    | Z      | 3 | - | - |   5  |
+|        | POLSDI - Seçmeli Ders Alanı I (Seçmeli)                    | S      | - | - | - |   8  |
+|        | (Zorunlu BWL Dersleri bu dönemden seçilebilir)             | S/Z    | 4 | 4 | - |   6  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |18 | 0 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 4. BAHAR| ENG204 - İngilizce IV                                      | Z      | 3 | - | - |   2  |
+|        | POL204 - Sosyal Bilimlerde Nicel Yöntemler                 | Z      | 3 | - | - |   5  |
+|        | POL208 - Siyasal Teori                                     | Z      | 3 | - | - |   5  |
+|        | POL212 - Türk Siyasal Hayatı                               | Z      | 3 | - | - |   5  |
+|        | POLSDII - Seçmeli Ders Alanı II (Seçmeli)                  | S      | - | - | - |  13  |
+|        | (Zorunlu BWL Dersleri bu dönemden seçilebilir)             | S/Z    | 2 | 2 | 1 |   5  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |17 | 0 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 5. GÜZ | ENG301 - İleri İngilizce I                                 | Z      | 3 | - | - |   2  |
+|        | POL303 - Uluslararası Ekonomi Politik                       | Z      | 3 | - | - |   5  |
+|        | POL309 - Türkiye ve Avrupa İlişkilerinde Güncel Meseleler  | Z      | 2 | - | - |   3  |
+|        | POL311 - Dış Politika Analizi                              | Z      | 3 | - | - |   5  |
+|        | POL313 - Türk Dış Politikası I                             | Z      | 3 | - | - |   5  |
+|        | POLSDIII - Seçmeli Ders Alanı III (Seçmeli)                | S      | - | - | - |   5  |
+|        | ÜSD000 - Üniversite Seçmeli Ders Havuzu (Seçmeli)          | S      | - | - | - |   5  |
+|        | (Zorunlu BWL Dersleri bu dönemden seçilebilir)             | S/Z    | 4 | 4 | - |   5  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |18 | 0 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 6. BAHAR| ENG302 - İleri İngilizce II                                | Z      | 3 | - | - |   2  |
+|        | POL302 - Sosyal Bilimler İçin İstatistik                   | Z      | 3 | - | - |   5  |
+|        | POL304 - Avrupa Birliği'nin Siyasi ve İdari Yapısı         | Z      | 3 | - | - |   5  |
+|        | POL306 - Almanya Siyasi Tarihi                             | Z      | 3 | - | - |   5  |
+|        | POL312 - Uluslararası Örgütler                             | Z      | 3 | - | - |   5  |
+|        | POL314 - Türk Dış Politikası II                            | Z      | 3 | - | - |   5  |
+|        | POL316 - Araştırma Semineri                                | Z      | 2 | - | - |   3  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |20 | 0 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 7. GÜZ | POL403 - Alman Dış Politikası                              | Z      | 3 | - | - |   5  |
+|        | POL405 - Avrupa Entegrasyon Teorileri                      | Z      | 3 | - | - |   5  |
+|        | POLSDIV - Seçmeli Ders Alanı IV (Seçmeli)                  | S      | - | - | - |  20  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        | 6 | 0 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 8. BAHAR| POL402 - Bitirme Ödevi                                     | Z      | - | - | - |  12  |
+|        | POL404 - Bitirme Kolokyumu                                 | Z      | 3 | - | - |   5  |
+|        | POL406 - Güncel Uluslararası Sorunlar                       | Z      | 2 | - | - |   3  |
+|        | POLSDV - Seçmeli Ders Alanı V (Seçmeli)                    | S      | - | - | - |  10  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        | 5 | 0 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+II. SEÇMELİ DERS HAVUZU (POLSDI - POLSDV ALANLARI İÇİN ORTAK DERS LİSTESİ)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+------+---+---+---+------+
+| KODU   | DERSİN ADI                                                 | Z/S  | T | U | L | AKTS |
++--------+------------------------------------------------------------+------+---+---+---+------+
+| BWL002 | Girişimcilik                                               |      | 2 | 2 | 0 | 6    |
+| BWL007 | Dijital Pazarlama                                          |      | 2 | 2 | 0 | 6    |
+| BWL030 | Örgütsel Davranış                                          |      | 2 | 2 | 0 | 6    |
+| BWL032 | Kültürlerarası Yetkinlik Geliştirme                        |      | 2 | 2 | 0 | 6    |
+| BWL033 | Personel Yönetimi                                          |      | 2 | 2 | 0 | 6    |
+| BWL034 | Uluslararası İşletme                                       |      | 2 | 2 | 0 | 6    |
+| BWL101 | İşletmeye Giriş                                            |      | 2 | 2 | 0 | 6    |
+| BWL201 | Pazarlamanın Temelleri                                     |      | 2 | 2 | 0 | 5    |
+| BWL206 | Proje Yönetimi                                             |      | 2 | 2 | 0 | 6    |
+| BWL212 | Stratejik Pazarlama                                        |      | 2 | 2 | 0 | 5    |
+| BWL216 | E-İş                                                       |      | 2 | 0 | 0 | 3    |
+| BWL417 | İş Etiği                                                   |      | 1 | 1 | 0 | 3    |
+| HUK150 | Anayasa Hukuku II (Türk Anayasa Hukuku)                    |      | 3 | 0 | 0 | 4    |
+| HUK153 | Anayasa Hukuku I (Genel Esaslar)                           |      | 2 | 0 | 0 | 3    |
+| HUK159 | Anayasa Hukukunun Temel Prensipleri                        |      | 2 | 0 | 0 | 5    |
+| HUK252 | Uluslararası Hukuk II                                      |      | 3 | 0 | 0 | 5    |
+| HUK253 | İdare Hukuku I                                             |      | 3 | 1 | 0 | 5    |
+| HUK255 | Uluslararası Hukuk I                                       |      | 2 | 0 | 0 | 3    |
+| HUK256 | İdare Hukuku II                                            |      | 3 | 0 | 0 | 5    |
+| HUK359 | Avrupa Hukuku                                              |      | 3 | 0 | 0 | 4    |
+| HUK361 | Alman İdare Hukuku - Temel Kavramlar                       |      | 3 | 0 | 0 | 4    |
+| HUK453 | Devletler Özel Hukuku I                                    |      | 3 | 0 | 0 | 4    |
+| HUK913 | Borçlar Hukuku                                             |      | 2 | 0 | 0 | 3    |
+| HUK915 | İş Hukuku                                                  |      | 2 | 0 | 0 | 3    |
+| HUK916 | Ticaret Hukuku                                             |      | 2 | 0 | 0 | 3    |
+| KKW103 | İletişim Bilimlerine Giriş                                 |      | 3 | 0 | 0 | 6    |
+| KKW105 | Kültür Bilimlerine Giriş                                   |      | 3 | 0 | 0 | 6    |
+| KKW106 | Kültür Kuramları                                           |      | 3 | 0 | 0 | 5    |
+| KKW218 | Göç ve Kültür                                              |      | 2 | 0 | 0 | 4    |
+| KKW226 | Kültür ve Küreselleşme                                     |      | 2 | 0 | 0 | 4    |
+| KKW228 | Kültürlerarası İletişim                                    |      | 3 | 0 | 0 | 4    |
+| KKW317 | Halkla İlişkiler                                           |      | 2 | 1 | 0 | 6    |
+| KKW324 | Kültürel Bellek                                            |      | 3 | 0 | 0 | 6    |
+| POL210 | Çok Düzlemli Sistemlerde Politik Saha Analizi              |      | 3 | 0 | 0 | 5    |
+| POL401 | Karşılaştırmalı Parti ve Seçim Sistemleri                  |      | 3 | 0 | 0 | 5    |
+| POL501 | Siyaset Sosyolojisi                                        |      | 3 | 0 | 0 | 5    |
+| POL502 | Kamu Yönetimine Giriş                                      |      | 3 | 0 | 0 | 5    |
+| POL503 | ABD Dış Politikası                                         |      | 3 | 0 | 0 | 5    |
+| POL504 | Latin Amerika Siyaseti                                     |      | 3 | 0 | 0 | 5    |
+| POL505 | Güncel Ortadoğu ve Kuzey Afrika Siyaseti                   |      | 3 | 0 | 0 | 5    |
+| POL506 | Orta Asya ve Kafkasya Bölgesel Siyaseti                    |      | 3 | 0 | 0 | 5    |
+| POL507 | Rus Siyaseti                                               |      | 3 | 0 | 0 | 5    |
+| POL508 | Dünya Siyasetinde Doğu Asya                                |      | 3 | 0 | 0 | 5    |
+| POL509 | Dünya Siyasetinde Afrika                                   |      | 3 | 0 | 0 | 5    |
+| POL510 | Güneydoğu Avrupa Siyaseti                                  |      | 3 | 0 | 0 | 5    |
+| POL511 | Güncel Avrupa Siyaseti                                     |      | 3 | 0 | 0 | 5    |
+| POL512 | Karşılaştırmalı Avrupa Siyaseti                            |      | 3 | 0 | 0 | 5    |
+| POL513 | AB Dış ve Güvenlik Siyaseti                                |      | 3 | 0 | 0 | 5    |
+| POL514 | Almanya, Türkiye ve AB için Güncel Politik Sorunlar        |      | 3 | 0 | 0 | 5    |
+| POL515 | Türk-Alman İlişkileri: Ekonomi, Siyaset ve Toplum          |      | 3 | 0 | 0 | 5    |
+| POL516 | Sekülerleşme Teorileri                                     |      | 3 | 0 | 0 | 5    |
+| POL517 | Küreselleşme                                               |      | 3 | 0 | 0 | 5    |
+| POL518 | Irkçılık, Antisemitizm ve İslamofobi                       |      | 3 | 0 | 0 | 5    |
+| POL519 | Toplumsal Cinsiyet ve Siyaset                              |      | 3 | 0 | 0 | 5    |
+| POL520 | Siyaset Bilimi Stajı                                       |      | 0 | 0 | 0 | 2    |
+| POL521 | Türk Dış Politikasında Güncel Meseleler                    |      | 3 | 0 | 0 | 5    |
+| POL522 | Avrupa'da Federalizm - Avrupa Federalizmi                  |      | 3 | 0 | 0 | 5    |
+| POL523 | Siyaset Teorisinde Meseleler                               |      | 3 | 0 | 0 | 5    |
+| POL524 | Değişen Küresel Sistemde Bölgesel Güçler                   |      | 3 | 0 | 0 | 5    |
+| POL526 | Türk-Alman Diplomatik İlişkiler Tarihi                     |      | 3 | 0 | 0 | 5    |
+| POL553 | Osmanlı Siyasi Tarihi II                                   |      | 3 | 0 | 0 | 5    |
+| POL554 | Türk Tarihi                                                |      | 3 | 0 | 0 | 5    |
+| POL555 | Siyaset Psikolojisi                                        |      | 3 | 0 | 0 | 5    |
+| POL556 | Türk Devletleri Teşkilatı ve Türk Devletleri Bütünleşmesi  |      | 3 | 0 | 0 | 5    |
+| POL601 | 20. Yüzyıl Avrupa Siyasi Düşüncesi                         |      | 3 | 0 | 0 | 5    |
+| POL602 | Göç, Diaspora ve Mülteciler                                |      | 3 | 0 | 0 | 5    |
+| POL603 | Milliyetçilik Teorileri                                    |      | 3 | 0 | 0 | 5    |
+| POL604 | Dünya Siyaseti ve Sinema                                   |      | 3 | 0 | 0 | 5    |
+| POL605 | Uluslararası Enerji Siyaseti                               |      | 3 | 0 | 0 | 5    |
+| POL606 | Küresel İklim Siyaseti                                     |      | 3 | 0 | 0 | 5    |
+| POL701 | Almanya ve Türkiye Karşılaştırmalı Siyasal Sistemler       |      | 3 | 0 | 0 | 5    |
+| POL707 | Kamu Yönetiminde Güncel Meseleler                          |      | 3 | 0 | 0 | 5    |
+| POL709 | Yerel Yönetimler                                           |      | 3 | 0 | 0 | 5    |
+| POL711 | Kentleşme ve Çevre Sorunları                               |      | 3 | 0 | 0 | 5    |
+| VWL301 | Uluslararası İktisat I                                     |      | 3 | 1 | 0 | 6    |
+| VWL302 | Uluslararası İktisat II                                    |      | 3 | 1 | 0 | 6    |
+| VWL304 | İktisadi Düşünceler Tarihi                                 |      | 3 | 0 | 0 | 6    |
+| VWL401 | Türkiye Ekonomisinin Gelişimi                              |      | 3 | 0 | 0 | 6    |
+| VWL403 | Dünya Ekonomisinin Güncel Sorunları                        |      | 3 | 0 | 0 | 6    |
+| VWL426 | Demografi ve Göç İktisadı                                  |      | 2 | 0 | 0 | 5    |
+| VWL428 | Avrupa Bütünleşmesinin İktisadı                            |      | 2 | 0 | 0 | 5    |
++--------+------------------------------------------------------------+------+---+---+---+------+

@@ -1,0 +1,181 @@
+====================================================================================================
+                        İŞLETME BÖLÜMÜ LİSANS ÖĞRETİM PLANI (BWL)
+====================================================================================================
+
+| AÇIKLAMA: D=Öğretim Dili (A: Almanca, İ: İngilizce, TR: Türkçe) | T=Teori | U=Uygulama |
++--------+------------------------------------------------------------+--------+---+---+------+
+| 1. DÖNEM (1. YIL)                                                                                |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| BWL101 | İşletmeye Giriş (Einführung in die BWL)                    | -      | 2 | 2 |   6  |
+| BWL103 | Muhasebe (Buchführung)                                     | -      | 2 | 2 |   5  |
+| BWL105 | İstatistik 1 (Statistik 1)                                 | -      | 2 | 2 |   6  |
+| BWL109 | Matematik 1 (Mathematik 1)                                 | -      | 2 | 2 |   6  |
+| HUK911 | Hukuka Giriş (Einführung in das Recht)                     | -      | 2 | - |   3  |
+| DEU111 | İşletme Almancası 1 (Wirtschaftsdeutsch 1)                 | -      | 2 | - |   2  |
+| ENG101 | İngilizce 1 (Englisch 1)                                   | -      | 3 | - |   2  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |15 | 8 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 2. DÖNEM (1. YIL)                                                                                |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| BWL104 | Bilanço (Bilanzierung)                                     | -      | 2 | 2 |   5  |
+| BWL106 | İstatistik 2 (Statistik 2)                                 | -      | 2 | 2 |   6  |
+| BWL102 | Organizasyon (Organisationslehre)                          | -      | 2 | - |   3  |
+| BWL112 | Matematik 2 (Mathematik 2)                                 | -      | 2 | 2 |   6  |
+| VWL182 | İktisada Giriş (Einführung in die VWL)                     | -      | 2 | 2 |   6  |
+| DEU112 | İşletme Almancası 2 (Wirtschaftsdeutsch 2)                 | -      | 2 | - |   2  |
+| ENG102 | İngilizce 2 (Englisch 2)                                   | -      | 3 | - |   2  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |15 | 8 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 3. DÖNEM (2. YIL)                                                                                |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| BWL201 | Pazarlamanın Temelleri (Grundlagen des Marketing)          | -      | 2 | 2 |   5  |
+| BWL205 | Maliyet Muhasebesi (Kostenrechnung)                        | -      | 2 | 2 |   6  |
+| BWL207 | Yatırım ve Finansman (Investition und Finanzierung)        | -      | 2 | 2 |   6  |
+| BWL211 | İşletme Enformatiğinin Temelleri                           | -      | 2 | - |   3  |
+| VWL281 | Mikroiktisat (Mikroökonomie)                               | -      | 2 | 2 |   5  |
+| ENG201 | İngilizce 3 (Englisch 3)                                   | -      | 3 | - |   2  |
+| BSD    | Seçmeli Ders (BSD)                                         | -      | 2 | - |   3  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |15 | 8 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 4. DÖNEM (2. YIL)                                                                                |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| BWL216 | E-İş (E-Business)                                          | -      | 2 | - |   3  |
+| BWL210 | İşletme Finansı (Betriebliche Finanzwirtschaft)            | -      | 2 | 2 |   6  |
+| BWL212 | Stratejik Pazarlama (Strategisches Marketing)              | -      | 2 | 2 |   5  |
+| BWL214 | Operasyon Yönetimi (Operations Management)                 | -      | 2 | 2 |   5  |
+| VWL282 | Makroiktisat (Makroökonomie)                               | -      | 2 | 2 |   6  |
+| ENG202 | İngilizce 4 (Englisch 4)                                   | -      | 3 | - |   2  |
+| BSD    | Seçmeli Ders (BSD)                                         | -      | 2 | - |   3  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |15 | 8 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 5. DÖNEM (3. YIL)                                                                                |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| BWL309 | Stratejik Yönetim (Strategisches Management)               | -      | 2 | 1 |   4  |
+| ENG303 | İleri İngilizce 1 (Fortgeschrittenes Englisch 1)           | -      | 3 | - |   3  |
+| TUR001 | Türkçe 1 (Türkisch 1)                                      | -      | 2 | - |   2  |
+| SD     | Seçmeli Ders (SD) (Ders 1)                                 | -      | - | - |   6  |
+| SD     | Seçmeli Ders (SD) (Ders 2)                                 | -      | - | - |   6  |
+| BSD    | Seçmeli Ders (BSD)                                         | -      | 2 | - |   3  |
+| SD     | Seçmeli Ders (SD) (Ders 3)                                 | -      | - | - |   6  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |12 | 1 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 6. DÖNEM (3. YIL)                                                                                |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| BWL310 | Bilimsel Çalışma Yöntemleri (Wissenschaftliches Arbeiten)  | -      | 2 | 1 |   4  |
+| BWL314 | Yönetim Muhasebesi (Controlling)                           | -      | 2 | 2 |   6  |
+| TUR002 | Türkçe 2 (Türkisch 2)                                      | -      | 2 | - |   2  |
+| ENG304 | İleri İngilizce 2 (Fortgeschrittenes Englisch 2)           | -      | 3 | - |   3  |
+| SD     | Seçmeli Ders (SD) (Ders 1)                                 | -      | - | - |   6  |
+| SD     | Seçmeli Ders (SD) (Ders 2)                                 | -      | - | - |   6  |
+| BSD    | Seçmeli Ders (BSD)                                         | -      | 2 | - |   3  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        |11 | 3 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 7. DÖNEM (4. YIL)                                                                                |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| BWL407 | İşletme Stajı (BWL-Praktikum)* | -      | 2 | - |   5  |
+| BWL417 | İş Etiği (Wirtschaftsethik)                                | -      | 1 | 1 |   3  |
+| BWL413 | Pazar Araştırması (Marktforschung)                         | -      | 2 | 2 |   5  |
+| BWL415 | Yöneylem Araştırması (Operations Research)                 | -      | 2 | 2 |   6  |
+| AIT001 | Atatürk İlkeleri ve Inkılap Tarihi 1                       | -      | 2 | - |   2  |
+| SD     | Seçmeli Ders (SD)                                          | -      | - | - |   6  |
+| ÜSD000 | Üniversite Seçmeli Ders Havuzu                             | -      | - | - |   3  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        | 9 | 5 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| 8. DÖNEM (4. YIL)                                                                                |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| BWL408 | Bitirme Tezi (Bachelorarbeit)                              | -      | 2 | - |  10  |
+| AIT002 | Atatürk İlkeleri ve Inkılap Tarihi 2                       | -      | 2 | - |   2  |
+| SD     | Seçmeli Ders (SD) (Ders 1)** | -      | - | - |   6  |
+| SD     | Seçmeli Ders (SD) (Ders 2)** | -      | - | - |   6  |
+| SD     | Seçmeli Ders (SD) (Ders 3)** | -      | - | - |   6  |
+| BWL039 | İşletmede Mesleki Eğitim (Vocational Education) *** | -      | 2 | - |  18  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |        | 6 | 0 |  30  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+* İşletme stajı 40 iş günüdür. *** BWL039 dersini alanlar 8. dönemde seçmeli ders almaz.
+
+----------------------------------------------------------------------------------------------------
+II. SEÇMELİ DERS HAVUZLARI (SD / BSD)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| KODU   | DERSİN ADI                                                 | ÖN KOŞ | T | U | L | AKTS |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| BSD - İŞLETME ZORUNLU SEÇMELİLERİ (HUKUK VE SAYISAL)                                             |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| BWL050 | Borçlar Hukuku (Schuldrecht)** | -      | 2 | - | - |   3  |
+| BWL051 | Vergi Hukuku (Steuerrecht)*** | -      | 2 | - | - |   3  |
+| BWL052 | İş Hukuku (Labour Law)**** | -      | 2 | - | - |   3  |
+| BWL053 | Ticaret Hukuku (Commercial Law)***** | -      | 2 | - | - |   3  |
+| BWL054 | Avrupa Ticaret Hukuku (European Trade Law)                 | -      | 2 | - | - |   3  |
+| BWL055 | Sayısal Yöntemlerde Güncel Konular                         | -      | 2 | - | - |   3  |
+| BWL056 | Muhasebe ve Finansta Güncel Konular                        | -      | 2 | - | - |   3  |
+| BWL057 | Pazarlamada Güncel Konular                                 | -      | 2 | - | - |   3  |
+| BWL058 | Örgütsel Davranışta Güncel Konular                         | -      | 2 | - | - |   3  |
+| BWL059 | Uluslararası Öğrenci Projesi                               | -      | 2 | - | - |   3  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| SD - İŞLETME BÖLÜM SEÇMELİLERİ (UZMANLIK)                                                       |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| BWL011 | İşletme Semineri (Business Seminar)                        | -      | 1 | 1 | - |   6  |
+| BWL017 | Karar Teorisi (Decision Theory)                            | -      | 1 | 1 | - |   6  |
+| BWL018 | Çok Değişkenli İstatistik Yöntemler                        | -      | 1 | 1 | - |   6  |
+| BWL019 | Bilgisayar Destekli İstatistik                             | -      | 1 | 1 | - |   6  |
+| BWL020 | Lineer Cebir (Linear Algebra)                              | -      | 1 | 1 | - |   6  |
+| BWL021 | Ekonometri (Econometrics)                                  | -      | 1 | 1 | - |   6  |
+| BWL022 | İşletmelerde Simülasyon Teknikleri                         | -      | 1 | 1 | - |   6  |
+| BWL036 | Algoritma ve Programlamaya Giriş                           | -      | 1 | 1 | - |   6  |
+| BWL037 | İşletmesel Veri Analizi                                    | -      | 1 | 1 | - |   6  |
+| BWL007 | Dijital Pazarlama                                          | -      | 1 | 1 | - |   6  |
+| BWL023 | Lojistik (Logistics)                                       | -      | 1 | 1 | - |   6  |
+| BWL005 | Tedarik Zinciri Yönetimi                                   | -      | 1 | 1 | - |   6  |
+| BWL010 | Hizmet Pazarlama                                           | -      | 1 | 1 | - |   6  |
+| BWL014 | Tüketici Davranışı                                         | -      | 1 | 1 | - |   6  |
+| BWL009 | Marka Yönetimi                                             | -      | 1 | 1 | - |   6  |
+| BWL024 | Uluslararası Muhasebe Standartları                          | -      | 1 | 1 | - |   6  |
+| BWL012 | Sermaye Piyasaları                                         | -      | 1 | 1 | - |   6  |
+| BWL025 | İşletme Vergiciliği                                        | -      | 1 | 1 | - |   6  |
+| BWL026 | Mali Tablolar Analizi                                      | -      | 1 | 1 | - |   6  |
+| BWL027 | Denetim (Auditing)                                         | -      | 1 | 1 | - |   6  |
+| BWL028 | Para ve Banka                                              | -      | 1 | 1 | - |   6  |
+| BWL029 | Davranışsal Finans                                         | -      | 1 | 1 | - |   6  |
+| BWL030 | Örgütsel Davranış                                          | -      | 1 | 1 | - |   6  |
+| BWL002 | Girişimcilik                                               | -      | 1 | 1 | - |   6  |
+| BWL031 | Proje Yönetimi                                             | -      | 1 | 1 | - |   6  |
+| BWL032 | Kültürlerarası Yetkinlik Geliştirme                        | -      | 1 | 1 | - |   6  |
+| BWL033 | Personel Yönetimi                                          | -      | 1 | 1 | - |   6  |
+| BWL034 | Uluslararası İşletme                                       | -      | 1 | 1 | - |   6  |
+| BWL035 | Kurumsal Kaynak Planlaması (ERP)                           | -      | 1 | 1 | - |   6  |
+| BWL013 | Şirket 2.0 (Enterprise 2.0)                                | -      | 1 | 1 | - |   6  |
+| BWL001 | Süreç Yönetimi (Process Management)                        | -      | 1 | 1 | - |   6  |
+| BWL038 | Blockchain ve Kripto Piyasaları                            | -      | 1 | 1 | - |   6  |
+| BWL008 | İş Oyunu Semineri (Business Simulation Game)               | -      | 1 | 1 | - |   6  |
+| BWL003 | İnovasyon ve Yeni Ürün Geliştirme                          | -      | 1 | 1 | - |   6  |
+| BWL004 | Örgütsel Dönüşüm Yönetimi                                  | -      | 1 | 1 | - |   6  |
+| BWL006 | Kültürlerarası Liderlik                                    | -      | 1 | 1 | - |   6  |
+| BWL040 | SAP Uygulamaları                                           | -      | 2 | - | 2 |   6  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| ÜNİVERSİTE ORTAK SEÇMELİ DERS HAVUZU (ÜSD000)                                                   |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| ÜSDENG111| Akademik İngilizce                                       | -      | 3 | - | - |   4  |
+| ÜSDTGH 111| Türkiye'de Gündelik Hayatın Tarihi                      | -      | 2 | - | - |   2  |
+| ÜSDKAR123| Kariyer Planlama                                         | -      | 2 | - | - |   2  |
+| HUK477 | Fikrî Mülkiyet Hukuku                                      | -      | 2 | - | - |   2  |
+| VWL203 | İktisadi Tarih                                             | -      | 3 | - | - |   6  |
+| KKW321 | Felsefe Tarihi                                             | -      | 3 | - | - |   4  |
+| INF101 | Bilgisayar Bilimine ve Programlamaya Giriş                 | -      | 2 | 2 | - |   6  |
+| ETE091 | Elektrik Elektronik Mühendisliğine Giriş                   | -      | 2 | 1 | - |   2  |
+| WIN091 | Endüstri Mühendisliğine Giriş                              | -      | 2 | - | - |   2  |
+| BAU091 | İnşaat Mühendisliğine Giriş                                | -      | 2 | - | - |   2  |
+| MAB109 | Statik                                                     | -      | 3 | 2 | - |   6  |
+| ÜSDMBT371| Doğa Bilimlerinde Girişimcilik                           | -      | 3 | - | - |   3  |
+| EBT309 | Kuantum Enerjisi Sistemlerine Giriş                        | -      | 3 | 1 | - |   6  |
+| VWL303 | Kamu Maliyesi ve Kamu İktisadı                             | -      | 3 | - | - |   5  |
+| (Kalan ÜSD dersleri bu formatta listelenmemiştir)                   | -      | - | - | - |   2-6|
++--------+------------------------------------------------------------+--------+---+---+---+------+
+** **3. Dönem seçmeli dersi; ***4. Dönem seçmeli dersi; ****5. Dönem seçmeli dersi; *****6. Dönem seçmeli dersi.

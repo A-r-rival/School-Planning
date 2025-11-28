@@ -1,0 +1,264 @@
+====================================================================================================
+                        MAKİNE MÜHENDİSLİĞİ LİSANS ÖĞRETİM PLANI
+====================================================================================================
+
+----------------------------------------------------------------------------------------------------
+1. DÖNEM (1. SEMESTER)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| KOD    | DERS ADI (DE / TR / EN)                                    | ÖN KOS | DİL | T | U | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| MAT103 | Analiz I / Calculus I                                      | -      | DE  | 3 | 2 |   6  |
+| MAB107 | Teknik Çizim ve CAD / Technical Drawing and CAD            | -      | DE  | 2 | - |   6  |
+| MAB109 | Statik / Statics                                           | -      | DE  | 3 | 2 |   6  |
+| MAB105 | Bilg. Bil. ve Prog. Giriş / Intro to CS and Programming    | -      | DE  | 2 | 2 |   6  |
+| MAB091 | Makine Mühendisliğine Giriş / Intro to Mech. Engineering   | -      | DE  | 2 | - |   2  |
+| ENG101 | İngilizce I / English I                                    | -      | EN  | 3 | - |   2  |
+| DEU121 | Teknik Almanca I / Technical German I                      | -      | DE  | 2 | - |   2  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| TOPLAM | (17 T, 6 U, 4 L - 27 Saat)                                 |        |     |17 | 6 |  30  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+2. DÖNEM (2. SEMESTER)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| KOD    | DERS ADI (DE / TR / EN)                                    | ÖN KOS | DİL | T | U | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| MAT108 | Analiz II / Calculus II                                    | -      | DE  | 3 | 2 |   6  |
+| MAT106 | Lineer Cebir / Linear Algebra                              | -      | DE  | 2 | 2 |   6  |
+| MAB112 | Mukavemet / Strength of Materials                          | MAB109 | DE  | 3 | 2 |   6  |
+| MAB108 | Tasarım Tek. I: Teknik Çizim 2 / Design Methods I          | -      | DE  | 2 | - |   6  |
+| MAB092 | Bilimsel Çalışma Yöntemleri / Scientific Research Methods  | -      | DE  | 2 | - |   2  |
+| ENG102 | İngilizce II / English II                                  | -      | EN  | 3 | - |   2  |
+| DEU122 | Teknik Almanca II / Technical German II                    | -      | DE  | 2 | - |   2  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| TOPLAM | (17 T, 6 U, 5 L - 28 Saat)                                 |        |     |17 | 6 |  30  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+3. DÖNEM (3. SEMESTER)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| KOD    | DERS ADI (DE / TR / EN)                                    | ÖN KOS | DİL | T | U | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| MAB213 | Elektrik ve Elektronik Müh. Temelleri / Fund. of EE Eng.   | -      | DE  | 3 | 1 |   6  |
+| MAB203 | Tasarım Tek. II: Mekanik Parça Tas. / Design Methods II    | MAB107 | DE  | 2 | 1 |   6  |
+| MAB205 | Kinematik ve Dinamik / Kinematics and Dynamics             | -      | DE  | 3 | 1 |   6  |
+| MAB207 | Malzeme Teknolojisi I / Material Technology I              | -      | DE  | 3 | 2 |   6  |
+| MAB209 | Temel Staj / Basic Internship                              | -      | D/E | - | - |   2  |
+| AIT001 | Atatürk İlkeleri ve İnkılap Tarihi I                       | -      | TR  | 2 | - |   2  |
+| ENG201 | İngilizce III / English III                                | -      | EN  | 3 | - |   2  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| TOPLAM | (16 T, 5 U, 4 L - 25 Saat)                                 |        |     |16 | 5 |  30  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+4. DÖNEM (4. SEMESTER)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| KOD    | DERS ADI (DE / TR / EN)                                    | ÖN KOS | DİL | T | U | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| MAB210 | İmalat Teknolojisinin Temelleri / Fund. Manufacturing Tech.| -      | DE  | 3 | 1 |   6  |
+| MAB216 | Ölçüm Teknikleri / Measurement Techniques                  | -      | DE  | 2 | 1 |   6  |
+| MAT204 | Veri Analizinin İstat. Yönt. / Stat. Methods for Data Anal.| -      | DE  | 2 | 2 |   6  |
+| MAB214 | Dif. Denk. ve Sayısal Yönt. / Diff. Eq. & Numerical Meth.  | -      | DE  | 2 | 2 |   6  |
+| MAB292 | Proje Yönetimi / Project Management                        | -      | DE  | 1 | 1 |   2  |
+| AIT002 | Atatürk İlkeleri ve İnkılap Tarihi II                      | -      | TR  | 2 | - |   2  |
+| ENG202 | İngilizce IV / English IV                                  | -      | EN  | 3 | - |   2  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| TOPLAM | (15 T, 7 U, 5 L - 27 Saat)                                 |        |     |15 | 7 |  30  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+5. DÖNEM (5. SEMESTER)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| KOD    | DERS ADI (DE / TR / EN)                                    | ÖN KOS | DİL | T | U | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| MAB301 | Takım Tezgâhları / Machine Tools                           | MAB210 | DE  | 2 | 1 |   6  |
+| MAB317 | Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics | -      | DE  | 3 | 2 |   6  |
+| MAB303 | Termodinamik / Thermodynamics                              | -      | DE  | 3 | 2 |   6  |
+| SDUx   | Zorunlu Seçmeli I - Uzmanlık A, B, C veya D                | -      | D/E | - | - |   6  |
+| ISG001 | İş Sağlığı ve Güvenliği I / OHS I                          | -      | DE  | 2 | - |   2  |
+| ENG301 | İleri İngilizce I / Advanced English I                     | -      | EN  | 3 | - |   2  |
+| TUR001 | Türkçe I / Turkish I                                       | -      | TR  | 2 | - |   2  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| TOPLAM | (15 T, 5 U, 2 L - 22 Saat)                                 |        |     |15 | 5 |  30  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+6. DÖNEM (6. SEMESTER)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| KOD    | DERS ADI (DE / TR / EN)                                    | ÖN KOS | DİL | T | U | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| MAB312 | Isı Transferi / Heat Transfer                              | -      | DE  | 3 | 1 |   6  |
+| MAB314 | Akışkanlar Mekaniği / Fluid Mechanics                      | -      | DE  | 3 | 1 |   6  |
+| SDK    | Zorunlu Seçmeli - Kontrol / Compulsary Elective - Control  | -      | DE  | - | - |   6  |
+| SDP    | Seçmeli Ders Alanı - Proje / Elective Course - Project     | -      | D/E | - | - |   6  |
+| TUR002 | Türkçe II / Turkish II                                     | -      | TR  | 2 | - |   2  |
+| ISG002 | İş Sağlığı ve Güvenliği II / OHS II                        | -      | DE  | 2 | - |   2  |
+| ENG302 | İleri İngilizce II / Advanced English II                   | -      | EN  | 3 | - |   2  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| TOPLAM | (13 T, 2 U, 2 L - 17 Saat)                                 |        |     |13 | 2 |  30  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+7. DÖNEM (7. SEMESTER)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| KOD    | DERS ADI (DE / TR / EN)                                    | ÖN KOS | DİL | T | U | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| MAB499 | Mesleki Alan Stajı / Vocational Internship                 | -      | DE  | - | - |   6  |
+| SUP    | Zorunlu Seçmeli - Uygulamalı Proje / Applied Project       | -      | DE  | - | - |   6  |
+| SDUx   | Zorunlu Seçmeli - Uzmanlık A, B, C veya D (2 Ders)         | -      | D/E | - | - |  12  |
+| USD000 | Üniversite Seçmeli Ders Havuzu / University Elective Pool  | -      | D/E | - | - |   6  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| TOPLAM |                                                            |        |     | 0 | 0 |  30  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+8. DÖNEM (8. SEMESTER)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| KOD    | DERS ADI (DE / TR / EN)                                    | ÖN KOS | DİL | T | U | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| MAB492 | Bitirme Tezi / Bachelor Thesis                             | MAB427 | DE  | - | - |  12  |
+| SDUx   | Zorunlu Seçmeli - Uzmanlık A, B, C veya D (3 Ders)         | SIP    | D/E | - | - |  18  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| TOPLAM |                                                            |        |     | 0 | 0 |  30  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+
+
+====================================================================================================
+                                      SEÇMELİ DERS HAVUZLARI
+====================================================================================================
+
+----------------------------------------------------------------------------------------------------
+[SDK] KONTROL MÜHENDİSLİĞİ SEÇMELİLERİ (6. Dönem)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| KOD    | DERS ADI                                                   | ÖN KOS | DİL | T | U | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| MAB308 | Kontrol Mühendisliğinin Temelleri / Fund. of Control Eng.  | -      | DE  | 3 | 1 |   6  |
+| ETE304 | Kontrol Mühendisliğinin Temelleri / Fund. of Control Eng.  | -      | DE  | 3 | 1 |   6  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+[SDP] PROJE SEÇMELİLERİ (6. Dönem)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| KOD    | DERS ADI                                                   | ÖN KOS | DİL | T | U | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| MAB391 | Proje: Üretim Teknikleri / Project: Production Tech.       | -      | D/E | 1 | - |   6  |
+| MAB392 | Proje: Tasarım / Project: Design                           | -      | D/E | 1 | - |   6  |
+| MAB393 | Proje: Uzay Havacılık / Project: Aerospace Tech.           | -      | D/E | 1 | - |   6  |
+| MAB394 | Proje: Taşıt Sistemleri / Project: Transport Systems       | -      | D/E | 1 | - |   6  |
+| MAB427 | İnterdisipliner Proje / Interdisciplinary Project          | -      | D/E | 1 | - |   6  |
+| MAB428 | Endüstri Projesi / Industry Project                        | -      | D/E | 1 | - |   6  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+[SDUa] UZMANLIK ALANI A: ÜRETİM TEKNİKLERİ (Produktionstechnik)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| KOD    | DERS ADI                                                   | ÖN KOS | DİL | T | U | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| WIN302 | Fabrika Yönetimine Giriş / Intro to Factory Management     | -      | D/E | 2 | 1 |   6  |
+| MAB311 | İmalat Teknolojisi I / Manufacturing Technology I          | -      | D/E | 3 | 1 |   6  |
+| MAB409 | İmalat Teknolojisi II / Manufacturing Technology II        | -      | D/E | 3 | 1 |   6  |
+| MAB411 | Yüzey Teknolojisi / Surface Technology                     | -      | D/E | 3 | 2 |   6  |
+| MAB391 | Proje: Üretim Teknikleri / Project: Production Tech.       | -      | D/E | 1 | - |   6  |
+| MAB381 | Üretim: Seçilmiş Konular I / Selected Topics in Prod. I    | -      | D/E | 1 | - |   6  |
+| MAB310 | Malzeme Teknolojisi II / Material Technology II            | -      | D/E | 3 | 1 |   6  |
+| MAB423 | İmalat Tesisleri / Manufacturing Facilities                | -      | D/E | 3 | 2 |   6  |
+| MAB404 | Kaynak Teknolojisi / Welding Technology                    | -      | D/E | 3 | 2 |   6  |
+| MAB408 | Kalite İçin Veri İşleme / Data Processing for Quality      | -      | D/E | 3 | 2 |   6  |
+| MEC308 | Endüstriyel Robotik I / Industrial Robotics I              | -      | D/E | 3 | 1 |   6  |
+| MAB453 | İmalatta Sonlu Elemanlar / FEM Apps in Production          | -      | D/E | 3 | 1 |   6  |
+| MAB403 | Mikroprodüksiyon Teknolojileri / Microproduction Tech.     | -      | D/E | 3 | 2 |   6  |
+| MEC313 | Endüstriyel Otomasyon Tek. / Industrial Automation Tech.   | -      | D/E | 2 | 1 |   6  |
+| MEC421 | Endüstriyel Robotik II / Industrial Robotics II            | MEC308 | D/E | 2 | 1 |   6  |
+| ETE331 | Elektrik Makineleri I / Electrical Machines I              | -      | D/E | 3 | 1 |   6  |
+| MAB465 | Üretim: Seçilmiş Konular III / Selected Topics in Prod III | -      | D/E | 3 | 2 |   6  |
+| MAB470 | Takım Tezgahları II / Machine Tools II                     | -      | D/E | 3 | 2 |   6  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+[SDUb] UZMANLIK ALANI B: TASARIM (Konstruktion)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| KOD    | DERS ADI                                                   | ÖN KOS | DİL | T | U | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| MAB305 | Tasarım Tek. III / Design Methods III                      | -      | D/E | 3 | 1 |   6  |
+| MAB353 | Sonlu Elemanlar Yöntemi / Finite-Element-Methods           | -      | D/E | 3 | 1 |   6  |
+| MAB001 | Sürekli Ortamlar Mekaniği / Continuum Mechanics            | -      | D/E | 2 | 2 |   6  |
+| MAB413 | Makine Müh. Bilişim Tek. / IT in Mech. Engineering         | -      | D/E | 3 | 2 |   6  |
+| MAB392 | Proje: Tasarım / Project: Design                           | -      | D/E | 1 | - |   6  |
+| MAB382 | Tasarım: Seçilmiş Konular I / Selected Topics in Design I  | -      | D/E | 3 | 2 |   6  |
+| MAB425 | Metodik Tasarım / Methodical Design                        | -      | D/E | 3 | 1 |   6  |
+| MAB426 | Yorulma Dayanımı / Fatigue Strength                        | -      | D/E | 3 | 2 |   6  |
+| MAB002 | Mekanikte Enerji Yöntemleri / Methods of Energy in Mech.   | -      | D/E | 3 | 2 |   6  |
+| MAB401 | Katı Cisim Simulasyonu / Rigid Body Simulation             | -      | D/E | 3 | 1 |   6  |
+| MAB351 | Yapısal Mekanik / Structural Mechanics                     | -      | D/E | 3 | 1 |   6  |
+| ETE331 | Elektrik Makineleri I / Electrical Machines I              | -      | D/E | 3 | 1 |   6  |
+| MAB304 | Dişli Teorisi ve Mekanizmalar / Gear Theory & Mechanisms   | -      | D/E | 3 | 1 |   6  |
+| MAB462 | Tasarım: Seçilmiş Konular II / Selected Topics Design II   | -      | D/E | 3 | 1 |   6  |
+| MAB466 | Tasarım: Seçilmiş Konular III / Selected Topics Design III | -      | D/E | 3 | 2 |   6  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+[SDUc] UZMANLIK ALANI C: UZAY HAVACILIK (Luft- und Raumfahrttechnik)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| KOD    | DERS ADI                                                   | ÖN KOS | DİL | T | U | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| MAB456 | Akışkan Makineleri / Fluid Machines                        | -      | D/E | 3 | 1 |   6  |
+| MAB355 | Hesaplamalı Akışkanlar Dinamiği I / CFD I                  | -      | D/E | 3 | 1 |   6  |
+| MAB455 | Havacılık Endüstrisine Giriş / Intro to Aerospace Tech.    | -      | D/E | 3 | 1 |   6  |
+| MAB393 | Proje: Uzay Havacılık / Project: Aerospace Technology      | -      | D/E | 1 | - |   6  |
+| MAB383 | Uzay Havacılık: Seç. Konular I / Sel. Topics Aerospace I   | -      | D/E | 3 | 2 |   6  |
+| INF501 | Akıllı Sistemler / Intelligent Systems                     | -      | D/E | 2 | 2 |   6  |
+| INF502 | Makine Öğrenmesi / Machine Learning                        | -      | D/E | 2 | 2 |   6  |
+| MAB351 | Yapısal Mekanik / Structural Mechanics                     | -      | D/E | 3 | 1 |   6  |
+| MAB305 | Tasarım Tek. III / Design Methods III                      | -      | D/E | 3 | 1 |   6  |
+| MAB353 | Sonlu Elemanlar Yöntemi / Finite-Element-Methods           | -      | D/E | 3 | 1 |   6  |
+| MAB407 | Aerodinamik / Aerodynamics                                 | -      | D/E | 3 | 2 |   6  |
+| MAB001 | Sürekli Ortamlar Mekaniği / Continuum Mechanics            | -      | D/E | 2 | 2 |   6  |
+| MAB406 | Uzay Teknolojisinin Temelleri / Basics of Aerospace Tech.  | -      | D/E | 3 | 2 |   6  |
+| MAB417 | Hesaplamalı Akışkanlar Dinamiği II / CFD II                | -      | D/E | 3 | 1 |   6  |
+| MAB415 | Hesaplamalı Akışkanlar Dinamiği III / CFD III              | -      | D/E | 3 | 1 |   6  |
+| MAB463 | Uzay Havacılık: Seç. Konular II / Sel. Topics Aerospace II | -      | D/E | 3 | 2 |   6  |
+| MAB467 | Uzay Havacılık: Seç. Konular III / Sel. Topics Aerospace III| -     | D/E | 3 | 2 |   6  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+[SDUd] UZMANLIK ALANI D: TAŞIT SİSTEMLERİ (Fahrzeugtechnik)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| KOD    | DERS ADI                                                   | ÖN KOS | DİL | T | U | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+| MAB354 | Araç Teknolojisinin Temelleri / Basics of Automotive Eng.  | -      | D/E | 3 | 1 |   6  |
+| MAB304 | Dişli Teorisi ve Mekanizmalar / Gear Theory & Mechanisms   | -      | D/E | 3 | 2 |   6  |
+| MAB401 | Katı Cisim Simulasyonu / Rigid Body Simulation             | -      | D/E | 3 | 1 |   6  |
+| MAB394 | Proje: Taşıt Sistemleri / Project: Transport Systems       | -      | D/E | 1 | - |   6  |
+| MAB384 | Taşıt Sist.: Seç. Konular I / Sel. Topics Transport Sys I  | -      | D/E | 3 | 2 |   6  |
+| ETE331 | Elektrik Makineleri I / Electrical Machines I              | -      | D/E | 3 | 1 |   6  |
+| MAB405 | Motor Teknolojilerinin Temelleri / Basics of Power Engines | -      | D/E | 3 | 1 |   6  |
+| MAB305 | Tasarım Tek. III / Design Methods III                      | -      | D/E | 3 | 1 |   6  |
+| MAB353 | Sonlu Elemanlar Yöntemi / Finite-Element-Methods           | -      | D/E | 3 | 1 |   6  |
+| MAB310 | Malzeme Teknolojisi II / Material Technology II            | -      | D/E | 3 | 1 |   6  |
+| MAB421 | Raylı Taşıt Teknolojisi / Railed Vehicles Systems          | -      | D/E | 3 | 1 |   6  |
+| MAB422 | Raylı Sistemlerin Temelleri / Basics of Railway Systems    | -      | D/E | 3 | 1 |   6  |
+| MAB464 | Taşıt Sist.: Seç. Konular II / Sel. Topics Transport Sys II| -      | D/E | 3 | 2 |   6  |
+| MAB356 | Araç Tasarımının Temelleri / Fund. of Vehicle Construction | -      | D/E | 3 | 2 |   6  |
+| MAB357 | Ticari Araç Mühendisliği / Commercial Vehicle Engineering  | -      | D/E | 3 | 2 |   6  |
+| MAB468 | Taşıt Sist.: Seç. Konular III / Sel. Topics Transport III  | -      | D/E | 3 | 2 |   6  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+[SDUe] UZMANLIK ALANI E: İşletmede Mesleki Eğitim ###elle ayırdım bunu
+----------------------------------------------------------------------------------------------------
+| MAB490 | İşletmede Mesleki Eğitim / Co-operative Education          | -      | -   | - | - |  18  |
++--------+------------------------------------------------------------+--------+-----+---+---+------+

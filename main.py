@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Main Application Entry Point - MVC Pattern
-Schedule Management Application
+University Schedule Management Application
 """
 import sys
 import os

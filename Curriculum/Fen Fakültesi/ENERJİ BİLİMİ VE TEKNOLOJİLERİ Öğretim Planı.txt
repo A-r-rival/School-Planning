@@ -1,0 +1,185 @@
+====================================================================================================
+                        ENERJİ BİLİMİ VE TEKNOLOJİLERİ LİSANS ÖĞRETİM PLANI
+====================================================================================================
+
+| AÇIKLAMA: T=Teori (VL), U=Uygulama (UE), L=Laboratuvar (LP) |
+| ZSD = Zorunlu Seçmeli Ders / SD = Seçmeli Ders / ÜSD = Üniversite Seçmeli Ders |
+
+----------------------------------------------------------------------------------------------------
+I. YIL / ERSTES JAHR
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| KODU   | DERSİN ADI (TR / DE)                                       | T | U | L | AKTS | T+U+L  |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| 1. Yarıyıl / 1. Semester                                                                         |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| PHY111 | Fizik I / Physik I                                         | 2 | 1 | 2 |   6  | 5 SWS  |
+| CHE111 | Kimya I / Chemie I                                         | 2 | 1 | 2 |   6  | 5 SWS  |
+| EBT103 | Enerji Bilimi ve Teknolojilerine Giriş / Einführung...     | 2 | 1 | 0 |   2  | 3 SWS  |
+| MAT103 | Analiz I / Analysis I                                      | 3 | 2 | 0 |   6  | 5 SWS  |
+| EBT105 | Teknik Çizim ve CAD / Technisches Zeichnen und CAD         | 2 | 0 | 4 |   6  | 6 SWS  |
+| DEU121 | Teknik Almanca I / Technisches Deutsch I                   | 2 | 0 | 0 |   2  | 2 SWS  |
+| ENG101 | İngilizce I / Englisch I                                   | 3 | 0 | 0 |   2  | 3 SWS  |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| TOPLAM |                                                            |16 | 5 | 8 |  30  | 29 SWS |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| 2. Yarıyıl / 2. Semester                                                                         |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| PHY112 | Fizik II / Physik II                                       | 2 | 1 | 2 |   6  | 5 SWS  |
+| CHE112 | Kimya II / Chemie II                                       | 2 | 1 | 2 |   6  | 5 SWS  |
+| MAT112 | Analiz II ve Lineer Cebir / Analysis II und Lineare Algebra| 3 | 2 | 0 |   6  | 5 SWS  |
+| EBT104 | Bilimsel Programlama / Wissenschaftliches Programmierung   | 2 | 0 | 2 |   6  | 4 SWS  |
+| NWI106 | Proje Yönetimi / Projektmanagement                         | 2 | 0 | 0 |   2  | 2 SWS  |
+| DEU122 | Teknik Almanca II / Technisches Deutsch II                 | 2 | 0 | 0 |   2  | 2 SWS  |
+| ENG102 | İngilizce II / Englisch II                                 | 3 | 0 | 0 |   2  | 3 SWS  |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| TOPLAM |                                                            |16 | 4 | 6 |  30  | 26 SWS |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+
+----------------------------------------------------------------------------------------------------
+II. YIL / ZWEITES JAHR
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| KODU   | DERSİN ADI (TR / DE)                                       | T | U | L | AKTS | T+U+L  |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| 3. Yarıyıl / 3. Semester                                                                         |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| EBT201 | Yenilenebilir Enerji Teknolojileri / Erneuerbare...        | 3 | 1 | 0 |   6  | 4 SWS  |
+| EBT203 | Elektrokimya / Electrochemie                               | 3 | 1 | 0 |   6  | 4 SWS  |
+| MAT201 | Diferansiyel Denklemler / Diferentialgleichungen           | 2 | 2 | 1 |   6  | 5 SWS  |
+| NWI206 | Elektroteknik / Elektrotechnik                             | 2 | 1 | 2 |   6  | 5 SWS  |
+| TUR001 | Türkçe I / Türkisch I                                      | 2 | 0 | 0 |   2  | 2 SWS  |
+| AIT001 | Atatürk İlkeleri ve İnkılap Tarihi I                       | 2 | 0 | 0 |   2  | 2 SWS  |
+| ENG201 | İngilizce III / Englisch III                               | 3 | 0 | 0 |   2  | 3 SWS  |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| TOPLAM |                                                            |17 | 5 | 3 |  30  | 25 SWS |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| 4. Yarıyıl / 4. Semester                                                                         |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| EBT204 | Termodinamik / Thermodynamik                               | 3 | 2 | 0 |   6  | 5 SWS  |
+| EBT206 | Katıhal Fiziği / Festkörperphysik                          | 2 | 1 | 0 |   6  | 3 SWS  |
+| TUR002 | Türkçe II / Türkisch II                                    | 2 | 0 | 0 |   2  | 2 SWS  |
+| AIT002 | Atatürk İlkeleri ve İnkılap Tarihi II                      | 2 | 0 | 0 |   2  | 2 SWS  |
+| ENG202 | İngilizce IV / Englisch IV                                 | 3 | 0 | 0 |   2  | 3 SWS  |
+| ZSDI   | Zorunlu Seçmeli Ders (ZSDI)                                | 2 | 1 | 0 |   6  | 3 SWS  |
+| SDI    | Seçmeli Ders (SDI)                                         | 2 | 1 | 0 |   6  | 3 SWS  |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| TOPLAM |                                                            |16 | 5 | 0 |  30  | 23 SWS |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+III. YIL / DRITTES JAHR
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| KODU   | DERSİN ADI (TR / DE)                                       | T | U | L | AKTS | T+U+L  |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| 5. Yarıyıl / 5. Semester                                                                         |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| EBT303 | Akışkanlar Mekaniği / Strömungsmechanik                    | 3 | 2 | 0 |   6  | 5 SWS  |
+| EBT305 | İstatistik / Statistik                                     | 2 | 2 | 0 |   6  | 4 SWS  |
+| ZSDII  | Zorunlu Seçmeli Ders (ZSDII)                               | 2 | 1 | 0 |   6  | 3 SWS  |
+| ZSDIII | Zorunlu Seçmeli Ders (ZSDIII)                              | 2 | 1 | 0 |   6  | 3 SWS  |
+| ZSDIV  | Zorunlu Seçmeli Ders (ZSDIV)                               | 2 | 1 | 0 |   6  | 3 SWS  |
++--------+------------------------------------------------------------+--------+---+---+---+------+
+| TOPLAM |                                                            |11 | 5 | 0 |  30  | 18 SWS |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| 6. Yarıyıl / 6. Semester                                                                         |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| EBT308 | Uygulamalı Enerji Bilimi Laboratuvarı / Angewandtes...     | 1 | 0 | 5 |   6  | 6 SWS  |
+| EBT302 | Nümerik Analiz / Numerische Analyse                        | 2 | 1 | 0 |   6  | 3 SWS  |
+| EBT306 | Isı Transferi / Wärmeübertragung                           | 3 | 2 | 0 |   6  | 5 SWS  |
+| ZSDV   | Zorunlu Seçmeli Ders (ZSDV)                                | 3 | 0 | 0 |   6  | 3 SWS  |
+| ZSDVI  | Zorunlu Seçmeli Ders (ZSDVI)                               | 2 | 1 | 0 |   6  | 3 SWS  |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| TOPLAM |                                                            |11 | 4 | 5 |  30  | 20 SWS |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+
+----------------------------------------------------------------------------------------------------
+IV. YIL / VIERTES JAHR
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| KODU   | DERSİN ADI (TR / DE)                                       | T | U | L | AKTS | T+U+L  |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| 7. Yarıyıl / 7. Semester                                                                         |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| EBT401 | Proje I (Tez Hazırlık ve Seminer) / Projekt I              | 4 | 1 | 0 |   6  | 5 SWS  |
+| ISG001 | İş Sağlığı ve Güvenliği I / Arbeitsschutz... I             | 2 | 0 | 0 |   2  | 2 SWS  |
+| ENG301 | İleri İngilizce I / Fortgeschrittenes Englisch I           | 3 | 0 | 0 |   2  | 3 SWS  |
+| ZSDVII | Zorunlu Seçmeli Ders (ZSDVII)                              | 2 | 1 | 0 |   6  | 3 SWS  |
+| ZSDVIII| Zorunlu Seçmeli Ders (ZSDVIII)                             | 2 | 1 | 0 |   6  | 3 SWS  |
+| SDII   | Seçmeli Ders (SDII)                                        | 2 | 1 | 0 |   6  | 3 SWS  |
+| ÜSDI   | Üniversite Seçmeli Ders (ÜSDI)                             | 2 | 0 | 0 |   2  | 2 SWS  |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| TOPLAM |                                                            |17 | 4 | 0 |  30  | 21 SWS |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| 8. Yarıyıl / 8. Semester                                                                         |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| EBT402 | Proje II (Bitirme Tezi) / Projekt II (Bachelorarbeit)      | 0 | 6 | 0 |  10  | 6 SWS  |
+| EBT404 | Seminer / Seminar                                          | 2 | 0 | 0 |   2  | 2 SWS  |
+| EBT406 | Enerji Yönetimi / Energiemanagement                        | 3 | 2 | 0 |   6  | 5 SWS  |
+| PRK400 | Endüstri Stajı Semineri / Industriepraktikum Seminar       | 2 | 0 | 0 |   5  | 2 SWS  |
+| ISG002 | İş Sağlığı ve Güvenliği II / Arbeitsschutz... II           | 2 | 0 | 0 |   2  | 2 SWS  |
+| ENG302 | İleri İngilizce II / Fortgeschrittenes Englisch II         | 3 | 0 | 0 |   2  | 3 SWS  |
+| ÜSDII  | Üniversite Seçmeli Ders (ÜSDII)                            | 2 | 0 | 0 |   3  | 2 SWS  |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+| TOPLAM |                                                            |14 | 8 | 0 |  30  | 22 SWS |
++--------+------------------------------------------------------------+---+---+---+------+--------+
+
+
+----------------------------------------------------------------------------------------------------
+V. BÖLÜM: SEÇMELİ DERS HAVUZLARI (ZORUNLU SEÇMELİLER / SEÇMELİLER / ÜNİVERSİTE SEÇMELİLERİ)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+---+---+---+------+
+| KODU   | DERSİN ADI (TR / DE)                                       | T | U | L | AKTS |
++--------+------------------------------------------------------------+---+---+---+------+
+| ZORUNLU SEÇMELİ DERSLER (ZSD)                                                                   |
++--------+------------------------------------------------------------+---+---+---+------+
+| EBT311 | Hidrojen Enerjisi ve Yakıt Hücreleri                       | 2 | 1 | 0 |   4* |
+| EBT313 | Enerji Sistemlerinde Optimizasyon                          | 2 | 1 | 0 |   6  |
+| EBT301 | Güneş Enerjisi Sistemleri                                  | 2 | 1 | 1 |   6  |
+| EBT304 | Rüzgar Enerjisi                                            | 2 | 1 | 1 |   6  |
+| EBT307 | Hammadde ve Enerjiye Giriş                                 | 2 | 1 | 1 |   6  |
+| EBT309 | Kuantum Enerji Sistemlerine Giriş                          | 3 | 1 | 0 |   6  |
+| EBT310 | Yenilenebilir Enerji – Malzeme, Yapı, İşlev                | 3 | 1 | 0 |   6  |
+| EBT312 | Sürdürülebilir Enerji                                      | 3 | 0 | 0 |   6  |
+| EBT314 | Enerji Depolama Sistemleri                                 | 2 | 1 | 0 |   6  |
+| EBT315 | Güneş Hücreleri Fiziği                                     | 2 | 1 | 0 |   6  |
+| EBT316 | Nükleer Enerji                                             | 3 | 2 | 0 |   6  |
+| EBT317 | İleri Nükleer Enerji                                       | 3 | 2 | 0 |   6  |
+| EBT320 | İleri Kuantum Enerji Sistemleri                            | 3 | 1 | 0 |   6  |
+| EBT321 | İnce Film Kaplama Teknolojileri                            | 3 | 0 | 0 |   6  |
+| EBT322 | Soğutma Teknolojisi                                        | 2 | 2 | 0 |   6  |
+| EBT323 | Sürdürülebilir Biyoyakıt Teknolojileri                     | 2 | 2 | 0 |   6  |
+| EBT324 | Heterojen Kataliz                                          | 2 | 2 | 0 |   6  |
+| EBT357 | Makine Öğrenmesine Giriş                                   | 3 | 1 | 0 |   6  |
+| EBT403 | Enerji Ekonomisi ve Politikaları                           | 2 | 2 | 0 |   6  |
+| EBT411 | Enerji Sistem Modellemesi ve Simülasyonu                   | 2 | 1 | 0 |   6  |
+| EBT413 | Kömür İşleme ve Teknolojisi                                | 2 | 0 | 2 |   6  |
+| EBT415 | Temiz Yanma Teknolojileri                                  | 2 | 1 | 0 |   6  |
+| NWT408 | Malzemelerin İleri Karakterizasyon Teknikleri              | 2 | 1 | 1 |   6  |
++--------+------------------------------------------------------------+---+---+---+------+
+| SEÇMELİ DERSLER (SD)                                                                            |
++--------+------------------------------------------------------------+---+---+---+------+
+| NWI202 | Fiziksel Kimya 2                                           | 3 | 1 | 1 |   6  |
+| MAT204 | Veri Analizinin İstatistiksel Yöntemleri                   | 2 | 2 | 1 |   6  |
+| NWT302 | Malzeme Üretim ve İşleme Teknolojileri                     | 2 | 2 | 1 |   6  |
+| EBT326 | Akıllı Şebekeler                                           | 2 | 1 | 0 |   6  |
+| EBT325 | İklim Sistemine Giriş                                      | 2 | 1 | 0 |   4* |
+| NWI401 | Bilimsel Çalışma Yöntemleri                                | 2 | 0 | 0 |   2  |
+| EBT412 | Elektrik Makineleri                                        | 3 | 2 | 0 |   6  |
+| MWT405 | Fonksiyonel Malzemeler                                     | 2 | 1 | 0 |   6  |
+| MWT307 | Polimerik Malzemeler                                       | 2 | 1 | 1 |   6  |
++--------+------------------------------------------------------------+---+---+---+------+
+| ÜNİVERSİTE SEÇMELİ DERSLER (ÜSD) - KISA LİSTE                                                   |
++--------+------------------------------------------------------------+---+---+---+------+
+| HUK553 | Fikri Mülkiyet Hukuku                                      | 2 | 0 | 0 |   2  |
+| KKW321 | Felsefe Tarihi                                             | 3 | 0 | 0 |   4  |
+| VWL203 | İktisadi Tarihi                                            | 3 | 0 | 0 |   6  |
+| ING404 | Girişimcilik                                               | 2 | 0 | 0 |   2  |
+| INF101 | Bilgisayar Bilimine ve Programlamaya Giriş                 | 2 | 0 | 2 |   6  |
+| MAB109 | Statik                                                     | 3 | 2 | 0 |   6  |
+| WIN204 | Muhasebe ve Bilanço                                        | 2 | 2 | 1 |   6  |
+| NWI107 | Doğa Bilimlerine Giriş                                     | 2 | 0 | 0 |   2  |
+| (Kalan ÜSD dersleri bu formatta listelenmemiştir)                   | - | - | - |   2-6|
++--------+------------------------------------------------------------+---+---+---+------+
+* Not: EBT311 dersi 4 AKTS, EBT325 dersi 4 AKTS olarak listede görünmektedir.

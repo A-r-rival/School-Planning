@@ -803,12 +803,17 @@ class ScheduleModel(QObject):
         """
         try:
             if show_history:
-                query = "SELECT * FROM Ogrenci_Notlari WHERE ogrenci_num = ? ORDER BY donem DESC"
+                query = '''
+                    SELECT t1.*, (SELECT akts FROM Dersler WHERE ders_kodu = t1.ders_kodu LIMIT 1) as akts 
+                    FROM Ogrenci_Notlari t1 
+                    WHERE t1.ogrenci_num = ? 
+                    ORDER BY t1.donem DESC
+                '''
                 self.c.execute(query, (student_id,))
             else:
                 # Filter out grades that are referenced as 'previous' by another grade
                 query = '''
-                    SELECT t1.*
+                    SELECT t1.*, (SELECT akts FROM Dersler WHERE ders_kodu = t1.ders_kodu LIMIT 1) as akts
                     FROM Ogrenci_Notlari t1
                     LEFT JOIN Ogrenci_Notlari t2 ON t1.id = t2.onceki_not_id
                     WHERE t1.ogrenci_num = ? AND t2.id IS NULL

@@ -89,8 +89,8 @@ class StudentView(QWidget):
         
         # Transcript Table
         self.transcript_table = QTableWidget()
-        self.transcript_table.setColumnCount(5)
-        self.transcript_table.setHorizontalHeaderLabels(["Dönem", "Ders Kodu", "Ders Adı", "Not", "Durum"])
+        self.transcript_table.setColumnCount(6)
+        self.transcript_table.setHorizontalHeaderLabels(["Dönem", "Ders Kodu", "Ders Adı", "AKTS", "Not", "Durum"])
         self.transcript_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.transcript_table.setEditTriggers(QTableWidget.NoEditTriggers)
         right_layout.addWidget(self.transcript_table)
@@ -163,21 +163,50 @@ class StudentView(QWidget):
     def update_transcript(self, grades):
         """
         Update the transcript table.
-        grades: List of tuples from Ogrenci_Notlari table
-        (id, ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem, onceki_not_id)
+        grades: List of tuples from Ogrenci_Notlari table + AKTS
+        (id, ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem, onceki_not_id, akts)
         """
         self.transcript_table.setRowCount(0)
-        # Sort by Semester (Donem) - simple string sort for now, ideally parse year/term
-        # Assuming format "YYYY-Donem"
+        # Sort by Semester (Donem)
         sorted_grades = sorted(grades, key=lambda x: x[6], reverse=True)
         
-        for row_idx, grade in enumerate(sorted_grades):
+        current_semester = None
+        
+        for grade in sorted_grades:
+            grade_semester = grade[6]
+            
+            # Insert Separator Row if semester changes
+            if grade_semester != current_semester:
+                row_idx = self.transcript_table.rowCount()
+                self.transcript_table.insertRow(row_idx)
+                
+                # Create separator item
+                sep_item = QTableWidgetItem(f"--- {grade_semester} ---")
+                sep_item.setTextAlignment(Qt.AlignCenter)
+                font = QFont()
+                font.setBold(True)
+                sep_item.setFont(font)
+                sep_item.setBackground(Qt.lightGray)
+                
+                self.transcript_table.setItem(row_idx, 0, sep_item)
+                self.transcript_table.setSpan(row_idx, 0, 1, 6) # Span all 6 columns
+                
+                current_semester = grade_semester
+            
+            # Insert Grade Row
+            row_idx = self.transcript_table.rowCount()
             self.transcript_table.insertRow(row_idx)
-            # Donem, Kod, Ad, Not, Durum
+            
+            # Donem, Kod, Ad, AKTS, Not, Durum
             self.transcript_table.setItem(row_idx, 0, QTableWidgetItem(grade[6])) # Donem
             self.transcript_table.setItem(row_idx, 1, QTableWidgetItem(grade[2])) # Kod
             self.transcript_table.setItem(row_idx, 2, QTableWidgetItem(grade[3])) # Ad
-            self.transcript_table.setItem(row_idx, 3, QTableWidgetItem(grade[4])) # Not
+            
+            # AKTS (Index 8)
+            akts_val = str(grade[8]) if len(grade) > 8 and grade[8] is not None else "-"
+            self.transcript_table.setItem(row_idx, 3, QTableWidgetItem(akts_val))
+            
+            self.transcript_table.setItem(row_idx, 4, QTableWidgetItem(grade[4])) # Not
             
             status_item = QTableWidgetItem(grade[5]) # Durum
             if grade[5] == "Geçti":
@@ -185,7 +214,7 @@ class StudentView(QWidget):
             elif grade[5] == "Kaldı":
                 status_item.setForeground(Qt.red)
                 
-            self.transcript_table.setItem(row_idx, 4, status_item)
+            self.transcript_table.setItem(row_idx, 5, status_item)
 
     def set_filter_options(self, faculties, departments):
         """

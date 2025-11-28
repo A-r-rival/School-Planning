@@ -1,4 +1,4 @@
-# 🎯 Ders Programı Oluşturucu - MVC Mimarisi
+g# 🎯 Ders Programı Oluşturucu - MVC Mimarisi
 
 ## 📁 Proje Yapısı
 

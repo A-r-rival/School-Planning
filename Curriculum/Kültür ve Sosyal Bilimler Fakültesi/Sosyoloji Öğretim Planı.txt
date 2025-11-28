@@ -1,0 +1,141 @@
+====================================================================================================
+                            SOSYOLOJİ LİSANS ÖĞRETİM PLANI (SOZ)
+====================================================================================================
+
+| AÇIKLAMA: S=Dil/Status (T: Türkçe, D: Almanca, E: İngilizce, İ: İngilizce/Status) | T=Teori | U=Uygulama |
++--------+------------------------------------------------------------+---+---+---+------+
+| YARIYIL| DERSİN ADI (TR / EN)                                       | S | T | U | AKTS |
++--------+------------------------------------------------------------+---+---+---+------+
+| 1. GÜZ | SOZ101 - Sosyolojiye Giriş I (Introduction to Sociology I)  | T | 3 | - |   6  |
+|        | SOZ103 - Sosyolojinin Felsefi Temelleri (Philosophical...) | T | 3 | - |   6  |
+|        | SOZ111 - Çalışma Teknikleri: Bilimsel Çalışmalar           | D | 1 | 1 |   4  |
+|        | SOZ151 - Küresel Uygarlıklar Tarihi (Global History...)    | T | 3 | - |   6  |
+|        | SOZ161 - Mesleki Almanca I (Professional German I)         | D | 3 | - |   2  |
+|        | AIT001 - Atatürk İlkeleri ve İnkılap Tarihi I              | T | 2 | - |   2  |
+|        | TUR001 - Türkçe I (Turkish I)                              | T | 2 | - |   2  |
+|        | ENG101 - İngilizce I (English I)                           | İ | 3 | - |   2  |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM |                                                            |   |20 | 1 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+| 2. BAHAR| SOZ102 - Sosyolojiye Giriş II (Introduction to Sociology II)| T | 3 | - |   6  |
+|        | SOZ132 - Sosyal Bilimlerde Mantık ve Argümantasyon         | D | 3 | - |   6  |
+|        | SOZ142 - Sosyal ve Kültürel Antropoloji                    | T | 3 | - |   4  |
+|        | SOZ152 - Türkiye’nin Toplumsal Yapısı                      | T | 3 | - |   6  |
+|        | SOZ162 - Mesleki Almanca II (Professional German II)       | D | 3 | - |   2  |
+|        | AIT002 - Atatürk İlkeleri ve İnkılap Tarihi II             | T | 2 | - |   2  |
+|        | TUR002 - Türkçe II (Turkish II)                            | T | 2 | - |   2  |
+|        | ENG102 - İngilizce II (English II)                         | E | 3 | - |   2  |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM |                                                            |   |22 | 0 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+| 3. GÜZ | SOZ201 - Sosyoloji Kuramları I (Sociological Theories I)   | T | 3 | - |   6  |
+|        | SOZ215 - Toplum Bilimlerinde Nitel Araştırma Yöntemleri    | D | 2 | 1 |   6  |
+|        | SOZ217 - İstatistik (Statistics)                           | D | 2 | 2 |   5  |
+|        | SOZ231 - Göç Sosyolojisi (Sociology of Migration)          | T | 3 | - |   5  |
+|        | SOZ241 - Kent Sosyolojisi (Urban Sociology)                | T | 3 | - |   4  |
+|        | SOZ261 - Mesleki Almanca III (Professional German III)     | D | 3 | - |   2  |
+|        | ENG201 - İngilizce III (English III)                       | E | 3 | - |   2  |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM |                                                            |   |19 | 3 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+| 4. BAHAR| SOZ202 - Sosyoloji Kuramları II (Sociological Theories II) | T | 3 | - |   6  |
+|        | SOZ216 - Toplum Bilimlerinde Nicel Araştırma Yöntemleri    | D | 2 | 1 |   6  |
+|        | SOZ218 - Toplumsal Yapılar ve Değişim                      | T | 3 | - |   4  |
+|        | SOZ222 - Toplumsal Cinsiyet Sosyolojisi                    | T | 3 | - |   4  |
+|        | SOZ262 - Mesleki Almanca IV (Professional German IV)       | D | 3 | - |   2  |
+|        | ENG202 - İngilizce IV (English IV)                         | E | 3 | - |   2  |
+|        | SOZSDI - Seçmeli Ders (Elective)                           | - | 3 | - |   6  |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM |                                                            |   |20 | 1 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+| 5. GÜZ | SOZ311 - İleri Araştırma Yöntemleri I                      | D | 1 | 2 |   6  |
+|        | SOZ361 - Mesleki Almanca V (Professional German V)         | D | 3 | - |   2  |
+|        | ENG301 - İleri İngilizce I (Advanced English I)            | E | 3 | - |   2  |
+|        | ÜSD001 - Üniversite Seçmeli Ders Havuzu I                  | - | 2 | - |   2  |
+|        | SOZSDII - Seçmeli Ders (Ders 1)                            | - | 3 | - |   6  |
+|        | SOZSDII - Seçmeli Ders (Ders 2)                            | - | 3 | - |   6  |
+|        | SOZSDII - Seçmeli Ders (Ders 3)                            | - | 3 | - |   6  |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM |                                                            |   |18 | 2 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+| 6. BAHAR| SOZ312 - İleri Araştırma Yöntemleri II                     | D | 1 | 2 |   6  |
+|        | SOZ362 - Mesleki Almanca VI (Professional German VI)       | D | 3 | - |   2  |
+|        | ENG302 - İleri İngilizce II (Advanced English II)          | E | 3 | - |   2  |
+|        | ÜSD002 - Üniversite Seçmeli Ders Havuzu II                 | - | 2 | - |   2  |
+|        | SOZSDIII - Seçmeli Ders (Ders 1)                           | - | 3 | - |   6  |
+|        | SOZSDIII - Seçmeli Ders (Ders 2)                           | - | 3 | - |   6  |
+|        | SOZSDIII - Seçmeli Ders (Ders 3)                           | - | 3 | - |   6  |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM |                                                            |   |18 | 2 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+| 7. GÜZ | SOZ419 - Staj (Internship)                                 | D | - | - |   6  |
+|        | SOZ421 - Türk-Alman İlişkileri                             | D | 3 | - |   6  |
+|        | SOZ431 - Türkiye Sosyoloji Tarihi                          | T | 3 | - |   6  |
+|        | SOZ437 - Araştırma Semineri                                | D | 2 | - |   6  |
+|        | SOZSDIV - Seçmeli Ders (Elective)                          | - | 3 | - |   6  |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM |                                                            |   |11 | 0 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+| 8. BAHAR| SOZ422 - Ulusaşırı Türk-Alman Alanları                     | D | 3 | - |   6  |
+|        | SOZ426 - Bitirme Projesi (Bachelor Thesis)                 | D | - | - |  12  |
+|        | SOZSDV - Seçmeli Ders (Ders 1)                             | - | 3 | - |   6  |
+|        | SOZSDV - Seçmeli Ders (Ders 2)                             | - | 3 | - |   6  |
++--------+------------------------------------------------------------+---+---+---+------+
+| TOPLAM |                                                            |   | 9 | 0 |  30  |
++--------+------------------------------------------------------------+---+---+---+------+
+
+----------------------------------------------------------------------------------------------------
+II. SEÇMELİ DERS HAVUZLARI (SOZSDI, SOZSDII, SOZSDIII, SOZSDIV, SOZSDV)
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+---+---+---+------+
+| KODU   | DERSİN ADI (TR / EN)                                       | S | T | U | AKTS |
++--------+------------------------------------------------------------+---+---+---+------+
+| HAVUZ 1: SOZSDII/SOZSDIV                                                                        |
++--------+------------------------------------------------------------+---+---+---+------+
+| SOZ021 | Görsel Sosyoloji (Visual Sociology)                        | T | 3 | - |   6  |
+| SOZ023 | Gençlik Sosyolojisi (Sociology of Youth)                   | T | 3 | - |   6  |
+| SOZ025 | Sosyolojik Kuramların Dilleri                              | D | 3 | - |   6  |
+| SOZ027 | Sosyoloji ve Yapay Zeka (Sociology and AI)                 | D | 3 | - |   6  |
+| SOZ029 | Ekonomi Sosyolojisi (Economic Sociology)                   | T | 3 | - |   6  |
+| SOZ033 | Türkiye'de Kapitalizmin Gelişimi                           | T | 3 | - |   6  |
+| SOZ035 | Türkiye’de Göç Çalışmaları                                 | T | 3 | - |   6  |
+| SOZ037 | Türkiye’de Toplumsal Dönüşümler                            | T | 3 | - |   6  |
+| SOZ039 | Bir Metropolün Sosyolojisi: İstanbul                       | T | 3 | - |   6  |
+| SOZ051 | Duygular Sosyolojisi (Sociology of Emotions)               | T | 3 | - |   6  |
+| SOZ053 | Din Sosyolojisi (Sociology of Religion)                    | T | 3 | - |   6  |
+| SOZ055 | Gündelik Hayat Sosyolojisi                                 | T | 3 | - |   6  |
+| SOZ057 | Siyaset Sosyolojisi (Political Sociology)                  | T | 3 | - |   6  |
+| SOZ059 | Afet Sosyolojisi (Sociology of Disaster)                   | T | 3 | - |   6  |
+| SOZ063 | Eğitim Sosyolojisi (Sociology of Education)                | T | 3 | - |   6  |
+| SOZ065 | Hayvanlar ve Toplum (Animals and Society)                  | T | 3 | - |   6  |
+| SOZ067 | Öznellikler ve Özneleşme (Subjectivities and...)           | T | 3 | - |   6  |
+| SOZ069 | Kolektif ve Toplumsal Hafıza                               | T | 3 | - |   6  |
+| SOZ071 | Engellilik Sosyolojisi (Sociology of Disability)           | T | 3 | - |   6  |
+| SOZ073 | Proje Tasarımı (Project Design)                            | T | 1 | 2 |   6  |
+| SOZ075 | Güncel Etnografi Okumaları                                 | E | 3 | - |   6  |
++--------+------------------------------------------------------------+---+---+---+------+
+| HAVUZ 2: SOZSDI/SOZSDIII/SOZSDV                                                                 |
++--------+------------------------------------------------------------+---+---+---+------+
+| SOZ022 | Sanat Sosyolojisi (Sociology of Art)                       | T | 3 | - |   6  |
+| SOZ024 | Teknoloji Bağımlılığı (Technology Addiction)               | T | 3 | - |   6  |
+| SOZ026 | Küreselleşme (Globalization)                               | T | 3 | - |   6  |
+| SOZ028 | Gelecek Sosyolojisi (Sociology of the Future)              | T | 3 | - |   6  |
+| SOZ030 | Organizasyon Sosyolojisi (Sociology of Organizations)      | T | 3 | - |   6  |
+| SOZ032 | Sosyolojide Güncel Tartışmalar                             | İ | 3 | - |   6  |
+| SOZ042 | Almanya'da Güncel Azınlık Tartışmaları                     | D | 3 | - |   6  |
+| SOZ044 | Avrupa’da Kapitalizmin Doğuşu                              | T | 3 | - |   6  |
+| SOZ046 | Avrupa’da Sosyal Politika (Social Policy in Europe)        | T | 3 | - |   6  |
+| SOZ048 | Avrupa’da Toplumsal Dönüşümler                             | T | 3 | - |   6  |
+| SOZ052 | Beden Sosyolojisi (Sociology of the Body)                  | T | 3 | - |   6  |
+| SOZ054 | Kültür Sosyolojisi (Sociology of Culture)                  | T | 3 | - |   6  |
+| SOZ056 | Kurumlar Sosyolojisi (Sociology of Institutions)           | T | 3 | - |   6  |
+| SOZ058 | Tarihsel Sosyoloji (Historical Sociology)                  | T | 3 | - |   6  |
+| SOZ060 | Ayrımcılık Sosyolojisi (Sociology of Discrimination)       | T | 3 | - |   6  |
+| SOZ062 | Çalışma Sosyolojisi (Sociology of Work)                    | T | 3 | - |   6  |
+| SOZ064 | Eleştirel Kuram ve Toplum (Critical Theory and Society)    | T | 3 | - |   6  |
+| SOZ066 | Tüketim Toplumu (Consumer Society)                         | T | 3 | - |   6  |
+| SOZ068 | Toplumsal Hareketler (Social Movements)                    | T | 3 | - |   6  |
+| SOZ070 | Sağlık Sosyolojisi (Sociology of Health)                   | T | 3 | - |   6  |
+| SOZ072 | Toplumsal Ekoloji (Social Ecology)                         | T | 3 | - |   6  |
+| SOZ078 | Mekan Sosyolojisi (Sociology of Space)                     | T | 3 | - |   6  |
++--------+------------------------------------------------------------+---+---+---+------+

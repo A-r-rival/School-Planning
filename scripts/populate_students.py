@@ -7,182 +7,55 @@ import sqlite3
 sys.path.append(os.getcwd())
 
 from models.schedule_model import ScheduleModel
+from scripts.curriculum_data import DEPARTMENTS_DATA, COMMON_USD_POOL
 
 GRADES = ["AA", "BA", "BB", "CB", "CC", "DC", "DD", "FD", "FF"]
+PASSING_GRADES = ["AA", "BA", "BB", "CB", "CC", "DC", "DD"]
 
-# ==========================================
-# DEPARTMENT DATA (Curriculum + Pools)
-# Format: (Code, Name, ECTS)
-# ==========================================
-
-DEPARTMENTS_DATA = {
-    "Bilgisayar Mühendisliği": {
-        "curriculum": {
-            1: [("MAT103", "Analiz I", 6), ("INF101", "Bilgisayar Bilimine ve Programlamaya Giriş", 6), ("INF103", "Mantık", 6), ("INF107", "Bilgisayar Organizasyonu", 6), ("DEU121", "Teknik Almanca I", 2), ("ENG101", "İngilizce I", 2), ("TUR001", "Türkçe I", 2)],
-            2: [("MAT106", "Lineer Cebir", 6), ("INF102", "Nesnel Programlama", 6), ("INF104", "Özdevinirler ve Biçimsel Diller", 6), ("INF110", "İşletim Sistemleri", 6), ("DEU122", "Teknik Almanca II", 2), ("ENG102", "İngilizce II", 2), ("TUR002", "Türkçe II", 2)],
-            3: [("INF201", "Ayrık Yapılar", 6), ("INF203", "Algoritmalar ve Veri Yapıları I", 6), ("INF205", "Veritabanı Sistemleri", 6), ("INF209", "Bilgisayar Ağları", 6), ("INF211", "Bilgisayar ve Toplum Semineri", 2), ("ENG201", "İngilizce III", 2), ("AIT001", "Atatürk İlkeleri ve İnkılap Tarihi I", 2)],
-            4: [("MAT204", "Veri Analizinin İstatistiksel Yöntemleri", 6), ("INF202", "Yazılım Mühendisliği", 6), ("INF204", "Algoritmalar ve Veri Yapıları II", 6), ("INF208", "Gömülü Sistemler", 6), ("INF210", "Bilgisayar Mühendisleri için Etik Semineri", 2), ("ENG202", "İngilizce IV", 2), ("AIT002", "Atatürk İlkeleri ve İnkılap Tarihi II", 2)],
-            5: [("SDP", "Seçmeli Alan - Proje", 6), ("SDIa", "Seçmeli I - Uygulamalı Bilgisayar", 6), ("SDIb", "Seçmeli I - Bilgisayar Donanımı", 6), ("SDIc", "Seçmeli I - Kuramsal", 6), ("USD001", "Üniversite Seçmeli I", 2), ("ISG001", "İş Sağlığı ve Güvenliği I", 2), ("ENG301", "İleri İngilizce I", 2)],
-            6: [("SDIIa_1", "Seçmeli II - Uygulamalı 1", 6), ("SDIIa_2", "Seçmeli II - Uygulamalı 2", 6), ("SDIIb", "Seçmeli II - Donanım", 6), ("SDIIc", "Seçmeli II - Kuramsal", 6), ("USD002", "Üniversite Seçmeli II", 2), ("ISG002", "İş Sağlığı ve Güvenliği II", 2), ("ENG302", "İleri İngilizce II", 2)],
-            7: [("INF499", "Mesleki Alan Stajı", 6), ("INF401", "Bilimsel Çalışma Yöntemleri", 6), ("SDIII_1", "Seçmeli III - 1", 6), ("SDIII_2", "Seçmeli III - 2", 6), ("SDIII_3", "Seçmeli III - 3", 6)],
-            8: [("INF492", "Bitirme Tezi", 12), ("SDIV_1", "Seçmeli IV - 1", 6), ("SDIV_2", "Seçmeli IV - 2", 6), ("SDIV_3", "Seçmeli IV - 3", 6)]
-        },
-        "pools": {
-            "SDP": [("WIN311", "Proje I: Yenilik ve Teknoloji", 6), ("MEC319", "Mekatronik Projesi", 6), ("INF303", "Yazılım Mühendisliği Projesi", 6), ("ETE491", "EEE Projesi", 6)],
-            "SDIa": [("INF501", "Akıllı Sistemler", 6), ("INF502", "Makine Öğrenmesi", 6), ("INF503", "Yapay Sinir Ağları", 6), ("INF504", "Doğal Dil İşleme", 6), ("INF505", "Veri Madenciliği", 6), ("INF522", "Web Mühendisliği", 6), ("INF523", "İnsan-Makine İletişimi", 6)],
-            "SDIb": [("INF601", "Gerçek Zamanlı Sistemler", 6), ("INF602", "Derleyici Tasarımı", 6), ("ETE101", "Sayısal Tasarım", 6), ("ETE201", "Elektrik Devreleri I", 6), ("ETE442", "Gömülü Sistemler", 6)],
-            "SDIc": [("INF701", "Yapay Zeka", 6), ("INF703", "Kriptoloji", 6), ("MAT302", "Numerik Matematik", 6), ("MAT305", "Matematiksel Modelleme", 6)],
-            "SDIIa": [("INF501", "Akıllı Sistemler", 6), ("INF502", "Makine Öğrenmesi", 6), ("INF503", "Yapay Sinir Ağları", 6), ("INF504", "Doğal Dil İşleme", 6), ("INF505", "Veri Madenciliği", 6), ("INF522", "Web Mühendisliği", 6), ("INF523", "İnsan-Makine İletişimi", 6)],
-            "SDIIb": [("INF601", "Gerçek Zamanlı Sistemler", 6), ("INF602", "Derleyici Tasarımı", 6), ("ETE101", "Sayısal Tasarım", 6), ("ETE201", "Elektrik Devreleri I", 6), ("ETE442", "Gömülü Sistemler", 6)],
-            "SDIIc": [("INF701", "Yapay Zeka", 6), ("INF703", "Kriptoloji", 6), ("MAT302", "Numerik Matematik", 6), ("MAT305", "Matematiksel Modelleme", 6)],
-            "SDIII": [("INF501", "Akıllı Sistemler", 6), ("INF502", "Makine Öğrenmesi", 6), ("INF503", "Yapay Sinir Ağları", 6), ("INF522", "Web Mühendisliği", 6), ("ETE442", "Gömülü Sistemler", 6), ("INF701", "Yapay Zeka", 6), ("BWL007", "Dijital Pazarlama", 6), ("ING406", "Mühendisler İçin Hukuk", 6)],
-            "SDIV": [("INF501", "Akıllı Sistemler", 6), ("INF502", "Makine Öğrenmesi", 6), ("INF503", "Yapay Sinir Ağları", 6), ("INF522", "Web Mühendisliği", 6), ("ETE442", "Gömülü Sistemler", 6), ("INF701", "Yapay Zeka", 6), ("BWL007", "Dijital Pazarlama", 6), ("ING406", "Mühendisler İçin Hukuk", 6)],
-            "USD": [("ELC101", "Fotoğrafçılık", 2), ("ELC102", "Sinema Tarihi", 2), ("ELC103", "İletişim Becerileri", 2)]
-        }
-    },
-    "Elektrik-Elektronik Mühendisliği": {
-        "curriculum": {
-            1: [("MAT103", "Analiz I", 6), ("PHY101", "Mekaniğin Temelleri", 6), ("ETE101", "Sayısal Tasarım", 6), ("ETE103", "Bilg. Bil. ve Prog. Giriş", 6), ("ETE091", "EEE Giriş", 2), ("DEU121", "Teknik Almanca I", 2), ("ENG101", "İngilizce I", 2)],
-            2: [("MAT108", "Analiz II", 6), ("PHY102", "Elektrik ve Manyetizma", 6), ("MAT106", "Lineer Cebir", 6), ("SDII", "Seçmeli Ders Alanı II", 6), ("ETE092", "Bilimsel Çalışma Yöntemleri", 2), ("DEU122", "Teknik Almanca II", 2), ("ENG102", "İngilizce II", 2)],
-            3: [("MAT201", "Diferansiyel Denklemler", 6), ("ETE201", "Elektrik Devreleri I", 6), ("PHY103", "Modern Fizik", 6), ("ETE207", "Malzeme Teknolojisi", 6), ("ETE299", "Temel Staj", 2), ("TUR001", "Türkçe I", 2), ("ENG201", "İngilizce III", 2)],
-            4: [("MAT204", "Veri Analizinin İstat. Yönt.", 6), ("ETE202", "Elektrik Devreleri II", 6), ("ETE208", "Ölçüm Teknikleri", 6), ("ETE292", "Proje Yönetimi", 2), ("TUR002", "Türkçe II", 2), ("ENG202", "İngilizce IV", 2), ("USD000", "Üniversite Seçmeli", 6)],
-            5: [("ETE321", "Elektromanyetik Alanlar", 6), ("ETE303", "Sinyaller ve Sistemler", 6), ("ETE311", "Elektronik I", 6), ("ETE331", "Elektrik Makineleri I", 6), ("SDV", "Seçmeli Ders Alanı V", 6)],
-            6: [("ETE304", "Kontrol Müh. Temelleri", 6), ("ETE372", "Telekomünikasyon", 6), ("SDT", "Seçmeli Ders Alanı T", 6), ("SDM", "Seçmeli Ders Alanı M", 6), ("SDVI", "Seçmeli Ders Alanı VI", 6)],
-            7: [("ETE499", "Mesleki Alan Stajı", 6), ("ISG001", "İş Sağlığı ve Güvenliği I", 2), ("AIT001", "Atatürk İlkeleri I", 2), ("ENG301", "İleri İngilizce I", 2), ("SDP", "Seçmeli Alan - Proje", 6), ("SDVII_1", "Seçmeli VII - 1", 6), ("SDVII_2", "Seçmeli VII - 2", 6)],
-            8: [("ETE492", "Lisans Bitirme Çalışması", 12), ("ISG002", "İş Sağlığı ve Güvenliği II", 2), ("AIT002", "Atatürk İlkeleri II", 2), ("ENG302", "İleri İngilizce II", 2), ("SDVIII_1", "Seçmeli VIII - 1", 6), ("SDVIII_2", "Seçmeli VIII - 2", 6)]
-        },
-        "pools": {
-            "SDII": [("ETE104", "Mikroişlemciler", 6), ("INF102", "Nesnel Programlama", 6)],
-            "SDM": [("MAT302", "Numerik Matematik", 6), ("MAT392", "Kompleks Analiz", 6)],
-            "SDT": [("ETE312", "Elektronik II: Devre Teknolojisi", 6), ("ETE374", "Sayısal Sinyal İşlemenin Temelleri", 6)],
-            "SDP": [("ETE491", "EEE Projesi", 6), ("MEC319", "Mekatronik Projesi", 6), ("INF303", "Yazılım Müh. Projesi", 6)],
-            "SDV": [("ETE104", "Mikroişlemciler", 6), ("ETE312", "Elektronik II", 6), ("ETE442", "Gömülü Sistemler", 6), ("INF102", "Nesnel Programlama", 6), ("INF501", "Akıllı Sistemler", 6)],
-            "SDVI": [("ETE104", "Mikroişlemciler", 6), ("ETE312", "Elektronik II", 6), ("ETE442", "Gömülü Sistemler", 6), ("INF102", "Nesnel Programlama", 6), ("INF501", "Akıllı Sistemler", 6)],
-            "SDVII": [("ETE412", "Optik Haberleşme", 6), ("ETE414", "İşlemsel Yükselteçler", 6), ("ETE433", "Elektrik Makineleri II", 6), ("ETE441", "FPGA Programlama", 6), ("ETE456", "Akıllı Kontrol", 6), ("INF513", "Derin Öğrenme", 6)],
-            "SDVIII": [("ETE412", "Optik Haberleşme", 6), ("ETE414", "İşlemsel Yükselteçler", 6), ("ETE433", "Elektrik Makineleri II", 6), ("ETE441", "FPGA Programlama", 6), ("ETE456", "Akıllı Kontrol", 6), ("INF513", "Derin Öğrenme", 6)],
-            "USD": [("ELC101", "Fotoğrafçılık", 6), ("ELC102", "Sinema Tarihi", 6)]
-        }
-    },
-    "Endüstri Mühendisliği": {
-        "curriculum": {
-            1: [("WIN091", "Endüstri Müh. Giriş", 2), ("WIN103", "İşletmeye Giriş", 6), ("WIN107", "Tasarım Tek. I", 6), ("WIN109", "Statik", 6), ("MAT103", "Analiz I", 6), ("DEU121", "Teknik Almanca I", 2), ("ENG101", "İngilizce I", 2)],
-            2: [("WIN092", "Bilimsel Çalışma Yönt.", 2), ("WIN104", "İktisada Giriş", 6), ("WIN112", "Mukavemet", 6), ("MAT106", "Lineer Cebir", 6), ("MAT108", "Analiz II", 6), ("DEU118", "İşletme Almancası", 2), ("ENG102", "İngilizce II", 2)],
-            3: [("WIN203", "Bilg. Bil. ve Prog. Giriş", 6), ("WIN207", "Yatırım ve Finansman", 6), ("WIN209", "Yöneylem Arş. I", 6), ("WIN299", "Temel Staj", 2), ("MAT201", "Diferansiyel Denklemler", 6), ("ENG201", "İngilizce III", 2), ("TUR001", "Türkçe I", 2)],
-            4: [("WIN204", "Muhasebe ve Bilanço", 6), ("WIN208", "Nesnel Programlama", 6), ("WIN212", "EEE Temelleri", 6), ("WIN292", "Proje Yönetimi", 2), ("MAT204", "İstatistiksel Yöntemler", 6), ("ENG202", "İngilizce IV", 2), ("TUR002", "Türkçe II", 2)],
-            5: [("WIN313", "Lojistik Yönetimi", 6), ("WIN315", "Veritabanı Sistemleri", 6), ("SDP", "Seçmeli Alan - Proje", 6), ("SDI", "Seçmeli Alan I - İktisat", 6), ("ZSDI", "Zorunlu Seçmeli I", 6)],
-            6: [("WIN302", "Fabrika Yönetimine Giriş", 6), ("WIN314", "Kalite Yönetimi", 6), ("SDII", "Seçmeli Alan II - Araştırma", 6), ("ZSDII", "Zorunlu Seçmeli II", 6), ("USD000", "Üniversite Seçmeli", 6)],
-            7: [("WIN403", "Proje II: Endüstri Projesi", 6), ("WIN499", "Mesleki Alan Stajı", 6), ("AIT001", "Atatürk İlkeleri I", 2), ("ENG301", "İleri İngilizce I", 2), ("ISG001", "İş Sağlığı ve Güvenliği I", 2), ("ZSDI_1", "Zorunlu Seçmeli I - 1", 6), ("ZSDI_2", "Zorunlu Seçmeli I - 2", 6)],
-            8: [("WIN492", "Bitirme Tezi", 12), ("AIT002", "Atatürk İlkeleri II", 2), ("ENG302", "İleri İngilizce II", 2), ("ISG002", "İş Sağlığı ve Güvenliği II", 2), ("ZSDII_1", "Zorunlu Seçmeli II - 1", 6), ("ZSDII_2", "Zorunlu Seçmeli II - 2", 6)]
-        },
-        "pools": {
-            "SDP": [("WIN311", "Proje I: Yenilik Yönetimi", 6), ("INF303", "Yazılım Müh. Projesi", 6), ("MEC319", "Mekatronik Projesi", 6)],
-            "SDI": [("WIN309", "Pazarlama", 6), ("WIN317", "İşletmesel Veri Analizi", 6), ("WIN321", "Yöneticilik", 6), ("VWL203", "İktisadi Tarih", 6)],
-            "SDII": [("WIN316", "Yöneylem Arş. II", 6), ("ING406", "Mühendisler İçin Hukuk", 6), ("VWL210", "Para ve Finans", 6)],
-            "ZSDI": [("WIN320", "Makine Öğrenmesi", 6), ("WIN323", "Havayolu Yönetimi", 6), ("WIN405", "Sürdürülebilir Üretim", 6), ("INF505", "Veri Madenciliği", 6), ("MAB301", "Takım Tezgahları", 6)],
-            "ZSDII": [("WIN306", "Üretim Enformasyon Sis.", 6), ("WIN318", "Ergonomi", 6), ("WIN408", "Montaj Teknolojisi", 6), ("INF502", "Makine Öğrenmesi", 6), ("MAB210", "İmalat Teknolojisi", 6)],
-            "USD": [("ELC101", "Fotoğrafçılık", 6), ("ELC102", "Sinema Tarihi", 6)]
-        }
-    },
-    "Makine Mühendisliği": {
-        "curriculum": {
-            1: [("MAT103", "Analiz I", 6), ("MAB107", "Teknik Çizim ve CAD", 6), ("MAB109", "Statik", 6), ("MAB105", "Bilg. Bil. ve Prog. Giriş", 6), ("MAB091", "Makine Müh. Giriş", 2), ("ENG101", "İngilizce I", 2), ("DEU121", "Teknik Almanca I", 2)],
-            2: [("MAT108", "Analiz II", 6), ("MAT106", "Lineer Cebir", 6), ("MAB112", "Mukavemet", 6), ("MAB108", "Tasarım Tek. I", 6), ("MAB092", "Bilimsel Çalışma Yönt.", 2), ("ENG102", "İngilizce II", 2), ("DEU122", "Teknik Almanca II", 2)],
-            3: [("MAB213", "EEE Temelleri", 6), ("MAB203", "Tasarım Tek. II", 6), ("MAB205", "Kinematik ve Dinamik", 6), ("MAB207", "Malzeme Teknolojisi I", 6), ("MAB209", "Temel Staj", 2), ("AIT001", "Atatürk İlkeleri I", 2), ("ENG201", "İngilizce III", 2)],
-            4: [("MAB210", "İmalat Teknolojisi Temelleri", 6), ("MAB216", "Ölçüm Teknikleri", 6), ("MAT204", "İstatistiksel Yönt.", 6), ("MAB214", "Dif. Denk. ve Sayısal", 6), ("MAB292", "Proje Yönetimi", 2), ("AIT002", "Atatürk İlkeleri II", 2), ("ENG202", "İngilizce IV", 2)],
-            5: [("MAB301", "Takım Tezgâhları", 6), ("MAB317", "Titreşim ve Dinamik", 6), ("MAB303", "Termodinamik", 6), ("SDUx", "Uzmanlık Seçmeli I", 6), ("ISG001", "İş Sağlığı ve Güvenliği I", 2), ("ENG301", "İleri İngilizce I", 2), ("TUR001", "Türkçe I", 2)],
-            6: [("MAB312", "Isı Transferi", 6), ("MAB314", "Akışkanlar Mekaniği", 6), ("SDK", "Kontrol Seçmeli", 6), ("SDP", "Proje Seçmeli", 6), ("TUR002", "Türkçe II", 2), ("ISG002", "İş Sağlığı ve Güvenliği II", 2), ("ENG302", "İleri İngilizce II", 2)],
-            7: [("MAB499", "Mesleki Alan Stajı", 6), ("SUP", "Uygulamalı Proje", 6), ("SDUx_1", "Uzmanlık Seçmeli II-1", 6), ("SDUx_2", "Uzmanlık Seçmeli II-2", 6), ("USD000", "Üniversite Seçmeli", 6)],
-            8: [("MAB492", "Bitirme Tezi", 12), ("SDUx_3", "Uzmanlık Seçmeli III-1", 6), ("SDUx_4", "Uzmanlık Seçmeli III-2", 6), ("SDUx_5", "Uzmanlık Seçmeli III-3", 6)]
-        },
-        "pools": {
-            "SDK": [("MAB308", "Kontrol Müh. Temelleri", 6), ("ETE304", "Kontrol Müh. Temelleri", 6)],
-            "SDP": [("MAB391", "Proje: Üretim", 6), ("MAB392", "Proje: Tasarım", 6), ("MAB393", "Proje: Uzay Havacılık", 6), ("MAB394", "Proje: Taşıt", 6)],
-            "SUP": [("MAB391", "Proje: Üretim", 6), ("MAB392", "Proje: Tasarım", 6), ("MAB393", "Proje: Uzay Havacılık", 6), ("MAB394", "Proje: Taşıt", 6)],
-            "SDU_A": [("WIN302", "Fabrika Yönetimi", 6), ("MAB311", "İmalat Tek. I", 6), ("MAB409", "İmalat Tek. II", 6), ("MAB411", "Yüzey Teknolojisi", 6)],
-            "SDU_B": [("MAB305", "Tasarım Tek. III", 6), ("MAB353", "Sonlu Elemanlar", 6), ("MAB001", "Sürekli Ortamlar", 6), ("MAB413", "Makine Bilişim Tek.", 6)],
-            "SDU_C": [("MAB456", "Akışkan Makineleri", 6), ("MAB355", "CFD I", 6), ("MAB455", "Havacılık Giriş", 6), ("MAB407", "Aerodinamik", 6)],
-            "SDU_D": [("MAB354", "Araç Teknolojisi", 6), ("MAB304", "Dişli Teorisi", 6), ("MAB401", "Katı Cisim Sim.", 6), ("MAB405", "Motor Teknolojileri", 6)],
-            "USD": [("ELC101", "Fotoğrafçılık", 6), ("ELC102", "Sinema Tarihi", 6)]
-        }
-    },
-    "Mekatronik Mühendisliği": {
-        "curriculum": {
-            1: [("MAT103", "Analiz I", 6), ("MEC107", "Tasarım Tek. I", 6), ("MEC109", "Statik", 6), ("MEC105", "Bilg. Bil. Giriş", 6), ("MEC091", "Mühendisliğe Giris", 2), ("DEU121", "Teknik Almanca I", 2), ("ENG101", "İngilizce I", 2)],
-            2: [("MAT108", "Analiz II", 6), ("PHY102", "Elektrik ve Manyetizma", 6), ("MEC112", "Mukavemet", 6), ("MAT106", "Lineer Cebir", 6), ("MEC092", "Bilimsel Yöntemler", 2), ("DEU122", "Teknik Almanca II", 2), ("ENG102", "İngilizce II", 2)],
-            3: [("MAT201", "Diferansiyel Denklemler", 6), ("MEC213", "Elektrik Devreleri I", 6), ("MEC209", "Kinematik ve Dinamik", 6), ("MEC207", "Malzeme Teknolojisi I", 6), ("MEC299", "Temel Staj", 2), ("TUR001", "Türkçe I", 2), ("ENG201", "İngilizce III", 2)],
-            4: [("MAT204", "İstatistik", 6), ("MEC214", "Elektrik Devreleri II", 6), ("MEC208", "Ölçüm Teknikleri", 6), ("MEC218", "Nesnel Programlama", 6), ("MEC292", "Proje Yönetimi", 2), ("TUR002", "Türkçe II", 2), ("ENG202", "İngilizce IV", 2)],
-            5: [("MEC313", "End. Otomasyon Tek.", 6), ("MEC311", "Sinyaller ve Sistemler", 6), ("MEC317", "Algoritma ve Veri Y.", 6), ("MEC319", "Mekatronik Projesi", 6), ("ZSD_I", "Zorunlu Seçmeli I", 6)],
-            6: [("MEC308", "Endüstriyel Robotik I", 6), ("MEC302", "Kontrol Müh. Temelleri", 6), ("SDP_I", "Seçmeli Proje I", 6), ("ZSD_II", "Zorunlu Seçmeli II", 6), ("USD000", "Üniversite Seçmeli", 6)],
-            7: [("MEC499", "Mesleki Alan Stajı", 6), ("ISG001", "İş Sağlığı ve Güvenliği I", 2), ("AIT001", "Atatürk İlkeleri I", 2), ("ENG301", "İleri İngilizce I", 2), ("SDP_II", "Seçmeli Proje II", 6), ("ZSD_III_1", "Zorunlu Seçmeli III - 1", 6), ("ZSD_III_2", "Zorunlu Seçmeli III - 2", 6)],
-            8: [("MEC492", "Bitirme Tezi", 12), ("ISG002", "İş Sağlığı ve Güv. II", 2), ("AIT002", "Atatürk İlkeleri II", 2), ("ENG302", "İleri İngilizce II", 2), ("ZSD_IV_1", "Zorunlu Seçmeli IV - 1", 6), ("ZSD_IV_2", "Zorunlu Seçmeli IV - 2", 6)]
-        },
-        "pools": {
-            "SDP_I": [("MEC423", "Robotik Projesi I", 6), ("MEC425", "Üretim Projesi I", 6), ("MEC427", "Akıllı Sis. Proj. I", 6)],
-            "SDP_II": [("MEC424", "Robotik Projesi II", 6), ("MEC426", "Üretim Projesi II", 6), ("MEC428", "Akıllı Sis. Proj. II", 6)],
-            "ZSD_I": [("MEC321", "Görüntü Tabanlı Oto. I", 6), ("MEC002", "Uygulamalı Kontrol", 6), ("MEC312", "Elektrik Devre Elemanları", 6)],
-            "ZSD_II": [("MEC324", "Görüntü Tabanlı Oto. II", 6), ("MEC421", "Endüstriyel Robotik II", 6), ("INF205", "Veritabanı Sistemleri", 6)],
-            "ZSD_III": [("INF202", "Yazılım Mühendisliği", 6), ("ETE456", "Akıllı Kontrol", 6), ("INF523", "İnsan-Makine Etkileşimi", 6), ("ETE331", "Elektrik Makinaları I", 6)],
-            "ZSD_IV": [("ETE104", "Mikroişlemciler", 6), ("WIN302", "Fabrika Yönetimi", 6), ("INF502", "Makine Öğrenmesi", 6), ("MEC036", "Gömülü Sistemler", 6)],
-            "USD": [("ELC101", "Fotoğrafçılık", 6), ("ELC102", "Sinema Tarihi", 6)]
-        }
-    },
-    "İnşaat Mühendisliği": {
-        "curriculum": {
-            1: [("MAT103", "Analiz I", 6), ("BAU109", "Statik", 6), ("DEU121", "Teknik Almanca I", 2), ("BAU107", "Tasarım Teknikleri", 6), ("PHY103", "Modern Fizik", 6), ("ENG101", "İngilizce I", 2), ("BAU091", "İnşaat Müh. Giriş", 2)],
-            2: [("MAT108", "Analiz II", 6), ("MAT106", "Lineer Cebir", 6), ("DEU122", "Teknik Almanca II", 2), ("BAU102", "Taşıyıcı Sistemler", 6), ("BAU092", "Bilimsel Çalışma Yönt.", 2), ("ENG102", "İngilizce II", 2), ("BAU112", "Mukavemet", 6)],
-            3: [("MAT201", "Diferansiyel Denklemler", 6), ("BAU209", "Kinematik ve Dinamik", 6), ("ENG201", "İngilizce III", 2), ("AIT001", "Atatürk İlkeleri I", 2), ("BAU201", "Yapı Malz. ve Kimyası I", 6), ("BAU202", "Yapı Statiği I", 6), ("TUR001", "Türkçe I", 2)],
-            4: [("AIT002", "Atatürk İlkeleri II", 2), ("ENG202", "İngilizce IV", 2), ("BAU203", "Yapı İnşaatı I", 6), ("BAU204", "Yapı Statiği II", 6), ("BAU205", "Akışkanlar Mekaniği", 6), ("BAU206", "Yapı Malz. ve Kimyası II", 2), ("ZSD_1", "Zorunlu Seçmeli 1", 6)],
-            5: [("BAU301", "Yapı İnşaatı II", 6), ("BAU303", "Ulaştırma", 6), ("ZSD_2", "Zorunlu Seçmeli 2", 6), ("ZSD_3", "Zorunlu Seçmeli 3", 6), ("ZSD_4", "Zorunlu Seçmeli 4", 6)],
-            6: [("ZSD_5", "Zorunlu Seçmeli 5", 6), ("ZSD_6", "Zorunlu Seçmeli 6", 6), ("ZSD_7", "Zorunlu Seçmeli 7", 6), ("ZSD_8", "Zorunlu Seçmeli 8", 6), ("BAU302", "Zemin Mekaniği I", 6)],
-            7: [("ENG301", "İleri İngilizce I", 2), ("BSP201", "Şantiye Stajı", 4), ("ISG001", "İş Sağlığı ve Güvenliği I", 2), ("BUP403", "Büro Stajı", 4), ("ZSD_9", "Zorunlu Seçmeli 9", 6), ("USD000", "Üniversite Seçmeli", 6), ("BAU304", "Zemin Mekaniği II", 6)],
-            8: [("ZSD_10", "Zorunlu Seçmeli 10", 6), ("ZSD_11", "Zorunlu Seçmeli 11", 6), ("TUR002", "Türkçe II", 2), ("ISG002", "İş Sağlığı ve Güvenliği II", 2), ("BAU492", "Lisans Bitirme Çalışması", 12), ("ENG302", "İleri İngilizce II", 2)]
-        },
-        "pools": {
-            "ZSD": [("BAU251", "Nümerik Metotlar", 6), ("BAU252", "Yapı Fiziği", 6), ("MAT204", "İstatistik", 6), ("BAU305", "Stokastik Sistemler", 6), ("BAU350", "Proje I", 6), ("BAU351", "Sistem Tekniği", 6), ("INF101", "Bilg. Bil. Giriş", 6), ("BAU352", "Yapı İşletmesi I", 6), ("BAU353", "İnşaat Hukuku", 6), ("BAU354", "Yapı Statiği III", 6), ("BAU355", "Geodezi", 6), ("BAU356", "Jeoloji", 6), ("BAU357", "İnşaat Bilişimi", 6), ("BAU451", "Su Kaynakları", 6), ("BAU452", "Kentsel Su", 6), ("BAU454", "Yapı İnşaatı III", 6), ("BAU460", "BIM", 6)],
-            "USD": [("ELC101", "Fotoğrafçılık", 6), ("ELC102", "Sinema Tarihi", 6)]
-        }
-    }
-}
-
-def get_course_from_pool(code, department, specialization=None):
+def get_courses_for_slot(code, department, faculty, required_ects, taken_codes=None):
     """
-    Returns a random course (code, name, ects) from the pool if the code is a placeholder.
-    Uses department-specific pools.
+    Returns a list of courses (code, name, ects) from the pool.
     """
-    dept_data = DEPARTMENTS_DATA.get(department)
+    dept_data = DEPARTMENTS_DATA.get(faculty, {}).get(department)
+    if not dept_data:
+        # Try finding department in other faculties if not found directly
+        for f, data in DEPARTMENTS_DATA.items():
+            if department in data:
+                dept_data = data[department]
+                break
+    
     if not dept_data:
         return None
-    
-    pools = dept_data["pools"]
-    
-    # Clean code suffix (e.g. SDIII_1 -> SDIII)
-    base_code = code.split('_')[0]
-    
-    # Handle Specialization for Makine
-    if department == "Makine Mühendisliği" and "SDUx" in base_code:
-        if specialization:
-            pool_key = f"SDU_{specialization}"
-            if pool_key in pools:
-                return random.choice(pools[pool_key])
-        # Fallback if no specialization or pool not found
-        return random.choice(pools.get("SDU_A", []))
 
-    # Direct Match
+    pools = dept_data.get("pools", {})
+    pool_courses = None
+    
+    # Check if code is a pool key
     if code in pools:
-        return random.choice(pools[code])
+        pool_courses = pools[code]
     
-    # Base Code Match
-    if base_code in pools:
-        return random.choice(pools[base_code])
+    # Check generic USD
+    elif "USD" in code or "ÜSD" in code:
+        pool_courses = COMMON_USD_POOL
         
-    # Generic Fallbacks based on naming convention if not explicitly in pools
-    if "USD" in base_code and "USD" in pools:
-        return random.choice(pools["USD"])
-        
-    if "ZSD" in base_code and "ZSD" in pools:
-        return random.choice(pools["ZSD"])
+    if not pool_courses:
+        return None
 
-    return None
+    # Filter taken
+    available = list(pool_courses)
+    if taken_codes:
+        available = [c for c in available if c[0] not in taken_codes]
+        
+    selected = []
+    current_ects = 0
+    random.shuffle(available)
+    
+    while current_ects < required_ects and available:
+        course = available.pop()
+        selected.append(course)
+        current_ects += course[2]
+        
+    return selected
 
 def populate():
     print("Starting Student Population...")
@@ -195,7 +68,6 @@ def populate():
     # Clear existing data
     print("Clearing existing student data...")
     try:
-        # Drop tables to ensure schema update for ECTS
         model.c.execute("DROP TABLE IF EXISTS Dersler")
         model.c.execute("DROP TABLE IF EXISTS Ogrenci_Notlari")
         model.c.execute("DROP TABLE IF EXISTS Verilen_Dersler")
@@ -203,128 +75,300 @@ def populate():
         model.c.execute("DROP TABLE IF EXISTS Ders_Sinif_Iliskisi")
         model.c.execute("DROP TABLE IF EXISTS Ogrenci_Donemleri")
         model.c.execute("DROP TABLE IF EXISTS Ogrenciler")
+        model.c.execute("DROP TABLE IF EXISTS Bolumler")
+        model.c.execute("DROP TABLE IF EXISTS Fakulteler")
         model.conn.commit()
-        
-        # Recreate tables (ScheduleModel constructor called _create_tables but we dropped them)
-        # We need to call _create_tables again
         model._create_tables()
-        
     except Exception as e:
         print(f"Error clearing/recreating data: {e}")
 
-    # Ensure Faculties and Departments exist
-    faculties = ["Mühendislik Fakültesi"]
-    for f in faculties:
+    # 1. Setup Faculties and Departments
+    print("Setting up Faculties and Departments...")
+    faculty_ids = {}
+    dept_ids = {} # Name -> (id, num)
+    
+    dept_counter = 1
+    
+    for fac_name, fac_data in DEPARTMENTS_DATA.items():
+        model.c.execute("INSERT OR IGNORE INTO Fakulteler (fakulte_adi) VALUES (?)", (fac_name,))
+        model.conn.commit()
+        model.c.execute("SELECT fakulte_num FROM Fakulteler WHERE fakulte_adi = ?", (fac_name,))
+        fac_id = model.c.fetchone()[0]
+        faculty_ids[fac_name] = fac_id
+        
+        # Departments are keys in DEPARTMENTS_DATA[fac_name]? 
+        # Wait, structure is DEPARTMENTS_DATA = { "Faculty": { "curriculum": ..., "pools": ... } } ?
+        # OR DEPARTMENTS_DATA = { "DeptName": { ... } } ?
+        # Let's check curriculum_data.py structure again.
+        # It is: DEPARTMENTS_DATA = { "Hukuk Fakültesi": { "curriculum": ... }, "ENERJİ...": ... }
+        # Ah, looking at the file I generated:
+        # "Hukuk Fakültesi": { "curriculum": ... } -> This is the Faculty Name acting as Department?
+        # No, Hukuk Fakültesi usually has Hukuk Bölümü.
+        # The parser used filename as key.
+        # "Bilgisayar Müh": { ... }
+        # So the keys in DEPARTMENTS_DATA are actually Department Names (mostly).
+        # But "Hukuk Fakültesi" key implies the department is Hukuk.
+        # I need to map these keys to Faculties.
+        
+        # Heuristic for Faculty mapping:
+        # If "Müh" in name -> Mühendislik
+        # If "Hukuk" -> Hukuk
+        # If "İşletme", "İktisat", "Siyaset" -> İİBF
+        # If "Kültür", "Sosyoloji" -> Kültür ve Sosyal
+        # If "Moleküler", "Malzeme", "Enerji" -> Fen
+        pass
+
+    # Re-mapping logic because DEPARTMENTS_DATA keys are Dept Names (mostly)
+    # But I need to insert them into Bolumler and link to Fakulteler.
+    
+    # Let's define the mapping explicitly based on known keys
+    dept_to_faculty = {}
+    for key in DEPARTMENTS_DATA.keys():
+        if "Müh" in key or "Mühendisliği" in key:
+            dept_to_faculty[key] = "Mühendislik Fakültesi"
+        elif "Hukuk" in key:
+            dept_to_faculty[key] = "Hukuk Fakültesi"
+        elif key in ["İşletme", "İktisat", "Siyaset Bilimi ve Uluslararası İlişkiler"]:
+            dept_to_faculty[key] = "İktisadi ve İdari Bilimler Fakültesi"
+        elif key in ["Kültür ve İletişim Bölümü", "Sosyoloji"]:
+            dept_to_faculty[key] = "Kültür ve Sosyal Bilimler Fakültesi"
+        else:
+            dept_to_faculty[key] = "Fen Fakültesi" # Fallback for Enerji, Malzeme, Moleküler
+
+    # Insert Faculties
+    unique_faculties = set(dept_to_faculty.values())
+    for f in unique_faculties:
         model.c.execute("INSERT OR IGNORE INTO Fakulteler (fakulte_adi) VALUES (?)", (f,))
     model.conn.commit()
     
-    model.c.execute("SELECT fakulte_num FROM Fakulteler WHERE fakulte_adi = 'Mühendislik Fakültesi'")
-    eng_faculty_id = model.c.fetchone()[0]
+    # Get Faculty IDs
+    fac_map = {}
+    for f in unique_faculties:
+        model.c.execute("SELECT fakulte_num FROM Fakulteler WHERE fakulte_adi = ?", (f,))
+        fac_map[f] = model.c.fetchone()[0]
+
+    # Insert Departments
+    dept_info_map = {} # key -> (bolum_id, bolum_num, fac_id)
     
-    departments = list(DEPARTMENTS_DATA.keys())
-    dept_ids = {}
-    
-    for i, dept in enumerate(departments, 1):
+    for i, (dept_name, fac_name) in enumerate(dept_to_faculty.items(), 1):
         bolum_id = 100 + i
-        bolum_num = 1000 + i
+        bolum_num = 100 + i # Changed to 3 digits as requested
+        fac_id = fac_map[fac_name]
+        
+        # Clean dept name for DB (remove "Öğretim Planı" if exists, though parser handled it)
+        clean_name = dept_name
+        
         model.c.execute("INSERT OR IGNORE INTO Bolumler (bolum_id, bolum_num, bolum_adi, fakulte_num) VALUES (?, ?, ?, ?)",
-                       (bolum_id, bolum_num, dept, eng_faculty_id))
-        dept_ids[dept] = (bolum_id, bolum_num)
+                       (bolum_id, bolum_num, clean_name, fac_id))
+        dept_info_map[dept_name] = (bolum_id, bolum_num, fac_id)
     model.conn.commit()
 
-    # Generate Students
     student_count = 0
     
-    for dept_name, (bolum_id, bolum_num) in dept_ids.items():
+    # 2. Generate Students
+    for dept_name, dept_data in DEPARTMENTS_DATA.items():
         print(f"Processing {dept_name}...")
-        curriculum = DEPARTMENTS_DATA[dept_name]["curriculum"]
+        bolum_id, bolum_num, fac_id = dept_info_map[dept_name]
+        curriculum = dept_data["curriculum"]
         
-        for year in range(1, 5): # 1st to 4th year
-            # Current semester for this year in Fall
+        # Identify available departments for Double Major/Minor
+        same_faculty_depts = [d for d, f in dept_to_faculty.items() if f == dept_to_faculty[dept_name] and d != dept_name]
+        other_faculty_depts = [d for d, f in dept_to_faculty.items() if f != dept_to_faculty[dept_name]]
+        
+        for year in range(1, 5): # 1-4
             current_semester = year * 2 - 1
+            entry_year = 2024 - year + 1
             
-            donem_sinif_num = f"{2024-year}_{bolum_num}_{year}"
-            model.c.execute('''
-                INSERT OR IGNORE INTO Ogrenci_Donemleri (donem_sinif_num, baslangic_yili, bolum_num, sinif_duzeyi)
-                VALUES (?, ?, ?, ?)
-            ''', (donem_sinif_num, 2024-year, bolum_id, year))
+            donem_sinif_num = f"{entry_year}_{bolum_num}_{year}"
+            model.c.execute("INSERT OR IGNORE INTO Ogrenci_Donemleri (donem_sinif_num, baslangic_yili, bolum_num, sinif_duzeyi) VALUES (?, ?, ?, ?)",
+                           (donem_sinif_num, entry_year, bolum_id, year))
             
-            # Create 10 students per year
-            for i in range(1, 11):
-                student_num = int(f"{2024-year}{bolum_id}{i:03d}")
-                first_name = f"Ogrenci_{dept_name[:3]}_{year}"
-                last_name = f"No_{i}"
-                
-                # Assign Specialization for Makine students
-                specialization = None
-                if dept_name == "Makine Mühendisliği":
-                    specialization = random.choice(["A", "B", "C", "D"])
-                
-                model.c.execute('''
-                    INSERT OR REPLACE INTO Ogrenciler (ogrenci_num, ad, soyad, girme_senesi, kacinci_donem, bolum_num, fakulte_num)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                ''', (student_num, first_name, last_name, 2024-year, current_semester, bolum_id, eng_faculty_id))
-                
-                # 1. Past Courses (Passed)
-                passed_courses_list = []
-                
-                for past_sem in range(1, current_semester):
-                    if past_sem in curriculum:
-                        for course_code, course_name, course_ects in curriculum[past_sem]:
-                            pool_course = get_course_from_pool(course_code, dept_name, specialization)
-                            if pool_course:
-                                real_code, real_name, real_ects = pool_course
-                            else:
-                                real_code, real_name, real_ects = course_code, course_name, course_ects
-                                
-                            passed_courses_list.append(real_name)
-                            term_label = "Guz" if past_sem % 2 != 0 else "Bahar"
-                            term_year = 2024 - year + (past_sem + 1) // 2 - 1
-                            
-                            # Insert Course with ECTS
-                            model.c.execute("INSERT OR IGNORE INTO Dersler (ders_kodu, ders_instance, ders_adi, akts) VALUES (?, ?, ?, ?)", 
-                                          (real_code, 1, real_name, real_ects))
-                            
-                            model.c.execute('''
-                                INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem)
-                                VALUES (?, ?, ?, ?, ?, ?)
-                            ''', (student_num, real_code, real_name, "AA", "Geçti", f"{term_year}-{term_label}"))
-
-                if passed_courses_list:
-                    passed_str = ", ".join(passed_courses_list)
-                    model.c.execute("INSERT OR REPLACE INTO Verilen_Dersler (ogrenci_num, ders_listesi) VALUES (?, ?)",
-                                   (student_num, passed_str))
-                
-                # 2. Current Courses (Enrolled)
-                if current_semester in curriculum:
-                    for course_code, course_name, course_ects in curriculum[current_semester]:
-                        pool_course = get_course_from_pool(course_code, dept_name, specialization)
-                        if pool_course:
-                            real_code, real_name, real_ects = pool_course
-                        else:
-                            real_code, real_name, real_ects = course_code, course_name, course_ects
-                            
-                        # Add course to Dersler with ECTS
-                        model.c.execute("INSERT OR IGNORE INTO Dersler (ders_kodu, ders_instance, ders_adi, akts) VALUES (?, ?, ?, ?)", 
-                                      (real_code, 1, real_name, real_ects))
-                        
-                        # Add to Ders_Sinif_Iliskisi
-                        model.c.execute("INSERT OR IGNORE INTO Ders_Sinif_Iliskisi (ders_adi, ders_instance, donem_sinif_num) VALUES (?, ?, ?)", 
-                                      (real_name, 1, donem_sinif_num))
-                        
-                        # Add to Ogrenci_Notlari (Current Semester)
-                        grade_info = random.choice(GRADES)
-                        grade_letter = grade_info
-                        status = "Geçti" if grade_letter != "FF" else "Kaldı"
-                        
-                        model.c.execute("INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem) VALUES (?, ?, ?, ?, ?, ?)",
-                                      (student_num, real_code, real_name, grade_letter, status, f"{2024}-Guz"))
-
+            # --- Regular Students (35) ---
+            students_in_year = []
+            for i in range(1, 36):
+                s_num = int(f"{entry_year}{bolum_id}{i:03d}")
+                students_in_year.append(s_num)
+                create_student(model, s_num, dept_name, year, entry_year, current_semester, bolum_id, fac_id, curriculum, dept_to_faculty[dept_name], is_irregular=False)
                 student_count += 1
                 
+            # --- Double Major (ÇAP) & Minor (Yandal) ---
+            # Only for 3rd and 4th years
+            if year >= 3:
+                # Shuffle students to pick candidates
+                candidates = list(students_in_year)
+                random.shuffle(candidates)
+                
+                # Double Major (4-6 students)
+                num_cap = random.randint(4, 6)
+                for _ in range(num_cap):
+                    if not candidates or not same_faculty_depts: break
+                    s_num = candidates.pop()
+                    target_dept = random.choice(same_faculty_depts)
+                    t_id, t_num, _ = dept_info_map[target_dept]
+                    
+                    model.c.execute("UPDATE Ogrenciler SET ikinci_bolum_num = ?, ikinci_bolum_turu = 'Anadal' WHERE ogrenci_num = ?",
+                                   (t_id, s_num))
+                                   
+                # Minor (4-6 students)
+                num_yandal = random.randint(4, 6)
+                for _ in range(num_yandal):
+                    if not candidates or not other_faculty_depts: break
+                    s_num = candidates.pop()
+                    target_dept = random.choice(other_faculty_depts)
+                    t_id, t_num, _ = dept_info_map[target_dept]
+                    
+                    model.c.execute("UPDATE Ogrenciler SET ikinci_bolum_num = ?, ikinci_bolum_turu = 'Yandal' WHERE ogrenci_num = ?",
+                                   (t_id, s_num))
+
+            # --- Irregular Students (25-30 total per major -> ~7 per year) ---
+            num_irregular = random.randint(6, 8)
+            for i in range(1, num_irregular + 1):
+                # Irregular ID: use 500+ suffix to distinguish
+                s_num = int(f"{entry_year}{bolum_id}{500+i:03d}")
+                
+                # Irregular Entry Year: 1-2 years earlier than class
+                irr_entry_year = entry_year - random.randint(1, 2)
+                
+                create_student(model, s_num, dept_name, year, irr_entry_year, current_semester, bolum_id, fac_id, curriculum, dept_to_faculty[dept_name], is_irregular=True)
+                student_count += 1
+
     model.conn.commit()
-    print(f"✅ Successfully created {student_count} students across {len(departments)} departments.")
+    print(f"✅ Successfully created {student_count} students.")
     model.conn.close()
+
+def create_student(model, s_num, dept_name, year, entry_year, current_semester, bolum_id, fac_id, curriculum, faculty_name, is_irregular):
+    # Name generation
+    prefix = "Irr" if is_irregular else "Ogr"
+    first_name = f"{prefix}_{dept_name[:3]}_{year}"
+    last_name = f"No_{s_num % 1000}"
+    
+    model.c.execute('''
+        INSERT OR REPLACE INTO Ogrenciler (ogrenci_num, ad, soyad, girme_senesi, kacinci_donem, bolum_num, fakulte_num)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ''', (s_num, first_name, last_name, entry_year, current_semester, bolum_id, fac_id))
+    
+    taken_codes = set()
+    passed_courses = []
+    
+    # Iterate through semesters up to current
+    # For irregulars, logic is messy, but let's simulate:
+    # They take courses from 1 to current_semester.
+    # Some they pass, some they fail (if irregular), some they skip.
+    
+    # Determine max semester to process
+    # For regular: current_semester
+    # For irregular: current_semester (but they might be retaking old ones)
+    
+    # We iterate 1..current_semester
+    for sem in range(1, current_semester + 1):
+        sem_str = str(sem)
+        if sem_str not in curriculum: continue
+        
+        courses = curriculum[sem_str]
+        
+        term_label = "Guz" if sem % 2 != 0 else "Bahar"
+        # Calculate term year based on when they took it
+        # Ideally: entry_year + (sem-1)//2
+        term_year = entry_year + (sem - 1) // 2
+        term_str = f"{term_year}-{term_label}"
+        
+        is_current_term = (sem == current_semester)
+        
+        for course_data in courses:
+            # course_data is [code, name, ects]
+            code, name, ects = course_data
+            
+            # Handle Pools
+            real_courses = []
+            pool_courses = get_courses_for_slot(code, dept_name, faculty_name, ects, taken_codes)
+            
+            if pool_courses:
+                real_courses = pool_courses
+            else:
+                real_courses = [(code, name, ects)]
+            
+            for r_code, r_name, r_ects in real_courses:
+                if r_code in taken_codes: continue
+                
+                # Decision: Pass, Fail, or Take Now?
+                
+                if is_current_term:
+                    # Current Semester
+                    # Regular: Take all
+                    # Irregular: Take if not skipped/failed before? 
+                    # Simpler: Just take it.
+                    status = "Geçti" # Placeholder, will assign grade
+                    grade = random.choice(GRADES)
+                    
+                    # Add to Dersler
+                    model.c.execute("INSERT OR IGNORE INTO Dersler (ders_kodu, ders_instance, ders_adi, akts) VALUES (?, ?, ?, ?)", 
+                                  (r_code, 1, r_name, r_ects))
+                    
+                    # Add to Ogrenci_Notlari
+                    status = "Geçti" if grade != "FF" else "Kaldı"
+                    model.c.execute("INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem) VALUES (?, ?, ?, ?, ?, ?)",
+                                  (s_num, r_code, r_name, grade, status, f"2024-Guz")) # Always 2024-Guz for current view
+                    
+                    # Add to Class Relation
+                    # Calculate the cohort that is currently taking this course
+                    # The course is in semester 'sem' (e.g. 1, 3, 5, 7)
+                    # The year level is (sem + 1) // 2 (e.g. 1, 2, 3, 4)
+                    # The entry year for this cohort is 2024 - year_level + 1
+                    course_year_level = (sem + 1) // 2
+                    cohort_entry_year = 2024 - course_year_level + 1
+                    donem_sinif_num = f"{cohort_entry_year}_{bolum_id}_{course_year_level}"
+                    
+                    model.c.execute("INSERT OR IGNORE INTO Ders_Sinif_Iliskisi (ders_adi, ders_instance, donem_sinif_num) VALUES (?, ?, ?)", 
+                                  (r_name, 1, donem_sinif_num))
+                    
+                    taken_codes.add(r_code)
+                    
+                else:
+                    # Past Semester
+                    # Regular: Pass all
+                    # Irregular: 10% Fail, 10% Skip (don't take yet)
+                    
+                    if is_irregular:
+                        roll = random.random()
+                        if roll < 0.10: # Fail
+                            grade = "FF"
+                            status = "Kaldı"
+                            # Record failure
+                            model.c.execute("INSERT OR IGNORE INTO Dersler (ders_kodu, ders_instance, ders_adi, akts) VALUES (?, ?, ?, ?)", 
+                                          (r_code, 1, r_name, r_ects))
+                            model.c.execute("INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem) VALUES (?, ?, ?, ?, ?, ?)",
+                                          (s_num, r_code, r_name, grade, status, term_str))
+                            # Don't add to taken_codes so they can retake? 
+                            # Actually, if they failed, they "took" it. But for selection logic, maybe we want them to retake.
+                            # For now, let's just record it.
+                        elif roll < 0.20: # Skip (never took)
+                            continue
+                        else: # Pass
+                            grade = "AA" # Simplified
+                            status = "Geçti"
+                            passed_courses.append(r_name)
+                            taken_codes.add(r_code)
+                            
+                            model.c.execute("INSERT OR IGNORE INTO Dersler (ders_kodu, ders_instance, ders_adi, akts) VALUES (?, ?, ?, ?)", 
+                                          (r_code, 1, r_name, r_ects))
+                            model.c.execute("INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem) VALUES (?, ?, ?, ?, ?, ?)",
+                                          (s_num, r_code, r_name, grade, status, term_str))
+                    else:
+                        # Regular - Pass
+                        grade = "AA"
+                        status = "Geçti"
+                        passed_courses.append(r_name)
+                        taken_codes.add(r_code)
+                        
+                        model.c.execute("INSERT OR IGNORE INTO Dersler (ders_kodu, ders_instance, ders_adi, akts) VALUES (?, ?, ?, ?)", 
+                                      (r_code, 1, r_name, r_ects))
+                        model.c.execute("INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem) VALUES (?, ?, ?, ?, ?, ?)",
+                                      (s_num, r_code, r_name, grade, status, term_str))
+
+    if passed_courses:
+        passed_str = ", ".join(passed_courses)
+        model.c.execute("INSERT OR REPLACE INTO Verilen_Dersler (ogrenci_num, ders_listesi) VALUES (?, ?)",
+                       (s_num, passed_str))
 
 if __name__ == "__main__":
     populate()
