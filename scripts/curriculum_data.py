@@ -17,6 +17,1223 @@ COMMON_USD_POOL = [
 ]
 
 DEPARTMENTS_DATA = {
+    "Enerji Bilimi ve Teknolojileri": {
+        "curriculum": {
+            "1": [
+                [
+                    "PHY111",
+                    "Fizik I / Physik I",
+                    6
+                ],
+                [
+                    "CHE111",
+                    "Kimya I / Chemie I",
+                    6
+                ],
+                [
+                    "EBT103",
+                    "Enerji Bilimi ve Teknolojilerine Giriş / Einführung...",
+                    2
+                ],
+                [
+                    "MAT103",
+                    "Analiz I / Analysis I",
+                    6
+                ],
+                [
+                    "EBT105",
+                    "Teknik Çizim ve CAD / Technisches Zeichnen und CAD",
+                    6
+                ],
+                [
+                    "DEU121",
+                    "Teknik Almanca I / Technisches Deutsch I",
+                    2
+                ],
+                [
+                    "ENG101",
+                    "İngilizce I / Englisch I",
+                    2
+                ]
+            ],
+            "2": [
+                [
+                    "PHY112",
+                    "Fizik II / Physik II",
+                    6
+                ],
+                [
+                    "CHE112",
+                    "Kimya II / Chemie II",
+                    6
+                ],
+                [
+                    "MAT112",
+                    "Analiz II ve Lineer Cebir / Analysis II und Lineare Algebra",
+                    6
+                ],
+                [
+                    "EBT104",
+                    "Bilimsel Programlama / Wissenschaftliches Programmierung",
+                    6
+                ],
+                [
+                    "NWI106",
+                    "Proje Yönetimi / Projektmanagement",
+                    2
+                ],
+                [
+                    "DEU122",
+                    "Teknik Almanca II / Technisches Deutsch II",
+                    2
+                ],
+                [
+                    "ENG102",
+                    "İngilizce II / Englisch II",
+                    2
+                ]
+            ],
+            "3": [
+                [
+                    "EBT201",
+                    "Yenilenebilir Enerji Teknolojileri / Erneuerbare...",
+                    6
+                ],
+                [
+                    "EBT203",
+                    "Elektrokimya / Electrochemie",
+                    6
+                ],
+                [
+                    "MAT201",
+                    "Diferansiyel Denklemler / Diferentialgleichungen",
+                    6
+                ],
+                [
+                    "NWI206",
+                    "Elektroteknik / Elektrotechnik",
+                    6
+                ],
+                [
+                    "TUR001",
+                    "Türkçe I / Türkisch I",
+                    2
+                ],
+                [
+                    "AIT001",
+                    "Atatürk İlkeleri ve İnkılap Tarihi I",
+                    2
+                ],
+                [
+                    "ENG201",
+                    "İngilizce III / Englisch III",
+                    2
+                ]
+            ],
+            "4": [
+                [
+                    "EBT204",
+                    "Termodinamik / Thermodynamik",
+                    6
+                ],
+                [
+                    "EBT206",
+                    "Katıhal Fiziği / Festkörperphysik",
+                    6
+                ],
+                [
+                    "TUR002",
+                    "Türkçe II / Türkisch II",
+                    2
+                ],
+                [
+                    "AIT002",
+                    "Atatürk İlkeleri ve İnkılap Tarihi II",
+                    2
+                ],
+                [
+                    "ENG202",
+                    "İngilizce IV / Englisch IV",
+                    2
+                ],
+                [
+                    "ZSDI",
+                    "Zorunlu Seçmeli Ders",
+                    6
+                ],
+                [
+                    "SDI",
+                    "Seçmeli Ders",
+                    6
+                ]
+            ],
+            "5": [
+                [
+                    "EBT303",
+                    "Akışkanlar Mekaniği / Strömungsmechanik",
+                    6
+                ],
+                [
+                    "EBT305",
+                    "İstatistik / Statistik",
+                    6
+                ],
+                [
+                    "ZSDII",
+                    "Zorunlu Seçmeli Ders",
+                    6
+                ],
+                [
+                    "ZSDIII",
+                    "Zorunlu Seçmeli Ders",
+                    6
+                ],
+                [
+                    "ZSDIV",
+                    "Zorunlu Seçmeli Ders",
+                    6
+                ]
+            ],
+            "6": [
+                [
+                    "EBT308",
+                    "Uygulamalı Enerji Bilimi Laboratuvarı / Angewandtes...",
+                    6
+                ],
+                [
+                    "EBT302",
+                    "Nümerik Analiz / Numerische Analyse",
+                    6
+                ],
+                [
+                    "EBT306",
+                    "Isı Transferi / Wärmeübertragung",
+                    6
+                ],
+                [
+                    "ZSDV",
+                    "Zorunlu Seçmeli Ders",
+                    6
+                ],
+                [
+                    "ZSDVI",
+                    "Zorunlu Seçmeli Ders",
+                    6
+                ]
+            ],
+            "7": [
+                [
+                    "EBT401",
+                    "Proje I (Tez Hazırlık ve Seminer) / Projekt I",
+                    6
+                ],
+                [
+                    "ISG001",
+                    "İş Sağlığı ve Güvenliği I / Arbeitsschutz... I",
+                    2
+                ],
+                [
+                    "ENG301",
+                    "İleri İngilizce I / Fortgeschrittenes Englisch I",
+                    2
+                ],
+                [
+                    "ZSDVII",
+                    "Zorunlu Seçmeli Ders",
+                    6
+                ],
+                [
+                    "ZSDVIII",
+                    "Zorunlu Seçmeli Ders",
+                    6
+                ],
+                [
+                    "SDII",
+                    "Seçmeli Ders",
+                    6
+                ],
+                [
+                    "ÜSDI",
+                    "Üniversite Seçmeli Ders",
+                    2
+                ]
+            ],
+            "8": [
+                [
+                    "EBT402",
+                    "Proje II",
+                    10
+                ],
+                [
+                    "EBT404",
+                    "Seminer / Seminar",
+                    2
+                ],
+                [
+                    "EBT406",
+                    "Enerji Yönetimi / Energiemanagement",
+                    6
+                ],
+                [
+                    "PRK400",
+                    "Endüstri Stajı Semineri / Industriepraktikum Seminar",
+                    5
+                ],
+                [
+                    "ISG002",
+                    "İş Sağlığı ve Güvenliği II / Arbeitsschutz... II",
+                    2
+                ],
+                [
+                    "ENG302",
+                    "İleri İngilizce II / Fortgeschrittenes Englisch II",
+                    2
+                ],
+                [
+                    "ÜSDII",
+                    "Üniversite Seçmeli Ders",
+                    3
+                ]
+            ]
+        },
+        "pools": {
+            "ZSD": [
+                [
+                    "EBT311",
+                    "Hidrojen Enerjisi ve Yakıt Hücreleri",
+                    0
+                ],
+                [
+                    "EBT313",
+                    "Enerji Sistemlerinde Optimizasyon",
+                    6
+                ],
+                [
+                    "EBT301",
+                    "Güneş Enerjisi Sistemleri",
+                    6
+                ],
+                [
+                    "EBT304",
+                    "Rüzgar Enerjisi",
+                    6
+                ],
+                [
+                    "EBT307",
+                    "Hammadde ve Enerjiye Giriş",
+                    6
+                ],
+                [
+                    "EBT309",
+                    "Kuantum Enerji Sistemlerine Giriş",
+                    6
+                ],
+                [
+                    "EBT310",
+                    "Yenilenebilir Enerji – Malzeme, Yapı, İşlev",
+                    6
+                ],
+                [
+                    "EBT312",
+                    "Sürdürülebilir Enerji",
+                    6
+                ],
+                [
+                    "EBT314",
+                    "Enerji Depolama Sistemleri",
+                    6
+                ],
+                [
+                    "EBT315",
+                    "Güneş Hücreleri Fiziği",
+                    6
+                ],
+                [
+                    "EBT316",
+                    "Nükleer Enerji",
+                    6
+                ],
+                [
+                    "EBT317",
+                    "İleri Nükleer Enerji",
+                    6
+                ],
+                [
+                    "EBT320",
+                    "İleri Kuantum Enerji Sistemleri",
+                    6
+                ],
+                [
+                    "EBT321",
+                    "İnce Film Kaplama Teknolojileri",
+                    6
+                ],
+                [
+                    "EBT322",
+                    "Soğutma Teknolojisi",
+                    6
+                ],
+                [
+                    "EBT323",
+                    "Sürdürülebilir Biyoyakıt Teknolojileri",
+                    6
+                ],
+                [
+                    "EBT324",
+                    "Heterojen Kataliz",
+                    6
+                ],
+                [
+                    "EBT357",
+                    "Makine Öğrenmesine Giriş",
+                    6
+                ],
+                [
+                    "EBT403",
+                    "Enerji Ekonomisi ve Politikaları",
+                    6
+                ],
+                [
+                    "EBT411",
+                    "Enerji Sistem Modellemesi ve Simülasyonu",
+                    6
+                ],
+                [
+                    "EBT413",
+                    "Kömür İşleme ve Teknolojisi",
+                    6
+                ],
+                [
+                    "EBT415",
+                    "Temiz Yanma Teknolojileri",
+                    6
+                ],
+                [
+                    "NWT408",
+                    "Malzemelerin İleri Karakterizasyon Teknikleri",
+                    6
+                ]
+            ],
+            "SD": [
+                [
+                    "NWI202",
+                    "Fiziksel Kimya 2",
+                    6
+                ],
+                [
+                    "MAT204",
+                    "Veri Analizinin İstatistiksel Yöntemleri",
+                    6
+                ],
+                [
+                    "NWT302",
+                    "Malzeme Üretim ve İşleme Teknolojileri",
+                    6
+                ],
+                [
+                    "EBT326",
+                    "Akıllı Şebekeler",
+                    6
+                ],
+                [
+                    "EBT325",
+                    "İklim Sistemine Giriş",
+                    0
+                ],
+                [
+                    "NWI401",
+                    "Bilimsel Çalışma Yöntemleri",
+                    2
+                ],
+                [
+                    "EBT412",
+                    "Elektrik Makineleri",
+                    6
+                ],
+                [
+                    "MWT405",
+                    "Fonksiyonel Malzemeler",
+                    6
+                ],
+                [
+                    "MWT307",
+                    "Polimerik Malzemeler",
+                    6
+                ]
+            ],
+            "ÜSD": [
+                [
+                    "HUK553",
+                    "Fikri Mülkiyet Hukuku",
+                    2
+                ],
+                [
+                    "KKW321",
+                    "Felsefe Tarihi",
+                    4
+                ],
+                [
+                    "VWL203",
+                    "İktisadi Tarihi",
+                    6
+                ],
+                [
+                    "ING404",
+                    "Girişimcilik",
+                    2
+                ],
+                [
+                    "INF101",
+                    "Bilgisayar Bilimine ve Programlamaya Giriş",
+                    6
+                ],
+                [
+                    "MAB109",
+                    "Statik",
+                    6
+                ],
+                [
+                    "WIN204",
+                    "Muhasebe ve Bilanço",
+                    6
+                ],
+                [
+                    "NWI107",
+                    "Doğa Bilimlerine Giriş",
+                    2
+                ]
+            ]
+        }
+    },
+    "Malzeme Bilimi ve Teknolojileri": {
+        "curriculum": {
+            "1": [
+                [
+                    "PHY111",
+                    "Fizik I",
+                    6
+                ],
+                [
+                    "CHE111",
+                    "Kimya I",
+                    6
+                ],
+                [
+                    "BIO111",
+                    "Biyoloji",
+                    6
+                ],
+                [
+                    "MAT103",
+                    "Analiz I",
+                    6
+                ],
+                [
+                    "MWT101",
+                    "Malzeme Bilimi: Kariyere Giriş ve Etik",
+                    2
+                ],
+                [
+                    "DEU121",
+                    "Teknik Almanca I",
+                    2
+                ],
+                [
+                    "ENG101",
+                    "İngilizce I",
+                    2
+                ]
+            ],
+            "2": [
+                [
+                    "PHY112",
+                    "Fizik II",
+                    6
+                ],
+                [
+                    "CHE112",
+                    "Kimya II",
+                    6
+                ],
+                [
+                    "MAT112",
+                    "Analiz II ve Lineer Cebir",
+                    6
+                ],
+                [
+                    "NWI102",
+                    "Programlamaya Giriş",
+                    6
+                ],
+                [
+                    "NWI106",
+                    "Proje Yönetimi",
+                    2
+                ],
+                [
+                    "DEU122",
+                    "Teknik Almanca II",
+                    2
+                ],
+                [
+                    "ENG102",
+                    "İngilizce II",
+                    2
+                ]
+            ],
+            "3": [
+                [
+                    "NWI201",
+                    "Fiziksel Kimya I",
+                    6
+                ],
+                [
+                    "MWT205",
+                    "Malzeme Biliminin Temelleri",
+                    6
+                ],
+                [
+                    "TUR001",
+                    "Türkçe I",
+                    2
+                ],
+                [
+                    "AIT001",
+                    "Atatürk İlkeleri ve İnkılap Tarihi I",
+                    2
+                ],
+                [
+                    "ENG201",
+                    "İngilizce III",
+                    2
+                ]
+            ],
+            "4": [
+                [
+                    "NWI202",
+                    "Fiziksel Kimya II",
+                    6
+                ],
+                [
+                    "NWI204",
+                    "Ölçüm Teknikleri",
+                    6
+                ],
+                [
+                    "MWT202",
+                    "Katıların Termodinamiği",
+                    6
+                ],
+                [
+                    "TUR002",
+                    "Türkçe II",
+                    2
+                ],
+                [
+                    "AIT002",
+                    "Atatürk İlkeleri ve İnkılap Tarihi II",
+                    2
+                ],
+                [
+                    "ENG202",
+                    "İngilizce IV",
+                    2
+                ]
+            ],
+            "5": [
+                [
+                    "MAT201",
+                    "Diferansiyel Denklemler",
+                    6
+                ],
+                [
+                    "MWT301",
+                    "Reel Kristaller ve Özellikleri",
+                    6
+                ],
+                [
+                    "MWT303",
+                    "Teknik Mekanik",
+                    6
+                ],
+                [
+                    "MWT305",
+                    "Malzeme Biliminde Karakterizasyon Metotları",
+                    6
+                ]
+            ],
+            "6": [
+                [
+                    "NWI302",
+                    "İstatistiksel ve Sayısal Yöntemler",
+                    6
+                ],
+                [
+                    "MWT302",
+                    "Malzeme Üretim ve İşleme Teknolojileri",
+                    6
+                ],
+                [
+                    "MWT304",
+                    "Malzemelerin Mekanik Özellikleri",
+                    6
+                ]
+            ],
+            "7": [
+                [
+                    "MWT401",
+                    "Proje I",
+                    6
+                ],
+                [
+                    "NWI401",
+                    "Bilimsel Çalışma Yöntemleri",
+                    2
+                ],
+                [
+                    "ISG001",
+                    "İş Sağlığı ve İş Güvenliği I",
+                    2
+                ],
+                [
+                    "ENG301",
+                    "İleri İngilizce I",
+                    2
+                ]
+            ],
+            "8": [
+                [
+                    "MWT402",
+                    "Proje II",
+                    12
+                ],
+                [
+                    "MWT404",
+                    "Seminer",
+                    4
+                ],
+                [
+                    "PRK400",
+                    "Endüstri Stajı Semineri",
+                    4
+                ],
+                [
+                    "ISG002",
+                    "İş Sağlığı ve İş Güvenliği II",
+                    2
+                ],
+                [
+                    "ENG302",
+                    "İleri İngilizce II",
+                    2
+                ],
+                [
+                    "ÜSD",
+                    "Üniversite Seçmeli Dersi",
+                    3
+                ]
+            ]
+        },
+        "pools": {
+            "KODU": [],
+            "ZSD I": [],
+            "ETE101": [],
+            "MEC109": [],
+            "MWT203": [],
+            "MWT201": [],
+            "NWI203": [],
+            "ZSD II": [],
+            "NWI206": [],
+            "MWT406": [],
+            "ZSD III": [],
+            "MEC207": [],
+            "MWT311": [],
+            "ZSD IV": [],
+            "MWT306": [],
+            "MWT308": [],
+            "MWT310": [],
+            "MWT312": [],
+            "MWT408": [],
+            "ZSD V": [],
+            "MWT307": [],
+            "MWT309": [],
+            "MWT403": [],
+            "MWT405": [],
+            "NWI405": [],
+            "NWI407": [],
+            "ZSD VI": [],
+            "NWI300": []
+        }
+    },
+    "Moleküler Biyoteknoloji": {
+        "curriculum": {
+            "1": [
+                [
+                    "BIO111",
+                    "Biyoloji",
+                    6
+                ],
+                [
+                    "CHE111",
+                    "Kimya I",
+                    6
+                ],
+                [
+                    "DEU121",
+                    "Teknik Almanca I",
+                    2
+                ],
+                [
+                    "ENG101",
+                    "İngilizce I",
+                    2
+                ],
+                [
+                    "MAT103",
+                    "Analiz I",
+                    6
+                ],
+                [
+                    "MBT101",
+                    "Moleküler Biyoteknoloji'ye Giriş",
+                    2
+                ],
+                [
+                    "PHY111",
+                    "Fizik I",
+                    6
+                ]
+            ],
+            "2": [
+                [
+                    "CHE112",
+                    "Kimya II",
+                    6
+                ],
+                [
+                    "DEU122",
+                    "Teknik Almanca II",
+                    2
+                ],
+                [
+                    "ENG102",
+                    "İngilizce II",
+                    2
+                ],
+                [
+                    "MAT112",
+                    "Analiz II ve Lineer Cebir",
+                    6
+                ],
+                [
+                    "NWI102",
+                    "Programlamaya Giriş",
+                    6
+                ],
+                [
+                    "NWI106",
+                    "Proje Yönetimi",
+                    2
+                ],
+                [
+                    "PHY112",
+                    "Fizik II",
+                    6
+                ]
+            ],
+            "3": [
+                [
+                    "AIT001",
+                    "Atatürk İlkeleri ve İnkılap Tarihi I",
+                    2
+                ],
+                [
+                    "ENG201",
+                    "İngilizce III",
+                    2
+                ],
+                [
+                    "MAT201",
+                    "Diferansiyel Denklemler",
+                    6
+                ],
+                [
+                    "MBT201",
+                    "Hücre Biyolojisi",
+                    6
+                ],
+                [
+                    "MBT211",
+                    "Biyokimya I",
+                    6
+                ],
+                [
+                    "NWI201",
+                    "Fiziksel Kimya I",
+                    6
+                ],
+                [
+                    "TUR001",
+                    "Türkçe I",
+                    2
+                ]
+            ],
+            "4": [
+                [
+                    "AIT002",
+                    "Atatürk İlkeleri ve İnkılap Tarihi II",
+                    2
+                ],
+                [
+                    "ENG202",
+                    "İngilizce IV",
+                    2
+                ],
+                [
+                    "MBT204",
+                    "Mikrobiyoloji I",
+                    6
+                ],
+                [
+                    "MBT206",
+                    "Biyoenformatik",
+                    6
+                ],
+                [
+                    "MBT212",
+                    "Biyokimya II",
+                    6
+                ],
+                [
+                    "MBT222",
+                    "Moleküler Biyoteknoloji I",
+                    6
+                ],
+                [
+                    "TUR002",
+                    "Türkçe II",
+                    2
+                ]
+            ],
+            "5": [
+                [
+                    "ENG301",
+                    "İleri İngilizce I",
+                    2
+                ],
+                [
+                    "ISG001",
+                    "İş Sağlığı ve Güvenliği I",
+                    2
+                ],
+                [
+                    "MBT323",
+                    "Moleküler Biyoteknoloji II",
+                    6
+                ],
+                [
+                    "SDBIOI",
+                    "Seçmeli Dersler-BIO I",
+                    18
+                ],
+                [
+                    "ÜSD000",
+                    "Üniversite Seçmeli Ders Havuzu",
+                    2
+                ]
+            ],
+            "6": [
+                [
+                    "ENG302",
+                    "İleri İngilizce II",
+                    2
+                ],
+                [
+                    "ISG002",
+                    "İş Sağlığı ve İş Güvenliği II",
+                    2
+                ],
+                [
+                    "MBT324",
+                    "Moleküler Biyoteknoloji III",
+                    5
+                ],
+                [
+                    "MBT332",
+                    "Biyoteknoloji İşletmeleri Sist. Tek. I",
+                    6
+                ],
+                [
+                    "MBT364",
+                    "Biyoanalitik",
+                    6
+                ],
+                [
+                    "NWI300",
+                    "Temel Hukuk",
+                    3
+                ],
+                [
+                    "SDBIOII",
+                    "Seçmeli Dersler",
+                    6
+                ]
+            ],
+            "7": [
+                [
+                    "MBT441",
+                    "Proje I",
+                    6
+                ],
+                [
+                    "PRK401",
+                    "Staj",
+                    6
+                ],
+                [
+                    "SDBIOIII",
+                    "Seçmeli Dersler",
+                    12
+                ],
+                [
+                    "SDMATI",
+                    "Seçmeli Dersler",
+                    6
+                ]
+            ],
+            "8": [
+                [
+                    "MBT442",
+                    "Proje II",
+                    12
+                ],
+                [
+                    "SDBIOIV",
+                    "Seçmeli Dersler",
+                    12
+                ],
+                [
+                    "SDMATII",
+                    "Seçmeli Dersler",
+                    6
+                ]
+            ]
+        },
+        "pools": {
+            "ÜSD": [
+                [
+                    "MBT361",
+                    "Mikrobiyoloji II",
+                    6
+                ],
+                [
+                    "MBT363",
+                    "İmmünoloji",
+                    6
+                ],
+                [
+                    "MBT365",
+                    "Ekoloji",
+                    6
+                ],
+                [
+                    "MBT367",
+                    "Evrim Biyolojisi",
+                    6
+                ],
+                [
+                    "NWI301",
+                    "Biyobilimler için Organik Kimya",
+                    6
+                ],
+                [
+                    "BAU091",
+                    "İnşaat Mühendisliğine Giriş",
+                    2
+                ],
+                [
+                    "BWL201",
+                    "Pazarlamanın Temelleri",
+                    5
+                ],
+                [
+                    "BWL212",
+                    "Stratejik Pazarlama",
+                    5
+                ],
+                [
+                    "ETE091",
+                    "Elektrik-Elektronik Mühendisliğine Giriş",
+                    2
+                ],
+                [
+                    "ETE101",
+                    "Sayısal Tasarım",
+                    6
+                ],
+                [
+                    "INF102",
+                    "Nesnel Programlama",
+                    6
+                ],
+                [
+                    "MAB091",
+                    "Makine Mühendisliğine Giriş",
+                    2
+                ],
+                [
+                    "MAB109",
+                    "Statik",
+                    6
+                ],
+                [
+                    "MAB207",
+                    "Malzeme Teknolojisi I",
+                    6
+                ],
+                [
+                    "VWL203",
+                    "İktisadi Tarih",
+                    6
+                ],
+                [
+                    "WIN091",
+                    "Endüstri Mühendisliğine Giriş",
+                    2
+                ],
+                [
+                    "WIN204",
+                    "Muhasebe ve Bilanço",
+                    6
+                ]
+            ],
+            "SDBIOII": [
+                [
+                    "MBT202",
+                    "Biyofiziksel Kimya",
+                    6
+                ],
+                [
+                    "MBT326",
+                    "Biyoelektrokimya",
+                    6
+                ],
+                [
+                    "MBT336",
+                    "Biyokataliz",
+                    6
+                ],
+                [
+                    "NWI202",
+                    "Fiziksel Kimya II",
+                    6
+                ]
+            ],
+            "SDBIOIII": [
+                [
+                    "MBT433",
+                    "Biyoteknoloji İşletmeleri için Sistem Teknikleri II",
+                    6
+                ],
+                [
+                    "MBT471",
+                    "Hücre-Malzeme Etkileşimleri",
+                    6
+                ],
+                [
+                    "MBT473",
+                    "Doku Mühendisliği",
+                    6
+                ],
+                [
+                    "MBT475",
+                    "Biyosensörler",
+                    6
+                ],
+                [
+                    "MBT477",
+                    "Nanobiyoteknoloji",
+                    6
+                ],
+                [
+                    "MBT479",
+                    "Hedeflendirilmiş İlaç Taşıma",
+                    6
+                ]
+            ],
+            "SDBIOIV": [
+                [
+                    "MBT474",
+                    "Popülasyon Genetiği",
+                    6
+                ],
+                [
+                    "MBT476",
+                    "Etken Madde Araştırmaları",
+                    6
+                ],
+                [
+                    "MBT478",
+                    "Doğal Madde Üretimi",
+                    6
+                ],
+                [
+                    "MBT480",
+                    "Egzersizin Moleküler Biyolojisi",
+                    6
+                ],
+                [
+                    "MWT310",
+                    "Biyomalzemeler",
+                    6
+                ]
+            ],
+            "SDMATI": [
+                [
+                    "MBT453",
+                    "Biyomatematik",
+                    6
+                ],
+                [
+                    "MBT455",
+                    "Biyofizik",
+                    6
+                ]
+            ],
+            "SDMATII": [
+                [
+                    "MBT456",
+                    "Nicel Biyoloji",
+                    6
+                ],
+                [
+                    "MBT458",
+                    "Biyoistatistik",
+                    6
+                ],
+                [
+                    "MBT460",
+                    "Duyu Organlarının Biyofiziği",
+                    6
+                ],
+                [
+                    "MBT488",
+                    "Biyomedikal İşaret işleme ve Yapay Zeka Uygulamaları",
+                    6
+                ],
+                [
+                    "NWI302",
+                    "İstatistiksel ve Sayısal Yöntemler",
+                    6
+                ],
+                [
+                    "NWI402",
+                    "Biyobilimler için MATLAB",
+                    6
+                ]
+            ]
+        }
+    },
     "Hukuk Fakültesi": {
         "curriculum": {
             "1": [
@@ -232,6 +1449,11 @@ DEPARTMENTS_DATA = {
                     "TUR001",
                     "Türk Dili I",
                     2
+                ],
+                [
+                    "HUKSD5",
+                    "Seçimlik Dersler",
+                    2
                 ]
             ],
             "6": [
@@ -284,6 +1506,11 @@ DEPARTMENTS_DATA = {
                     "TUR002",
                     "Türk Dili II",
                     2
+                ],
+                [
+                    "HUKSD6",
+                    "Seçimlik Dersler",
+                    2
                 ]
             ],
             "7": [
@@ -330,6 +1557,11 @@ DEPARTMENTS_DATA = {
                 [
                     "AIT001",
                     "Atatürk İlkeleri ve İnkılâp Tarihi I",
+                    2
+                ],
+                [
+                    "HUKSD7",
+                    "Seçimlik Dersler",
                     2
                 ],
                 [
@@ -383,11 +1615,16 @@ DEPARTMENTS_DATA = {
                     "AIT002",
                     "Atatürk İlkeleri ve İnkılâp Tarihi II",
                     2
+                ],
+                [
+                    "HUKSD8",
+                    "Seçimlik Dersler",
+                    2
                 ]
             ]
         },
         "pools": {
-            "AKTS": [],
+            "MODÜL": [],
             "HUKSD5": [
                 [
                     "HUK561",
@@ -477,1267 +1714,6 @@ DEPARTMENTS_DATA = {
                 ]
             ]
         }
-    },
-    "ENERJİ BİLİMİ VE TEKNOLOJİLERİ": {
-        "curriculum": {
-            "1": [
-                [
-                    "PHY111",
-                    "Fizik I / Physik I",
-                    6
-                ],
-                [
-                    "CHE111",
-                    "Kimya I / Chemie I",
-                    6
-                ],
-                [
-                    "EBT103",
-                    "Enerji Bilimi ve Teknolojilerine Giriş / Einführung...",
-                    2
-                ],
-                [
-                    "MAT103",
-                    "Analiz I / Analysis I",
-                    6
-                ],
-                [
-                    "EBT105",
-                    "Teknik Çizim ve CAD / Technisches Zeichnen und CAD",
-                    6
-                ],
-                [
-                    "DEU121",
-                    "Teknik Almanca I / Technisches Deutsch I",
-                    2
-                ],
-                [
-                    "ENG101",
-                    "İngilizce I / Englisch I",
-                    2
-                ]
-            ],
-            "2": [
-                [
-                    "PHY112",
-                    "Fizik II / Physik II",
-                    6
-                ],
-                [
-                    "CHE112",
-                    "Kimya II / Chemie II",
-                    6
-                ],
-                [
-                    "MAT112",
-                    "Analiz II ve Lineer Cebir / Analysis II und Lineare Algebra",
-                    6
-                ],
-                [
-                    "EBT104",
-                    "Bilimsel Programlama / Wissenschaftliches Programmierung",
-                    6
-                ],
-                [
-                    "NWI106",
-                    "Proje Yönetimi / Projektmanagement",
-                    2
-                ],
-                [
-                    "DEU122",
-                    "Teknik Almanca II / Technisches Deutsch II",
-                    2
-                ],
-                [
-                    "ENG102",
-                    "İngilizce II / Englisch II",
-                    2
-                ]
-            ],
-            "3": [
-                [
-                    "EBT201",
-                    "Yenilenebilir Enerji Teknolojileri / Erneuerbare...",
-                    6
-                ],
-                [
-                    "EBT203",
-                    "Elektrokimya / Electrochemie",
-                    6
-                ],
-                [
-                    "MAT201",
-                    "Diferansiyel Denklemler / Diferentialgleichungen",
-                    6
-                ],
-                [
-                    "NWI206",
-                    "Elektroteknik / Elektrotechnik",
-                    6
-                ],
-                [
-                    "TUR001",
-                    "Türkçe I / Türkisch I",
-                    2
-                ],
-                [
-                    "AIT001",
-                    "Atatürk İlkeleri ve İnkılap Tarihi I",
-                    2
-                ],
-                [
-                    "ENG201",
-                    "İngilizce III / Englisch III",
-                    2
-                ]
-            ],
-            "4": [
-                [
-                    "EBT204",
-                    "Termodinamik / Thermodynamik",
-                    6
-                ],
-                [
-                    "EBT206",
-                    "Katıhal Fiziği / Festkörperphysik",
-                    6
-                ],
-                [
-                    "TUR002",
-                    "Türkçe II / Türkisch II",
-                    2
-                ],
-                [
-                    "AIT002",
-                    "Atatürk İlkeleri ve İnkılap Tarihi II",
-                    2
-                ],
-                [
-                    "ENG202",
-                    "İngilizce IV / Englisch IV",
-                    2
-                ]
-            ],
-            "5": [
-                [
-                    "EBT303",
-                    "Akışkanlar Mekaniği / Strömungsmechanik",
-                    6
-                ],
-                [
-                    "EBT305",
-                    "İstatistik / Statistik",
-                    6
-                ]
-            ],
-            "6": [
-                [
-                    "EBT308",
-                    "Uygulamalı Enerji Bilimi Laboratuvarı / Angewandtes...",
-                    6
-                ],
-                [
-                    "EBT302",
-                    "Nümerik Analiz / Numerische Analyse",
-                    6
-                ],
-                [
-                    "EBT306",
-                    "Isı Transferi / Wärmeübertragung",
-                    6
-                ]
-            ],
-            "7": [
-                [
-                    "EBT401",
-                    "Proje I (Tez Hazırlık ve Seminer) / Projekt I",
-                    6
-                ],
-                [
-                    "ISG001",
-                    "İş Sağlığı ve Güvenliği I / Arbeitsschutz... I",
-                    2
-                ],
-                [
-                    "ENG301",
-                    "İleri İngilizce I / Fortgeschrittenes Englisch I",
-                    2
-                ]
-            ],
-            "8": [
-                [
-                    "EBT402",
-                    "Proje II",
-                    10
-                ],
-                [
-                    "EBT404",
-                    "Seminer / Seminar",
-                    2
-                ],
-                [
-                    "EBT406",
-                    "Enerji Yönetimi / Energiemanagement",
-                    6
-                ],
-                [
-                    "PRK400",
-                    "Endüstri Stajı Semineri / Industriepraktikum Seminar",
-                    5
-                ],
-                [
-                    "ISG002",
-                    "İş Sağlığı ve Güvenliği II / Arbeitsschutz... II",
-                    2
-                ],
-                [
-                    "ENG302",
-                    "İleri İngilizce II / Fortgeschrittenes Englisch II",
-                    2
-                ],
-                [
-                    "EBT311",
-                    "Hidrojen Enerjisi ve Yakıt Hücreleri",
-                    0
-                ],
-                [
-                    "EBT313",
-                    "Enerji Sistemlerinde Optimizasyon",
-                    6
-                ],
-                [
-                    "EBT301",
-                    "Güneş Enerjisi Sistemleri",
-                    6
-                ],
-                [
-                    "EBT304",
-                    "Rüzgar Enerjisi",
-                    6
-                ],
-                [
-                    "EBT307",
-                    "Hammadde ve Enerjiye Giriş",
-                    6
-                ],
-                [
-                    "EBT309",
-                    "Kuantum Enerji Sistemlerine Giriş",
-                    6
-                ],
-                [
-                    "EBT310",
-                    "Yenilenebilir Enerji – Malzeme, Yapı, İşlev",
-                    6
-                ],
-                [
-                    "EBT312",
-                    "Sürdürülebilir Enerji",
-                    6
-                ],
-                [
-                    "EBT314",
-                    "Enerji Depolama Sistemleri",
-                    6
-                ],
-                [
-                    "EBT315",
-                    "Güneş Hücreleri Fiziği",
-                    6
-                ],
-                [
-                    "EBT316",
-                    "Nükleer Enerji",
-                    6
-                ],
-                [
-                    "EBT317",
-                    "İleri Nükleer Enerji",
-                    6
-                ],
-                [
-                    "EBT320",
-                    "İleri Kuantum Enerji Sistemleri",
-                    6
-                ],
-                [
-                    "EBT321",
-                    "İnce Film Kaplama Teknolojileri",
-                    6
-                ],
-                [
-                    "EBT322",
-                    "Soğutma Teknolojisi",
-                    6
-                ],
-                [
-                    "EBT323",
-                    "Sürdürülebilir Biyoyakıt Teknolojileri",
-                    6
-                ],
-                [
-                    "EBT324",
-                    "Heterojen Kataliz",
-                    6
-                ],
-                [
-                    "EBT357",
-                    "Makine Öğrenmesine Giriş",
-                    6
-                ],
-                [
-                    "EBT403",
-                    "Enerji Ekonomisi ve Politikaları",
-                    6
-                ],
-                [
-                    "EBT411",
-                    "Enerji Sistem Modellemesi ve Simülasyonu",
-                    6
-                ],
-                [
-                    "EBT413",
-                    "Kömür İşleme ve Teknolojisi",
-                    6
-                ],
-                [
-                    "EBT415",
-                    "Temiz Yanma Teknolojileri",
-                    6
-                ],
-                [
-                    "NWT408",
-                    "Malzemelerin İleri Karakterizasyon Teknikleri",
-                    6
-                ],
-                [
-                    "NWI202",
-                    "Fiziksel Kimya 2",
-                    6
-                ],
-                [
-                    "MAT204",
-                    "Veri Analizinin İstatistiksel Yöntemleri",
-                    6
-                ],
-                [
-                    "NWT302",
-                    "Malzeme Üretim ve İşleme Teknolojileri",
-                    6
-                ],
-                [
-                    "EBT326",
-                    "Akıllı Şebekeler",
-                    6
-                ],
-                [
-                    "EBT325",
-                    "İklim Sistemine Giriş",
-                    0
-                ],
-                [
-                    "NWI401",
-                    "Bilimsel Çalışma Yöntemleri",
-                    2
-                ],
-                [
-                    "EBT412",
-                    "Elektrik Makineleri",
-                    6
-                ],
-                [
-                    "MWT405",
-                    "Fonksiyonel Malzemeler",
-                    6
-                ],
-                [
-                    "MWT307",
-                    "Polimerik Malzemeler",
-                    6
-                ],
-                [
-                    "HUK553",
-                    "Fikri Mülkiyet Hukuku",
-                    2
-                ],
-                [
-                    "KKW321",
-                    "Felsefe Tarihi",
-                    4
-                ],
-                [
-                    "VWL203",
-                    "İktisadi Tarihi",
-                    6
-                ],
-                [
-                    "ING404",
-                    "Girişimcilik",
-                    2
-                ],
-                [
-                    "INF101",
-                    "Bilgisayar Bilimine ve Programlamaya Giriş",
-                    6
-                ],
-                [
-                    "MAB109",
-                    "Statik",
-                    6
-                ],
-                [
-                    "WIN204",
-                    "Muhasebe ve Bilanço",
-                    6
-                ],
-                [
-                    "NWI107",
-                    "Doğa Bilimlerine Giriş",
-                    2
-                ]
-            ]
-        },
-        "pools": {}
-    },
-    "MALZEME BİLİMİ VE TEKNOLOJİLERİ": {
-        "curriculum": {
-            "1": [
-                [
-                    "BIO111",
-                    "Biyoloji",
-                    6
-                ],
-                [
-                    "CHE111",
-                    "Kimya I",
-                    6
-                ],
-                [
-                    "DEU121",
-                    "Teknik Almanca I",
-                    2
-                ],
-                [
-                    "ENG101",
-                    "İngilizce I",
-                    2
-                ],
-                [
-                    "MAT103",
-                    "Analiz I",
-                    6
-                ],
-                [
-                    "MBT101",
-                    "Moleküler Biyoteknoloji'ye Giriş",
-                    2
-                ],
-                [
-                    "PHY111",
-                    "Fizik I",
-                    6
-                ]
-            ],
-            "2": [
-                [
-                    "CHE112",
-                    "Kimya II",
-                    6
-                ],
-                [
-                    "DEU122",
-                    "Teknik Almanca II",
-                    2
-                ],
-                [
-                    "ENG102",
-                    "İngilizce II",
-                    2
-                ],
-                [
-                    "MAT112",
-                    "Analiz II ve Lineer Cebir",
-                    6
-                ],
-                [
-                    "NWI102",
-                    "Programlamaya Giriş",
-                    6
-                ],
-                [
-                    "NWI106",
-                    "Proje Yönetimi",
-                    2
-                ],
-                [
-                    "PHY112",
-                    "Fizik II",
-                    6
-                ]
-            ],
-            "3": [
-                [
-                    "AIT001",
-                    "Atatürk İlkeleri ve İnkılap Tarihi I",
-                    2
-                ],
-                [
-                    "ENG201",
-                    "İngilizce III",
-                    2
-                ],
-                [
-                    "MAT201",
-                    "Diferansiyel Denklemler",
-                    6
-                ],
-                [
-                    "MBT201",
-                    "Hücre Biyolojisi",
-                    6
-                ],
-                [
-                    "MBT211",
-                    "Biyokimya I",
-                    6
-                ],
-                [
-                    "NWI201",
-                    "Fiziksel Kimya I",
-                    6
-                ],
-                [
-                    "TUR001",
-                    "Türkçe I",
-                    2
-                ]
-            ],
-            "4": [
-                [
-                    "AIT002",
-                    "Atatürk İlkeleri ve İnkılap Tarihi II",
-                    2
-                ],
-                [
-                    "ENG202",
-                    "İngilizce IV",
-                    2
-                ],
-                [
-                    "MBT204",
-                    "Mikrobiyoloji I",
-                    6
-                ],
-                [
-                    "MBT206",
-                    "Biyoenformatik",
-                    6
-                ],
-                [
-                    "MBT212",
-                    "Biyokimya II",
-                    6
-                ],
-                [
-                    "MBT222",
-                    "Moleküler Biyoteknoloji I",
-                    6
-                ],
-                [
-                    "TUR002",
-                    "Türkçe II",
-                    2
-                ]
-            ],
-            "5": [
-                [
-                    "ENG301",
-                    "İleri İngilizce I",
-                    2
-                ],
-                [
-                    "ISG001",
-                    "İş Sağlığı ve Güvenliği I",
-                    2
-                ],
-                [
-                    "MBT323",
-                    "Moleküler Biyoteknoloji II",
-                    6
-                ],
-                [
-                    "ÜSD000",
-                    "Üniversite Seçmeli Ders Havuzu",
-                    2
-                ],
-                [
-                    "ENG302",
-                    "İleri İngilizce II",
-                    2
-                ],
-                [
-                    "ISG002",
-                    "İş Sağlığı ve İş Güvenliği II",
-                    2
-                ],
-                [
-                    "MBT324",
-                    "Moleküler Biyoteknoloji III",
-                    5
-                ],
-                [
-                    "MBT332",
-                    "Biyoteknoloji İşletmeleri Sist. Tek. I",
-                    6
-                ],
-                [
-                    "MBT364",
-                    "Biyoanalitik",
-                    6
-                ],
-                [
-                    "NWI300",
-                    "Temel Hukuk",
-                    3
-                ],
-                [
-                    "MBT441",
-                    "Proje I",
-                    6
-                ],
-                [
-                    "PRK401",
-                    "Staj",
-                    6
-                ],
-                [
-                    "MBT442",
-                    "Proje II",
-                    12
-                ],
-                [
-                    "MBT361",
-                    "Mikrobiyoloji II",
-                    6
-                ],
-                [
-                    "MBT363",
-                    "İmmünoloji",
-                    6
-                ],
-                [
-                    "MBT365",
-                    "Ekoloji",
-                    6
-                ],
-                [
-                    "MBT367",
-                    "Evrim Biyolojisi",
-                    6
-                ],
-                [
-                    "NWI301",
-                    "Biyobilimler için Organik Kimya",
-                    6
-                ],
-                [
-                    "BAU091",
-                    "İnşaat Mühendisliğine Giriş",
-                    2
-                ],
-                [
-                    "BWL201",
-                    "Pazarlamanın Temelleri",
-                    5
-                ],
-                [
-                    "BWL212",
-                    "Stratejik Pazarlama",
-                    5
-                ],
-                [
-                    "ETE091",
-                    "Elektrik-Elektronik Mühendisliğine Giriş",
-                    2
-                ],
-                [
-                    "ETE101",
-                    "Sayısal Tasarım",
-                    6
-                ],
-                [
-                    "INF102",
-                    "Nesnel Programlama",
-                    6
-                ],
-                [
-                    "MAB091",
-                    "Makine Mühendisliğine Giriş",
-                    2
-                ],
-                [
-                    "MAB109",
-                    "Statik",
-                    6
-                ],
-                [
-                    "MAB207",
-                    "Malzeme Teknolojisi I",
-                    6
-                ],
-                [
-                    "VWL203",
-                    "İktisadi Tarih",
-                    6
-                ],
-                [
-                    "WIN091",
-                    "Endüstri Mühendisliğine Giriş",
-                    2
-                ],
-                [
-                    "WIN204",
-                    "Muhasebe ve Bilanço",
-                    6
-                ],
-                [
-                    "MBT202",
-                    "Biyofiziksel Kimya",
-                    6
-                ],
-                [
-                    "MBT326",
-                    "Biyoelektrokimya",
-                    6
-                ],
-                [
-                    "MBT336",
-                    "Biyokataliz",
-                    6
-                ],
-                [
-                    "NWI202",
-                    "Fiziksel Kimya II",
-                    6
-                ],
-                [
-                    "MBT433",
-                    "Biyoteknoloji İşletmeleri için Sistem Teknikleri II",
-                    6
-                ],
-                [
-                    "MBT471",
-                    "Hücre-Malzeme Etkileşimleri",
-                    6
-                ],
-                [
-                    "MBT473",
-                    "Doku Mühendisliği",
-                    6
-                ],
-                [
-                    "MBT475",
-                    "Biyosensörler",
-                    6
-                ],
-                [
-                    "MBT477",
-                    "Nanobiyoteknoloji",
-                    6
-                ],
-                [
-                    "MBT479",
-                    "Hedeflendirilmiş İlaç Taşıma",
-                    6
-                ],
-                [
-                    "MBT474",
-                    "Popülasyon Genetiği",
-                    6
-                ],
-                [
-                    "MBT476",
-                    "Etken Madde Araştırmaları",
-                    6
-                ],
-                [
-                    "MBT478",
-                    "Doğal Madde Üretimi",
-                    6
-                ],
-                [
-                    "MBT480",
-                    "Egzersizin Moleküler Biyolojisi",
-                    6
-                ],
-                [
-                    "MWT310",
-                    "Biyomalzemeler",
-                    6
-                ],
-                [
-                    "MBT453",
-                    "Biyomatematik",
-                    6
-                ],
-                [
-                    "MBT455",
-                    "Biyofizik",
-                    6
-                ],
-                [
-                    "MBT456",
-                    "Nicel Biyoloji",
-                    6
-                ],
-                [
-                    "MBT458",
-                    "Biyoistatistik",
-                    6
-                ],
-                [
-                    "MBT460",
-                    "Duyu Organlarının Biyofiziği",
-                    6
-                ],
-                [
-                    "MBT488",
-                    "Biyomedikal İşaret işleme ve Yapay Zeka Uygulamaları",
-                    6
-                ],
-                [
-                    "NWI302",
-                    "İstatistiksel ve Sayısal Yöntemler",
-                    6
-                ],
-                [
-                    "NWI402",
-                    "Biyobilimler için MATLAB",
-                    6
-                ]
-            ]
-        },
-        "pools": {}
-    },
-    "Moleküler Biyoteknoloji": {
-        "curriculum": {
-            "1": [
-                [
-                    "BIO111",
-                    "Biyoloji",
-                    6
-                ],
-                [
-                    "CHE111",
-                    "Kimya I",
-                    6
-                ],
-                [
-                    "DEU121",
-                    "Teknik Almanca I",
-                    2
-                ],
-                [
-                    "ENG101",
-                    "İngilizce I",
-                    2
-                ],
-                [
-                    "MAT103",
-                    "Analiz I",
-                    6
-                ],
-                [
-                    "MBT101",
-                    "Moleküler Biyoteknoloji'ye Giriş",
-                    2
-                ],
-                [
-                    "PHY111",
-                    "Fizik I",
-                    6
-                ]
-            ],
-            "2": [
-                [
-                    "CHE112",
-                    "Kimya II",
-                    6
-                ],
-                [
-                    "DEU122",
-                    "Teknik Almanca II",
-                    2
-                ],
-                [
-                    "ENG102",
-                    "İngilizce II",
-                    2
-                ],
-                [
-                    "MAT112",
-                    "Analiz II ve Lineer Cebir",
-                    6
-                ],
-                [
-                    "NWI102",
-                    "Programlamaya Giriş",
-                    6
-                ],
-                [
-                    "NWI106",
-                    "Proje Yönetimi",
-                    2
-                ],
-                [
-                    "PHY112",
-                    "Fizik II",
-                    6
-                ]
-            ],
-            "3": [
-                [
-                    "AIT001",
-                    "Atatürk İlkeleri ve İnkılap Tarihi I",
-                    2
-                ],
-                [
-                    "ENG201",
-                    "İngilizce III",
-                    2
-                ],
-                [
-                    "MAT201",
-                    "Diferansiyel Denklemler",
-                    6
-                ],
-                [
-                    "MBT201",
-                    "Hücre Biyolojisi",
-                    6
-                ],
-                [
-                    "MBT211",
-                    "Biyokimya I",
-                    6
-                ],
-                [
-                    "NWI201",
-                    "Fiziksel Kimya I",
-                    6
-                ],
-                [
-                    "TUR001",
-                    "Türkçe I",
-                    2
-                ]
-            ],
-            "4": [
-                [
-                    "AIT002",
-                    "Atatürk İlkeleri ve İnkılap Tarihi II",
-                    2
-                ],
-                [
-                    "ENG202",
-                    "İngilizce IV",
-                    2
-                ],
-                [
-                    "MBT204",
-                    "Mikrobiyoloji I",
-                    6
-                ],
-                [
-                    "MBT206",
-                    "Biyoenformatik",
-                    6
-                ],
-                [
-                    "MBT212",
-                    "Biyokimya II",
-                    6
-                ],
-                [
-                    "MBT222",
-                    "Moleküler Biyoteknoloji I",
-                    6
-                ],
-                [
-                    "TUR002",
-                    "Türkçe II",
-                    2
-                ]
-            ],
-            "5": [
-                [
-                    "ENG301",
-                    "İleri İngilizce I",
-                    2
-                ],
-                [
-                    "ISG001",
-                    "İş Sağlığı ve Güvenliği I",
-                    2
-                ],
-                [
-                    "MBT323",
-                    "Moleküler Biyoteknoloji II",
-                    6
-                ],
-                [
-                    "ÜSD000",
-                    "Üniversite Seçmeli Ders Havuzu",
-                    2
-                ],
-                [
-                    "ENG302",
-                    "İleri İngilizce II",
-                    2
-                ],
-                [
-                    "ISG002",
-                    "İş Sağlığı ve İş Güvenliği II",
-                    2
-                ],
-                [
-                    "MBT324",
-                    "Moleküler Biyoteknoloji III",
-                    5
-                ],
-                [
-                    "MBT332",
-                    "Biyoteknoloji İşletmeleri Sist. Tek. I",
-                    6
-                ],
-                [
-                    "MBT364",
-                    "Biyoanalitik",
-                    6
-                ],
-                [
-                    "NWI300",
-                    "Temel Hukuk",
-                    3
-                ],
-                [
-                    "MBT441",
-                    "Proje I",
-                    6
-                ],
-                [
-                    "PRK401",
-                    "Staj",
-                    6
-                ],
-                [
-                    "MBT442",
-                    "Proje II",
-                    12
-                ],
-                [
-                    "MBT361",
-                    "Mikrobiyoloji II",
-                    6
-                ],
-                [
-                    "MBT363",
-                    "İmmünoloji",
-                    6
-                ],
-                [
-                    "MBT365",
-                    "Ekoloji",
-                    6
-                ],
-                [
-                    "MBT367",
-                    "Evrim Biyolojisi",
-                    6
-                ],
-                [
-                    "NWI301",
-                    "Biyobilimler için Organik Kimya",
-                    6
-                ],
-                [
-                    "BAU091",
-                    "İnşaat Mühendisliğine Giriş",
-                    2
-                ],
-                [
-                    "BWL201",
-                    "Pazarlamanın Temelleri",
-                    5
-                ],
-                [
-                    "BWL212",
-                    "Stratejik Pazarlama",
-                    5
-                ],
-                [
-                    "ETE091",
-                    "Elektrik-Elektronik Mühendisliğine Giriş",
-                    2
-                ],
-                [
-                    "ETE101",
-                    "Sayısal Tasarım",
-                    6
-                ],
-                [
-                    "INF102",
-                    "Nesnel Programlama",
-                    6
-                ],
-                [
-                    "MAB091",
-                    "Makine Mühendisliğine Giriş",
-                    2
-                ],
-                [
-                    "MAB109",
-                    "Statik",
-                    6
-                ],
-                [
-                    "MAB207",
-                    "Malzeme Teknolojisi I",
-                    6
-                ],
-                [
-                    "VWL203",
-                    "İktisadi Tarih",
-                    6
-                ],
-                [
-                    "WIN091",
-                    "Endüstri Mühendisliğine Giriş",
-                    2
-                ],
-                [
-                    "WIN204",
-                    "Muhasebe ve Bilanço",
-                    6
-                ],
-                [
-                    "MBT202",
-                    "Biyofiziksel Kimya",
-                    6
-                ],
-                [
-                    "MBT326",
-                    "Biyoelektrokimya",
-                    6
-                ],
-                [
-                    "MBT336",
-                    "Biyokataliz",
-                    6
-                ],
-                [
-                    "NWI202",
-                    "Fiziksel Kimya II",
-                    6
-                ],
-                [
-                    "MBT433",
-                    "Biyoteknoloji İşletmeleri için Sistem Teknikleri II",
-                    6
-                ],
-                [
-                    "MBT471",
-                    "Hücre-Malzeme Etkileşimleri",
-                    6
-                ],
-                [
-                    "MBT473",
-                    "Doku Mühendisliği",
-                    6
-                ],
-                [
-                    "MBT475",
-                    "Biyosensörler",
-                    6
-                ],
-                [
-                    "MBT477",
-                    "Nanobiyoteknoloji",
-                    6
-                ],
-                [
-                    "MBT479",
-                    "Hedeflendirilmiş İlaç Taşıma",
-                    6
-                ],
-                [
-                    "MBT474",
-                    "Popülasyon Genetiği",
-                    6
-                ],
-                [
-                    "MBT476",
-                    "Etken Madde Araştırmaları",
-                    6
-                ],
-                [
-                    "MBT478",
-                    "Doğal Madde Üretimi",
-                    6
-                ],
-                [
-                    "MBT480",
-                    "Egzersizin Moleküler Biyolojisi",
-                    6
-                ],
-                [
-                    "MWT310",
-                    "Biyomalzemeler",
-                    6
-                ],
-                [
-                    "MBT453",
-                    "Biyomatematik",
-                    6
-                ],
-                [
-                    "MBT455",
-                    "Biyofizik",
-                    6
-                ],
-                [
-                    "MBT456",
-                    "Nicel Biyoloji",
-                    6
-                ],
-                [
-                    "MBT458",
-                    "Biyoistatistik",
-                    6
-                ],
-                [
-                    "MBT460",
-                    "Duyu Organlarının Biyofiziği",
-                    6
-                ],
-                [
-                    "MBT488",
-                    "Biyomedikal İşaret işleme ve Yapay Zeka Uygulamaları",
-                    6
-                ],
-                [
-                    "NWI302",
-                    "İstatistiksel ve Sayısal Yöntemler",
-                    6
-                ],
-                [
-                    "NWI402",
-                    "Biyobilimler için MATLAB",
-                    6
-                ]
-            ]
-        },
-        "pools": {}
     },
     "Kültür ve İletişim Bölümü": {
         "curriculum": {
@@ -1855,6 +1831,11 @@ DEPARTMENTS_DATA = {
                     "KKW261",
                     "Mesleki Almanca III: Kültürlerarası İletişim",
                     2
+                ],
+                [
+                    "KKWSDI",
+                    "Seçmeli Ders I",
+                    10
                 ]
             ],
             "4": [
@@ -1887,6 +1868,11 @@ DEPARTMENTS_DATA = {
                     "KKW262",
                     "Mesleki Almanca IV: Metin Analizi",
                     2
+                ],
+                [
+                    "KKWSDII",
+                    "Seçmeli Ders II",
+                    10
                 ]
             ],
             "5": [
@@ -1911,6 +1897,13 @@ DEPARTMENTS_DATA = {
                     2
                 ],
                 [
+                    "KKWSDIII",
+                    "Seçmeli Dersler III",
+                    16
+                ]
+            ],
+            "6": [
+                [
                     "ENG302",
                     "İleri İngilizce II",
                     2
@@ -1930,6 +1923,13 @@ DEPARTMENTS_DATA = {
                     "Mesleki Almanca VI: Metin Üretimi II",
                     2
                 ],
+                [
+                    "KKWSDIV",
+                    "Seçmeli Dersler IV",
+                    16
+                ]
+            ],
+            "7": [
                 [
                     "KKW415",
                     "Kültür ve Mekan",
@@ -1956,6 +1956,13 @@ DEPARTMENTS_DATA = {
                     5
                 ],
                 [
+                    "KKWSDV",
+                    "Seçmeli Dersler V",
+                    3
+                ]
+            ],
+            "8": [
+                [
                     "KKW424",
                     "Kültürel ve Yaratıcı Endüstriler / Kurumlar",
                     4
@@ -1968,6 +1975,11 @@ DEPARTMENTS_DATA = {
                 [
                     "KKW428",
                     "Kültür ve Medya Ekonomisi",
+                    4
+                ],
+                [
+                    "KKWSDVI",
+                    "Seçmeli Ders VI",
                     4
                 ],
                 [
@@ -2292,6 +2304,11 @@ DEPARTMENTS_DATA = {
                     "ENG202",
                     "İngilizce IV",
                     2
+                ],
+                [
+                    "SOZSDI",
+                    "Seçmeli Ders",
+                    6
                 ]
             ],
             "5": [
@@ -2314,6 +2331,11 @@ DEPARTMENTS_DATA = {
                     "ÜSD001",
                     "Üniversite Seçmeli Ders Havuzu I",
                     2
+                ],
+                [
+                    "SOZSDII",
+                    "Seçmeli Ders",
+                    6
                 ]
             ],
             "6": [
@@ -2336,6 +2358,11 @@ DEPARTMENTS_DATA = {
                     "ÜSD002",
                     "Üniversite Seçmeli Ders Havuzu II",
                     2
+                ],
+                [
+                    "SOZSDIII",
+                    "Seçmeli Ders",
+                    6
                 ]
             ],
             "7": [
@@ -2358,6 +2385,11 @@ DEPARTMENTS_DATA = {
                     "SOZ437",
                     "Araştırma Semineri",
                     6
+                ],
+                [
+                    "SOZSDIV",
+                    "Seçmeli Ders",
+                    6
                 ]
             ],
             "8": [
@@ -2370,6 +2402,11 @@ DEPARTMENTS_DATA = {
                     "SOZ426",
                     "Bitirme Projesi",
                     12
+                ],
+                [
+                    "SOZSDV",
+                    "Seçmeli Ders",
+                    6
                 ],
                 [
                     "SOZ021",
@@ -2594,6 +2631,11 @@ DEPARTMENTS_DATA = {
         "curriculum": {
             "1": [
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "MAT103",
                     "Analiz I",
                     6
@@ -2630,6 +2672,11 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "2": [
+                [
+                    "DİL",
+                    "T",
+                    0
+                ],
                 [
                     "MAT106",
                     "Lineer Cebir",
@@ -2668,6 +2715,11 @@ DEPARTMENTS_DATA = {
             ],
             "3": [
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "INF201",
                     "Ayrık Yapılar",
                     6
@@ -2704,6 +2756,11 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "4": [
+                [
+                    "DİL",
+                    "T",
+                    0
+                ],
                 [
                     "MAT204",
                     "Veri Analizinin İstatistiksel Yöntemleri",
@@ -2742,6 +2799,16 @@ DEPARTMENTS_DATA = {
             ],
             "5": [
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
+                    "SDP",
+                    "Seçmeli Alan - Proje",
+                    6
+                ],
+                [
                     "USD001",
                     "Üniversite Seçmeli Ders Havuzu I",
                     2
@@ -2758,6 +2825,11 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "6": [
+                [
+                    "DİL",
+                    "T",
+                    0
+                ],
                 [
                     "USD002",
                     "Üniversite Seçmeli Ders Havuzu II",
@@ -2776,6 +2848,11 @@ DEPARTMENTS_DATA = {
             ],
             "7": [
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "INF499",
                     "Mesleki Alan Stajı",
                     6
@@ -2786,9 +2863,26 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "SDIII",
+                    "Seçmeli Dersler III",
+                    18
+                ]
+            ],
+            "8": [
+                [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "INF492",
                     "Bitirme Tezi",
                     12
+                ],
+                [
+                    "SDIV",
+                    "Seçmeli Dersler IV",
+                    18
                 ],
                 [
                     "WIN311",
@@ -3580,6 +3674,11 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "SDII",
+                    "Seçmeli Ders Alanı II / Elective Pool II",
+                    6
+                ],
+                [
                     "ETE092",
                     "Bilimsel Çalışma Yöntemleri / Scientific Work",
                     2
@@ -3689,6 +3788,11 @@ DEPARTMENTS_DATA = {
                     "ETE331",
                     "Elektrik Makineleri I / Electrical Machines I",
                     6
+                ],
+                [
+                    "SDV",
+                    "Seçmeli Ders Alanı V / Elective Pool V",
+                    6
                 ]
             ],
             "6": [
@@ -3700,6 +3804,21 @@ DEPARTMENTS_DATA = {
                 [
                     "ETE372",
                     "Telekomünikasyon / Telecommunications",
+                    6
+                ],
+                [
+                    "SDT",
+                    "Seçmeli Ders Alanı T / Elective Pool T",
+                    6
+                ],
+                [
+                    "SDM",
+                    "Seçmeli Ders Alanı M / Elective Pool M",
+                    6
+                ],
+                [
+                    "SDVI",
+                    "Seçmeli Ders Alanı VI / Elective Pool VI",
                     6
                 ]
             ],
@@ -3723,6 +3842,16 @@ DEPARTMENTS_DATA = {
                     "ENG301",
                     "İleri İngilizce I / Advanced English I",
                     2
+                ],
+                [
+                    "SDP",
+                    "Seçmeli Alan - Proje / Elective Courses - Project",
+                    6
+                ],
+                [
+                    "SDVII",
+                    "Seçmeli Ders Alanı VII",
+                    12
                 ]
             ],
             "8": [
@@ -3745,6 +3874,11 @@ DEPARTMENTS_DATA = {
                     "ENG302",
                     "İleri İngilizce II / Advanced English II",
                     2
+                ],
+                [
+                    "SDVIII",
+                    "Seçmeli Ders Alanı VIII",
+                    12
                 ],
                 [
                     "ETE104",
@@ -4265,6 +4399,21 @@ DEPARTMENTS_DATA = {
                     "WIN315",
                     "Veritabanı Sistemleri",
                     6
+                ],
+                [
+                    "SDP",
+                    "Seçmeli Alan - Proje",
+                    6
+                ],
+                [
+                    "SDI",
+                    "Seçmeli Alan I - İktisadi Bilimler",
+                    6
+                ],
+                [
+                    "ZSDI",
+                    "Zorunlu Seçmeli Alan I",
+                    6
                 ]
             ],
             "6": [
@@ -4276,6 +4425,16 @@ DEPARTMENTS_DATA = {
                 [
                     "WIN314",
                     "Kalite Yönetimi",
+                    6
+                ],
+                [
+                    "SDII",
+                    "Seçmeli Alan II - Endüstri Müh. Araştırma Alanı",
+                    6
+                ],
+                [
+                    "ZSDII",
+                    "Zorunlu Seçmeli Alan II",
                     6
                 ],
                 [
@@ -4309,6 +4468,11 @@ DEPARTMENTS_DATA = {
                     "ISG001",
                     "İş Sağlığı ve Güvenliği I",
                     2
+                ],
+                [
+                    "ZSDI",
+                    "Zorunlu Seçmeli Alan I",
+                    6
                 ]
             ],
             "8": [
@@ -4331,6 +4495,11 @@ DEPARTMENTS_DATA = {
                     "ISG002",
                     "İş Sağlığı ve Güvenliği II",
                     2
+                ],
+                [
+                    "ZSDII",
+                    "Zorunlu Seçmeli Alan II",
+                    6
                 ],
                 [
                     "WIN311",
@@ -4575,6 +4744,11 @@ DEPARTMENTS_DATA = {
         "curriculum": {
             "1": [
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "MAT103",
                     "Analiz I / Calculus I",
                     6
@@ -4611,6 +4785,11 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "2": [
+                [
+                    "DİL",
+                    "T",
+                    0
+                ],
                 [
                     "MAT108",
                     "Analiz II / Calculus II",
@@ -4649,6 +4828,11 @@ DEPARTMENTS_DATA = {
             ],
             "3": [
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "MAB213",
                     "Elektrik ve Elektronik Müh. Temelleri / Fund. of EE Eng.",
                     6
@@ -4685,6 +4869,11 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "4": [
+                [
+                    "DİL",
+                    "T",
+                    0
+                ],
                 [
                     "MAB210",
                     "İmalat Teknolojisinin Temelleri / Fund. Manufacturing Tech.",
@@ -4723,6 +4912,11 @@ DEPARTMENTS_DATA = {
             ],
             "5": [
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "MAB301",
                     "Takım Tezgâhları / Machine Tools",
                     6
@@ -4755,6 +4949,11 @@ DEPARTMENTS_DATA = {
             ],
             "6": [
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "MAB312",
                     "Isı Transferi / Heat Transfer",
                     6
@@ -4762,6 +4961,16 @@ DEPARTMENTS_DATA = {
                 [
                     "MAB314",
                     "Akışkanlar Mekaniği / Fluid Mechanics",
+                    6
+                ],
+                [
+                    "SDK",
+                    "Zorunlu Seçmeli - Kontrol / Compulsary Elective - Control",
+                    6
+                ],
+                [
+                    "SDP",
+                    "Seçmeli Ders Alanı - Proje / Elective Course - Project",
                     6
                 ],
                 [
@@ -4782,8 +4991,18 @@ DEPARTMENTS_DATA = {
             ],
             "7": [
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "MAB499",
                     "Mesleki Alan Stajı / Vocational Internship",
+                    6
+                ],
+                [
+                    "SUP",
+                    "Zorunlu Seçmeli - Uygulamalı Proje / Applied Project",
                     6
                 ],
                 [
@@ -4794,9 +5013,19 @@ DEPARTMENTS_DATA = {
             ],
             "8": [
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "MAB492",
                     "Bitirme Tezi / Bachelor Thesis",
                     12
+                ],
+                [
+                    "SIP",
+                    "D/E",
+                    18
                 ],
                 [
                     "MAB308",
@@ -5711,6 +5940,11 @@ DEPARTMENTS_DATA = {
                     "BAU206",
                     "Yapı Malzemesi ve Kimyası II / Const. Chem. & Materials II",
                     2
+                ],
+                [
+                    "ZSD",
+                    "Zorunlu Seçmeli Ders Alanı",
+                    6
                 ]
             ],
             "5": [
@@ -5723,9 +5957,19 @@ DEPARTMENTS_DATA = {
                     "BAU303",
                     "Ulaştırma / Transportation",
                     6
+                ],
+                [
+                    "ZSD",
+                    "Zorunlu Seçmeli Ders Alanı",
+                    18
                 ]
             ],
             "6": [
+                [
+                    "ZSD",
+                    "Zorunlu Seçmeli Ders Alanı",
+                    24
+                ],
                 [
                     "BAU302",
                     "Zemin Mekaniği ve Temel İnşaatı I / Soil Mechanics I",
@@ -5754,6 +5998,11 @@ DEPARTMENTS_DATA = {
                     4
                 ],
                 [
+                    "ZSD",
+                    "Zorunlu Seçmeli Ders Alanı",
+                    6
+                ],
+                [
                     "USD000",
                     "Üniversite Seçmeli Ders Havuzu",
                     6
@@ -5765,6 +6014,11 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "8": [
+                [
+                    "ZSD",
+                    "Zorunlu Seçmeli Ders Alanı",
+                    10
+                ],
                 [
                     "TUR002",
                     "Türkçe II / Turkish II",
@@ -5784,7 +6038,11 @@ DEPARTMENTS_DATA = {
                     "ENG302",
                     "İleri İngilizce II / Advanced English II",
                     2
-                ],
+                ]
+            ]
+        },
+        "pools": {
+            "ZSD": [
                 [
                     "BAU251",
                     "İnşaat Müh. Nümerik Metotlar / Numerical Methods",
@@ -5956,8 +6214,7 @@ DEPARTMENTS_DATA = {
                     2
                 ]
             ]
-        },
-        "pools": {}
+        }
     },
     "Siyaset Bilimi ve Uluslararası İlişkiler": {
         "curriculum": {
@@ -6070,6 +6327,11 @@ DEPARTMENTS_DATA = {
                     "POL211",
                     "Karşılaştırmalı Siyaset Bilimi",
                     5
+                ],
+                [
+                    "POLSDI",
+                    "Seçmeli Ders Alanı I",
+                    8
                 ]
             ],
             "4": [
@@ -6092,6 +6354,11 @@ DEPARTMENTS_DATA = {
                     "POL212",
                     "Türk Siyasal Hayatı",
                     5
+                ],
+                [
+                    "POLSDII",
+                    "Seçmeli Ders Alanı II",
+                    13
                 ]
             ],
             "5": [
@@ -6118,6 +6385,11 @@ DEPARTMENTS_DATA = {
                 [
                     "POL313",
                     "Türk Dış Politikası I",
+                    5
+                ],
+                [
+                    "POLSDIII",
+                    "Seçmeli Ders Alanı III",
                     5
                 ],
                 [
@@ -6173,6 +6445,11 @@ DEPARTMENTS_DATA = {
                     "POL405",
                     "Avrupa Entegrasyon Teorileri",
                     5
+                ],
+                [
+                    "POLSDIV",
+                    "Seçmeli Ders Alanı IV",
+                    20
                 ]
             ],
             "8": [
@@ -6190,6 +6467,11 @@ DEPARTMENTS_DATA = {
                     "POL406",
                     "Güncel Uluslararası Sorunlar",
                     3
+                ],
+                [
+                    "POLSDV",
+                    "Seçmeli Ders Alanı V",
+                    10
                 ],
                 [
                     "BWL002",
@@ -7462,6 +7744,11 @@ DEPARTMENTS_DATA = {
                     "ENG201",
                     "İngilizce 3",
                     2
+                ],
+                [
+                    "BSD",
+                    "Seçmeli Ders",
+                    3
                 ]
             ],
             "4": [
@@ -7494,6 +7781,11 @@ DEPARTMENTS_DATA = {
                     "ENG202",
                     "İngilizce 4",
                     2
+                ],
+                [
+                    "BSD",
+                    "Seçmeli Ders",
+                    3
                 ]
             ],
             "5": [
@@ -7511,6 +7803,16 @@ DEPARTMENTS_DATA = {
                     "TUR001",
                     "Türkçe 1",
                     2
+                ],
+                [
+                    "SD",
+                    "Seçmeli Ders",
+                    6
+                ],
+                [
+                    "BSD",
+                    "Seçmeli Ders",
+                    3
                 ]
             ],
             "6": [
@@ -7532,6 +7834,16 @@ DEPARTMENTS_DATA = {
                 [
                     "ENG304",
                     "İleri İngilizce 2",
+                    3
+                ],
+                [
+                    "SD",
+                    "Seçmeli Ders",
+                    6
+                ],
+                [
+                    "BSD",
+                    "Seçmeli Ders",
                     3
                 ]
             ],
@@ -7562,6 +7874,11 @@ DEPARTMENTS_DATA = {
                     2
                 ],
                 [
+                    "SD",
+                    "Seçmeli Ders",
+                    6
+                ],
+                [
                     "ÜSD000",
                     "Üniversite Seçmeli Ders Havuzu",
                     3
@@ -7579,9 +7896,29 @@ DEPARTMENTS_DATA = {
                     2
                 ],
                 [
+                    "SD",
+                    "Seçmeli Ders (SD) (Ders 1)**",
+                    6
+                ],
+                [
+                    "SD",
+                    "Seçmeli Ders (SD) (Ders 2)**",
+                    6
+                ],
+                [
+                    "SD",
+                    "Seçmeli Ders (SD) (Ders 3)**",
+                    6
+                ],
+                [
                     "BWL039",
                     "İşletmede Mesleki Eğitim (Vocational Education) ***",
                     18
+                ],
+                [
+                    "BSD",
+                    "İŞLETME ZORUNLU SEÇMELİLERİ",
+                    0
                 ],
                 [
                     "BWL050",
@@ -7632,6 +7969,11 @@ DEPARTMENTS_DATA = {
                     "BWL059",
                     "Uluslararası Öğrenci Projesi",
                     3
+                ],
+                [
+                    "SD",
+                    "İŞLETME BÖLÜM SEÇMELİLERİ",
+                    0
                 ],
                 [
                     "BWL011",
@@ -7822,11 +8164,6 @@ DEPARTMENTS_DATA = {
                     "ÜSDENG111",
                     "Akademik İngilizce",
                     4
-                ],
-                [
-                    "ÜSDTGH 111",
-                    "Türkiye'de Gündelik Hayatın Tarihi",
-                    2
                 ],
                 [
                     "ÜSDKAR123",

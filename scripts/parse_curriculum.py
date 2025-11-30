@@ -47,7 +47,7 @@ def parse_file(filepath):
     
     pool_header_regex = re.compile(r'SEÇMELİ DERS HAVUZLARI|SEÇMELİ DERSLER|SEÇİMLİK DERS MODÜLLERİ', re.IGNORECASE)
     # Matches pool code in header like "| HUKSD5 | ..."
-    pool_code_regex = re.compile(r'\|\s*([A-Z0-9_]{3,})\s*\|', re.IGNORECASE)
+    pool_code_regex = re.compile(r'\|\s*([A-ZİĞÜŞÖÇ0-9_]{3,})\s*\|', re.IGNORECASE)
 
     romans = {'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6, 'VII': 7, 'VIII': 8}
 
@@ -62,7 +62,7 @@ def parse_file(filepath):
         if line.startswith('+'): continue
         
         # Check for Pool Section Start
-        if pool_header_regex.search(line):
+        if pool_header_regex.search(line) and line.count('|') < 5:
             in_pool_section = True
             # Don't continue, might be a header line that also contains pool code
         
@@ -71,12 +71,34 @@ def parse_file(filepath):
             # Look for "| CODE | DESCRIPTION |" pattern
             # But ensure it's not a course line (which also has pipes)
             # Pool headers usually don't have ECTS or have "Seçmeli Modül" text
-            if "MODÜL" in line.upper() or "SEÇMELİ DERSLER" in line.upper():
-                match = pool_code_regex.search(line)
-                if match:
-                    code = match.group(1).strip()
+            # Also handle "| ZSD I - 12 AKTS |" format
+            
+            # Course lines have many pipes (e.g. | CODE | NAME | T | U | L | AKTS | ... |)
+            # Pool headers usually have 2 or 3 pipes.
+            if "MODÜL" in line.upper() or "SEÇMELİ DERSLER" in line.upper() or "SEÇMELİLER" in line.upper() or "ZSD" in line.upper() or "HAVUZU" in line.upper():
+                # Format 1: | CODE | DESCRIPTION |
+                match1 = pool_code_regex.search(line)
+                # Format 2: | DESCRIPTION (CODE) |
+                match2 = re.search(r'\((ZSD[IVX]*|SD[IVX]*|ÜSD[IVX]*|HUKSD[0-9]*)\)', line)
+                # Format 3: | ZSD I - ... |
+                match3 = re.search(r'\|\s*(ZSD\s*[IVX]+)\s*-', line)
+                # Format 4: | CODE SEÇMELİ ... | or | CODE HAVUZU ... |
+                # Matches SDBIOII, SDMATI, ÜSD
+                match4 = re.search(r'\|\s*([A-ZİĞÜŞÖÇ0-9_]{3,})\s+(?:SEÇMELİ|HAVUZU|DERSLER)', line, re.IGNORECASE)
+
+                code = None
+                if match1:
+                    code = match1.group(1).strip()
+                elif match2:
+                    code = match2.group(1).strip()
+                elif match3:
+                    code = match3.group(1).strip()
+                elif match4:
+                    code = match4.group(1).strip()
+                
+                if code:
                     # Ignore if it looks like a course code (e.g. HUK151) unless it's clearly a pool header
-                    # Pool codes often like HUKSD5, SDBIOI
+                    # Pool codes often like HUKSD5, SDBIOI, ZSD, SD, ÜSD
                     current_pool_code = code
                     if current_pool_code not in pools:
                         pools[current_pool_code] = []
@@ -93,10 +115,6 @@ def parse_file(filepath):
                 val = to_int(term_match.group(1))
                 if val > 0: current_semester = val
             elif season_match:
-                # 1. GÜZ -> 1, 2. BAHAR -> 2? Or 1. GÜZ -> 1, 1. BAHAR -> 2?
-                # Usually files say "1. GÜZ", "2. BAHAR", "3. GÜZ"...
-                # Or "1. GÜZ", "1. BAHAR" (rare)
-                # Let's assume the number is the semester number if > 0
                 val = to_int(season_match.group(1))
                 if val > 0: current_semester = val
             elif year_match:
@@ -109,8 +127,6 @@ def parse_file(filepath):
                     elif "II. YARIYIL" in line.upper() or "2. YARIYIL" in line.upper(): current_semester = y_val * 2
                     elif "GÜZ" in line.upper(): current_semester = y_val * 2 - 1
                     elif "BAHAR" in line.upper(): current_semester = y_val * 2
-                    # Fallback: if we matched "II. YIL / III. Yarıyıl", the regex for YARIYIL should have caught it.
-                    # If we are here, maybe it just says "I. YIL"
                     pass
 
         parts = parse_line(line)
@@ -120,8 +136,14 @@ def parse_file(filepath):
         code_idx = -1
         for i, p in enumerate(parts):
             p_clean = p.split(' - ')[0].strip()
-            # Regex for course code: 2+ letters, 3+ digits
-            if re.match(r'^[A-ZİĞÜŞÖÇ]{2,}\s*[0-9]{3,}[A-Z]*$', p_clean):
+            # Regex for course code: 
+            # 1. Standard: 2+ letters + 3+ digits (e.g. MAT103)
+            # 2. Placeholders: ZSD, SD, ÜSD followed by optional Roman numerals or digits (e.g. ZSDII, SDI, ÜSD1)
+            # Exclude common headers
+            if p_clean in ["KOD", "KODU", "TOPLAM", "AKTS", "DERSİN", "T", "U", "L"]:
+                continue
+                
+            if re.match(r'^[A-ZİĞÜŞÖÇ]{2,}[0-9IVX]*$', p_clean):
                 code_idx = i
                 break
         

@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
                              QComboBox, QLineEdit, QTableWidget, QTableWidgetItem, 
-                             QHeaderView, QSplitter, QFrame, QGroupBox)
+                             QHeaderView, QSplitter, QFrame, QGroupBox, QCheckBox)
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QFont
 
@@ -46,6 +46,14 @@ class StudentView(QWidget):
             
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Öğrenci Ara (Ad, Soyad, No)...")
+
+        # Student Type Checkboxes
+        self.chk_regular = QCheckBox("Regular Göster")
+        self.chk_regular.setChecked(True)
+        self.chk_irregular = QCheckBox("Irregular Göster")
+        self.chk_irregular.setChecked(True)
+        self.chk_cap_yandal = QCheckBox("ÇAP/Yandal Göster")
+        self.chk_cap_yandal.setChecked(True)
         
         filter_layout.addWidget(QLabel("Fakülte:"))
         filter_layout.addWidget(self.faculty_combo)
@@ -53,6 +61,10 @@ class StudentView(QWidget):
         filter_layout.addWidget(self.dept_combo)
         filter_layout.addWidget(QLabel("Sınıf:"))
         filter_layout.addWidget(self.year_combo)
+        filter_layout.addWidget(QLabel("Öğrenci Tipi:"))
+        filter_layout.addWidget(self.chk_regular)
+        filter_layout.addWidget(self.chk_irregular)
+        filter_layout.addWidget(self.chk_cap_yandal)
         filter_layout.addWidget(QLabel("Arama:"))
         filter_layout.addWidget(self.search_input)
         
@@ -78,12 +90,21 @@ class StudentView(QWidget):
         info_layout = QVBoxLayout()
         self.lbl_name = QLabel("Öğrenci Seçilmedi")
         self.lbl_name.setFont(QFont("Arial", 12, QFont.Bold))
+        self.lbl_name.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        
         self.lbl_dept = QLabel("-")
+        self.lbl_dept.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        
         self.lbl_no = QLabel("-")
+        self.lbl_no.setTextInteractionFlags(Qt.TextSelectableByMouse)
+
+        self.lbl_semester = QLabel("-")
+        self.lbl_semester.setTextInteractionFlags(Qt.TextSelectableByMouse)
         
         info_layout.addWidget(self.lbl_name)
         info_layout.addWidget(self.lbl_dept)
         info_layout.addWidget(self.lbl_no)
+        info_layout.addWidget(self.lbl_semester)
         self.student_info_group.setLayout(info_layout)
         right_layout.addWidget(self.student_info_group)
         
@@ -107,6 +128,9 @@ class StudentView(QWidget):
         self.dept_combo.currentIndexChanged.connect(self.emit_filter_changed)
         self.year_combo.currentIndexChanged.connect(self.emit_filter_changed)
         self.search_input.textChanged.connect(self.emit_filter_changed)
+        self.chk_regular.stateChanged.connect(self.emit_filter_changed)
+        self.chk_irregular.stateChanged.connect(self.emit_filter_changed)
+        self.chk_cap_yandal.stateChanged.connect(self.emit_filter_changed)
         
         self.student_table.itemSelectionChanged.connect(self.on_student_selected)
 
@@ -128,6 +152,11 @@ class StudentView(QWidget):
         # Search
         if self.search_input.text():
             filters['search'] = self.search_input.text()
+
+        # Student Types
+        filters['show_regular'] = self.chk_regular.isChecked()
+        filters['show_irregular'] = self.chk_irregular.isChecked()
+        filters['show_cap_yandal'] = self.chk_cap_yandal.isChecked()
             
         self.filter_changed.emit(filters)
 
@@ -140,8 +169,13 @@ class StudentView(QWidget):
             # Update Info Labels immediately from table data
             name = self.student_table.item(row, 1).text()
             surname = self.student_table.item(row, 2).text()
+            
+            # Retrieve stored data
+            semester = self.student_table.item(row, 0).data(Qt.UserRole)
+            
             self.lbl_name.setText(f"{name} {surname}")
             self.lbl_no.setText(f"No: {student_id}")
+            self.lbl_semester.setText(f"Dönem: {semester}. Dönem")
             
             self.student_selected.emit(student_id)
 
@@ -154,11 +188,12 @@ class StudentView(QWidget):
         for row_idx, student in enumerate(students):
             self.student_table.insertRow(row_idx)
             # No, Ad, Soyad
-            self.student_table.setItem(row_idx, 0, QTableWidgetItem(str(student[0])))
+            item_no = QTableWidgetItem(str(student[0]))
+            item_no.setData(Qt.UserRole, student[4]) # Store semester
+            
+            self.student_table.setItem(row_idx, 0, item_no)
             self.student_table.setItem(row_idx, 1, QTableWidgetItem(student[1]))
             self.student_table.setItem(row_idx, 2, QTableWidgetItem(student[2]))
-            
-            # Store full data in the first item if needed, or just rely on ID
             
     def update_transcript(self, grades):
         """

@@ -828,7 +828,15 @@ class ScheduleModel(QObject):
     def get_students(self, filters: Dict[str, any] = None) -> List[tuple]:
         """
         Get students based on filters.
-        filters: {'fakulte_id': int, 'bolum_id': int, 'sinif': int, 'search': str}
+        filters: {
+            'fakulte_id': int, 
+            'bolum_id': int, 
+            'sinif': int, 
+            'search': str,
+            'show_regular': bool,
+            'show_irregular': bool,
+            'show_cap_yandal': bool
+        }
         Returns: List of (ogrenci_num, ad, soyad, bolum_adi, sinif)
         """
         try:
@@ -851,7 +859,6 @@ class ScheduleModel(QObject):
                 
                 if filters.get('sinif'):
                     # kacinci_donem is semester count (1-8). Year = (kacinci_donem + 1) // 2
-                    # So Year 1: 1,2; Year 2: 3,4; etc.
                     target_year = filters['sinif']
                     min_sem = (target_year * 2) - 1
                     max_sem = target_year * 2
@@ -862,6 +869,40 @@ class ScheduleModel(QObject):
                     search_term = f"%{filters['search']}%"
                     query += " AND (o.ad LIKE ? OR o.soyad LIKE ? OR CAST(o.ogrenci_num AS TEXT) LIKE ?)"
                     params.extend([search_term, search_term, search_term])
+
+                # Student Type Filters
+                # Default to showing all if keys are missing (backward compatibility)
+                show_regular = filters.get('show_regular', True)
+                show_irregular = filters.get('show_irregular', True)
+                show_cap_yandal = filters.get('show_cap_yandal', True)
+
+                # If all are true, no need to filter (optimization)
+                if not (show_regular and show_irregular and show_cap_yandal):
+                    type_conditions = []
+                    
+                    # Regular: No second major AND expected semester
+                    # Expected semester = (Current Year - Entry Year) * 2 + 1 (For Fall)
+                    # We use the global simdiki_sene variable. 
+                    # NOTE: Database seems to be in Fall 2024 state, but system year is 2025.
+                    # Adjusting by -1 to match database state.
+                    effective_year = simdiki_sene - 1
+                    
+                    if show_regular:
+                        type_conditions.append(f"(o.ikinci_bolum_turu IS NULL AND o.kacinci_donem = ({effective_year} - o.girme_senesi) * 2 + 1)")
+                    
+                    # Irregular: No second major AND NOT expected semester
+                    if show_irregular:
+                        type_conditions.append(f"(o.ikinci_bolum_turu IS NULL AND o.kacinci_donem != ({effective_year} - o.girme_senesi) * 2 + 1)")
+                    
+                    # ÇAP/Yandal: Has second major
+                    if show_cap_yandal:
+                        type_conditions.append("(o.ikinci_bolum_turu IS NOT NULL)")
+                    
+                    if type_conditions:
+                        query += " AND (" + " OR ".join(type_conditions) + ")"
+                    else:
+                        # If all are false, show nothing
+                        query += " AND 0"
 
             query += " ORDER BY o.ad, o.soyad"
             
