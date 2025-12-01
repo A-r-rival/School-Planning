@@ -140,10 +140,10 @@ class ScheduleModel(QObject):
             '''CREATE TABLE IF NOT EXISTS Ders_Ogretmen_Iliskisi (
                 ders_adi TEXT,
                 ders_instance INTEGER,
-                donem_sinif_num TEXT,
-                PRIMARY KEY (ders_instance, donem_sinif_num, ders_adi),
+                ogretmen_id INTEGER,
+                PRIMARY KEY (ders_instance, ders_adi, ogretmen_id),
                 FOREIGN KEY (ders_instance, ders_adi) REFERENCES Dersler(ders_instance, ders_adi) ON DELETE CASCADE,
-                FOREIGN KEY (donem_sinif_num) REFERENCES Ogrenci_Donemleri(donem_sinif_num)
+                FOREIGN KEY (ogretmen_id) REFERENCES Ogretmenler(ogretmen_num)
             )''',
 
             '''CREATE TABLE IF NOT EXISTS Ders_Programi (
@@ -169,6 +169,15 @@ class ScheduleModel(QObject):
                 onceki_not_id INTEGER,
                 FOREIGN KEY (ogrenci_num) REFERENCES Ogrenciler(ogrenci_num),
                 FOREIGN KEY (onceki_not_id) REFERENCES Ogrenci_Notlari(id)
+            )''',
+
+            '''CREATE TABLE IF NOT EXISTS Ogretmen_Musaitlik (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                ogretmen_id INTEGER NOT NULL,
+                gun TEXT NOT NULL,
+                baslangic TEXT NOT NULL,
+                bitis TEXT NOT NULL,
+                FOREIGN KEY (ogretmen_id) REFERENCES Ogretmenler(ogretmen_num) ON DELETE CASCADE
             )'''
         ]
 
@@ -793,6 +802,68 @@ class ScheduleModel(QObject):
         """Tüm derslikleri getir (silinmiş olanlar dahil)"""
         self.c.execute('SELECT derslik_num, derslik_adi, tip, kapasite, silindi, silinme_tarihi FROM Derslikler')
         return self.c.fetchall()
+
+    def add_teacher_unavailability(self, teacher_id: int, day: str, start_time: str, end_time: str) -> bool:
+        """
+        Add a time slot where the teacher is NOT available.
+        """
+        try:
+            # Check for existing overlap for this teacher
+            self.c.execute('''
+                SELECT id FROM Ogretmen_Musaitlik 
+                WHERE ogretmen_id = ? AND gun = ? 
+                AND (
+                    (baslangic <= ? AND bitis >= ?) OR
+                    (baslangic <= ? AND bitis >= ?) OR
+                    (baslangic >= ? AND bitis <= ?)
+                )
+            ''', (teacher_id, day, start_time, start_time, end_time, end_time, start_time, end_time))
+            
+            if self.c.fetchone():
+                return False # Already marked as unavailable
+
+            self.c.execute('''
+                INSERT INTO Ogretmen_Musaitlik (ogretmen_id, gun, baslangic, bitis)
+                VALUES (?, ?, ?, ?)
+            ''', (teacher_id, day, start_time, end_time))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            self.error_occurred.emit(f"Müsaitlik eklenirken hata: {str(e)}")
+            return False
+
+    def get_teacher_unavailability(self, teacher_id: int) -> List[tuple]:
+        """Get all unavailable slots for a teacher"""
+        try:
+            self.c.execute('''
+                SELECT gun, baslangic, bitis, id 
+                FROM Ogretmen_Musaitlik 
+                WHERE ogretmen_id = ? 
+                ORDER BY 
+                    CASE gun 
+                        WHEN 'Pazartesi' THEN 1 
+                        WHEN 'Salı' THEN 2 
+                        WHEN 'Çarşamba' THEN 3 
+                        WHEN 'Perşembe' THEN 4 
+                        WHEN 'Cuma' THEN 5 
+                        WHEN 'Cumartesi' THEN 6 
+                        WHEN 'Pazar' THEN 7 
+                    END, baslangic
+            ''', (teacher_id,))
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching unavailability: {e}")
+            return []
+
+    def remove_teacher_unavailability(self, unavailability_id: int) -> bool:
+        """Remove an unavailability slot"""
+        try:
+            self.c.execute("DELETE FROM Ogretmen_Musaitlik WHERE id = ?", (unavailability_id,))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            self.error_occurred.emit(f"Müsaitlik silinirken hata: {str(e)}")
+            return False
 
 
 

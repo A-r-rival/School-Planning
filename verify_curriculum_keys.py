@@ -4,7 +4,7 @@ sys.path.append(os.getcwd())
 from scripts.curriculum_data import DEPARTMENTS_DATA
 
 def verify_curriculum():
-    dept = "Moleküler Biyoteknoloji"
+    dept = "Malzeme Bilimi ve Teknolojileri"
     if dept in DEPARTMENTS_DATA:
         print(f"--- {dept} ---")
         curriculum = DEPARTMENTS_DATA[dept]["curriculum"]

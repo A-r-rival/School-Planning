@@ -39,15 +39,15 @@ def parse_file(filepath):
     
     # Regexes
     # Matches "1. YARIYIL", "I. YARIYIL", "1. DÖNEM", "I. DÖNEM"
-    sem_term_regex = re.compile(r'([IVX]+|\d+)\.\s*(YARIYIL|DÖNEM)', re.IGNORECASE)
+    sem_term_regex = re.compile(r'([IVX]+|\d+)\.\s*(YARIYIL|DÖNEM|SEMESTER|SEMESTIR)', re.IGNORECASE)
     # Matches "1. YIL", "I. YIL"
     year_regex = re.compile(r'([IVX]+|\d+)\.\s*YIL', re.IGNORECASE)
     # Matches "1. GÜZ", "2. BAHAR"
     season_regex = re.compile(r'([IVX]+|\d+)\.\s*(GÜZ|BAHAR)', re.IGNORECASE)
     
-    pool_header_regex = re.compile(r'SEÇMELİ DERS HAVUZLARI|SEÇMELİ DERSLER|SEÇİMLİK DERS MODÜLLERİ', re.IGNORECASE)
+    pool_header_regex = re.compile(r'SEÇMELİ DERS|SEÇMELİLER|MODÜLLERİ', re.IGNORECASE)
     # Matches pool code in header like "| HUKSD5 | ..."
-    pool_code_regex = re.compile(r'\|\s*([A-ZİĞÜŞÖÇ0-9_]{3,})\s*\|', re.IGNORECASE)
+    pool_code_regex = re.compile(r'\|\s*([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*)\s*\|', re.IGNORECASE)
 
     romans = {'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6, 'VII': 7, 'VIII': 8}
 
@@ -56,6 +56,9 @@ def parse_file(filepath):
         return romans.get(val.upper(), 0)
 
     for line in lines:
+        if "ETE101" in line:
+            print(f"DEBUG: InPool: {in_pool_section}")
+            print(f"DEBUG: PoolCode: {current_pool_code}")
         if not line.strip(): continue
         if line.startswith('='): continue
         if line.startswith('-'): continue
@@ -102,7 +105,7 @@ def parse_file(filepath):
                     current_pool_code = code
                     if current_pool_code not in pools:
                         pools[current_pool_code] = []
-                    continue
+                continue
 
         # Semester Parsing
         # Priority: YARIYIL/DÖNEM > GÜZ/BAHAR > YIL
@@ -130,6 +133,8 @@ def parse_file(filepath):
                     pass
 
         parts = parse_line(line)
+        if "ETE101" in line:
+            print(f"DEBUG: Parts: {parts}")
         if not parts: continue
 
         # Course Extraction
@@ -143,11 +148,17 @@ def parse_file(filepath):
             if p_clean in ["KOD", "KODU", "TOPLAM", "AKTS", "DERSİN", "T", "U", "L"]:
                 continue
                 
+            if "ETE101" in line:
+                 print(f"DEBUG: Checking '{p_clean}' (repr: {repr(p_clean)}) against regex")
             if re.match(r'^[A-ZİĞÜŞÖÇ]{2,}[0-9IVX]*$', p_clean):
                 code_idx = i
                 break
+            elif "Malzeme" in filepath and in_pool_section:
+                 print(f"DEBUG: '{p_clean}' did not match regex")
         
         if code_idx != -1:
+            if "ETE101" in line:
+                print("DEBUG: ETE101 entered code extraction block")
             raw_code = parts[code_idx]
             if ' - ' in raw_code:
                 code = raw_code.split(' - ')[0].strip()
@@ -171,7 +182,11 @@ def parse_file(filepath):
             if in_pool_section and current_pool_code:
                 # Avoid adding the pool header itself as a course
                 if code != current_pool_code:
+                    if "Malzeme" in filepath:
+                         print(f"DEBUG: Processing {code} for pool {current_pool_code}")
                     pools[current_pool_code].append(course_tuple)
+                    if "Malzeme" in filepath and current_pool_code == "ZSD I":
+                        print(f"DEBUG: Added {code} to ZSD I")
             elif 1 <= current_semester <= 8:
                 if current_semester not in curriculum:
                     curriculum[current_semester] = []
@@ -190,6 +205,7 @@ def main():
                 # Determine Department Name
                 # If file is "X Öğretim Planı.txt", Dept is X.
                 dept_name = file.replace(" Öğretim Planı.txt", "").strip()
+                if "Malzeme" not in dept_name: continue
                 
                 # If file is just "Öğretim Planı.txt" (unlikely based on list), use parent dir?
                 # Based on file list, they are named properly.

@@ -10,6 +10,9 @@ if TYPE_CHECKING:
     from views.schedule_view import ScheduleView
 from views.calendar_view import CalendarView
 from views.student_view import StudentView
+from views.teacher_availability_view import TeacherAvailabilityView
+from controllers.scheduler import ORToolsScheduler
+from PyQt5.QtWidgets import QMessageBox
 
 
 class ScheduleController:
@@ -55,6 +58,8 @@ class ScheduleController:
         self.view.department_add_requested.connect(self.handle_add_department)
         self.view.open_calendar_requested.connect(self.open_calendar_view)
         self.view.open_student_view_requested.connect(self.open_student_view)
+        self.view.open_teacher_availability_requested.connect(self.open_teacher_availability_view)
+        self.view.generate_schedule_requested.connect(self.generate_automatic_schedule)
     
     def _initialize_view(self):
         """Initialize view with existing data from model"""
@@ -491,3 +496,57 @@ class ScheduleController:
         """Handle student selection to show transcript"""
         grades = self.model.get_student_grades(student_id, show_history=True)
         self.student_view.update_transcript(grades)
+
+    # Teacher Availability Methods
+    def open_teacher_availability_view(self):
+        """Open teacher availability dialog"""
+        teachers = self.model.get_all_teachers_with_ids()
+        self.availability_view = TeacherAvailabilityView(self.view, teachers)
+        self.availability_view.set_controller(self)
+        self.availability_view.show()
+        
+    def load_teacher_availability(self, teacher_id: int):
+        """Load availability for a teacher"""
+        data = self.model.get_teacher_unavailability(teacher_id)
+        self.availability_view.update_table(data)
+        
+    def add_teacher_unavailability(self, teacher_id: int, day: str, start: str, end: str):
+        """Add unavailability slot"""
+        success = self.model.add_teacher_unavailability(teacher_id, day, start, end)
+        if success:
+            self.load_teacher_availability(teacher_id)
+        else:
+            QMessageBox.warning(self.availability_view, "Hata", "Bu saat aralığı zaten ekli veya çakışıyor!")
+            
+    def remove_teacher_unavailability(self, unavailability_id: int):
+        """Remove unavailability slot"""
+        success = self.model.remove_teacher_unavailability(unavailability_id)
+        if success:
+            # We need to refresh the current teacher's list. 
+            # But we don't have the teacher_id here directly.
+            # We can get it from the view's current selection.
+            teacher_id = self.availability_view.teacher_combo.currentData()
+            self.load_teacher_availability(teacher_id)
+            
+    # Automatic Scheduler
+    def generate_automatic_schedule(self):
+        """Run the automatic scheduler"""
+        reply = QMessageBox.question(
+            self.view, 
+            "Otomatik Program", 
+            "Mevcut ders programı silinecek ve otomatik olarak yeniden oluşturulacak.\nDevam etmek istiyor musunuz?",
+            QMessageBox.Yes | QMessageBox.No
+        )
+        
+        if reply == QMessageBox.Yes:
+            try:
+                scheduler = ORToolsScheduler(self.model)
+                success = scheduler.solve()
+                
+                if success:
+                    QMessageBox.information(self.view, "Başarılı", "Ders programı başarıyla oluşturuldu!")
+                    self.refresh_data()
+                else:
+                    QMessageBox.warning(self.view, "Başarısız", "Uygun bir program bulunamadı!\nKısıtlamaları kontrol edin.")
+            except Exception as e:
+                QMessageBox.critical(self.view, "Hata", f"Program oluşturulurken hata: {str(e)}")

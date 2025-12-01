@@ -25,6 +25,8 @@ class ScheduleView(QWidget):
     department_add_requested = pyqtSignal(int, str)  # Emits faculty_id, department_name when add department requested
     open_calendar_requested = pyqtSignal() # Emits when calendar button clicked
     open_student_view_requested = pyqtSignal() # Emits when student panel button clicked
+    open_teacher_availability_requested = pyqtSignal() # Emits when availability button clicked
+    generate_schedule_requested = pyqtSignal() # Emits when generate button clicked
     
     def __init__(self):
         super().__init__()
@@ -244,6 +246,43 @@ class ScheduleView(QWidget):
 
         layout.addWidget(self.student_button)
 
+        # Teacher Availability button
+        self.teacher_availability_button = QPushButton("Öğretmen Müsaitlik")
+        self.teacher_availability_button.setStyleSheet("""
+            QPushButton {
+                background-color: #FF5722;
+                color: white;
+                border: none;
+                padding: 8px;
+                font-size: 12px;
+                border-radius: 3px;
+                margin-top: 5px;
+            }
+            QPushButton:hover {
+                background-color: #E64A19;
+            }
+        """)
+        layout.addWidget(self.teacher_availability_button)
+
+        # Generate Schedule button
+        self.generate_schedule_button = QPushButton("Otomatik Program Oluştur")
+        self.generate_schedule_button.setStyleSheet("""
+            QPushButton {
+                background-color: #3F51B5;
+                color: white;
+                border: none;
+                padding: 12px;
+                font-size: 14px;
+                font-weight: bold;
+                border-radius: 5px;
+                margin-top: 15px;
+            }
+            QPushButton:hover {
+                background-color: #303F9F;
+            }
+        """)
+        layout.addWidget(self.generate_schedule_button)
+
     def _connect_signals(self):
         """Connect internal signals"""
         self.ekle_button.clicked.connect(self._on_add_course_clicked)
@@ -252,6 +291,8 @@ class ScheduleView(QWidget):
         self.bolum_ekle_button.clicked.connect(self._on_add_department_clicked)
         self.calendar_button.clicked.connect(self.open_calendar_requested.emit)
         self.student_button.clicked.connect(self.open_student_view_requested.emit)
+        self.teacher_availability_button.clicked.connect(self.open_teacher_availability_requested.emit)
+        self.generate_schedule_button.clicked.connect(self.generate_schedule_requested.emit)
 
     def _auto_fill_end_time(self):
         """Automatically set end time to 50 minutes after start time"""
