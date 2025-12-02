@@ -18,14 +18,156 @@ COMMON_USD_POOL = [
 
 DEPARTMENTS_DATA = {
     "Enerji Bilimi ve Teknolojileri": {
-        "curriculum": {},
-        "pools": {
-            "ZSDI": [
+        "curriculum": {
+            "1": [
+                [
+                    "PHY111",
+                    "Fizik I / Physik I",
+                    6
+                ],
+                [
+                    "CHE111",
+                    "Kimya I / Chemie I",
+                    6
+                ],
+                [
+                    "EBT103",
+                    "Enerji Bilimi ve Teknolojilerine Giriş / Einführung...",
+                    2
+                ],
+                [
+                    "MAT103",
+                    "Analiz I / Analysis I",
+                    6
+                ],
+                [
+                    "EBT105",
+                    "Teknik Çizim ve CAD / Technisches Zeichnen und CAD",
+                    6
+                ],
+                [
+                    "DEU121",
+                    "Teknik Almanca I / Technisches Deutsch I",
+                    2
+                ],
+                [
+                    "ENG101",
+                    "İngilizce I / Englisch I",
+                    2
+                ]
+            ],
+            "2": [
+                [
+                    "PHY112",
+                    "Fizik II / Physik II",
+                    6
+                ],
+                [
+                    "CHE112",
+                    "Kimya II / Chemie II",
+                    6
+                ],
+                [
+                    "MAT112",
+                    "Analiz II ve Lineer Cebir / Analysis II und Lineare Algebra",
+                    6
+                ],
+                [
+                    "EBT104",
+                    "Bilimsel Programlama / Wissenschaftliches Programmierung",
+                    6
+                ],
+                [
+                    "NWI106",
+                    "Proje Yönetimi / Projektmanagement",
+                    2
+                ],
+                [
+                    "DEU122",
+                    "Teknik Almanca II / Technisches Deutsch II",
+                    2
+                ],
+                [
+                    "ENG102",
+                    "İngilizce II / Englisch II",
+                    2
+                ]
+            ],
+            "3": [
+                [
+                    "EBT201",
+                    "Yenilenebilir Enerji Teknolojileri / Erneuerbare...",
+                    6
+                ],
+                [
+                    "EBT203",
+                    "Elektrokimya / Electrochemie",
+                    6
+                ],
+                [
+                    "MAT201",
+                    "Diferansiyel Denklemler / Diferentialgleichungen",
+                    6
+                ],
+                [
+                    "NWI206",
+                    "Elektroteknik / Elektrotechnik",
+                    6
+                ],
+                [
+                    "TUR001",
+                    "Türkçe I / Türkisch I",
+                    2
+                ],
+                [
+                    "AIT001",
+                    "Atatürk İlkeleri ve İnkılap Tarihi I",
+                    2
+                ],
+                [
+                    "ENG201",
+                    "İngilizce III / Englisch III",
+                    2
+                ]
+            ],
+            "4": [
+                [
+                    "EBT204",
+                    "Termodinamik / Thermodynamik",
+                    6
+                ],
+                [
+                    "EBT206",
+                    "Katıhal Fiziği / Festkörperphysik",
+                    6
+                ],
+                [
+                    "TUR002",
+                    "Türkçe II / Türkisch II",
+                    2
+                ],
+                [
+                    "AIT002",
+                    "Atatürk İlkeleri ve İnkılap Tarihi II",
+                    2
+                ],
+                [
+                    "ENG202",
+                    "İngilizce IV / Englisch IV",
+                    2
+                ],
+                [
+                    "ZSDI",
+                    "Zorunlu Seçmeli Ders",
+                    6
+                ],
                 [
                     "SDI",
                     "Seçmeli Ders",
                     6
-                ],
+                ]
+            ],
+            "5": [
                 [
                     "EBT303",
                     "Akışkanlar Mekaniği / Strömungsmechanik",
@@ -35,11 +177,24 @@ DEPARTMENTS_DATA = {
                     "EBT305",
                     "İstatistik / Statistik",
                     6
+                ],
+                [
+                    "ZSDII",
+                    "Zorunlu Seçmeli Ders",
+                    6
+                ],
+                [
+                    "ZSDIII",
+                    "Zorunlu Seçmeli Ders",
+                    6
+                ],
+                [
+                    "ZSDIV",
+                    "Zorunlu Seçmeli Ders",
+                    6
                 ]
             ],
-            "ZSDII": [],
-            "ZSDIII": [],
-            "ZSDIV": [
+            "6": [
                 [
                     "EBT308",
                     "Uygulamalı Enerji Bilimi Laboratuvarı / Angewandtes...",
@@ -54,10 +209,19 @@ DEPARTMENTS_DATA = {
                     "EBT306",
                     "Isı Transferi / Wärmeübertragung",
                     6
+                ],
+                [
+                    "ZSDV",
+                    "Zorunlu Seçmeli Ders",
+                    6
+                ],
+                [
+                    "ZSDVI",
+                    "Zorunlu Seçmeli Ders",
+                    6
                 ]
             ],
-            "ZSDV": [],
-            "ZSDVI": [
+            "7": [
                 [
                     "EBT401",
                     "Proje I (Tez Hazırlık ve Seminer) / Projekt I",
@@ -72,10 +236,17 @@ DEPARTMENTS_DATA = {
                     "ENG301",
                     "İleri İngilizce I / Fortgeschrittenes Englisch I",
                     2
-                ]
-            ],
-            "ZSDVII": [],
-            "ZSDVIII": [
+                ],
+                [
+                    "ZSDVII",
+                    "Zorunlu Seçmeli Ders",
+                    6
+                ],
+                [
+                    "ZSDVIII",
+                    "Zorunlu Seçmeli Ders",
+                    6
+                ],
                 [
                     "SDII",
                     "Seçmeli Ders",
@@ -85,7 +256,9 @@ DEPARTMENTS_DATA = {
                     "ÜSDI",
                     "Üniversite Seçmeli Ders",
                     2
-                ],
+                ]
+            ],
+            "8": [
                 [
                     "EBT402",
                     "Proje II",
@@ -121,12 +294,14 @@ DEPARTMENTS_DATA = {
                     "Üniversite Seçmeli Ders",
                     3
                 ]
-            ],
+            ]
+        },
+        "pools": {
             "ZSD": [
                 [
                     "EBT311",
                     "Hidrojen Enerjisi ve Yakıt Hücreleri",
-                    0
+                    4
                 ],
                 [
                     "EBT313",
@@ -263,7 +438,7 @@ DEPARTMENTS_DATA = {
                 [
                     "EBT325",
                     "İklim Sistemine Giriş",
-                    0
+                    4
                 ],
                 [
                     "NWI401",
@@ -431,6 +606,16 @@ DEPARTMENTS_DATA = {
                     "ENG201",
                     "İngilizce III",
                     2
+                ],
+                [
+                    "ZSD I",
+                    "Zorunlu Seçmeli Ders I",
+                    6
+                ],
+                [
+                    "ZSD I",
+                    "Zorunlu Seçmeli Ders I",
+                    6
                 ]
             ],
             "4": [
@@ -463,6 +648,11 @@ DEPARTMENTS_DATA = {
                     "ENG202",
                     "İngilizce IV",
                     2
+                ],
+                [
+                    "ZSD II",
+                    "Zorunlu Seçmeli Ders II",
+                    6
                 ]
             ],
             "5": [
@@ -485,6 +675,11 @@ DEPARTMENTS_DATA = {
                     "MWT305",
                     "Malzeme Biliminde Karakterizasyon Metotları",
                     6
+                ],
+                [
+                    "ZSD III",
+                    "Zorunlu Seçmeli Ders III",
+                    6
                 ]
             ],
             "6": [
@@ -501,6 +696,16 @@ DEPARTMENTS_DATA = {
                 [
                     "MWT304",
                     "Malzemelerin Mekanik Özellikleri",
+                    6
+                ],
+                [
+                    "ZSD IV",
+                    "Zorunlu Seçmeli Ders IV",
+                    6
+                ],
+                [
+                    "ZSD IV",
+                    "Zorunlu Seçmeli Ders IV",
                     6
                 ]
             ],
@@ -524,6 +729,21 @@ DEPARTMENTS_DATA = {
                     "ENG301",
                     "İleri İngilizce I",
                     2
+                ],
+                [
+                    "ZSD V",
+                    "Zorunlu Seçmeli Ders V",
+                    6
+                ],
+                [
+                    "ZSD V",
+                    "Zorunlu Seçmeli Ders V",
+                    6
+                ],
+                [
+                    "ZSD V",
+                    "Zorunlu Seçmeli Ders V",
+                    6
                 ]
             ],
             "8": [
@@ -556,16 +776,137 @@ DEPARTMENTS_DATA = {
                     "ÜSD",
                     "Üniversite Seçmeli Dersi",
                     3
+                ],
+                [
+                    "ZSD VI",
+                    "Zorunlu Sosyal Seçmeli Ders VI",
+                    3
                 ]
             ]
         },
         "pools": {
-            "ZSD I": [],
-            "ZSD II": [],
-            "ZSD III": [],
-            "ZSD IV": [],
-            "ZSD V": [],
-            "ZSD VI": []
+            "ZSD I": [
+                [
+                    "ETE101",
+                    "Sayısal Tasarım",
+                    6
+                ],
+                [
+                    "MEC109",
+                    "Statik",
+                    6
+                ],
+                [
+                    "MWT203",
+                    "Malzeme Kimyası",
+                    6
+                ],
+                [
+                    "MWT201",
+                    "Malzeme Yapısı",
+                    6
+                ],
+                [
+                    "NWI203",
+                    "Tasarım Teknikleri I: Teknik Çizim ve CAD",
+                    6
+                ]
+            ],
+            "ZSD II": [
+                [
+                    "NWI206",
+                    "Elektrotekniğe Giriş",
+                    6
+                ],
+                [
+                    "MWT406",
+                    "Yoğun Maddenin Fonksiyonel Özellikleri",
+                    6
+                ]
+            ],
+            "ZSD III": [
+                [
+                    "MEC207",
+                    "Malzeme Teknolojisi",
+                    6
+                ],
+                [
+                    "MWT311",
+                    "Malzeme Muayenesi",
+                    6
+                ]
+            ],
+            "ZSD IV": [
+                [
+                    "MWT306",
+                    "Yapı Malzemeleri",
+                    6
+                ],
+                [
+                    "MWT308",
+                    "Toz Metalurjisi",
+                    6
+                ],
+                [
+                    "MWT310",
+                    "Biyomalzemeler",
+                    6
+                ],
+                [
+                    "MWT312",
+                    "Kompozit Malzemeler",
+                    6
+                ],
+                [
+                    "MWT408",
+                    "Malzemelerin İleri Karakterizasyon Teknikleri",
+                    6
+                ]
+            ],
+            "ZSD V": [
+                [
+                    "MWT307",
+                    "Polimerik Malzemeler",
+                    6
+                ],
+                [
+                    "MWT309",
+                    "Metalik Malzemeler",
+                    6
+                ],
+                [
+                    "MWT311",
+                    "Malzeme Muayenesi",
+                    6
+                ],
+                [
+                    "MWT403",
+                    "Reel Kristallerde Difüzyon ve Taşınım",
+                    6
+                ],
+                [
+                    "MWT405",
+                    "Fonksiyonel Malzemeler",
+                    6
+                ],
+                [
+                    "NWI405",
+                    "Yoğun Madde Fiziği",
+                    6
+                ],
+                [
+                    "NWI407",
+                    "Yenilenebilir Enerji Teknolojileri",
+                    6
+                ]
+            ],
+            "ZSD VI": [
+                [
+                    "NWI300",
+                    "Temel Hukuk",
+                    3
+                ]
+            ]
         }
     },
     "Moleküler Biyoteknoloji": {
@@ -823,6 +1164,7 @@ DEPARTMENTS_DATA = {
             ]
         },
         "pools": {
+            "SDB I": [],
             "ÜSD": [
                 [
                     "MBT361",
@@ -910,7 +1252,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SDBIOII": [
+            "SDBIOI I": [
                 [
                     "MBT202",
                     "Biyofiziksel Kimya",
@@ -932,7 +1274,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SDBIOIII": [
+            "SDBIOII I": [
                 [
                     "MBT433",
                     "Biyoteknoloji İşletmeleri için Sistem Teknikleri II",
@@ -964,7 +1306,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SDBIOIV": [
+            "SDBIOI V": [
                 [
                     "MBT474",
                     "Popülasyon Genetiği",
@@ -991,7 +1333,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SDMATI": [
+            "SDMAT I": [
                 [
                     "MBT453",
                     "Biyomatematik",
@@ -1003,7 +1345,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SDMATII": [
+            "SDMATI I": [
                 [
                     "MBT456",
                     "Nicel Biyoloji",
@@ -1427,7 +1769,12 @@ DEPARTMENTS_DATA = {
             ]
         },
         "pools": {
-            "HUKSD5": [
+            "HUKSD 5": [
+                [
+                    "MODÜL",
+                    "DERSİN ADI",
+                    0
+                ],
                 [
                     "HUK561",
                     "Avrupa Hukuku ve Uluslararası Hukuk I",
@@ -1444,7 +1791,7 @@ DEPARTMENTS_DATA = {
                     2
                 ]
             ],
-            "HUKSD6": [
+            "HUKSD 6": [
                 [
                     "HUK658",
                     "Avrupa Hukuku ve Uluslararası Hukuk II",
@@ -1461,7 +1808,7 @@ DEPARTMENTS_DATA = {
                     2
                 ]
             ],
-            "HUKSD7": [
+            "HUKSD 7": [
                 [
                     "HUK751",
                     "İnfaz Hukuku",
@@ -1498,7 +1845,7 @@ DEPARTMENTS_DATA = {
                     2
                 ]
             ],
-            "HUKSD8": [
+            "HUKSD 8": [
                 [
                     "HUK856",
                     "Avrupa Hukuku ve Uluslararası Hukuk IV",
@@ -1788,7 +2135,11 @@ DEPARTMENTS_DATA = {
                     "ÜSD000",
                     "Üniversite Seçmeli Ders Havuzu",
                     6
-                ],
+                ]
+            ]
+        },
+        "pools": {
+            "KKWSD I": [
                 [
                     "KKW001",
                     "Almanya'da Göçmen Edebiyatı",
@@ -1950,8 +2301,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ]
-        },
-        "pools": {}
+        }
     },
     "Sosyoloji": {
         "curriculum": {
@@ -2209,112 +2559,11 @@ DEPARTMENTS_DATA = {
                     "SOZSDV",
                     "Seçmeli Ders",
                     6
-                ],
-                [
-                    "SOZ021",
-                    "Görsel Sosyoloji",
-                    6
-                ],
-                [
-                    "SOZ023",
-                    "Gençlik Sosyolojisi",
-                    6
-                ],
-                [
-                    "SOZ025",
-                    "Sosyolojik Kuramların Dilleri",
-                    6
-                ],
-                [
-                    "SOZ027",
-                    "Sosyoloji ve Yapay Zeka",
-                    6
-                ],
-                [
-                    "SOZ029",
-                    "Ekonomi Sosyolojisi",
-                    6
-                ],
-                [
-                    "SOZ033",
-                    "Türkiye'de Kapitalizmin Gelişimi",
-                    6
-                ],
-                [
-                    "SOZ035",
-                    "Türkiye’de Göç Çalışmaları",
-                    6
-                ],
-                [
-                    "SOZ037",
-                    "Türkiye’de Toplumsal Dönüşümler",
-                    6
-                ],
-                [
-                    "SOZ039",
-                    "Bir Metropolün Sosyolojisi: İstanbul",
-                    6
-                ],
-                [
-                    "SOZ051",
-                    "Duygular Sosyolojisi",
-                    6
-                ],
-                [
-                    "SOZ053",
-                    "Din Sosyolojisi",
-                    6
-                ],
-                [
-                    "SOZ055",
-                    "Gündelik Hayat Sosyolojisi",
-                    6
-                ],
-                [
-                    "SOZ057",
-                    "Siyaset Sosyolojisi",
-                    6
-                ],
-                [
-                    "SOZ059",
-                    "Afet Sosyolojisi",
-                    6
-                ],
-                [
-                    "SOZ063",
-                    "Eğitim Sosyolojisi",
-                    6
-                ],
-                [
-                    "SOZ065",
-                    "Hayvanlar ve Toplum",
-                    6
-                ],
-                [
-                    "SOZ067",
-                    "Öznellikler ve Özneleşme",
-                    6
-                ],
-                [
-                    "SOZ069",
-                    "Kolektif ve Toplumsal Hafıza",
-                    6
-                ],
-                [
-                    "SOZ071",
-                    "Engellilik Sosyolojisi",
-                    6
-                ],
-                [
-                    "SOZ073",
-                    "Proje Tasarımı",
-                    6
-                ],
-                [
-                    "SOZ075",
-                    "Güncel Etnografi Okumaları",
-                    6
-                ],
+                ]
+            ]
+        },
+        "pools": {
+            "SOZSD I": [
                 [
                     "SOZ022",
                     "Sanat Sosyolojisi",
@@ -2425,9 +2674,115 @@ DEPARTMENTS_DATA = {
                     "Mekan Sosyolojisi",
                     6
                 ]
+            ],
+            "SOZSDI I": [
+                [
+                    "SOZ021",
+                    "Görsel Sosyoloji",
+                    6
+                ],
+                [
+                    "SOZ023",
+                    "Gençlik Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ025",
+                    "Sosyolojik Kuramların Dilleri",
+                    6
+                ],
+                [
+                    "SOZ027",
+                    "Sosyoloji ve Yapay Zeka",
+                    6
+                ],
+                [
+                    "SOZ029",
+                    "Ekonomi Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ033",
+                    "Türkiye'de Kapitalizmin Gelişimi",
+                    6
+                ],
+                [
+                    "SOZ035",
+                    "Türkiye’de Göç Çalışmaları",
+                    6
+                ],
+                [
+                    "SOZ037",
+                    "Türkiye’de Toplumsal Dönüşümler",
+                    6
+                ],
+                [
+                    "SOZ039",
+                    "Bir Metropolün Sosyolojisi: İstanbul",
+                    6
+                ],
+                [
+                    "SOZ051",
+                    "Duygular Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ053",
+                    "Din Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ055",
+                    "Gündelik Hayat Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ057",
+                    "Siyaset Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ059",
+                    "Afet Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ063",
+                    "Eğitim Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ065",
+                    "Hayvanlar ve Toplum",
+                    6
+                ],
+                [
+                    "SOZ067",
+                    "Öznellikler ve Özneleşme",
+                    6
+                ],
+                [
+                    "SOZ069",
+                    "Kolektif ve Toplumsal Hafıza",
+                    6
+                ],
+                [
+                    "SOZ071",
+                    "Engellilik Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ073",
+                    "Proje Tasarımı",
+                    6
+                ],
+                [
+                    "SOZ075",
+                    "Güncel Etnografi Okumaları",
+                    6
+                ]
             ]
-        },
-        "pools": {}
+        }
     },
     "Bilgisayar Müh": {
         "curriculum": {
@@ -2705,6 +3060,15 @@ DEPARTMENTS_DATA = {
                     "ETE491",
                     "Elektrik ve Elektronik Mühendisliği Projesi",
                     6
+                ]
+            ]
+        },
+        "pools": {
+            "SD I": [
+                [
+                    "DİL",
+                    "T",
+                    0
                 ],
                 [
                     "INF501",
@@ -2875,6 +3239,11 @@ DEPARTMENTS_DATA = {
                     "INF534",
                     "Biyoinfomartiğe Giriş",
                     6
+                ],
+                [
+                    "DİL",
+                    "T",
+                    0
                 ],
                 [
                     "INF601",
@@ -3052,6 +3421,11 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "INF701",
                     "Yapay Zeka",
                     6
@@ -3155,6 +3529,13 @@ DEPARTMENTS_DATA = {
                     "WIN316",
                     "Yöneylem Araştırması II - Rassal Modeller",
                     6
+                ]
+            ],
+            "SDII I": [
+                [
+                    "DİL",
+                    "T",
+                    0
                 ],
                 [
                     "INF801",
@@ -3287,6 +3668,11 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "ING406",
                     "Mühendisler İçin Hukuk",
                     6
@@ -3417,8 +3803,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ]
-        },
-        "pools": {}
+        }
     },
     "Elektrik-Elektronik Müh": {
         "curriculum": {
@@ -3750,7 +4135,7 @@ DEPARTMENTS_DATA = {
                 [
                     "ETE412",
                     "Optik Haberleşme Tekniği",
-                    1
+                    2
                 ],
                 [
                     "ETE414",
@@ -3980,7 +4365,7 @@ DEPARTMENTS_DATA = {
                 [
                     "INF513",
                     "Derin Öğrenme",
-                    2
+                    4
                 ],
                 [
                     "INF518",
@@ -4275,6 +4660,11 @@ DEPARTMENTS_DATA = {
                     "ZSDI",
                     "Zorunlu Seçmeli Alan I",
                     6
+                ],
+                [
+                    "ZSDI",
+                    "Zorunlu Seçmeli Alan I",
+                    6
                 ]
             ],
             "8": [
@@ -4304,6 +4694,11 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "ZSDII",
+                    "Zorunlu Seçmeli Alan II",
+                    6
+                ],
+                [
                     "WIN311",
                     "Proje I: Yenilik ve Teknoloji Yönetimi Projesi",
                     6
@@ -4317,7 +4712,11 @@ DEPARTMENTS_DATA = {
                     "MEC319",
                     "Mekatronik Projesi",
                     6
-                ],
+                ]
+            ]
+        },
+        "pools": {
+            "SD I": [
                 [
                     "WIN309",
                     "Pazarlama ve Üretim Yönetimi",
@@ -4337,7 +4736,9 @@ DEPARTMENTS_DATA = {
                     "VWL203",
                     "İktisadi Tarih",
                     6
-                ],
+                ]
+            ],
+            "SDI I": [
                 [
                     "WIN316",
                     "Yöneylem Araştırması II - Rassal Modeller",
@@ -4352,7 +4753,9 @@ DEPARTMENTS_DATA = {
                     "VWL210",
                     "Para, Banka ve Finans Piyasaları",
                     6
-                ],
+                ]
+            ],
+            "ZSD I": [
                 [
                     "WIN320",
                     "Makine Öğrenmesi",
@@ -4462,7 +4865,9 @@ DEPARTMENTS_DATA = {
                     "MEC313",
                     "Endüstriyel Otomasyon Teknolojisi",
                     6
-                ],
+                ]
+            ],
+            "ZSDI I": [
                 [
                     "WIN306",
                     "Üretim ve Lojistik için Enformasyon Sistemleri",
@@ -4474,8 +4879,23 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "WIN320",
+                    "Makine Öğrenmesi",
+                    6
+                ],
+                [
+                    "WIN406",
+                    "Endüstriyel Enformasyon Tek. ve Sanal Ürün Geliştirme",
+                    6
+                ],
+                [
                     "WIN408",
                     "Montaj Teknolojisi Temelleri",
+                    6
+                ],
+                [
+                    "WIN409",
+                    "Elektromobilite için Pil Üretim Teknolojisi",
                     6
                 ],
                 [
@@ -4509,9 +4929,39 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "INF503",
+                    "Yapay Sinir Ağları",
+                    6
+                ],
+                [
+                    "INF505",
+                    "Veri Madenciliği",
+                    6
+                ],
+                [
+                    "INF510",
+                    "Bilişim Sistemleri Güvenliği",
+                    6
+                ],
+                [
+                    "INF522",
+                    "Web Mühendisliği",
+                    6
+                ],
+                [
+                    "INF523",
+                    "İnsan-Makine Etkileşimi",
+                    6
+                ],
+                [
                     "ING404",
                     "Girişimcilik",
                     2
+                ],
+                [
+                    "MAB207",
+                    "Malzeme Teknolojisi I",
+                    6
                 ],
                 [
                     "MAB210",
@@ -4539,8 +4989,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ]
-        },
-        "pools": {}
+        }
     },
     "Makine Müh": {
         "curriculum": {
@@ -5308,6 +5757,11 @@ DEPARTMENTS_DATA = {
                     "MEC319",
                     "Mechatronics Project / Mekatronik Projesi",
                     6
+                ],
+                [
+                    "ZSD I",
+                    "Elective I / Zorunlu Seçmeli Ders I",
+                    6
                 ]
             ],
             "6": [
@@ -5319,6 +5773,16 @@ DEPARTMENTS_DATA = {
                 [
                     "MEC302",
                     "Control Engineering / Kontrol Müh. Temelleri",
+                    6
+                ],
+                [
+                    "SDP I",
+                    "Elective Project I / Seçmeli Proje I",
+                    6
+                ],
+                [
+                    "ZSD II",
+                    "Elective II / Zorunlu Seçmeli Ders II",
                     6
                 ],
                 [
@@ -5347,6 +5811,16 @@ DEPARTMENTS_DATA = {
                     "ENG301",
                     "Advanced English I / İleri İngilizce I",
                     2
+                ],
+                [
+                    "SDP II",
+                    "Elective Project II / Seçmeli Proje II",
+                    6
+                ],
+                [
+                    "ZSD III",
+                    "Elective III / Zorunlu Seçmeli Ders III",
+                    12
                 ]
             ],
             "8": [
@@ -5371,6 +5845,15 @@ DEPARTMENTS_DATA = {
                     2
                 ],
                 [
+                    "ZSD IV",
+                    "Elective IV / Zorunlu Seçmeli Ders IV",
+                    12
+                ]
+            ]
+        },
+        "pools": {
+            "SDP I": [
+                [
                     "MEC423",
                     "Robotics Project I / Robotik Projesi I",
                     6
@@ -5384,7 +5867,9 @@ DEPARTMENTS_DATA = {
                     "MEC427",
                     "Intelligent Sys. Project I / Akıllı Sis. Proj. I",
                     6
-                ],
+                ]
+            ],
+            "SDP II": [
                 [
                     "MEC424",
                     "Robotics Project II / Robotik Projesi II",
@@ -5400,9 +5885,7 @@ DEPARTMENTS_DATA = {
                     "Intelligent Sys. Project II / Akıllı Sis. Proj. II",
                     6
                 ]
-            ]
-        },
-        "pools": {
+            ],
             "ZSD": [
                 [
                     "MEC321",
@@ -6277,7 +6760,11 @@ DEPARTMENTS_DATA = {
                     "POLSDV",
                     "Seçmeli Ders Alanı V",
                     10
-                ],
+                ]
+            ]
+        },
+        "pools": {
+            "POLSD I": [
                 [
                     "BWL002",
                     "Girişimcilik",
@@ -6684,8 +7171,7 @@ DEPARTMENTS_DATA = {
                     5
                 ]
             ]
-        },
-        "pools": {}
+        }
     },
     "İktisat": {
         "curriculum": {
@@ -6895,7 +7381,7 @@ DEPARTMENTS_DATA = {
                 [
                     "ÜSD000",
                     "Üniversite Seçmeli Ders Havuzu",
-                    0
+                    4
                 ]
             ],
             "8": [
@@ -7618,9 +8104,19 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "SD",
+                    "Seçmeli Ders",
+                    6
+                ],
+                [
                     "BSD",
                     "Seçmeli Ders",
                     3
+                ],
+                [
+                    "SD",
+                    "Seçmeli Ders",
+                    6
                 ]
             ],
             "6": [
@@ -7643,6 +8139,11 @@ DEPARTMENTS_DATA = {
                     "ENG304",
                     "İleri İngilizce 2",
                     3
+                ],
+                [
+                    "SD",
+                    "Seçmeli Ders",
+                    6
                 ],
                 [
                     "SD",
@@ -7957,11 +8458,20 @@ DEPARTMENTS_DATA = {
                     "BWL040",
                     "SAP Uygulamaları",
                     6
-                ],
+                ]
+            ]
+        },
+        "pools": {
+            "ÜSD00 0": [
                 [
                     "ÜSDENG111",
                     "Akademik İngilizce",
                     4
+                ],
+                [
+                    "ÜSDTGH 111",
+                    "Türkiye'de Gündelik Hayatın Tarihi",
+                    2
                 ],
                 [
                     "ÜSDKAR123",
@@ -8024,7 +8534,6 @@ DEPARTMENTS_DATA = {
                     5
                 ]
             ]
-        },
-        "pools": {}
+        }
     }
 }

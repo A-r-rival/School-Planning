@@ -3,7 +3,6 @@
 ====================================================================================================
 
 | AÇIKLAMA: T=Teori (VL), U=Uygulama (UE), L=Laboratuvar (LP) |
-| ZSD = Zorunlu Seçmeli Ders / SD = Seçmeli Ders / ÜSD = Üniversite Seçmeli Ders |
 
 ----------------------------------------------------------------------------------------------------
 I. YIL / ERSTES JAHR

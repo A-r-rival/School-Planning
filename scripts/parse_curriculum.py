@@ -1,6 +1,7 @@
 import os
 import re
 import json
+#OK: Enerji
 
 CURRICULUM_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Curriculum")
 OUTPUT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "curriculum_data.py")
@@ -17,8 +18,10 @@ def extract_ects(parts):
     # Try to find ECTS in the last few columns
     # It's usually a small integer
     for p in reversed(parts):
-        if p.isdigit():
-            return int(p)
+        # Remove asterisks or other common markers
+        clean_p = p.replace('*', '').strip()
+        if clean_p.isdigit():
+            return int(clean_p)
     return 0
 
 def clean_course_name(name):
@@ -45,9 +48,9 @@ def parse_file(filepath):
     # Matches "1. GÜZ", "2. BAHAR"
     season_regex = re.compile(r'([IVX]+|\d+)\.\s*(GÜZ|BAHAR)', re.IGNORECASE)
     
-    pool_header_regex = re.compile(r'SEÇMELİ DERS|SEÇMELİLER|MODÜLLERİ', re.IGNORECASE)
+    pool_header_regex = re.compile(r'SEÇMELİ DERS|SEÇMELİLER|MODÜL|SD|HAVUZU', re.IGNORECASE)
     # Matches pool code in header like "| HUKSD5 | ..."
-    pool_code_regex = re.compile(r'\|\s*([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*)\s*\|', re.IGNORECASE)
+    pool_code_regex = re.compile(r'\s*([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*)\s*([IVX]+|\d+)\s*', re.IGNORECASE)
 
     romans = {'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6, 'VII': 7, 'VIII': 8}
 
@@ -75,13 +78,20 @@ def parse_file(filepath):
             
             # Course lines have many pipes (e.g. | CODE | NAME | T | U | L | AKTS | ... |)
             # Pool headers usually have 2 or 3 pipes.
-            if "MODÜL" in line.upper() or "SEÇMELİ DERSLER" in line.upper() or "SEÇMELİLER" in line.upper() or "ZSD" in line.upper() or "HAVUZU" in line.upper():
+            if pool_header_regex.search(line) and line.count('|') < 6:
                 # Format 1: | CODE | DESCRIPTION |
                 match1 = pool_code_regex.search(line)
                 # Format 2: | DESCRIPTION (CODE) |
                 match2 = re.search(r'\((ZSD[IVX]*|SD[IVX]*|ÜSD[IVX]*|HUKSD[0-9]*)\)', line)
                 # Format 3: | ZSD I - ... |
-                match3 = re.search(r'\|\s*(ZSD\s*[IVX]+)\s*-', line)
+                match3 = re.search(r'\|\s*(ZSD\s*.*?)\s*-', line)
+                
+                #fnord
+                #                match3 = re.search(r'\|\s*(ZSD\s*[IVX]+)\s*-', line)
+                #                match3 = re.search(r'\|\s*(ZSD\s*.*?)\s*-', line)
+                #fnord
+                
+
                 # Format 4: | CODE SEÇMELİ ... | or | CODE HAVUZU ... |
                 # Matches SDBIOII, SDMATI, ÜSD
                 match4 = re.search(r'\|\s*([A-ZİĞÜŞÖÇ0-9_]{3,})\s+(?:SEÇMELİ|HAVUZU|DERSLER)', line, re.IGNORECASE)
@@ -89,6 +99,9 @@ def parse_file(filepath):
                 code = None
                 if match1:
                     code = match1.group(1).strip()
+                    if match1.lastindex >= 2:
+                        suffix = match1.group(2).strip()
+                        code = f"{code} {suffix}"
                 elif match2:
                     code = match2.group(1).strip()
                 elif match3:
@@ -143,7 +156,7 @@ def parse_file(filepath):
             if p_clean in ["KOD", "KODU", "TOPLAM", "AKTS", "DERSİN", "T", "U", "L"]:
                 continue
                 
-            if re.match(r'^[A-ZİĞÜŞÖÇ]{2,}[0-9IVX]*$', p_clean):
+            if re.match(r'^[A-ZİĞÜŞÖÇ]{2,}\s*[0-9IVX]*$', p_clean):
                 code_idx = i
                 break
         
@@ -175,7 +188,11 @@ def parse_file(filepath):
             elif 1 <= current_semester <= 8:
                 if current_semester not in curriculum:
                     curriculum[current_semester] = []
-                if course_tuple not in curriculum[current_semester]:
+                
+                # Allow duplicates for placeholder courses (ZSD, SD, ÜSD, etc.)
+                is_placeholder = any(code.startswith(prefix) for prefix in ["ZSD", "SD", "ÜSD", "HUKSD", "BSD", "POLSD", "KKWSD"])
+                
+                if is_placeholder or course_tuple not in curriculum[current_semester]:
                     curriculum[current_semester].append(course_tuple)
 
     return curriculum, pools
