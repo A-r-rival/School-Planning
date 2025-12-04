@@ -1,7 +1,11 @@
 import os
 import re
 import json
-#OK: Enerji
+#Elektrikte havuzların başında kod yok
+#bilgisayarda SDUa/b filan ayrılıyor o bozuyor
+#makinede SDUx olarak girmişler semesterda
+#mekatronikte projeleri pool yapmamış semesterda
+#iktisatta 30'a tamlamıyor
 
 CURRICULUM_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Curriculum")
 OUTPUT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "curriculum_data.py")
@@ -29,7 +33,19 @@ def clean_course_name(name):
     name = re.sub(r'\s*\(.*?\)\s*$', '', name)
     return name.strip()
 
-def parse_file(filepath):
+class Regexes:
+    # Matches "1. YARIYIL", "I. YARIYIL", "1. DÖNEM", "I. DÖNEM"
+    semester_term = re.compile(r'([IVX]+|\d+)\.\s*(YARIYIL|DÖNEM|SEMESTER|SEMESTIR)', re.IGNORECASE)
+    # Matches "1. YIL", "I. YIL"
+    year = re.compile(r'([IVX]+|\d+)\.\s*YIL', re.IGNORECASE)
+    # Matches "1. GÜZ", "2. BAHAR"
+    season = re.compile(r'([IVX]+|\d+)\.\s*(GÜZ|BAHAR)', re.IGNORECASE)
+    
+    pool_header = re.compile(r'SEÇMELİ DERS|SEÇMELİLER|MODÜL|SD|HAVUZU', re.IGNORECASE)
+
+    pool_code = re.compile(r'([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*?)\s*([IVX0-9]*)', re.IGNORECASE)
+
+def parse_file(filepath, log_file=None):
     with open(filepath, 'r', encoding='utf-8') as f:
         lines = f.readlines()
 
@@ -38,21 +54,14 @@ def parse_file(filepath):
     
     current_semester = 0
     in_pool_section = False
-    current_pool_code = None
+    current_pool_codes = []
     
-    # Regexes
-    # Matches "1. YARIYIL", "I. YARIYIL", "1. DÖNEM", "I. DÖNEM"
-    sem_term_regex = re.compile(r'([IVX]+|\d+)\.\s*(YARIYIL|DÖNEM|SEMESTER|SEMESTIR)', re.IGNORECASE)
-    # Matches "1. YIL", "I. YIL"
-    year_regex = re.compile(r'([IVX]+|\d+)\.\s*YIL', re.IGNORECASE)
-    # Matches "1. GÜZ", "2. BAHAR"
-    season_regex = re.compile(r'([IVX]+|\d+)\.\s*(GÜZ|BAHAR)', re.IGNORECASE)
-    
-    pool_header_regex = re.compile(r'SEÇMELİ DERS|SEÇMELİLER|MODÜL|SD|HAVUZU', re.IGNORECASE)
-    # Matches pool code in header like "| HUKSD5 | ..."
-    pool_code_regex = re.compile(r'\s*([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*)\s*([IVX]+|\d+)\s*', re.IGNORECASE)
+    # Counters for tracking fallback match usage
+    match2_count = 0
+    match3_count = 0
+    match4_count = 0
 
-    romans = {'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6, 'VII': 7, 'VIII': 8}
+    romans = {'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6, 'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10}
 
     def to_int(val):
         if val.isdigit(): return int(val)
@@ -65,7 +74,7 @@ def parse_file(filepath):
         if line.startswith('+'): continue
         
         # Check for Pool Section Start
-        if pool_header_regex.search(line) and line.count('|') < 5:
+        if Regexes.pool_header.search(line) and line.count('|') < 5:
             in_pool_section = True
             # Don't continue, might be a header line that also contains pool code
         
@@ -78,51 +87,75 @@ def parse_file(filepath):
             
             # Course lines have many pipes (e.g. | CODE | NAME | T | U | L | AKTS | ... |)
             # Pool headers usually have 2 or 3 pipes.
-            if pool_header_regex.search(line) and line.count('|') < 6:
-                # Format 1: | CODE | DESCRIPTION |
-                match1 = pool_code_regex.search(line)
-                # Format 2: | DESCRIPTION (CODE) |
-                match2 = re.search(r'\((ZSD[IVX]*|SD[IVX]*|ÜSD[IVX]*|HUKSD[0-9]*)\)', line)
-                # Format 3: | ZSD I - ... |
-                match3 = re.search(r'\|\s*(ZSD\s*.*?)\s*-', line)
-                
-                #fnord
-                #                match3 = re.search(r'\|\s*(ZSD\s*[IVX]+)\s*-', line)
-                #                match3 = re.search(r'\|\s*(ZSD\s*.*?)\s*-', line)
-                #fnord
-                
+            if Regexes.pool_header.search(line) and line.count('|') < 6:
+                found_codes = []
 
-                # Format 4: | CODE SEÇMELİ ... | or | CODE HAVUZU ... |
-                # Matches SDBIOII, SDMATI, ÜSD
-                match4 = re.search(r'\|\s*([A-ZİĞÜŞÖÇ0-9_]{3,})\s+(?:SEÇMELİ|HAVUZU|DERSLER)', line, re.IGNORECASE)
+                # Format 1: | CODE | DESCRIPTION | or | CODE1/CODE2 |
+                # Use findall for the main regex to capture multiple codes like SOZSDII/SOZSDIV
+                matches1 = Regexes.pool_code.findall(line)
+                if matches1:
+                    for m in matches1:
+                        c = m[0].strip()
+                        if m[1]:
+                            c = f"{c} {m[1].strip()}"
+                        c = c.strip()
+                        # Only add if it's a valid code (minimum 2 characters)
+                        if len(c) >= 2:
+                             found_codes.append(c)
 
-                code = None
-                if match1:
-                    code = match1.group(1).strip()
-                    if match1.lastindex >= 2:
-                        suffix = match1.group(2).strip()
-                        code = f"{code} {suffix}"
-                elif match2:
-                    code = match2.group(1).strip()
-                elif match3:
-                    code = match3.group(1).strip()
-                elif match4:
-                    code = match4.group(1).strip()
+
+
+                # If no matches from main regex, try others (usually single code)
+                if not found_codes:
+                    # match1 = re.compile(r'([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*?)\s*([IVX0-9]*)', re.IGNORECASE)
+                    
+                    # Format 2: | DESCRIPTION (CODE) |
+                    match2 = re.search(r'\((ZSD[IVX]*|SD[IVX]*|ÜSD[IVX]*|HUKSD[0-9]*)\)', line)
+                    # Format 3: | ZSD I - ... |
+                    match3 = re.search(r'\|\s*(ZSD\s*.*?)\s*-', line)
+                    # Format 4: | CODE SEÇMELİ ... | or | CODE HAVUZU ... |
+                    match4 = re.search(r'\|\s*([A-ZİĞÜŞÖÇ0-9_]{3,})\s+(?:SEÇMELİ|HAVUZU|DERSLER)', line, re.IGNORECASE)
+
+                    if match2:
+                        found_codes.append(match2.group(1).strip())
+                        match2_count += 1
+                        msg = f"[!] UYARI: match2 kullanildi - Satir: {line.strip()}"
+                        print(msg)
+                        if log_file:
+                            log_file.write(msg + "\n")
+                    elif match3:
+                        found_codes.append(match3.group(1).strip())
+                        match3_count += 1
+                        msg = f"[!] UYARI: match3 kullanildi - Satir: {line.strip()}"
+                        print(msg)
+                        if log_file:
+                            log_file.write(msg + "\n")
+                    elif match4:
+                        found_codes.append(match4.group(1).strip())
+                        match4_count += 1
+                        msg = f"[!] UYARI: match4 kullanildi - Satir: {line.strip()}"
+                        print(msg)
+                        if log_file:
+                            log_file.write(msg + "\n")
+
+
                 
-                if code:
-                    # Ignore if it looks like a course code (e.g. HUK151) unless it's clearly a pool header
-                    # Pool codes often like HUKSD5, SDBIOI, ZSD, SD, ÜSD
-                    current_pool_code = code
-                    if current_pool_code not in pools:
-                        pools[current_pool_code] = []
+                        # (r'([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*?)\s*([IVX0-9]*)', re.IGNORECASE)
+
+
+                if found_codes:
+                    current_pool_codes = found_codes
+                    for c in current_pool_codes:
+                        if c not in pools:
+                            pools[c] = []
                 continue
 
         # Semester Parsing
         # Priority: YARIYIL/DÖNEM > GÜZ/BAHAR > YIL
         if not in_pool_section:
-            term_match = sem_term_regex.search(line)
-            season_match = season_regex.search(line)
-            year_match = year_regex.search(line)
+            term_match = Regexes.semester_term.search(line)
+            season_match = Regexes.season.search(line)
+            year_match = Regexes.year.search(line)
             
             if term_match:
                 val = to_int(term_match.group(1))
@@ -159,7 +192,8 @@ def parse_file(filepath):
             if re.match(r'^[A-ZİĞÜŞÖÇ]{2,}\s*[0-9IVX]*$', p_clean):
                 code_idx = i
                 break
-        
+        #fnord isim ve kod karıştırabilir?
+
         if code_idx != -1:
             raw_code = parts[code_idx]
             if ' - ' in raw_code:
@@ -181,46 +215,87 @@ def parse_file(filepath):
 
             course_tuple = (code, name, ects)
             
-            if in_pool_section and current_pool_code:
+            if in_pool_section and current_pool_codes:
                 # Avoid adding the pool header itself as a course
-                if code != current_pool_code:
-                    pools[current_pool_code].append(course_tuple)
+                if code not in current_pool_codes:
+                    for pool_code in current_pool_codes:
+                        pools[pool_code].append(course_tuple)
             elif 1 <= current_semester <= 8:
                 if current_semester not in curriculum:
                     curriculum[current_semester] = []
                 
                 # Allow duplicates for placeholder courses (ZSD, SD, ÜSD, etc.)
-                is_placeholder = any(code.startswith(prefix) for prefix in ["ZSD", "SD", "ÜSD", "HUKSD", "BSD", "POLSD", "KKWSD"])
+                is_placeholder = "SD" in code
                 
                 if is_placeholder or course_tuple not in curriculum[current_semester]:
                     curriculum[current_semester].append(course_tuple)
 
-    return curriculum, pools
+    return curriculum, pools, (match2_count, match3_count, match4_count)
 
 def main():
     departments_data = {}
     
-    # Walk through Curriculum directory
-    for root, dirs, files in os.walk(CURRICULUM_DIR):
-        for file in files:
-            if file.endswith(".txt"):
-                # Determine Department Name
-                # If file is "X Öğretim Planı.txt", Dept is X.
-                dept_name = file.replace(" Öğretim Planı.txt", "").strip()
-                
-                # If file is just "Öğretim Planı.txt" (unlikely based on list), use parent dir?
-                # Based on file list, they are named properly.
-                
-                filepath = os.path.join(root, file)
-                print(f"Parsing {dept_name}...")
-                try:
-                    curriculum, pools = parse_file(filepath)
-                    departments_data[dept_name] = {
-                        "curriculum": curriculum,
-                        "pools": pools
-                    }
-                except Exception as e:
-                    print(f"Error parsing {file}: {e}")
+    # Total counters across all departments
+    total_match2 = 0
+    total_match3 = 0
+    total_match4 = 0
+    
+    # Open log file for writing match warnings
+    log_filepath = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output_match_type.txt")
+    
+    with open(log_filepath, 'w', encoding='utf-8') as log_file:
+        log_file.write("="*60 + "\n")
+        log_file.write("MATCH PATTERN KULLANIM DETAYLARI\n")
+        log_file.write("="*60 + "\n\n")
+        
+        # Walk through Curriculum directory
+        for root, dirs, files in os.walk(CURRICULUM_DIR):
+            for file in files:
+                if file.endswith(".txt"):
+                    # Determine Department Name
+                    # If file is "X Öğretim Planı.txt", Dept is X.
+                    dept_name = file.replace(" Öğretim Planı.txt", "").strip()
+                    
+                    # If file is just "Öğretim Planı.txt" (unlikely based on list), use parent dir?
+                    # Based on file list, they are named properly.
+                    
+                    filepath = os.path.join(root, file)
+                    print(f"Parsing {dept_name}...")
+                    log_file.write(f"\n--- {dept_name} ---\n")
+                    try:
+                        curriculum, pools, (match2_count, match3_count, match4_count) = parse_file(filepath, log_file)
+                        departments_data[dept_name] = {
+                            "curriculum": curriculum,
+                            "pools": pools
+                        }
+                        
+                        # Accumulate counters
+                        total_match2 += match2_count
+                        total_match3 += match3_count
+                        total_match4 += match4_count
+                        
+                    except Exception as e:
+                        print(f"Error parsing {file}: {e}")
+
+        # Write summary to log file
+        log_file.write("\n" + "="*60 + "\n")
+        log_file.write("OZET ISTATISTIKLER\n")
+        log_file.write("="*60 + "\n\n")
+        
+        if total_match2 > 0 or total_match3 > 0 or total_match4 > 0:
+            log_file.write("[!] Ana regex (match1) yerine alternatif patternler kullanildi:\n\n")
+            if total_match2 > 0:
+                log_file.write(f"   • match2 (Format: | DESCRIPTION (CODE) |) : {total_match2} kere\n")
+            if total_match3 > 0:
+                log_file.write(f"   • match3 (Format: | ZSD I - ... |)        : {total_match3} kere\n")
+            if total_match4 > 0:
+                log_file.write(f"   • match4 (Format: | CODE SECMELI ... |)   : {total_match4} kere\n")
+            log_file.write(f"\n   TOPLAM: {total_match2 + total_match3 + total_match4} alternatif pattern kullanimi\n")
+        else:
+            log_file.write("[OK] Tum pool kodlari ana regex (match1) ile basariyla yakalandi!\n")
+        
+        log_file.write("="*60 + "\n")
+
 
     # Write to curriculum_data.py
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
@@ -248,6 +323,29 @@ def main():
         f.write("\n")
     
     print(f"Successfully generated {OUTPUT_FILE}")
+    
+    # Display match pattern usage statistics
+    print("\n" + "="*60)
+    print("MATCH PATTERN KULLANIM ISTATISTIKLERI")
+    print("="*60)
+    
+    if total_match2 > 0 or total_match3 > 0 or total_match4 > 0:
+        print("\n[!] Ana regex (match1) yerine alternatif patternler kullanildi:\n")
+        if total_match2 > 0:
+            print(f"   • match2 (Format: | DESCRIPTION (CODE) |) : {total_match2} kere")
+        if total_match3 > 0:
+            print(f"   • match3 (Format: | ZSD I - ... |)        : {total_match3} kere")
+        if total_match4 > 0:
+            print(f"   • match4 (Format: | CODE SECMELI ... |)   : {total_match4} kere")
+        print(f"\n   TOPLAM: {total_match2 + total_match3 + total_match4} alternatif pattern kullanimi")
+    else:
+        print("\n[OK] Tum pool kodlari ana regex (match1) ile basariyla yakalandi!")
+    
+    print("="*60 + "\n")
+    print(f"Detayli uyari mesajlari: {log_filepath}\n")
+
+
+
 
 if __name__ == "__main__":
     main()

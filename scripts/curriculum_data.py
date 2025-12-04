@@ -1164,7 +1164,123 @@ DEPARTMENTS_DATA = {
             ]
         },
         "pools": {
-            "SDB I": [],
+            "SD": [
+                [
+                    "MBT202",
+                    "Biyofiziksel Kimya",
+                    6
+                ],
+                [
+                    "MBT326",
+                    "Biyoelektrokimya",
+                    6
+                ],
+                [
+                    "MBT336",
+                    "Biyokataliz",
+                    6
+                ],
+                [
+                    "NWI202",
+                    "Fiziksel Kimya II",
+                    6
+                ],
+                [
+                    "MBT433",
+                    "Biyoteknoloji İşletmeleri için Sistem Teknikleri II",
+                    6
+                ],
+                [
+                    "MBT471",
+                    "Hücre-Malzeme Etkileşimleri",
+                    6
+                ],
+                [
+                    "MBT473",
+                    "Doku Mühendisliği",
+                    6
+                ],
+                [
+                    "MBT475",
+                    "Biyosensörler",
+                    6
+                ],
+                [
+                    "MBT477",
+                    "Nanobiyoteknoloji",
+                    6
+                ],
+                [
+                    "MBT479",
+                    "Hedeflendirilmiş İlaç Taşıma",
+                    6
+                ],
+                [
+                    "MBT474",
+                    "Popülasyon Genetiği",
+                    6
+                ],
+                [
+                    "MBT476",
+                    "Etken Madde Araştırmaları",
+                    6
+                ],
+                [
+                    "MBT478",
+                    "Doğal Madde Üretimi",
+                    6
+                ],
+                [
+                    "MBT480",
+                    "Egzersizin Moleküler Biyolojisi",
+                    6
+                ],
+                [
+                    "MWT310",
+                    "Biyomalzemeler",
+                    6
+                ],
+                [
+                    "MBT453",
+                    "Biyomatematik",
+                    6
+                ],
+                [
+                    "MBT455",
+                    "Biyofizik",
+                    6
+                ],
+                [
+                    "MBT456",
+                    "Nicel Biyoloji",
+                    6
+                ],
+                [
+                    "MBT458",
+                    "Biyoistatistik",
+                    6
+                ],
+                [
+                    "MBT460",
+                    "Duyu Organlarının Biyofiziği",
+                    6
+                ],
+                [
+                    "MBT488",
+                    "Biyomedikal İşaret işleme ve Yapay Zeka Uygulamaları",
+                    6
+                ],
+                [
+                    "NWI302",
+                    "İstatistiksel ve Sayısal Yöntemler",
+                    6
+                ],
+                [
+                    "NWI402",
+                    "Biyobilimler için MATLAB",
+                    6
+                ]
+            ],
             "ÜSD": [
                 [
                     "MBT361",
@@ -1249,131 +1365,6 @@ DEPARTMENTS_DATA = {
                 [
                     "WIN204",
                     "Muhasebe ve Bilanço",
-                    6
-                ]
-            ],
-            "SDBIOI I": [
-                [
-                    "MBT202",
-                    "Biyofiziksel Kimya",
-                    6
-                ],
-                [
-                    "MBT326",
-                    "Biyoelektrokimya",
-                    6
-                ],
-                [
-                    "MBT336",
-                    "Biyokataliz",
-                    6
-                ],
-                [
-                    "NWI202",
-                    "Fiziksel Kimya II",
-                    6
-                ]
-            ],
-            "SDBIOII I": [
-                [
-                    "MBT433",
-                    "Biyoteknoloji İşletmeleri için Sistem Teknikleri II",
-                    6
-                ],
-                [
-                    "MBT471",
-                    "Hücre-Malzeme Etkileşimleri",
-                    6
-                ],
-                [
-                    "MBT473",
-                    "Doku Mühendisliği",
-                    6
-                ],
-                [
-                    "MBT475",
-                    "Biyosensörler",
-                    6
-                ],
-                [
-                    "MBT477",
-                    "Nanobiyoteknoloji",
-                    6
-                ],
-                [
-                    "MBT479",
-                    "Hedeflendirilmiş İlaç Taşıma",
-                    6
-                ]
-            ],
-            "SDBIOI V": [
-                [
-                    "MBT474",
-                    "Popülasyon Genetiği",
-                    6
-                ],
-                [
-                    "MBT476",
-                    "Etken Madde Araştırmaları",
-                    6
-                ],
-                [
-                    "MBT478",
-                    "Doğal Madde Üretimi",
-                    6
-                ],
-                [
-                    "MBT480",
-                    "Egzersizin Moleküler Biyolojisi",
-                    6
-                ],
-                [
-                    "MWT310",
-                    "Biyomalzemeler",
-                    6
-                ]
-            ],
-            "SDMAT I": [
-                [
-                    "MBT453",
-                    "Biyomatematik",
-                    6
-                ],
-                [
-                    "MBT455",
-                    "Biyofizik",
-                    6
-                ]
-            ],
-            "SDMATI I": [
-                [
-                    "MBT456",
-                    "Nicel Biyoloji",
-                    6
-                ],
-                [
-                    "MBT458",
-                    "Biyoistatistik",
-                    6
-                ],
-                [
-                    "MBT460",
-                    "Duyu Organlarının Biyofiziği",
-                    6
-                ],
-                [
-                    "MBT488",
-                    "Biyomedikal İşaret işleme ve Yapay Zeka Uygulamaları",
-                    6
-                ],
-                [
-                    "NWI302",
-                    "İstatistiksel ve Sayısal Yöntemler",
-                    6
-                ],
-                [
-                    "NWI402",
-                    "Biyobilimler için MATLAB",
                     6
                 ]
             ]
@@ -1793,6 +1784,11 @@ DEPARTMENTS_DATA = {
             ],
             "HUKSD 6": [
                 [
+                    "MODÜL",
+                    "DERSİN ADI",
+                    0
+                ],
+                [
                     "HUK658",
                     "Avrupa Hukuku ve Uluslararası Hukuk II",
                     2
@@ -1809,6 +1805,11 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "HUKSD 7": [
+                [
+                    "MODÜL",
+                    "DERSİN ADI",
+                    0
+                ],
                 [
                     "HUK751",
                     "İnfaz Hukuku",
@@ -1846,6 +1847,11 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "HUKSD 8": [
+                [
+                    "MODÜL",
+                    "DERSİN ADI",
+                    0
+                ],
                 [
                     "HUK856",
                     "Avrupa Hukuku ve Uluslararası Hukuk IV",
@@ -2139,6 +2145,78 @@ DEPARTMENTS_DATA = {
             ]
         },
         "pools": {
+            "ÜSD": [
+                [
+                    "BAU091",
+                    "İnşaat Mühendisliğine Giriş",
+                    2
+                ],
+                [
+                    "BWL034",
+                    "Uluslararası İşletme",
+                    6
+                ],
+                [
+                    "BWL102",
+                    "Organizasyon",
+                    3
+                ],
+                [
+                    "BWL201",
+                    "Pazarlamanın Temelleri",
+                    5
+                ],
+                [
+                    "BWL212",
+                    "Stratejik Pazarlama",
+                    5
+                ],
+                [
+                    "ETE091",
+                    "Elektrik-Elektronik Mühendisliğine Giriş",
+                    2
+                ],
+                [
+                    "HUK175",
+                    "Etik",
+                    2
+                ],
+                [
+                    "ING404",
+                    "Girişimcilik",
+                    2
+                ],
+                [
+                    "INF101",
+                    "Bilgisayar Bilimine ve Programlamaya Giriş",
+                    6
+                ],
+                [
+                    "MAB109",
+                    "Statik",
+                    6
+                ],
+                [
+                    "SOZ027",
+                    "Sosyoloji ve Yapay Zeka",
+                    6
+                ],
+                [
+                    "ÜSDAFY101",
+                    "Afet Yönetimi",
+                    3
+                ],
+                [
+                    "ÜSDINF406",
+                    "Dijital İnovasyon Yönetimi",
+                    6
+                ],
+                [
+                    "ÜSDKKW434",
+                    "Kültürel Miras Yönetimi",
+                    6
+                ]
+            ],
             "KKWSD I": [
                 [
                     "KKW001",
@@ -2229,76 +2307,98 @@ DEPARTMENTS_DATA = {
                     "KKW443",
                     "Dil ve İletişim",
                     5
-                ],
+                ]
+            ],
+            "KKWSD V": [
                 [
-                    "BAU091",
-                    "İnşaat Mühendisliğine Giriş",
-                    2
-                ],
-                [
-                    "BWL034",
-                    "Uluslararası İşletme",
-                    6
-                ],
-                [
-                    "BWL102",
-                    "Organizasyon",
+                    "KKW001",
+                    "Almanya'da Göçmen Edebiyatı",
                     3
                 ],
                 [
-                    "BWL201",
-                    "Pazarlamanın Temelleri",
+                    "KKW220",
+                    "Görsel Kültür ve İletişim Araştırmaları",
+                    6
+                ],
+                [
+                    "KKW223",
+                    "Medya Tarihi",
+                    4
+                ],
+                [
+                    "KKW228",
+                    "Kültürlerarası İletişim",
+                    4
+                ],
+                [
+                    "KKW233",
+                    "Medya ve Kültür Bilimleri",
+                    6
+                ],
+                [
+                    "KKW302",
+                    "Medya Okuryazarlığı",
+                    6
+                ],
+                [
+                    "KKW306",
+                    "Medya ve Etik",
                     5
                 ],
                 [
-                    "BWL212",
-                    "Stratejik Pazarlama",
+                    "KKW307",
+                    "Alımlama ve Medya Etkileri Araştırmaları",
+                    6
+                ],
+                [
+                    "KKW325",
+                    "Edebiyat ve Metinlerarasılık",
+                    6
+                ],
+                [
+                    "KKW341",
+                    "Siyasal İletişim ve Medya",
+                    4
+                ],
+                [
+                    "KKW342",
+                    "Karşılaştırmalı Edebiyat",
                     5
                 ],
                 [
-                    "ETE091",
-                    "Elektrik-Elektronik Mühendisliğine Giriş",
-                    2
+                    "KKW344",
+                    "Kültür Politikası",
+                    5
                 ],
                 [
-                    "HUK175",
-                    "Etik",
-                    2
+                    "KKW346",
+                    "Estetik",
+                    5
                 ],
                 [
-                    "ING404",
-                    "Girişimcilik",
-                    2
+                    "KKW348",
+                    "Teori ve Uygulamada Çeviri",
+                    5
                 ],
                 [
-                    "INF101",
-                    "Bilgisayar Bilimine ve Programlamaya Giriş",
-                    6
+                    "KKW422",
+                    "Kurumsal İletişim",
+                    4
                 ],
                 [
-                    "MAB109",
-                    "Statik",
-                    6
-                ],
-                [
-                    "SOZ027",
-                    "Sosyoloji ve Yapay Zeka",
-                    6
-                ],
-                [
-                    "ÜSDAFY101",
-                    "Afet Yönetimi",
+                    "KKW431",
+                    "Dil Felsefesi",
                     3
                 ],
                 [
-                    "ÜSDINF406",
-                    "Dijital İnovasyon Yönetimi",
-                    6
+                    "KKW433",
+                    "Sosyal Medya Yönetimi",
+                    3
                 ],
                 [
-                    "ÜSDKKW434",
-                    "Kültürel Miras Yönetimi",
-                    6
+                    "KKW443",
+                    "Dil ve İletişim",
+                    5
                 ]
             ]
         }
@@ -2488,6 +2588,16 @@ DEPARTMENTS_DATA = {
                     "SOZSDII",
                     "Seçmeli Ders",
                     6
+                ],
+                [
+                    "SOZSDII",
+                    "Seçmeli Ders",
+                    6
+                ],
+                [
+                    "SOZSDII",
+                    "Seçmeli Ders",
+                    6
                 ]
             ],
             "6": [
@@ -2510,6 +2620,16 @@ DEPARTMENTS_DATA = {
                     "ÜSD002",
                     "Üniversite Seçmeli Ders Havuzu II",
                     2
+                ],
+                [
+                    "SOZSDIII",
+                    "Seçmeli Ders",
+                    6
+                ],
+                [
+                    "SOZSDIII",
+                    "Seçmeli Ders",
+                    6
                 ],
                 [
                     "SOZSDIII",
@@ -2554,6 +2674,11 @@ DEPARTMENTS_DATA = {
                     "SOZ426",
                     "Bitirme Projesi",
                     12
+                ],
+                [
+                    "SOZSDV",
+                    "Seçmeli Ders",
+                    6
                 ],
                 [
                     "SOZSDV",
@@ -2675,7 +2800,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SOZSDI I": [
+            "SOZSD II": [
                 [
                     "SOZ021",
                     "Görsel Sosyoloji",
@@ -2779,6 +2904,337 @@ DEPARTMENTS_DATA = {
                 [
                     "SOZ075",
                     "Güncel Etnografi Okumaları",
+                    6
+                ]
+            ],
+            "SOZSD III": [
+                [
+                    "SOZ022",
+                    "Sanat Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ024",
+                    "Teknoloji Bağımlılığı",
+                    6
+                ],
+                [
+                    "SOZ026",
+                    "Küreselleşme",
+                    6
+                ],
+                [
+                    "SOZ028",
+                    "Gelecek Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ030",
+                    "Organizasyon Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ032",
+                    "Sosyolojide Güncel Tartışmalar",
+                    6
+                ],
+                [
+                    "SOZ042",
+                    "Almanya'da Güncel Azınlık Tartışmaları",
+                    6
+                ],
+                [
+                    "SOZ044",
+                    "Avrupa’da Kapitalizmin Doğuşu",
+                    6
+                ],
+                [
+                    "SOZ046",
+                    "Avrupa’da Sosyal Politika",
+                    6
+                ],
+                [
+                    "SOZ048",
+                    "Avrupa’da Toplumsal Dönüşümler",
+                    6
+                ],
+                [
+                    "SOZ052",
+                    "Beden Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ054",
+                    "Kültür Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ056",
+                    "Kurumlar Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ058",
+                    "Tarihsel Sosyoloji",
+                    6
+                ],
+                [
+                    "SOZ060",
+                    "Ayrımcılık Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ062",
+                    "Çalışma Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ064",
+                    "Eleştirel Kuram ve Toplum",
+                    6
+                ],
+                [
+                    "SOZ066",
+                    "Tüketim Toplumu",
+                    6
+                ],
+                [
+                    "SOZ068",
+                    "Toplumsal Hareketler",
+                    6
+                ],
+                [
+                    "SOZ070",
+                    "Sağlık Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ072",
+                    "Toplumsal Ekoloji",
+                    6
+                ],
+                [
+                    "SOZ078",
+                    "Mekan Sosyolojisi",
+                    6
+                ]
+            ],
+            "SOZSD IV": [
+                [
+                    "SOZ021",
+                    "Görsel Sosyoloji",
+                    6
+                ],
+                [
+                    "SOZ023",
+                    "Gençlik Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ025",
+                    "Sosyolojik Kuramların Dilleri",
+                    6
+                ],
+                [
+                    "SOZ027",
+                    "Sosyoloji ve Yapay Zeka",
+                    6
+                ],
+                [
+                    "SOZ029",
+                    "Ekonomi Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ033",
+                    "Türkiye'de Kapitalizmin Gelişimi",
+                    6
+                ],
+                [
+                    "SOZ035",
+                    "Türkiye’de Göç Çalışmaları",
+                    6
+                ],
+                [
+                    "SOZ037",
+                    "Türkiye’de Toplumsal Dönüşümler",
+                    6
+                ],
+                [
+                    "SOZ039",
+                    "Bir Metropolün Sosyolojisi: İstanbul",
+                    6
+                ],
+                [
+                    "SOZ051",
+                    "Duygular Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ053",
+                    "Din Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ055",
+                    "Gündelik Hayat Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ057",
+                    "Siyaset Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ059",
+                    "Afet Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ063",
+                    "Eğitim Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ065",
+                    "Hayvanlar ve Toplum",
+                    6
+                ],
+                [
+                    "SOZ067",
+                    "Öznellikler ve Özneleşme",
+                    6
+                ],
+                [
+                    "SOZ069",
+                    "Kolektif ve Toplumsal Hafıza",
+                    6
+                ],
+                [
+                    "SOZ071",
+                    "Engellilik Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ073",
+                    "Proje Tasarımı",
+                    6
+                ],
+                [
+                    "SOZ075",
+                    "Güncel Etnografi Okumaları",
+                    6
+                ]
+            ],
+            "SOZSD V": [
+                [
+                    "SOZ022",
+                    "Sanat Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ024",
+                    "Teknoloji Bağımlılığı",
+                    6
+                ],
+                [
+                    "SOZ026",
+                    "Küreselleşme",
+                    6
+                ],
+                [
+                    "SOZ028",
+                    "Gelecek Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ030",
+                    "Organizasyon Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ032",
+                    "Sosyolojide Güncel Tartışmalar",
+                    6
+                ],
+                [
+                    "SOZ042",
+                    "Almanya'da Güncel Azınlık Tartışmaları",
+                    6
+                ],
+                [
+                    "SOZ044",
+                    "Avrupa’da Kapitalizmin Doğuşu",
+                    6
+                ],
+                [
+                    "SOZ046",
+                    "Avrupa’da Sosyal Politika",
+                    6
+                ],
+                [
+                    "SOZ048",
+                    "Avrupa’da Toplumsal Dönüşümler",
+                    6
+                ],
+                [
+                    "SOZ052",
+                    "Beden Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ054",
+                    "Kültür Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ056",
+                    "Kurumlar Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ058",
+                    "Tarihsel Sosyoloji",
+                    6
+                ],
+                [
+                    "SOZ060",
+                    "Ayrımcılık Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ062",
+                    "Çalışma Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ064",
+                    "Eleştirel Kuram ve Toplum",
+                    6
+                ],
+                [
+                    "SOZ066",
+                    "Tüketim Toplumu",
+                    6
+                ],
+                [
+                    "SOZ068",
+                    "Toplumsal Hareketler",
+                    6
+                ],
+                [
+                    "SOZ070",
+                    "Sağlık Sosyolojisi",
+                    6
+                ],
+                [
+                    "SOZ072",
+                    "Toplumsal Ekoloji",
+                    6
+                ],
+                [
+                    "SOZ078",
+                    "Mekan Sosyolojisi",
                     6
                 ]
             ]
@@ -3040,6 +3496,15 @@ DEPARTMENTS_DATA = {
                     "SDIV",
                     "Seçmeli Dersler IV",
                     18
+                ]
+            ]
+        },
+        "pools": {
+            "SD": [
+                [
+                    "DİL",
+                    "T",
+                    0
                 ],
                 [
                     "WIN311",
@@ -3061,9 +3526,7 @@ DEPARTMENTS_DATA = {
                     "Elektrik ve Elektronik Mühendisliği Projesi",
                     6
                 ]
-            ]
-        },
-        "pools": {
+            ],
             "SD I": [
                 [
                     "DİL",
@@ -3531,7 +3994,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SDII I": [
+            "SD III": [
                 [
                     "DİL",
                     "T",
@@ -4039,6 +4502,11 @@ DEPARTMENTS_DATA = {
                     "SDVII",
                     "Seçmeli Ders Alanı VII",
                     12
+                ],
+                [
+                    "SDVII",
+                    "Seçmeli Ders Alanı VII",
+                    12
                 ]
             ],
             "8": [
@@ -4068,6 +4536,15 @@ DEPARTMENTS_DATA = {
                     12
                 ],
                 [
+                    "SDVIII",
+                    "Seçmeli Ders Alanı VIII",
+                    12
+                ]
+            ]
+        },
+        "pools": {
+            "SD II": [
+                [
                     "ETE104",
                     "Mikroişlemciler / Microprocessors",
                     6
@@ -4076,7 +4553,9 @@ DEPARTMENTS_DATA = {
                     "INF102",
                     "Nesnel Programlama / Object Oriented Programming",
                     6
-                ],
+                ]
+            ],
+            "SD": [
                 [
                     "MAT302",
                     "Numerik Matematik / Numerical Mathematics",
@@ -4110,6 +4589,964 @@ DEPARTMENTS_DATA = {
                 [
                     "INF303",
                     "Yazılım Mühendisliği Projesi / Software Eng. Project",
+                    6
+                ]
+            ],
+            "SD V": [
+                [
+                    "ETE104",
+                    "Mikroişlemciler / Microprocessors",
+                    6
+                ],
+                [
+                    "ETE312",
+                    "Elektronik II: Devre Teknolojisi",
+                    6
+                ],
+                [
+                    "ETE374",
+                    "Sayısal Sinyal İşlemenin Temelleri",
+                    6
+                ],
+                [
+                    "ETE393",
+                    "Elektroteknik: Seçilmiş Konular I",
+                    6
+                ],
+                [
+                    "ETE394",
+                    "Elektroteknik: Seçilmiş Konular II",
+                    6
+                ],
+                [
+                    "ETE412",
+                    "Optik Haberleşme Tekniği",
+                    2
+                ],
+                [
+                    "ETE414",
+                    "İşlemsel Yükselteçler ile Devre Tasarımı",
+                    6
+                ],
+                [
+                    "ETE415",
+                    "Elektronik Laboratuvarı",
+                    6
+                ],
+                [
+                    "ETE417",
+                    "RF Ön Uç Bileşenleri ve Devreler",
+                    6
+                ],
+                [
+                    "ETE421",
+                    "Elektromanyetik Dalgaların Temelleri",
+                    6
+                ],
+                [
+                    "ETE422",
+                    "Anten Teorisine Giriş",
+                    6
+                ],
+                [
+                    "ETE433",
+                    "Elektrik Makineleri II",
+                    6
+                ],
+                [
+                    "ETE434",
+                    "Elektrik Enerjisi Kaynakları",
+                    6
+                ],
+                [
+                    "ETE439",
+                    "Güç Elektroniği",
+                    6
+                ],
+                [
+                    "ETE441",
+                    "FPGA Programlama",
+                    6
+                ],
+                [
+                    "ETE442",
+                    "Gömülü Sistemler",
+                    6
+                ],
+                [
+                    "ETE444",
+                    "Donanım Betimleme Dili ile Tasarım",
+                    6
+                ],
+                [
+                    "ETE447",
+                    "Analog Tümdevreler",
+                    6
+                ],
+                [
+                    "ETE448",
+                    "VLSI Tasarımına Giriş",
+                    6
+                ],
+                [
+                    "ETE451",
+                    "Doğrusal Olmayan Kontrol Sistemleri",
+                    6
+                ],
+                [
+                    "ETE452",
+                    "Hibrit Sistemler",
+                    6
+                ],
+                [
+                    "ETE453",
+                    "Ayrık Zamanlı Kontrol Sistemleri",
+                    6
+                ],
+                [
+                    "ETE454",
+                    "Çok Girdili Çok Çıktılı Sistemler",
+                    6
+                ],
+                [
+                    "ETE455",
+                    "Ayrık Olaylı Sistemler",
+                    6
+                ],
+                [
+                    "ETE456",
+                    "Sistem Tanımlama ve Akıllı Kontrol",
+                    6
+                ],
+                [
+                    "ETE459",
+                    "Doğrusal Olmayan Dinamik Sistemler",
+                    6
+                ],
+                [
+                    "ETE461",
+                    "Klinik Veri Yönetimi",
+                    6
+                ],
+                [
+                    "ETE464",
+                    "Yapay Sinir Ağları",
+                    6
+                ],
+                [
+                    "ETE466",
+                    "Makine Öğrenmesiyle Biyomedikal Modelleme",
+                    6
+                ],
+                [
+                    "ETE467",
+                    "Güvenilir Yapay Zeka",
+                    6
+                ],
+                [
+                    "ETE471",
+                    "Haberleşme Ağları",
+                    6
+                ],
+                [
+                    "ETE473",
+                    "Sayısal Haberleşme Sistemleri",
+                    6
+                ],
+                [
+                    "ETE474",
+                    "Sayısal Görüntü İşleme",
+                    6
+                ],
+                [
+                    "ETE475",
+                    "Sayısal Sinyal İşleme",
+                    6
+                ],
+                [
+                    "ETE476",
+                    "Bilgi Kuramı",
+                    6
+                ],
+                [
+                    "ETE477",
+                    "Elektroakustik",
+                    6
+                ],
+                [
+                    "ETE479",
+                    "Yüksek Frekans Tekniği",
+                    6
+                ],
+                [
+                    "ETE481",
+                    "Aydınlatma Teknolojisi",
+                    6
+                ],
+                [
+                    "ETE482",
+                    "Yüksek Gerilim Tekniği",
+                    6
+                ],
+                [
+                    "ETE484",
+                    "Güç Dağıtım Sistemleri",
+                    6
+                ],
+                [
+                    "ETE486",
+                    "Akıllı Şebekeler",
+                    6
+                ],
+                [
+                    "ETE487",
+                    "Yenilenebilir Enerji Teknolojisi",
+                    6
+                ],
+                [
+                    "ETE490",
+                    "İşletmede Mesleki Eğitim",
+                    15
+                ],
+                [
+                    "ETE493",
+                    "Elektroteknik: Seçilmiş Konular III",
+                    6
+                ],
+                [
+                    "ETE494",
+                    "Elektroteknik: Seçilmiş Konular IV",
+                    6
+                ],
+                [
+                    "ETE496",
+                    "Tıbbi Cihazlarda Kalite Yönetim Sisteminin Kurulması",
+                    6
+                ],
+                [
+                    "ETE498",
+                    "Tıbbi Cihazlarda Test, Kontrol ve Kalibrasyon",
+                    6
+                ],
+                [
+                    "INF102",
+                    "Nesnel Programlama",
+                    6
+                ],
+                [
+                    "INF501",
+                    "Akıllı Sistemler",
+                    6
+                ],
+                [
+                    "INF502",
+                    "Makine Öğrenmesi",
+                    6
+                ],
+                [
+                    "INF510",
+                    "Bilişim Sistemleri Güvenliği",
+                    6
+                ],
+                [
+                    "INF513",
+                    "Derin Öğrenme",
+                    4
+                ],
+                [
+                    "INF518",
+                    "Bilgisayar Görmesinin Temelleri",
+                    6
+                ],
+                [
+                    "INF523",
+                    "İnsan-Makine İletişimi",
+                    6
+                ],
+                [
+                    "INF701",
+                    "Yapay Zekâ",
+                    6
+                ],
+                [
+                    "MAT302",
+                    "Numerik Matematik",
+                    6
+                ],
+                [
+                    "MAT392",
+                    "Kompleks Analiz",
+                    6
+                ],
+                [
+                    "MEC002",
+                    "Uygulamalı Kontrol Mühendisliği",
+                    6
+                ],
+                [
+                    "MEC308",
+                    "Endüstriyel Robotik I",
+                    6
+                ],
+                [
+                    "MEC313",
+                    "Endüstriyel Otomasyon Teknolojisi",
+                    6
+                ],
+                [
+                    "MEC321",
+                    "Görüntü Tabanlı Otomasyon I",
+                    6
+                ],
+                [
+                    "MEC324",
+                    "Görüntü Tabanlı Otomasyon II",
+                    6
+                ],
+                [
+                    "MEC421",
+                    "Endüstriyel Robotik II",
+                    6
+                ]
+            ],
+            "SD VI": [
+                [
+                    "ETE104",
+                    "Mikroişlemciler / Microprocessors",
+                    6
+                ],
+                [
+                    "ETE312",
+                    "Elektronik II: Devre Teknolojisi",
+                    6
+                ],
+                [
+                    "ETE374",
+                    "Sayısal Sinyal İşlemenin Temelleri",
+                    6
+                ],
+                [
+                    "ETE393",
+                    "Elektroteknik: Seçilmiş Konular I",
+                    6
+                ],
+                [
+                    "ETE394",
+                    "Elektroteknik: Seçilmiş Konular II",
+                    6
+                ],
+                [
+                    "ETE412",
+                    "Optik Haberleşme Tekniği",
+                    2
+                ],
+                [
+                    "ETE414",
+                    "İşlemsel Yükselteçler ile Devre Tasarımı",
+                    6
+                ],
+                [
+                    "ETE415",
+                    "Elektronik Laboratuvarı",
+                    6
+                ],
+                [
+                    "ETE417",
+                    "RF Ön Uç Bileşenleri ve Devreler",
+                    6
+                ],
+                [
+                    "ETE421",
+                    "Elektromanyetik Dalgaların Temelleri",
+                    6
+                ],
+                [
+                    "ETE422",
+                    "Anten Teorisine Giriş",
+                    6
+                ],
+                [
+                    "ETE433",
+                    "Elektrik Makineleri II",
+                    6
+                ],
+                [
+                    "ETE434",
+                    "Elektrik Enerjisi Kaynakları",
+                    6
+                ],
+                [
+                    "ETE439",
+                    "Güç Elektroniği",
+                    6
+                ],
+                [
+                    "ETE441",
+                    "FPGA Programlama",
+                    6
+                ],
+                [
+                    "ETE442",
+                    "Gömülü Sistemler",
+                    6
+                ],
+                [
+                    "ETE444",
+                    "Donanım Betimleme Dili ile Tasarım",
+                    6
+                ],
+                [
+                    "ETE447",
+                    "Analog Tümdevreler",
+                    6
+                ],
+                [
+                    "ETE448",
+                    "VLSI Tasarımına Giriş",
+                    6
+                ],
+                [
+                    "ETE451",
+                    "Doğrusal Olmayan Kontrol Sistemleri",
+                    6
+                ],
+                [
+                    "ETE452",
+                    "Hibrit Sistemler",
+                    6
+                ],
+                [
+                    "ETE453",
+                    "Ayrık Zamanlı Kontrol Sistemleri",
+                    6
+                ],
+                [
+                    "ETE454",
+                    "Çok Girdili Çok Çıktılı Sistemler",
+                    6
+                ],
+                [
+                    "ETE455",
+                    "Ayrık Olaylı Sistemler",
+                    6
+                ],
+                [
+                    "ETE456",
+                    "Sistem Tanımlama ve Akıllı Kontrol",
+                    6
+                ],
+                [
+                    "ETE459",
+                    "Doğrusal Olmayan Dinamik Sistemler",
+                    6
+                ],
+                [
+                    "ETE461",
+                    "Klinik Veri Yönetimi",
+                    6
+                ],
+                [
+                    "ETE464",
+                    "Yapay Sinir Ağları",
+                    6
+                ],
+                [
+                    "ETE466",
+                    "Makine Öğrenmesiyle Biyomedikal Modelleme",
+                    6
+                ],
+                [
+                    "ETE467",
+                    "Güvenilir Yapay Zeka",
+                    6
+                ],
+                [
+                    "ETE471",
+                    "Haberleşme Ağları",
+                    6
+                ],
+                [
+                    "ETE473",
+                    "Sayısal Haberleşme Sistemleri",
+                    6
+                ],
+                [
+                    "ETE474",
+                    "Sayısal Görüntü İşleme",
+                    6
+                ],
+                [
+                    "ETE475",
+                    "Sayısal Sinyal İşleme",
+                    6
+                ],
+                [
+                    "ETE476",
+                    "Bilgi Kuramı",
+                    6
+                ],
+                [
+                    "ETE477",
+                    "Elektroakustik",
+                    6
+                ],
+                [
+                    "ETE479",
+                    "Yüksek Frekans Tekniği",
+                    6
+                ],
+                [
+                    "ETE481",
+                    "Aydınlatma Teknolojisi",
+                    6
+                ],
+                [
+                    "ETE482",
+                    "Yüksek Gerilim Tekniği",
+                    6
+                ],
+                [
+                    "ETE484",
+                    "Güç Dağıtım Sistemleri",
+                    6
+                ],
+                [
+                    "ETE486",
+                    "Akıllı Şebekeler",
+                    6
+                ],
+                [
+                    "ETE487",
+                    "Yenilenebilir Enerji Teknolojisi",
+                    6
+                ],
+                [
+                    "ETE490",
+                    "İşletmede Mesleki Eğitim",
+                    15
+                ],
+                [
+                    "ETE493",
+                    "Elektroteknik: Seçilmiş Konular III",
+                    6
+                ],
+                [
+                    "ETE494",
+                    "Elektroteknik: Seçilmiş Konular IV",
+                    6
+                ],
+                [
+                    "ETE496",
+                    "Tıbbi Cihazlarda Kalite Yönetim Sisteminin Kurulması",
+                    6
+                ],
+                [
+                    "ETE498",
+                    "Tıbbi Cihazlarda Test, Kontrol ve Kalibrasyon",
+                    6
+                ],
+                [
+                    "INF102",
+                    "Nesnel Programlama",
+                    6
+                ],
+                [
+                    "INF501",
+                    "Akıllı Sistemler",
+                    6
+                ],
+                [
+                    "INF502",
+                    "Makine Öğrenmesi",
+                    6
+                ],
+                [
+                    "INF510",
+                    "Bilişim Sistemleri Güvenliği",
+                    6
+                ],
+                [
+                    "INF513",
+                    "Derin Öğrenme",
+                    4
+                ],
+                [
+                    "INF518",
+                    "Bilgisayar Görmesinin Temelleri",
+                    6
+                ],
+                [
+                    "INF523",
+                    "İnsan-Makine İletişimi",
+                    6
+                ],
+                [
+                    "INF701",
+                    "Yapay Zekâ",
+                    6
+                ],
+                [
+                    "MAT302",
+                    "Numerik Matematik",
+                    6
+                ],
+                [
+                    "MAT392",
+                    "Kompleks Analiz",
+                    6
+                ],
+                [
+                    "MEC002",
+                    "Uygulamalı Kontrol Mühendisliği",
+                    6
+                ],
+                [
+                    "MEC308",
+                    "Endüstriyel Robotik I",
+                    6
+                ],
+                [
+                    "MEC313",
+                    "Endüstriyel Otomasyon Teknolojisi",
+                    6
+                ],
+                [
+                    "MEC321",
+                    "Görüntü Tabanlı Otomasyon I",
+                    6
+                ],
+                [
+                    "MEC324",
+                    "Görüntü Tabanlı Otomasyon II",
+                    6
+                ],
+                [
+                    "MEC421",
+                    "Endüstriyel Robotik II",
+                    6
+                ]
+            ],
+            "SD VII": [
+                [
+                    "ETE104",
+                    "Mikroişlemciler / Microprocessors",
+                    6
+                ],
+                [
+                    "ETE312",
+                    "Elektronik II: Devre Teknolojisi",
+                    6
+                ],
+                [
+                    "ETE374",
+                    "Sayısal Sinyal İşlemenin Temelleri",
+                    6
+                ],
+                [
+                    "ETE393",
+                    "Elektroteknik: Seçilmiş Konular I",
+                    6
+                ],
+                [
+                    "ETE394",
+                    "Elektroteknik: Seçilmiş Konular II",
+                    6
+                ],
+                [
+                    "ETE412",
+                    "Optik Haberleşme Tekniği",
+                    2
+                ],
+                [
+                    "ETE414",
+                    "İşlemsel Yükselteçler ile Devre Tasarımı",
+                    6
+                ],
+                [
+                    "ETE415",
+                    "Elektronik Laboratuvarı",
+                    6
+                ],
+                [
+                    "ETE417",
+                    "RF Ön Uç Bileşenleri ve Devreler",
+                    6
+                ],
+                [
+                    "ETE421",
+                    "Elektromanyetik Dalgaların Temelleri",
+                    6
+                ],
+                [
+                    "ETE422",
+                    "Anten Teorisine Giriş",
+                    6
+                ],
+                [
+                    "ETE433",
+                    "Elektrik Makineleri II",
+                    6
+                ],
+                [
+                    "ETE434",
+                    "Elektrik Enerjisi Kaynakları",
+                    6
+                ],
+                [
+                    "ETE439",
+                    "Güç Elektroniği",
+                    6
+                ],
+                [
+                    "ETE441",
+                    "FPGA Programlama",
+                    6
+                ],
+                [
+                    "ETE442",
+                    "Gömülü Sistemler",
+                    6
+                ],
+                [
+                    "ETE444",
+                    "Donanım Betimleme Dili ile Tasarım",
+                    6
+                ],
+                [
+                    "ETE447",
+                    "Analog Tümdevreler",
+                    6
+                ],
+                [
+                    "ETE448",
+                    "VLSI Tasarımına Giriş",
+                    6
+                ],
+                [
+                    "ETE451",
+                    "Doğrusal Olmayan Kontrol Sistemleri",
+                    6
+                ],
+                [
+                    "ETE452",
+                    "Hibrit Sistemler",
+                    6
+                ],
+                [
+                    "ETE453",
+                    "Ayrık Zamanlı Kontrol Sistemleri",
+                    6
+                ],
+                [
+                    "ETE454",
+                    "Çok Girdili Çok Çıktılı Sistemler",
+                    6
+                ],
+                [
+                    "ETE455",
+                    "Ayrık Olaylı Sistemler",
+                    6
+                ],
+                [
+                    "ETE456",
+                    "Sistem Tanımlama ve Akıllı Kontrol",
+                    6
+                ],
+                [
+                    "ETE459",
+                    "Doğrusal Olmayan Dinamik Sistemler",
+                    6
+                ],
+                [
+                    "ETE461",
+                    "Klinik Veri Yönetimi",
+                    6
+                ],
+                [
+                    "ETE464",
+                    "Yapay Sinir Ağları",
+                    6
+                ],
+                [
+                    "ETE466",
+                    "Makine Öğrenmesiyle Biyomedikal Modelleme",
+                    6
+                ],
+                [
+                    "ETE467",
+                    "Güvenilir Yapay Zeka",
+                    6
+                ],
+                [
+                    "ETE471",
+                    "Haberleşme Ağları",
+                    6
+                ],
+                [
+                    "ETE473",
+                    "Sayısal Haberleşme Sistemleri",
+                    6
+                ],
+                [
+                    "ETE474",
+                    "Sayısal Görüntü İşleme",
+                    6
+                ],
+                [
+                    "ETE475",
+                    "Sayısal Sinyal İşleme",
+                    6
+                ],
+                [
+                    "ETE476",
+                    "Bilgi Kuramı",
+                    6
+                ],
+                [
+                    "ETE477",
+                    "Elektroakustik",
+                    6
+                ],
+                [
+                    "ETE479",
+                    "Yüksek Frekans Tekniği",
+                    6
+                ],
+                [
+                    "ETE481",
+                    "Aydınlatma Teknolojisi",
+                    6
+                ],
+                [
+                    "ETE482",
+                    "Yüksek Gerilim Tekniği",
+                    6
+                ],
+                [
+                    "ETE484",
+                    "Güç Dağıtım Sistemleri",
+                    6
+                ],
+                [
+                    "ETE486",
+                    "Akıllı Şebekeler",
+                    6
+                ],
+                [
+                    "ETE487",
+                    "Yenilenebilir Enerji Teknolojisi",
+                    6
+                ],
+                [
+                    "ETE490",
+                    "İşletmede Mesleki Eğitim",
+                    15
+                ],
+                [
+                    "ETE493",
+                    "Elektroteknik: Seçilmiş Konular III",
+                    6
+                ],
+                [
+                    "ETE494",
+                    "Elektroteknik: Seçilmiş Konular IV",
+                    6
+                ],
+                [
+                    "ETE496",
+                    "Tıbbi Cihazlarda Kalite Yönetim Sisteminin Kurulması",
+                    6
+                ],
+                [
+                    "ETE498",
+                    "Tıbbi Cihazlarda Test, Kontrol ve Kalibrasyon",
+                    6
+                ],
+                [
+                    "INF102",
+                    "Nesnel Programlama",
+                    6
+                ],
+                [
+                    "INF501",
+                    "Akıllı Sistemler",
+                    6
+                ],
+                [
+                    "INF502",
+                    "Makine Öğrenmesi",
+                    6
+                ],
+                [
+                    "INF510",
+                    "Bilişim Sistemleri Güvenliği",
+                    6
+                ],
+                [
+                    "INF513",
+                    "Derin Öğrenme",
+                    4
+                ],
+                [
+                    "INF518",
+                    "Bilgisayar Görmesinin Temelleri",
+                    6
+                ],
+                [
+                    "INF523",
+                    "İnsan-Makine İletişimi",
+                    6
+                ],
+                [
+                    "INF701",
+                    "Yapay Zekâ",
+                    6
+                ],
+                [
+                    "MAT302",
+                    "Numerik Matematik",
+                    6
+                ],
+                [
+                    "MAT392",
+                    "Kompleks Analiz",
+                    6
+                ],
+                [
+                    "MEC002",
+                    "Uygulamalı Kontrol Mühendisliği",
+                    6
+                ],
+                [
+                    "MEC308",
+                    "Endüstriyel Robotik I",
+                    6
+                ],
+                [
+                    "MEC313",
+                    "Endüstriyel Otomasyon Teknolojisi",
+                    6
+                ],
+                [
+                    "MEC321",
+                    "Görüntü Tabanlı Otomasyon I",
+                    6
+                ],
+                [
+                    "MEC324",
+                    "Görüntü Tabanlı Otomasyon II",
+                    6
+                ],
+                [
+                    "MEC421",
+                    "Endüstriyel Robotik II",
+                    6
+                ]
+            ],
+            "SD VIII": [
+                [
+                    "ETE104",
+                    "Mikroişlemciler / Microprocessors",
                     6
                 ],
                 [
@@ -4423,8 +5860,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ]
-        },
-        "pools": {}
+        }
     },
     "Endüstri Müh": {
         "curriculum": {
@@ -4697,7 +6133,11 @@ DEPARTMENTS_DATA = {
                     "ZSDII",
                     "Zorunlu Seçmeli Alan II",
                     6
-                ],
+                ]
+            ]
+        },
+        "pools": {
+            "SD": [
                 [
                     "WIN311",
                     "Proje I: Yenilik ve Teknoloji Yönetimi Projesi",
@@ -4713,9 +6153,7 @@ DEPARTMENTS_DATA = {
                     "Mekatronik Projesi",
                     6
                 ]
-            ]
-        },
-        "pools": {
+            ],
             "SD I": [
                 [
                     "WIN309",
@@ -4738,7 +6176,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SDI I": [
+            "SD II": [
                 [
                     "WIN316",
                     "Yöneylem Araştırması II - Rassal Modeller",
@@ -4867,7 +6305,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "ZSDI I": [
+            "ZSD II": [
                 [
                     "WIN306",
                     "Üretim ve Lojistik için Enformasyon Sistemleri",
@@ -5277,6 +6715,15 @@ DEPARTMENTS_DATA = {
                     "SIP",
                     "D/E",
                     18
+                ]
+            ]
+        },
+        "pools": {
+            "SD": [
+                [
+                    "DİL",
+                    "T",
+                    0
                 ],
                 [
                     "MAB308",
@@ -5287,6 +6734,11 @@ DEPARTMENTS_DATA = {
                     "ETE304",
                     "Kontrol Mühendisliğinin Temelleri / Fund. of Control Eng.",
                     6
+                ],
+                [
+                    "DİL",
+                    "T",
+                    0
                 ],
                 [
                     "MAB391",
@@ -5319,6 +6771,11 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "WIN302",
                     "Fabrika Yönetimine Giriş / Intro to Factory Management",
                     6
@@ -5336,6 +6793,11 @@ DEPARTMENTS_DATA = {
                 [
                     "MAB411",
                     "Yüzey Teknolojisi / Surface Technology",
+                    6
+                ],
+                [
+                    "MAB391",
+                    "Proje: Üretim Teknikleri / Project: Production Tech.",
                     6
                 ],
                 [
@@ -5404,6 +6866,11 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "MAB305",
                     "Tasarım Tek. III / Design Methods III",
                     6
@@ -5421,6 +6888,11 @@ DEPARTMENTS_DATA = {
                 [
                     "MAB413",
                     "Makine Müh. Bilişim Tek. / IT in Mech. Engineering",
+                    6
+                ],
+                [
+                    "MAB392",
+                    "Proje: Tasarım / Project: Design",
                     6
                 ],
                 [
@@ -5454,6 +6926,11 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "ETE331",
+                    "Elektrik Makineleri I / Electrical Machines I",
+                    6
+                ],
+                [
                     "MAB304",
                     "Dişli Teorisi ve Mekanizmalar / Gear Theory & Mechanisms",
                     6
@@ -5467,6 +6944,11 @@ DEPARTMENTS_DATA = {
                     "MAB466",
                     "Tasarım: Seçilmiş Konular III / Selected Topics Design III",
                     6
+                ],
+                [
+                    "DİL",
+                    "T",
+                    0
                 ],
                 [
                     "MAB456",
@@ -5504,8 +6986,28 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "MAB351",
+                    "Yapısal Mekanik / Structural Mechanics",
+                    6
+                ],
+                [
+                    "MAB305",
+                    "Tasarım Tek. III / Design Methods III",
+                    6
+                ],
+                [
+                    "MAB353",
+                    "Sonlu Elemanlar Yöntemi / Finite-Element-Methods",
+                    6
+                ],
+                [
                     "MAB407",
                     "Aerodinamik / Aerodynamics",
+                    6
+                ],
+                [
+                    "MAB001",
+                    "Sürekli Ortamlar Mekaniği / Continuum Mechanics",
                     6
                 ],
                 [
@@ -5534,8 +7036,28 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "DİL",
+                    "T",
+                    0
+                ],
+                [
                     "MAB354",
                     "Araç Teknolojisinin Temelleri / Basics of Automotive Eng.",
+                    6
+                ],
+                [
+                    "MAB304",
+                    "Dişli Teorisi ve Mekanizmalar / Gear Theory & Mechanisms",
+                    6
+                ],
+                [
+                    "MAB401",
+                    "Katı Cisim Simulasyonu / Rigid Body Simulation",
+                    6
+                ],
+                [
+                    "MAB394",
+                    "Proje: Taşıt Sistemleri / Project: Transport Systems",
                     6
                 ],
                 [
@@ -5544,8 +7066,28 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "ETE331",
+                    "Elektrik Makineleri I / Electrical Machines I",
+                    6
+                ],
+                [
                     "MAB405",
                     "Motor Teknolojilerinin Temelleri / Basics of Power Engines",
+                    6
+                ],
+                [
+                    "MAB305",
+                    "Tasarım Tek. III / Design Methods III",
+                    6
+                ],
+                [
+                    "MAB353",
+                    "Sonlu Elemanlar Yöntemi / Finite-Element-Methods",
+                    6
+                ],
+                [
+                    "MAB310",
+                    "Malzeme Teknolojisi II / Material Technology II",
                     6
                 ],
                 [
@@ -5584,8 +7126,7 @@ DEPARTMENTS_DATA = {
                     18
                 ]
             ]
-        },
-        "pools": {}
+        }
     },
     "Mekatronik Müh": {
         "curriculum": {
@@ -5852,7 +7393,7 @@ DEPARTMENTS_DATA = {
             ]
         },
         "pools": {
-            "SDP I": [
+            "SD": [
                 [
                     "MEC423",
                     "Robotics Project I / Robotik Projesi I",
@@ -5867,9 +7408,7 @@ DEPARTMENTS_DATA = {
                     "MEC427",
                     "Intelligent Sys. Project I / Akıllı Sis. Proj. I",
                     6
-                ]
-            ],
-            "SDP II": [
+                ],
                 [
                     "MEC424",
                     "Robotics Project II / Robotik Projesi II",
@@ -7170,6 +8709,413 @@ DEPARTMENTS_DATA = {
                     "Avrupa Bütünleşmesinin İktisadı",
                     5
                 ]
+            ],
+            "POLSD V": [
+                [
+                    "BWL002",
+                    "Girişimcilik",
+                    6
+                ],
+                [
+                    "BWL007",
+                    "Dijital Pazarlama",
+                    6
+                ],
+                [
+                    "BWL030",
+                    "Örgütsel Davranış",
+                    6
+                ],
+                [
+                    "BWL032",
+                    "Kültürlerarası Yetkinlik Geliştirme",
+                    6
+                ],
+                [
+                    "BWL033",
+                    "Personel Yönetimi",
+                    6
+                ],
+                [
+                    "BWL034",
+                    "Uluslararası İşletme",
+                    6
+                ],
+                [
+                    "BWL101",
+                    "İşletmeye Giriş",
+                    6
+                ],
+                [
+                    "BWL201",
+                    "Pazarlamanın Temelleri",
+                    5
+                ],
+                [
+                    "BWL206",
+                    "Proje Yönetimi",
+                    6
+                ],
+                [
+                    "BWL212",
+                    "Stratejik Pazarlama",
+                    5
+                ],
+                [
+                    "BWL216",
+                    "E-İş",
+                    3
+                ],
+                [
+                    "BWL417",
+                    "İş Etiği",
+                    3
+                ],
+                [
+                    "HUK150",
+                    "Anayasa Hukuku II",
+                    4
+                ],
+                [
+                    "HUK153",
+                    "Anayasa Hukuku I",
+                    3
+                ],
+                [
+                    "HUK159",
+                    "Anayasa Hukukunun Temel Prensipleri",
+                    5
+                ],
+                [
+                    "HUK252",
+                    "Uluslararası Hukuk II",
+                    5
+                ],
+                [
+                    "HUK253",
+                    "İdare Hukuku I",
+                    5
+                ],
+                [
+                    "HUK255",
+                    "Uluslararası Hukuk I",
+                    3
+                ],
+                [
+                    "HUK256",
+                    "İdare Hukuku II",
+                    5
+                ],
+                [
+                    "HUK359",
+                    "Avrupa Hukuku",
+                    4
+                ],
+                [
+                    "HUK361",
+                    "Alman İdare Hukuku - Temel Kavramlar",
+                    4
+                ],
+                [
+                    "HUK453",
+                    "Devletler Özel Hukuku I",
+                    4
+                ],
+                [
+                    "HUK913",
+                    "Borçlar Hukuku",
+                    3
+                ],
+                [
+                    "HUK915",
+                    "İş Hukuku",
+                    3
+                ],
+                [
+                    "HUK916",
+                    "Ticaret Hukuku",
+                    3
+                ],
+                [
+                    "KKW103",
+                    "İletişim Bilimlerine Giriş",
+                    6
+                ],
+                [
+                    "KKW105",
+                    "Kültür Bilimlerine Giriş",
+                    6
+                ],
+                [
+                    "KKW106",
+                    "Kültür Kuramları",
+                    5
+                ],
+                [
+                    "KKW218",
+                    "Göç ve Kültür",
+                    4
+                ],
+                [
+                    "KKW226",
+                    "Kültür ve Küreselleşme",
+                    4
+                ],
+                [
+                    "KKW228",
+                    "Kültürlerarası İletişim",
+                    4
+                ],
+                [
+                    "KKW317",
+                    "Halkla İlişkiler",
+                    6
+                ],
+                [
+                    "KKW324",
+                    "Kültürel Bellek",
+                    6
+                ],
+                [
+                    "POL210",
+                    "Çok Düzlemli Sistemlerde Politik Saha Analizi",
+                    5
+                ],
+                [
+                    "POL401",
+                    "Karşılaştırmalı Parti ve Seçim Sistemleri",
+                    5
+                ],
+                [
+                    "POL501",
+                    "Siyaset Sosyolojisi",
+                    5
+                ],
+                [
+                    "POL502",
+                    "Kamu Yönetimine Giriş",
+                    5
+                ],
+                [
+                    "POL503",
+                    "ABD Dış Politikası",
+                    5
+                ],
+                [
+                    "POL504",
+                    "Latin Amerika Siyaseti",
+                    5
+                ],
+                [
+                    "POL505",
+                    "Güncel Ortadoğu ve Kuzey Afrika Siyaseti",
+                    5
+                ],
+                [
+                    "POL506",
+                    "Orta Asya ve Kafkasya Bölgesel Siyaseti",
+                    5
+                ],
+                [
+                    "POL507",
+                    "Rus Siyaseti",
+                    5
+                ],
+                [
+                    "POL508",
+                    "Dünya Siyasetinde Doğu Asya",
+                    5
+                ],
+                [
+                    "POL509",
+                    "Dünya Siyasetinde Afrika",
+                    5
+                ],
+                [
+                    "POL510",
+                    "Güneydoğu Avrupa Siyaseti",
+                    5
+                ],
+                [
+                    "POL511",
+                    "Güncel Avrupa Siyaseti",
+                    5
+                ],
+                [
+                    "POL512",
+                    "Karşılaştırmalı Avrupa Siyaseti",
+                    5
+                ],
+                [
+                    "POL513",
+                    "AB Dış ve Güvenlik Siyaseti",
+                    5
+                ],
+                [
+                    "POL514",
+                    "Almanya, Türkiye ve AB için Güncel Politik Sorunlar",
+                    5
+                ],
+                [
+                    "POL515",
+                    "Türk-Alman İlişkileri: Ekonomi, Siyaset ve Toplum",
+                    5
+                ],
+                [
+                    "POL516",
+                    "Sekülerleşme Teorileri",
+                    5
+                ],
+                [
+                    "POL517",
+                    "Küreselleşme",
+                    5
+                ],
+                [
+                    "POL518",
+                    "Irkçılık, Antisemitizm ve İslamofobi",
+                    5
+                ],
+                [
+                    "POL519",
+                    "Toplumsal Cinsiyet ve Siyaset",
+                    5
+                ],
+                [
+                    "POL520",
+                    "Siyaset Bilimi Stajı",
+                    2
+                ],
+                [
+                    "POL521",
+                    "Türk Dış Politikasında Güncel Meseleler",
+                    5
+                ],
+                [
+                    "POL522",
+                    "Avrupa'da Federalizm - Avrupa Federalizmi",
+                    5
+                ],
+                [
+                    "POL523",
+                    "Siyaset Teorisinde Meseleler",
+                    5
+                ],
+                [
+                    "POL524",
+                    "Değişen Küresel Sistemde Bölgesel Güçler",
+                    5
+                ],
+                [
+                    "POL526",
+                    "Türk-Alman Diplomatik İlişkiler Tarihi",
+                    5
+                ],
+                [
+                    "POL553",
+                    "Osmanlı Siyasi Tarihi II",
+                    5
+                ],
+                [
+                    "POL554",
+                    "Türk Tarihi",
+                    5
+                ],
+                [
+                    "POL555",
+                    "Siyaset Psikolojisi",
+                    5
+                ],
+                [
+                    "POL556",
+                    "Türk Devletleri Teşkilatı ve Türk Devletleri Bütünleşmesi",
+                    5
+                ],
+                [
+                    "POL601",
+                    "20. Yüzyıl Avrupa Siyasi Düşüncesi",
+                    5
+                ],
+                [
+                    "POL602",
+                    "Göç, Diaspora ve Mülteciler",
+                    5
+                ],
+                [
+                    "POL603",
+                    "Milliyetçilik Teorileri",
+                    5
+                ],
+                [
+                    "POL604",
+                    "Dünya Siyaseti ve Sinema",
+                    5
+                ],
+                [
+                    "POL605",
+                    "Uluslararası Enerji Siyaseti",
+                    5
+                ],
+                [
+                    "POL606",
+                    "Küresel İklim Siyaseti",
+                    5
+                ],
+                [
+                    "POL701",
+                    "Almanya ve Türkiye Karşılaştırmalı Siyasal Sistemler",
+                    5
+                ],
+                [
+                    "POL707",
+                    "Kamu Yönetiminde Güncel Meseleler",
+                    5
+                ],
+                [
+                    "POL709",
+                    "Yerel Yönetimler",
+                    5
+                ],
+                [
+                    "POL711",
+                    "Kentleşme ve Çevre Sorunları",
+                    5
+                ],
+                [
+                    "VWL301",
+                    "Uluslararası İktisat I",
+                    6
+                ],
+                [
+                    "VWL302",
+                    "Uluslararası İktisat II",
+                    6
+                ],
+                [
+                    "VWL304",
+                    "İktisadi Düşünceler Tarihi",
+                    6
+                ],
+                [
+                    "VWL401",
+                    "Türkiye Ekonomisinin Gelişimi",
+                    6
+                ],
+                [
+                    "VWL403",
+                    "Dünya Ekonomisinin Güncel Sorunları",
+                    6
+                ],
+                [
+                    "VWL426",
+                    "Demografi ve Göç İktisadı",
+                    5
+                ],
+                [
+                    "VWL428",
+                    "Avrupa Bütünleşmesinin İktisadı",
+                    5
+                ]
             ]
         }
     },
@@ -7394,7 +9340,11 @@ DEPARTMENTS_DATA = {
                     "AIT002",
                     "Atatürk İlkeleri ve İnkılapları Tarihi II",
                     2
-                ],
+                ]
+            ]
+        },
+        "pools": {
+            "VWLSD": [
                 [
                     "VWL302",
                     "Uluslararası İktisat II",
@@ -7800,9 +9750,7 @@ DEPARTMENTS_DATA = {
                     "Kurumsal 2.0",
                     6
                 ]
-            ]
-        },
-        "pools": {
+            ],
             "ÜSD": [
                 [
                     "ÜSDENG111",
@@ -8223,57 +10171,11 @@ DEPARTMENTS_DATA = {
                     "BWL039",
                     "İşletmede Mesleki Eğitim (Vocational Education) ***",
                     18
-                ],
-                [
-                    "BWL050",
-                    "Borçlar Hukuku (Schuldrecht)**",
-                    3
-                ],
-                [
-                    "BWL051",
-                    "Vergi Hukuku (Steuerrecht)***",
-                    3
-                ],
-                [
-                    "BWL052",
-                    "İş Hukuku (Labour Law)****",
-                    3
-                ],
-                [
-                    "BWL053",
-                    "Ticaret Hukuku (Commercial Law)*****",
-                    3
-                ],
-                [
-                    "BWL054",
-                    "Avrupa Ticaret Hukuku",
-                    3
-                ],
-                [
-                    "BWL055",
-                    "Sayısal Yöntemlerde Güncel Konular",
-                    3
-                ],
-                [
-                    "BWL056",
-                    "Muhasebe ve Finansta Güncel Konular",
-                    3
-                ],
-                [
-                    "BWL057",
-                    "Pazarlamada Güncel Konular",
-                    3
-                ],
-                [
-                    "BWL058",
-                    "Örgütsel Davranışta Güncel Konular",
-                    3
-                ],
-                [
-                    "BWL059",
-                    "Uluslararası Öğrenci Projesi",
-                    3
-                ],
+                ]
+            ]
+        },
+        "pools": {
+            "SD": [
                 [
                     "BWL011",
                     "İşletme Semineri",
@@ -8459,10 +10361,60 @@ DEPARTMENTS_DATA = {
                     "SAP Uygulamaları",
                     6
                 ]
-            ]
-        },
-        "pools": {
-            "ÜSD00 0": [
+            ],
+            "BSD": [
+                [
+                    "BWL050",
+                    "Borçlar Hukuku (Schuldrecht)**",
+                    3
+                ],
+                [
+                    "BWL051",
+                    "Vergi Hukuku (Steuerrecht)***",
+                    3
+                ],
+                [
+                    "BWL052",
+                    "İş Hukuku (Labour Law)****",
+                    3
+                ],
+                [
+                    "BWL053",
+                    "Ticaret Hukuku (Commercial Law)*****",
+                    3
+                ],
+                [
+                    "BWL054",
+                    "Avrupa Ticaret Hukuku",
+                    3
+                ],
+                [
+                    "BWL055",
+                    "Sayısal Yöntemlerde Güncel Konular",
+                    3
+                ],
+                [
+                    "BWL056",
+                    "Muhasebe ve Finansta Güncel Konular",
+                    3
+                ],
+                [
+                    "BWL057",
+                    "Pazarlamada Güncel Konular",
+                    3
+                ],
+                [
+                    "BWL058",
+                    "Örgütsel Davranışta Güncel Konular",
+                    3
+                ],
+                [
+                    "BWL059",
+                    "Uluslararası Öğrenci Projesi",
+                    3
+                ]
+            ],
+            "ÜSD 000": [
                 [
                     "ÜSDENG111",
                     "Akademik İngilizce",
