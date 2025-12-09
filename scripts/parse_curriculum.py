@@ -1,11 +1,15 @@
 import os
 import re
 import json
-#Elektrikte havuzların başında kod yok
-#bilgisayarda SDUa/b filan ayrılıyor o bozuyor
-#makinede SDUx olarak girmişler semesterda
-#mekatronikte projeleri pool yapmamış semesterda
-#iktisatta 30'a tamlamıyor
+
+#Elektrikte SDP SDT filan SD altında birleşmiş???
+#mekatronikte projelerin döneme göre ayrı pool yapmamış hepsi birlikte semesterda (o kadar sıkıntı değil)
+
+#SDUx'de x küçük harf ona göre yap
+#[SDIb/IIb/III/IV] BİLGİSAYAR DONANIMI HAVUZU
+# 2 adet ders
+# 2x kullanımları
+#kodları şu ana kadar küçük harfle görmedim ama onun için if de koy
 
 CURRICULUM_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Curriculum")
 OUTPUT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "curriculum_data.py")
@@ -43,7 +47,21 @@ class Regexes:
     
     pool_header = re.compile(r'SEÇMELİ DERS|SEÇMELİLER|MODÜL|SD|HAVUZU', re.IGNORECASE)
 
-    pool_code = re.compile(r'([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*?)\s*([IVX0-9]*)', re.IGNORECASE)
+    pool_code = re.compile(r'([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*)\s*([IVX0-9]+[a-zA-Z]?)?', re.IGNORECASE)
+
+def check_semester_akts(curriculum, dept_name):
+    """Check if each semester has exactly 30 AKTS and return discrepancies."""
+    akts_issues = []
+    
+    for semester in range(1, 9):  # Check semesters 1-8
+        if semester in curriculum:
+            total_akts = sum(course[2] for course in curriculum[semester])
+            if total_akts == 31 and dept_name == "Hukuk Fakültesi" and semester == 8:
+                continue
+            elif total_akts != 30:
+                akts_issues.append(f"Dönem {semester}: {total_akts} AKTS")
+    
+    return akts_issues
 
 def parse_file(filepath, log_file=None):
     with open(filepath, 'r', encoding='utf-8') as f:
@@ -186,7 +204,7 @@ def parse_file(filepath, log_file=None):
             # 1. Standard: 2+ letters + 3+ digits (e.g. MAT103)
             # 2. Placeholders: ZSD, SD, ÜSD followed by optional Roman numerals or digits (e.g. ZSDII, SDI, ÜSD1)
             # Exclude common headers
-            if p_clean in ["KOD", "KODU", "TOPLAM", "AKTS", "DERSİN", "T", "U", "L"]:
+            if p_clean in ["KOD", "KODU", "TOPLAM", "AKTS", "DERSİN", "T", "U", "L", "DİL", "D/E", "E", "D"]:
                 continue
                 
             if re.match(r'^[A-ZİĞÜŞÖÇ]{2,}\s*[0-9IVX]*$', p_clean):
@@ -241,7 +259,7 @@ def main():
     total_match4 = 0
     
     # Open log file for writing match warnings
-    log_filepath = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output_match_type.txt")
+    log_filepath = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output_debugging.txt")
     
     with open(log_filepath, 'w', encoding='utf-8') as log_file:
         log_file.write("="*60 + "\n")
@@ -269,6 +287,30 @@ def main():
                             "pools": pools
                         }
                         
+                        # Check AKTS for each semester
+                        akts_issues = check_semester_akts(curriculum, dept_name)
+                        
+                        # Write match type and AKTS info
+                        match_info = ""
+                        if match2_count > 0:
+                            match_info += f"match2: {match2_count} kere, "
+                        if match3_count > 0:
+                            match_info += f"match3: {match3_count} kere, "
+                        if match4_count > 0:
+                            match_info += f"match4: {match4_count} kere, "
+                        
+                        if match_info:
+                            match_info = match_info.rstrip(", ")
+                        else:
+                            match_info = "match1 ile tamamlandi"
+                        
+                        if akts_issues:
+                            akts_info = " | AKTS HATASI: " + ", ".join(akts_issues)
+                        else:
+                            akts_info = " | Tum donemler 30 AKTS"
+                        
+                        log_file.write(f"Match Type: {match_info}{akts_info}\n")
+                        
                         # Accumulate counters
                         total_match2 += match2_count
                         total_match3 += match3_count
@@ -295,6 +337,8 @@ def main():
             log_file.write("[OK] Tum pool kodlari ana regex (match1) ile basariyla yakalandi!\n")
         
         log_file.write("="*60 + "\n")
+
+# region sdfsdfsdf
 
 
     # Write to curriculum_data.py
@@ -344,8 +388,7 @@ def main():
     print("="*60 + "\n")
     print(f"Detayli uyari mesajlari: {log_filepath}\n")
 
-
-
+# endregion
 
 if __name__ == "__main__":
     main()

@@ -1164,123 +1164,8 @@ DEPARTMENTS_DATA = {
             ]
         },
         "pools": {
-            "SD": [
-                [
-                    "MBT202",
-                    "Biyofiziksel Kimya",
-                    6
-                ],
-                [
-                    "MBT326",
-                    "Biyoelektrokimya",
-                    6
-                ],
-                [
-                    "MBT336",
-                    "Biyokataliz",
-                    6
-                ],
-                [
-                    "NWI202",
-                    "Fiziksel Kimya II",
-                    6
-                ],
-                [
-                    "MBT433",
-                    "Biyoteknoloji İşletmeleri için Sistem Teknikleri II",
-                    6
-                ],
-                [
-                    "MBT471",
-                    "Hücre-Malzeme Etkileşimleri",
-                    6
-                ],
-                [
-                    "MBT473",
-                    "Doku Mühendisliği",
-                    6
-                ],
-                [
-                    "MBT475",
-                    "Biyosensörler",
-                    6
-                ],
-                [
-                    "MBT477",
-                    "Nanobiyoteknoloji",
-                    6
-                ],
-                [
-                    "MBT479",
-                    "Hedeflendirilmiş İlaç Taşıma",
-                    6
-                ],
-                [
-                    "MBT474",
-                    "Popülasyon Genetiği",
-                    6
-                ],
-                [
-                    "MBT476",
-                    "Etken Madde Araştırmaları",
-                    6
-                ],
-                [
-                    "MBT478",
-                    "Doğal Madde Üretimi",
-                    6
-                ],
-                [
-                    "MBT480",
-                    "Egzersizin Moleküler Biyolojisi",
-                    6
-                ],
-                [
-                    "MWT310",
-                    "Biyomalzemeler",
-                    6
-                ],
-                [
-                    "MBT453",
-                    "Biyomatematik",
-                    6
-                ],
-                [
-                    "MBT455",
-                    "Biyofizik",
-                    6
-                ],
-                [
-                    "MBT456",
-                    "Nicel Biyoloji",
-                    6
-                ],
-                [
-                    "MBT458",
-                    "Biyoistatistik",
-                    6
-                ],
-                [
-                    "MBT460",
-                    "Duyu Organlarının Biyofiziği",
-                    6
-                ],
-                [
-                    "MBT488",
-                    "Biyomedikal İşaret işleme ve Yapay Zeka Uygulamaları",
-                    6
-                ],
-                [
-                    "NWI302",
-                    "İstatistiksel ve Sayısal Yöntemler",
-                    6
-                ],
-                [
-                    "NWI402",
-                    "Biyobilimler için MATLAB",
-                    6
-                ]
-            ],
+            "SDBIO": [],
+            "SDMAT": [],
             "ÜSD": [
                 [
                     "MBT361",
@@ -1365,6 +1250,131 @@ DEPARTMENTS_DATA = {
                 [
                     "WIN204",
                     "Muhasebe ve Bilanço",
+                    6
+                ]
+            ],
+            "SDBIOII": [
+                [
+                    "MBT202",
+                    "Biyofiziksel Kimya",
+                    6
+                ],
+                [
+                    "MBT326",
+                    "Biyoelektrokimya",
+                    6
+                ],
+                [
+                    "MBT336",
+                    "Biyokataliz",
+                    6
+                ],
+                [
+                    "NWI202",
+                    "Fiziksel Kimya II",
+                    6
+                ]
+            ],
+            "SDBIOIII": [
+                [
+                    "MBT433",
+                    "Biyoteknoloji İşletmeleri için Sistem Teknikleri II",
+                    6
+                ],
+                [
+                    "MBT471",
+                    "Hücre-Malzeme Etkileşimleri",
+                    6
+                ],
+                [
+                    "MBT473",
+                    "Doku Mühendisliği",
+                    6
+                ],
+                [
+                    "MBT475",
+                    "Biyosensörler",
+                    6
+                ],
+                [
+                    "MBT477",
+                    "Nanobiyoteknoloji",
+                    6
+                ],
+                [
+                    "MBT479",
+                    "Hedeflendirilmiş İlaç Taşıma",
+                    6
+                ]
+            ],
+            "SDBIOIV": [
+                [
+                    "MBT474",
+                    "Popülasyon Genetiği",
+                    6
+                ],
+                [
+                    "MBT476",
+                    "Etken Madde Araştırmaları",
+                    6
+                ],
+                [
+                    "MBT478",
+                    "Doğal Madde Üretimi",
+                    6
+                ],
+                [
+                    "MBT480",
+                    "Egzersizin Moleküler Biyolojisi",
+                    6
+                ],
+                [
+                    "MWT310",
+                    "Biyomalzemeler",
+                    6
+                ]
+            ],
+            "SDMATI": [
+                [
+                    "MBT453",
+                    "Biyomatematik",
+                    6
+                ],
+                [
+                    "MBT455",
+                    "Biyofizik",
+                    6
+                ]
+            ],
+            "SDMATII": [
+                [
+                    "MBT456",
+                    "Nicel Biyoloji",
+                    6
+                ],
+                [
+                    "MBT458",
+                    "Biyoistatistik",
+                    6
+                ],
+                [
+                    "MBT460",
+                    "Duyu Organlarının Biyofiziği",
+                    6
+                ],
+                [
+                    "MBT488",
+                    "Biyomedikal İşaret işleme ve Yapay Zeka Uygulamaları",
+                    6
+                ],
+                [
+                    "NWI302",
+                    "İstatistiksel ve Sayısal Yöntemler",
+                    6
+                ],
+                [
+                    "NWI402",
+                    "Biyobilimler için MATLAB",
                     6
                 ]
             ]
@@ -1760,7 +1770,7 @@ DEPARTMENTS_DATA = {
             ]
         },
         "pools": {
-            "HUKSD 5": [
+            "HUKSD5": [
                 [
                     "MODÜL",
                     "DERSİN ADI",
@@ -1782,7 +1792,7 @@ DEPARTMENTS_DATA = {
                     2
                 ]
             ],
-            "HUKSD 6": [
+            "HUKSD6": [
                 [
                     "MODÜL",
                     "DERSİN ADI",
@@ -1804,7 +1814,7 @@ DEPARTMENTS_DATA = {
                     2
                 ]
             ],
-            "HUKSD 7": [
+            "HUKSD7": [
                 [
                     "MODÜL",
                     "DERSİN ADI",
@@ -1846,7 +1856,7 @@ DEPARTMENTS_DATA = {
                     2
                 ]
             ],
-            "HUKSD 8": [
+            "HUKSD8": [
                 [
                     "MODÜL",
                     "DERSİN ADI",
@@ -2217,7 +2227,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "KKWSD I": [
+            "KKWSDI": [
                 [
                     "KKW001",
                     "Almanya'da Göçmen Edebiyatı",
@@ -2309,7 +2319,7 @@ DEPARTMENTS_DATA = {
                     5
                 ]
             ],
-            "KKWSD V": [
+            "KKWSDV": [
                 [
                     "KKW001",
                     "Almanya'da Göçmen Edebiyatı",
@@ -2688,7 +2698,7 @@ DEPARTMENTS_DATA = {
             ]
         },
         "pools": {
-            "SOZSD I": [
+            "SOZSDI": [
                 [
                     "SOZ022",
                     "Sanat Sosyolojisi",
@@ -2800,7 +2810,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SOZSD II": [
+            "SOZSDII": [
                 [
                     "SOZ021",
                     "Görsel Sosyoloji",
@@ -2907,7 +2917,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SOZSD III": [
+            "SOZSDIII": [
                 [
                     "SOZ022",
                     "Sanat Sosyolojisi",
@@ -3019,7 +3029,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SOZSD IV": [
+            "SOZSDIV": [
                 [
                     "SOZ021",
                     "Görsel Sosyoloji",
@@ -3126,7 +3136,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SOZSD V": [
+            "SOZSDV": [
                 [
                     "SOZ022",
                     "Sanat Sosyolojisi",
@@ -3244,11 +3254,6 @@ DEPARTMENTS_DATA = {
         "curriculum": {
             "1": [
                 [
-                    "DİL",
-                    "T",
-                    0
-                ],
-                [
                     "MAT103",
                     "Analiz I",
                     6
@@ -3285,11 +3290,6 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "2": [
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
                 [
                     "MAT106",
                     "Lineer Cebir",
@@ -3328,11 +3328,6 @@ DEPARTMENTS_DATA = {
             ],
             "3": [
                 [
-                    "DİL",
-                    "T",
-                    0
-                ],
-                [
                     "INF201",
                     "Ayrık Yapılar",
                     6
@@ -3369,11 +3364,6 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "4": [
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
                 [
                     "MAT204",
                     "Veri Analizinin İstatistiksel Yöntemleri",
@@ -3412,11 +3402,6 @@ DEPARTMENTS_DATA = {
             ],
             "5": [
                 [
-                    "DİL",
-                    "T",
-                    0
-                ],
-                [
                     "SDP",
                     "Seçmeli Alan - Proje",
                     6
@@ -3439,11 +3424,6 @@ DEPARTMENTS_DATA = {
             ],
             "6": [
                 [
-                    "DİL",
-                    "T",
-                    0
-                ],
-                [
                     "USD002",
                     "Üniversite Seçmeli Ders Havuzu II",
                     2
@@ -3460,11 +3440,6 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "7": [
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
                 [
                     "INF499",
                     "Mesleki Alan Stajı",
@@ -3483,11 +3458,6 @@ DEPARTMENTS_DATA = {
             ],
             "8": [
                 [
-                    "DİL",
-                    "T",
-                    0
-                ],
-                [
                     "INF492",
                     "Bitirme Tezi",
                     12
@@ -3500,12 +3470,7 @@ DEPARTMENTS_DATA = {
             ]
         },
         "pools": {
-            "SD": [
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
+            "SDP": [
                 [
                     "WIN311",
                     "Proje I: Yenilik ve Teknoloji Yönetimi Projesi",
@@ -3527,12 +3492,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SD I": [
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
+            "SDIa": [
                 [
                     "INF501",
                     "Akıllı Sistemler",
@@ -3702,12 +3662,9 @@ DEPARTMENTS_DATA = {
                     "INF534",
                     "Biyoinfomartiğe Giriş",
                     6
-                ],
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
+                ]
+            ],
+            "SDIb": [
                 [
                     "INF601",
                     "Gerçek Zamanlı Sistemler",
@@ -3882,12 +3839,9 @@ DEPARTMENTS_DATA = {
                     "MEC324",
                     "Görüntü Tabanlı Otomasyon II",
                     6
-                ],
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
+                ]
+            ],
+            "SDIc": [
                 [
                     "INF701",
                     "Yapay Zeka",
@@ -3994,12 +3948,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SD III": [
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
+            "SDIII": [
                 [
                     "INF801",
                     "İşletme Enformatiği: Seçilmiş Konular I",
@@ -4129,11 +4078,6 @@ DEPARTMENTS_DATA = {
                     "WIN351",
                     "Dijital Dönüşüm Yönetimi",
                     6
-                ],
-                [
-                    "DİL",
-                    "T",
-                    0
                 ],
                 [
                     "ING406",
@@ -4543,7 +4487,7 @@ DEPARTMENTS_DATA = {
             ]
         },
         "pools": {
-            "SD II": [
+            "SDII": [
                 [
                     "ETE104",
                     "Mikroişlemciler / Microprocessors",
@@ -4555,7 +4499,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SD": [
+            "SDM": [
                 [
                     "MAT302",
                     "Numerik Matematik / Numerical Mathematics",
@@ -4565,7 +4509,9 @@ DEPARTMENTS_DATA = {
                     "MAT392",
                     "Kompleks Analiz / Complex Analysis",
                     6
-                ],
+                ]
+            ],
+            "SDT": [
                 [
                     "ETE312",
                     "Elektronik II: Devre Teknolojisi / Circuit Technology",
@@ -4575,7 +4521,9 @@ DEPARTMENTS_DATA = {
                     "ETE374",
                     "Sayısal Sinyal İşlemenin Temelleri / Fund. of DSP",
                     6
-                ],
+                ]
+            ],
+            "SDP": [
                 [
                     "ETE491",
                     "Elektrik-Elektronik Müh. Projesi / EEE Project",
@@ -4592,7 +4540,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SD V": [
+            "SDV": [
                 [
                     "ETE104",
                     "Mikroişlemciler / Microprocessors",
@@ -4909,7 +4857,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SD VI": [
+            "SDVI": [
                 [
                     "ETE104",
                     "Mikroişlemciler / Microprocessors",
@@ -5226,7 +5174,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SD VII": [
+            "SDVII": [
                 [
                     "ETE104",
                     "Mikroişlemciler / Microprocessors",
@@ -5543,7 +5491,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SD VIII": [
+            "SDVIII": [
                 [
                     "ETE104",
                     "Mikroişlemciler / Microprocessors",
@@ -6137,7 +6085,7 @@ DEPARTMENTS_DATA = {
             ]
         },
         "pools": {
-            "SD": [
+            "SDP": [
                 [
                     "WIN311",
                     "Proje I: Yenilik ve Teknoloji Yönetimi Projesi",
@@ -6154,7 +6102,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SD I": [
+            "SDI": [
                 [
                     "WIN309",
                     "Pazarlama ve Üretim Yönetimi",
@@ -6176,7 +6124,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "SD II": [
+            "SDII": [
                 [
                     "WIN316",
                     "Yöneylem Araştırması II - Rassal Modeller",
@@ -6193,7 +6141,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "ZSD I": [
+            "ZSDI": [
                 [
                     "WIN320",
                     "Makine Öğrenmesi",
@@ -6305,7 +6253,7 @@ DEPARTMENTS_DATA = {
                     6
                 ]
             ],
-            "ZSD II": [
+            "ZSDII": [
                 [
                     "WIN306",
                     "Üretim ve Lojistik için Enformasyon Sistemleri",
@@ -6433,11 +6381,6 @@ DEPARTMENTS_DATA = {
         "curriculum": {
             "1": [
                 [
-                    "DİL",
-                    "T",
-                    0
-                ],
-                [
                     "MAT103",
                     "Analiz I / Calculus I",
                     6
@@ -6474,11 +6417,6 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "2": [
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
                 [
                     "MAT108",
                     "Analiz II / Calculus II",
@@ -6517,11 +6455,6 @@ DEPARTMENTS_DATA = {
             ],
             "3": [
                 [
-                    "DİL",
-                    "T",
-                    0
-                ],
-                [
                     "MAB213",
                     "Elektrik ve Elektronik Müh. Temelleri / Fund. of EE Eng.",
                     6
@@ -6558,11 +6491,6 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "4": [
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
                 [
                     "MAB210",
                     "İmalat Teknolojisinin Temelleri / Fund. Manufacturing Tech.",
@@ -6601,11 +6529,6 @@ DEPARTMENTS_DATA = {
             ],
             "5": [
                 [
-                    "DİL",
-                    "T",
-                    0
-                ],
-                [
                     "MAB301",
                     "Takım Tezgâhları / Machine Tools",
                     6
@@ -6637,11 +6560,6 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "6": [
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
                 [
                     "MAB312",
                     "Isı Transferi / Heat Transfer",
@@ -6680,11 +6598,6 @@ DEPARTMENTS_DATA = {
             ],
             "7": [
                 [
-                    "DİL",
-                    "T",
-                    0
-                ],
-                [
                     "MAB499",
                     "Mesleki Alan Stajı / Vocational Internship",
                     6
@@ -6702,11 +6615,6 @@ DEPARTMENTS_DATA = {
             ],
             "8": [
                 [
-                    "DİL",
-                    "T",
-                    0
-                ],
-                [
                     "MAB492",
                     "Bitirme Tezi / Bachelor Thesis",
                     12
@@ -6719,12 +6627,7 @@ DEPARTMENTS_DATA = {
             ]
         },
         "pools": {
-            "SD": [
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
+            "SDK": [
                 [
                     "MAB308",
                     "Kontrol Mühendisliğinin Temelleri / Fund. of Control Eng.",
@@ -6734,12 +6637,9 @@ DEPARTMENTS_DATA = {
                     "ETE304",
                     "Kontrol Mühendisliğinin Temelleri / Fund. of Control Eng.",
                     6
-                ],
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
+                ]
+            ],
+            "SDP": [
                 [
                     "MAB391",
                     "Proje: Üretim Teknikleri / Project: Production Tech.",
@@ -6769,12 +6669,9 @@ DEPARTMENTS_DATA = {
                     "MAB428",
                     "Endüstri Projesi / Industry Project",
                     6
-                ],
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
+                ]
+            ],
+            "SDUa": [
                 [
                     "WIN302",
                     "Fabrika Yönetimine Giriş / Intro to Factory Management",
@@ -6864,12 +6761,9 @@ DEPARTMENTS_DATA = {
                     "MAB470",
                     "Takım Tezgahları II / Machine Tools II",
                     6
-                ],
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
+                ]
+            ],
+            "SDUb": [
                 [
                     "MAB305",
                     "Tasarım Tek. III / Design Methods III",
@@ -6944,12 +6838,9 @@ DEPARTMENTS_DATA = {
                     "MAB466",
                     "Tasarım: Seçilmiş Konular III / Selected Topics Design III",
                     6
-                ],
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
+                ]
+            ],
+            "SDUc": [
                 [
                     "MAB456",
                     "Akışkan Makineleri / Fluid Machines",
@@ -7034,12 +6925,9 @@ DEPARTMENTS_DATA = {
                     "MAB467",
                     "Uzay Havacılık: Seç. Konular III / Sel. Topics Aerospace III",
                     6
-                ],
-                [
-                    "DİL",
-                    "T",
-                    0
-                ],
+                ]
+            ],
+            "SDUd": [
                 [
                     "MAB354",
                     "Araç Teknolojisinin Temelleri / Basics of Automotive Eng.",
@@ -7119,7 +7007,9 @@ DEPARTMENTS_DATA = {
                     "MAB468",
                     "Taşıt Sist.: Seç. Konular III / Sel. Topics Transport III",
                     6
-                ],
+                ]
+            ],
+            "SDUe": [
                 [
                     "MAB490",
                     "İşletmede Mesleki Eğitim / Co-operative Education",
@@ -7393,7 +7283,7 @@ DEPARTMENTS_DATA = {
             ]
         },
         "pools": {
-            "SD": [
+            "SDP I": [
                 [
                     "MEC423",
                     "Robotics Project I / Robotik Projesi I",
@@ -7408,7 +7298,9 @@ DEPARTMENTS_DATA = {
                     "MEC427",
                     "Intelligent Sys. Project I / Akıllı Sis. Proj. I",
                     6
-                ],
+                ]
+            ],
+            "SDP II": [
                 [
                     "MEC424",
                     "Robotics Project II / Robotik Projesi II",
@@ -8303,7 +8195,7 @@ DEPARTMENTS_DATA = {
             ]
         },
         "pools": {
-            "POLSD I": [
+            "POLSDI": [
                 [
                     "BWL002",
                     "Girişimcilik",
@@ -8710,7 +8602,7 @@ DEPARTMENTS_DATA = {
                     5
                 ]
             ],
-            "POLSD V": [
+            "POLSDV": [
                 [
                     "BWL002",
                     "Girişimcilik",
@@ -10414,7 +10306,7 @@ DEPARTMENTS_DATA = {
                     3
                 ]
             ],
-            "ÜSD 000": [
+            "ÜSD000": [
                 [
                     "ÜSDENG111",
                     "Akademik İngilizce",
