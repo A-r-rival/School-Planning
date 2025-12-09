@@ -22,31 +22,31 @@ Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
 Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
 
 --- Bilgisayar Müh ---
-Match Type: match1 ile tamamlandi | AKTS HATASI: Dönem 5: 12 AKTS, Dönem 6: 6 AKTS
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
 
 --- Elektrik-Elektronik Müh ---
-Match Type: match1 ile tamamlandi | AKTS HATASI: Dönem 7: 42 AKTS, Dönem 8: 42 AKTS
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
 
 --- Endüstri Müh ---
 Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
 
 --- Makine Müh ---
-Match Type: match1 ile tamamlandi | AKTS HATASI: Dönem 5: 24 AKTS, Dönem 7: 18 AKTS
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
 
 --- Mekatronik Müh ---
 Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
 
 --- İnşaat Müh ---
-Match Type: match1 ile tamamlandi | AKTS HATASI: Dönem 8: 28 AKTS
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
 
 --- Siyaset Bilimi ve Uluslararası İlişkiler ---
 Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
 
 --- İktisat ---
-Match Type: match1 ile tamamlandi | AKTS HATASI: Dönem 5: 15 AKTS, Dönem 6: 24 AKTS, Dönem 7: 6 AKTS, Dönem 8: 14 AKTS
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
 
 --- İşletme ---
-Match Type: match1 ile tamamlandi | AKTS HATASI: Dönem 8: 48 AKTS
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
 
 ============================================================
 OZET ISTATISTIKLER

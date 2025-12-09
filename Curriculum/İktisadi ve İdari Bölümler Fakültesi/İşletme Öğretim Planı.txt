@@ -95,11 +95,10 @@
 | SD     | Seçmeli Ders (SD) (Ders 1)** | -      | - | - |   6  |
 | SD     | Seçmeli Ders (SD) (Ders 2)** | -      | - | - |   6  |
 | SD     | Seçmeli Ders (SD) (Ders 3)** | -      | - | - |   6  |
-| BWL039 | İşletmede Mesleki Eğitim (Vocational Education) *** | -      | 2 | - |  18  |
 +--------+------------------------------------------------------------+--------+---+---+---+------+
 | TOPLAM |                                                            |        | 6 | 0 |  30  |
 +--------+------------------------------------------------------------+--------+---+---+---+------+
-* İşletme stajı 40 iş günüdür. *** BWL039 dersini alanlar 8. dönemde seçmeli ders almaz.
+* İşletme stajı 40 iş günüdür.
 
 ----------------------------------------------------------------------------------------------------
 II. SEÇMELİ DERS HAVUZLARI (SD / BSD)
@@ -159,6 +158,7 @@ II. SEÇMELİ DERS HAVUZLARI (SD / BSD)
 | BWL004 | Örgütsel Dönüşüm Yönetimi                                  | -      | 1 | 1 | - |   6  |
 | BWL006 | Kültürlerarası Liderlik                                    | -      | 1 | 1 | - |   6  |
 | BWL040 | SAP Uygulamaları                                           | -      | 2 | - | 2 |   6  |
+| BWL039 | İşletmede Mesleki Eğitim (Vocational Education) ***        | -      | 2 | - | - |   18 |
 +--------+------------------------------------------------------------+--------+---+---+---+------+
 | ÜNİVERSİTE ORTAK SEÇMELİ DERS HAVUZU (ÜSD000)                                                   |
 +--------+------------------------------------------------------------+--------+---+---+---+------+

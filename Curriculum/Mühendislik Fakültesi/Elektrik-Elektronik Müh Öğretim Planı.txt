@@ -112,7 +112,6 @@
 | ENG301 | İleri İngilizce I / Advanced English I                     | -      | 3 | - | - |   2  |
 | SDP    | Seçmeli Alan - Proje / Elective Courses - Project          | -      | - | - | - |   6  |
 | SDVII  | Seçmeli Ders Alanı VII		                              | -      | - | - | - |  12  |
-| SDVII  | Seçmeli Ders Alanı VII		                              | -      | - | - | - |  12  |
 +--------+------------------------------------------------------------+--------+---+---+---+------+
 | TOPLAM |                                                            |        | 6 | 0 | 0 |  30  |
 +--------+------------------------------------------------------------+--------+---+---+---+------+
@@ -127,7 +126,6 @@
 | ISG002 | İş Sağlığı ve Güvenliği II / OHS II                        | -      | 2 | - | - |   2  |
 | AIT002 | Atatürk İlkeleri ve İnkılap Tarihi II                      | -      | 2 | - | - |   2  |
 | ENG302 | İleri İngilizce II / Advanced English II                   | -      | 3 | - | - |   2  |
-| SDVIII | Seçmeli Ders Alanı VIII			                          | -      | - | - | - |  12  |
 | SDVIII | Seçmeli Ders Alanı VIII			                          | -      | - | - | - |  12  |
 +--------+------------------------------------------------------------+--------+---+---+---+------+
 | TOPLAM |                                                            |        | 6 | 0 | 0 |  30  |

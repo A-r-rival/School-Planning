@@ -33,6 +33,19 @@ def get_courses_for_slot(code, department, faculty, required_ects, taken_codes=N
     # Check if code is a pool key
     if code in pools:
         pool_courses = pools[code]
+
+    # Check for SDUx wildcard (specifically for Mechanical Engineering)
+    elif code == "SDUx" and pools:
+        # Aggregate logic: SDUx -> SDUa, SDUb, SDUc...
+        wildcard_prefix = "SDU"
+        aggregated_courses = []
+        for pool_key, courses in pools.items():
+            # Check if key is SDU + single lowercase letter (SDUa, SDUb, etc.)
+            if pool_key.startswith(wildcard_prefix) and len(pool_key) == len(wildcard_prefix) + 1 and pool_key[-1].islower():
+                aggregated_courses.extend(courses)
+        
+        if aggregated_courses:
+            pool_courses = aggregated_courses
     
     # Check generic USD
     elif "USD" in code or "ÜSD" in code:

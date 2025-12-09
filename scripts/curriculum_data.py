@@ -3407,6 +3407,21 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "SDIa",
+                    "Seçmeli I - Uygulamalı Bilgisayar Mühendisliği",
+                    6
+                ],
+                [
+                    "SDIb",
+                    "Seçmeli I - Bilgisayar Donanımı",
+                    6
+                ],
+                [
+                    "SDIc",
+                    "Seçmeli I - Bilg. Müh. Kuramsal Temelleri ve Matematik",
+                    6
+                ],
+                [
                     "USD001",
                     "Üniversite Seçmeli Ders Havuzu I",
                     2
@@ -3423,6 +3438,21 @@ DEPARTMENTS_DATA = {
                 ]
             ],
             "6": [
+                [
+                    "SDIIa",
+                    "Seçmeli II - Uygulamalı Bilgisayar Müh.",
+                    12
+                ],
+                [
+                    "SDIIb",
+                    "Seçmeli II - Bilgisayar Donanımı",
+                    6
+                ],
+                [
+                    "SDIIc",
+                    "Seçmeli II - Bilg. Müh. Kuramsal Temelleri ve Matematik",
+                    6
+                ],
                 [
                     "USD002",
                     "Üniversite Seçmeli Ders Havuzu II",
@@ -4446,11 +4476,6 @@ DEPARTMENTS_DATA = {
                     "SDVII",
                     "Seçmeli Ders Alanı VII",
                     12
-                ],
-                [
-                    "SDVII",
-                    "Seçmeli Ders Alanı VII",
-                    12
                 ]
             ],
             "8": [
@@ -4473,11 +4498,6 @@ DEPARTMENTS_DATA = {
                     "ENG302",
                     "İleri İngilizce II / Advanced English II",
                     2
-                ],
-                [
-                    "SDVIII",
-                    "Seçmeli Ders Alanı VIII",
-                    12
                 ],
                 [
                     "SDVIII",
@@ -6544,6 +6564,11 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "SDUx",
+                    "Zorunlu Seçmeli I - Uzmanlık A, B, C veya D",
+                    6
+                ],
+                [
                     "ISG001",
                     "İş Sağlığı ve Güvenliği I / OHS I",
                     2
@@ -6608,6 +6633,11 @@ DEPARTMENTS_DATA = {
                     6
                 ],
                 [
+                    "SDUx",
+                    "Zorunlu Seçmeli - Uzmanlık A, B, C veya D",
+                    12
+                ],
+                [
                     "USD000",
                     "Üniversite Seçmeli Ders Havuzu / University Elective Pool",
                     6
@@ -6620,8 +6650,8 @@ DEPARTMENTS_DATA = {
                     12
                 ],
                 [
-                    "SIP",
-                    "D/E",
+                    "SDUx",
+                    "Zorunlu Seçmeli - Uzmanlık A, B, C veya D",
                     18
                 ]
             ]
@@ -9176,6 +9206,11 @@ DEPARTMENTS_DATA = {
                     "ENG301",
                     "İleri İngilizce 1",
                     2
+                ],
+                [
+                    "VWLSD5",
+                    "Seçimlik Ders I",
+                    15
                 ]
             ],
             "6": [
@@ -9208,9 +9243,19 @@ DEPARTMENTS_DATA = {
                     "ENG302",
                     "İleri İngilizce 2",
                     2
+                ],
+                [
+                    "VWLSD6",
+                    "Seçimlik Ders",
+                    6
                 ]
             ],
             "7": [
+                [
+                    "VWLSD7",
+                    "Seçimlik Ders VII",
+                    24
+                ],
                 [
                     "AIT001",
                     "Atatürk İlkeleri ve İnkilapları Tarihi 1",
@@ -9232,6 +9277,11 @@ DEPARTMENTS_DATA = {
                     "AIT002",
                     "Atatürk İlkeleri ve İnkılapları Tarihi II",
                     2
+                ],
+                [
+                    "VWLSD8",
+                    "Seçimlik Ders XI",
+                    16
                 ]
             ]
         },
@@ -10058,11 +10108,6 @@ DEPARTMENTS_DATA = {
                     "SD",
                     "Seçmeli Ders (SD) (Ders 3)**",
                     6
-                ],
-                [
-                    "BWL039",
-                    "İşletmede Mesleki Eğitim (Vocational Education) ***",
-                    18
                 ]
             ]
         },
@@ -10252,6 +10297,11 @@ DEPARTMENTS_DATA = {
                     "BWL040",
                     "SAP Uygulamaları",
                     6
+                ],
+                [
+                    "BWL039",
+                    "İşletmede Mesleki Eğitim (Vocational Education) ***",
+                    18
                 ]
             ],
             "BSD": [

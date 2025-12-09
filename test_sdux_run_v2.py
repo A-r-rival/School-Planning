@@ -1,0 +1,36 @@
+
+import sys
+import os
+sys.path.append(os.getcwd())
+
+import scripts.populate_students as ps
+from scripts.populate_students import get_courses_for_slot
+
+# Setup mock data
+ps.DEPARTMENTS_DATA = {
+    "Fac": {
+        "Dept": {
+            "pools": {
+                "SDUa": [("C1", "Course 1", 6)],
+                "SDUb": [("C2", "Course 2", 6)],
+                "SDP": [("P1", "Project", 6)]
+            }
+        }
+    }
+}
+
+print("Testing SDUx wildcard logic (Requesting 12 ECTS)...")
+# Request 12 ECTS so it consumes both 6-ECTS courses
+courses = get_courses_for_slot("SDUx", "Dept", "Fac", 12)
+
+if courses:
+    print(f"Found {len(courses)} courses.")
+    names = sorted([c[1] for c in courses])
+    print(f"Courses: {names}")
+    
+    if "Course 1" in names and "Course 2" in names:
+        print("SUCCESS: Retrieved courses from both SDUa and SDUb")
+    else:
+        print("FAILURE: Did not retrieve both courses")
+else:
+    print("FAILURE: No courses found for SDUx")

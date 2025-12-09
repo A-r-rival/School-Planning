@@ -5,11 +5,11 @@ import json
 #Elektrikte SDP SDT filan SD altında birleşmiş???
 #mekatronikte projelerin döneme göre ayrı pool yapmamış hepsi birlikte semesterda (o kadar sıkıntı değil)
 
-#SDUx'de x küçük harf ona göre yap
-#[SDIb/IIb/III/IV] BİLGİSAYAR DONANIMI HAVUZU
+#SDUx için diğer havuzlardan seçmeyi yaz.
 # 2 adet ders
 # 2x kullanımları
 #kodları şu ana kadar küçük harfle görmedim ama onun için if de koy
+#iktisat seçmelilerini kontrol et manuel olarak düzeltildi
 
 CURRICULUM_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Curriculum")
 OUTPUT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "curriculum_data.py")
@@ -58,6 +58,8 @@ def check_semester_akts(curriculum, dept_name):
             total_akts = sum(course[2] for course in curriculum[semester])
             if total_akts == 31 and dept_name == "Hukuk Fakültesi" and semester == 8:
                 continue
+            if total_akts == 28 and dept_name == "İnşaat Müh" and semester == 8:
+                continue
             elif total_akts != 30:
                 akts_issues.append(f"Dönem {semester}: {total_akts} AKTS")
     
@@ -91,10 +93,15 @@ def parse_file(filepath, log_file=None):
         if line.startswith('-'): continue
         if line.startswith('+'): continue
         
-        # Check for Pool Section Start
-        if Regexes.pool_header.search(line) and line.count('|') < 5:
-            in_pool_section = True
-            # Don't continue, might be a header line that also contains pool code
+        # Check for Pool Section Start - be more specific to avoid catching normal semester courses
+        # Pool sections usually start with explicit headers like "SEÇMELİ DERS HAVUZLARI" after separator lines
+        # or with bracketed pool codes like "[SDP] SEÇMELİ ALAN - PROJE"
+        if not in_pool_section:
+            # Only enter pool section if we see clear indicators
+            if (Regexes.pool_header.search(line) and line.count('|') < 3) or \
+               (re.search(r'\[.*SD.*\]', line, re.IGNORECASE)):  # Bracketed pool code like [SDP]
+                in_pool_section = True
+                # Don't continue, might be a header line that also contains pool code
         
         # Check for Pool Code Header
         if in_pool_section:
@@ -157,16 +164,15 @@ def parse_file(filepath, log_file=None):
                             log_file.write(msg + "\n")
 
 
-                
-                        # (r'([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*?)\s*([IVX0-9]*)', re.IGNORECASE)
-
-
                 if found_codes:
                     current_pool_codes = found_codes
                     for c in current_pool_codes:
                         if c not in pools:
                             pools[c] = []
-                continue
+                    # Only skip course processing if this is clearly just a header line (few pipes)
+                    # If it's a full course table row (8+ pipes), we should still process it as a course
+                    if line.count('|') < 6:
+                        continue
 
         # Semester Parsing
         # Priority: YARIYIL/DÖNEM > GÜZ/BAHAR > YIL
@@ -207,7 +213,8 @@ def parse_file(filepath, log_file=None):
             if p_clean in ["KOD", "KODU", "TOPLAM", "AKTS", "DERSİN", "T", "U", "L", "DİL", "D/E", "E", "D"]:
                 continue
                 
-            if re.match(r'^[A-ZİĞÜŞÖÇ]{2,}\s*[0-9IVX]*$', p_clean):
+            if re.match(r'^[A-ZİĞÜŞÖÇ]{2,}\s*[0-9IVXa-z]*$', p_clean):
+#pool_code = re.compile(r'([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*)\s*([IVX0-9]+[a-zA-Z]?)?', re.IGNORECASE)
                 code_idx = i
                 break
         #fnord isim ve kod karıştırabilir?

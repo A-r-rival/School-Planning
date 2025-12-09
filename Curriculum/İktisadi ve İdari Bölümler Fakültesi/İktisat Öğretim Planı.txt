@@ -59,9 +59,7 @@
 | VWL303 | Kamu Maliyesi ve Kamu İktisadı                             | A | 3 | 0 |   5  |
 | TUR001 | Türkçe 1 (Turkish 1)                                       | TR| 2 | 0 |   2  |
 | ENG301 | İleri İngilizce 1 (Advanced English)                       | İ | 3 | 0 |   2  |
-| VWLSD5 I | Seçimlik Ders I (Havuzdan Seçilir)                       | A/İ| - | - | 5/6  |
-| VWLSD5 II| Seçimlik Ders II (Havuzdan Seçilir)                      | A/İ| - | - | 5/6  |
-| VWLSD5 III| Seçimlik Ders III (Havuzdan Seçilir)                    | A/İ| - | - | 5/6  |
+| VWLSD5 | Seçimlik Ders I (Havuzdan Seçilir)                         |A/İ| - | - |  15  |
 +--------+------------------------------------------------------------+---+---+---+------+
 | TOPLAM | (Seçmeliler 5 veya 6 AKTS'dir)                             |   |11 | 1 |  30  |
 +--------+------------------------------------------------------------+---+---+---+------+
@@ -73,20 +71,15 @@
 | VWL310 | Seminer                                                    | A | 2 | 0 |   5  |
 | TUR002 | Türkçe 2 (Turkish 2)                                       | TR| 2 | 0 |   2  |
 | ENG302 | İleri İngilizce 2 (Advanced English 2)                     | İ | 3 | 0 |   2  |
-| VWLSD6 I | Seçimlik Ders IV (Havuzdan Seçilir)                      | A/İ| - | - | 5/6  |
-| VWLSD6 II| Seçimlik Ders V (Havuzdan Seçilir)                       | A/İ| - | - | 5/6  |
-| VWLSD6 III| Seçimlik Ders VI (Havuzdan Seçilir)                     | A/İ| - | - | 5/6  |
+| VWLSD6 | Seçimlik Ders						                      |A/İ| - | - |   6  |
 +--------+------------------------------------------------------------+---+---+---+------+
 | TOPLAM | (Seçmeliler 5 veya 6 AKTS'dir)                             |   |16 | 1 |  30  |
 +--------+------------------------------------------------------------+---+---+---+------+
 | 7. YARIYIL (4. YIL)                                                                              |
 +--------+------------------------------------------------------------+---+---+---+------+
-| VWLSD7 I | Seçimlik Ders VII (Havuzdan Seçilir)                     | A/İ| - | - | 5/6  |
-| VWLSD7 II| Seçimlik Ders VIII (Havuzdan Seçilir)                    | A/İ| - | - | 5/6  |
-| VWLSD7 III| Seçimlik Ders IX (Havuzdan Seçilir)                     | A/İ| - | - | 5/6  |
-| VWLSD7 IV| Seçimlik Ders X (Havuzdan Seçilir)                       | A/İ| - | - | 5/6  |
+| VWLSD7 | Seçimlik Ders VII (Havuzdan Seçilir)                       |A/İ| - | - |  24  |
 | AIT001 | Atatürk İlkeleri ve İnkilapları Tarihi 1                   | TR| 2 | 0 |   2  |
-| ÜSD000 | Üniversite Seçmeli Ders Havuzu (ÜSD)                       | A/İ| - | - |   4* |
+| ÜSD000 | Üniversite Seçmeli Ders Havuzu (ÜSD)                       |A/İ| - | - |   4* |
 +--------+------------------------------------------------------------+---+---+---+------+
 | TOPLAM | (Seçmeliler 5/6 AKTS'dir)                                  |   | 2 | 0 |  30  |
 +--------+------------------------------------------------------------+---+---+---+------+
@@ -94,9 +87,7 @@
 +--------+------------------------------------------------------------+---+---+---+------+
 | VWL410 | Bitirme Tezi ve Kollogyum (Bachelor Thesis)                | A | 2 | 0 |  12  |
 | AIT002 | Atatürk İlkeleri ve İnkılapları Tarihi II                  | TR| 2 | 0 |   2  |
-| VWLSD8 I | Seçimlik Ders XI (Havuzdan Seçilir)                      | A/İ| - | - | 5/6**|
-| VWLSD8 II| Seçimlik Ders XII (Havuzdan Seçilir)                     | A/İ| - | - | 5/6**|
-| VWLSD8 III| Seçimlik Ders XIII (Havuzdan Seçilir)                   | A/İ| - | - | 5/6**|
+| VWLSD8 | Seçimlik Ders XI (Havuzdan Seçilir)                        |A/İ| - | - |  16  |
 +--------+------------------------------------------------------------+---+---+---+------+
 | TOPLAM | (Seçmeliler 5/6 AKTS'dir)                                  |   | 4 | 0 |  30  |
 +--------+------------------------------------------------------------+---+---+---+------+
