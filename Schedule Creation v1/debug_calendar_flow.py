@@ -40,6 +40,26 @@ def test_calendar_data():
         for item in schedule:
             print(f" - {item}")
 
+    # 3. Student Groups
+    faculties = model.get_faculties()
+    print(f"Found {len(faculties)} faculties.")
+    
+    if faculties:
+        f_id, f_name = faculties[0]
+        print(f"Checking departments for faculty: {f_name} (ID: {f_id})")
+        
+        depts = model.get_departments_by_faculty(f_id)
+        print(f"Found {len(depts)} departments.")
+        
+        if depts:
+            d_id, d_name = depts[0]
+            print(f"Checking schedule for Dept: {d_name} (ID: {d_id}), Year: 1")
+            
+            schedule = model.get_schedule_by_student_group(d_id, 1)
+            print(f"Schedule items: {len(schedule)}")
+            for item in schedule:
+                print(f" - {item}")
+
     model.close_connections()
 
 if __name__ == "__main__":

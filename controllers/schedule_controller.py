@@ -476,7 +476,6 @@ class ScheduleController:
             self.student_view.filter_changed.connect(self.handle_student_filter)
             self.student_view.student_selected.connect(self.handle_student_selection)
             
-            # Initial population of filters
             faculties = self.model.get_all_faculties()
             departments = self.model.get_all_departments()
             self.student_view.set_filter_options(faculties, departments)
