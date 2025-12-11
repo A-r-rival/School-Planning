@@ -31,6 +31,7 @@ class ORToolsScheduler:
         """Load necessary data from database"""
         # 1. Load Rooms
         self.rooms = self.db_model.aktif_derslikleri_getir() # [(id, name, type, capacity), ...]
+        print(f"Loaded {len(self.rooms)} rooms.")
         
         # 2. Load Courses (that need scheduling)
         # For now, let's assume we schedule ALL courses in the database
@@ -128,22 +129,20 @@ class ORToolsScheduler:
         """Add hard constraints"""
         
         # 1. Link Slot Variables to Room Variables
-        # If a course is assigned to a slot in a room, that room must be the chosen room for the course
-        for (c_idx, r_id, s_id), var in self.vars.items():
-            # var implies room_vars[(c_idx, r_id)]
-            self.cp_model.AddImplication(var, self.room_vars[(c_idx, r_id)])
+        # for (c_idx, r_id, s_id), var in self.vars.items():
+        #     self.cp_model.AddImplication(var, self.room_vars[(c_idx, r_id)])
 
         # 2. Each course must be assigned exactly 'duration' slots
-        for c_idx, course in enumerate(self.courses):
-            all_course_slots = []
-            for r_id in [r[0] for r in self.rooms]:
-                for s in self.time_slots:
-                    s_id = s['id']
-                    if (c_idx, r_id, s_id) in self.vars:
-                        all_course_slots.append(self.vars[(c_idx, r_id, s_id)])
+        # for c_idx, course in enumerate(self.courses):
+        #     all_course_slots = []
+        #     for r_id in [r[0] for r in self.rooms]:
+        #         for s in self.time_slots:
+        #             s_id = s['id']
+        #             if (c_idx, r_id, s_id) in self.vars:
+        #                 all_course_slots.append(self.vars[(c_idx, r_id, s_id)])
             
-            if all_course_slots:
-                self.cp_model.Add(sum(all_course_slots) == course['duration'])
+        #     if all_course_slots:
+        #         self.cp_model.Add(sum(all_course_slots) == course['duration'])
 
         # 3. No two courses in the same room at the same time
         # for r in self.rooms:
