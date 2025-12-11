@@ -62,10 +62,6 @@ class ORToolsScheduler:
         Fetch all course instances that need to be scheduled.
         Returns a list of dicts with course details.
         """
-        # This requires a join across multiple tables to get:
-        # Course Name, Instance, Teacher, Student Group (Dept + Year), Type (Lab/Theory)
-        # We might need to add a helper method in ScheduleModel for this.
-        # For now, I will implement a custom query here.
         query = '''
             SELECT 
                 d.ders_adi, 
@@ -73,63 +69,27 @@ class ORToolsScheduler:
                 d.teori_odasi, 
                 d.lab_odasi,
                 doi.ogretmen_id,
-                dsi.donem_sinif_num,
-                od.bolum_num,
-                od.sinif_duzeyi
+                dsi.donem_sinif_num
             FROM Dersler d
-            LEFT JOIN (
-                -- Get teacher for the course (assuming 1 teacher for simplicity for now)
-                -- In reality, we need to handle the relation properly
-                SELECT ders_adi, ders_instance, ogretmen_id 
-                FROM Ders_Programi 
-                GROUP BY ders_adi, ders_instance
-            ) dp_temp ON d.ders_adi = dp_temp.ders_adi AND d.ders_instance = dp_temp.ders_instance
-            -- We actually need the teacher assignment BEFORE scheduling if it's pre-assigned.
-            -- Or are we assigning teachers too? 
-            -- The prompt implies "Hocaların dersi olmamalı", so teachers are likely pre-assigned to courses.
-            -- Let's assume we look at 'Ders_Ogretmen_Iliskisi' if it exists, or 'Ders_Programi' if it was manually added.
-            -- Wait, the current model has 'Ders_Ogretmen_Iliskisi' table.
             LEFT JOIN Ders_Ogretmen_Iliskisi doi ON d.ders_adi = doi.ders_adi AND d.ders_instance = doi.ders_instance
             LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
-            LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
         '''
-        # This is getting complicated because the schema is a bit fragmented.
-        # I'll rely on a simpler assumption: 
-        # We iterate over all courses in 'Dersler'.
-        # We find their teacher from 'Ders_Ogretmen_Iliskisi'.
-        # We find their student group from 'Ders_Sinif_Iliskisi'.
+        self.db_model.c.execute(query)
+        rows = self.db_model.c.fetchall()
         
         courses = []
-        self.db_model.c.execute("SELECT ders_adi, ders_instance, teori_odasi, lab_odasi FROM Dersler")
-        all_courses = self.db_model.c.fetchall()
-        
-        for c in all_courses:
-            ders_adi, instance, teori_odasi, lab_odasi = c
-            
-            # Get Teacher
-            self.db_model.c.execute(
-                "SELECT ogretmen_id FROM Ders_Ogretmen_Iliskisi WHERE ders_adi=? AND ders_instance=?", 
-                (ders_adi, instance)
-            )
-            t_row = self.db_model.c.fetchone()
-            teacher_id = t_row[0] if t_row else None
-            
-            # Get Student Group
-            self.db_model.c.execute(
-                "SELECT donem_sinif_num FROM Ders_Sinif_Iliskisi WHERE ders_adi=? AND ders_instance=?",
-                (ders_adi, instance)
-            )
-            g_row = self.db_model.c.fetchone()
-            group_id = g_row[0] if g_row else None
-            
+        for row in rows:
+            ders_adi, instance, teori, lab, teacher_id, group_id = row
             courses.append({
                 'name': ders_adi,
                 'instance': instance,
                 'teacher_id': teacher_id,
                 'group_id': group_id,
-                'fixed_room': teori_odasi if teori_odasi else lab_odasi, # If room is pre-set
-                'duration': 1 # Assuming 1 hour blocks for now, can be 2 or 3
+                'fixed_room': teori if teori else lab,
+                'duration': 1 # Default 1 hour
             })
+            
+        print(f"Loaded {len(courses)} courses to schedule.")
         return courses
 
     def create_variables(self):
@@ -232,7 +192,14 @@ class ORToolsScheduler:
 
     def solve(self):
         """Solve the scheduling problem"""
+        print("Solving...")
         status = self.solver.Solve(self.cp_model)
+        print(f"Solver Status: {self.solver.StatusName(status)}")
+        
+        if status == cp_model.INFEASIBLE:
+            print("Problem is INFEASIBLE. Checking conflicts...")
+            # We could add IIS computation here or relax constraints
+        
         return status
     
     def extract_schedule(self):
