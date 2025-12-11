@@ -114,7 +114,7 @@ def parse_file(filepath):
 
     return pools
 
-filepath = r"c:\Users\taha_\OneDrive\Masaüstü\D.P. Projesi\ders_programi_Antigravity\Curriculum\Fen Fakültesi\Malzeme Bilimi ve Teknolojileri Öğretim Planı.txt"
+filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Curriculum", "Fen Fakültesi", "Malzeme Bilimi ve Teknolojileri Öğretim Planı.txt")
 pools = parse_file(filepath)
 print("Final Pools Keys:", pools.keys())
 for k, v in pools.items():

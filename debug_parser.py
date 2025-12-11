@@ -2,7 +2,7 @@ from scripts.parse_curriculum import parse_file
 import os
 
 # Path to a curriculum file
-filepath = r"c:\Users\taha_\OneDrive\Masaüstü\D.P. Projesi\ders_programi_Antigravity\Curriculum\Fen Fakültesi\Enerji Bilimi ve Teknolojileri Öğretim Planı.txt"
+filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Curriculum", "Fen Fakültesi", "Enerji Bilimi ve Teknolojileri Öğretim Planı.txt")
 
 try:
     curriculum, pools = parse_file(filepath)

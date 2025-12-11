@@ -226,6 +226,17 @@ class ORToolsScheduler:
                     if s['day'] == u_day:
                         if (u_start < s['end'] and u_end > s['start']):
                             if (t_id, s['id']) in teacher_slot_vars:
+                                # Teacher is unavailable at this slot, prohibit all courses assigned to this teacher
+                                for var in teacher_slot_vars[(t_id, s['id'])]:
+                                    self.cp_model.Add(var == 0)
+
+    def solve(self):
+        """Solve the scheduling problem"""
+        status = self.solver.Solve(self.cp_model)
+        return status
+    
+    def extract_schedule(self):
+        """Extract the schedule from the solved model and save to database"""
         # Track which room was assigned to which course to update Dersler table
         course_room_map = {} # (ders_adi, ders_instance) -> room_id
         
