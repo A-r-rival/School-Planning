@@ -193,6 +193,8 @@ class ORToolsScheduler:
     def solve(self):
         """Solve the scheduling problem"""
         print("Solving...")
+        self.solver.parameters.log_search_progress = True
+        self.solver.parameters.log_to_stdout = True
         status = self.solver.Solve(self.cp_model)
         print(f"Solver Status: {self.solver.StatusName(status)}")
         

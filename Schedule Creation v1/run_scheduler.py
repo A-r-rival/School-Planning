@@ -9,6 +9,7 @@ sys.path.append(project_root)
 
 from models.schedule_model import ScheduleModel
 from controllers.scheduler import ORToolsScheduler
+from controllers.heuristic_scheduler import HeuristicScheduler
 from ortools.sat.python import cp_model
 
 def main():
@@ -16,7 +17,9 @@ def main():
     
     # Initialize Model
     model = ScheduleModel()
-    scheduler = ORToolsScheduler(model)
+    
+    # scheduler = ORToolsScheduler(model)
+    scheduler = HeuristicScheduler(model) # Switch to Heuristic
     
     # Load Data
     print("Loading data...")
