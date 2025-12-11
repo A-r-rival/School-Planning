@@ -26,17 +26,17 @@ def main():
     scheduler.load_data()
     
     # Create Variables
-    print("Creating variables...")
-    scheduler.create_variables()
+    # print("Creating variables...")
+    # scheduler.create_variables()
     
     # Add Constraints
-    print("Adding constraints...")
-    scheduler.add_hard_constraints()
+    # print("Adding constraints...")
+    # scheduler.add_hard_constraints()
     
     # Solve
     status = scheduler.solve()
     
-    if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
+    if status == True or status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
         print("Schedule FOUND!")
         
         # Clear existing schedule?
