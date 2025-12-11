@@ -464,7 +464,7 @@ class ScheduleController:
             
             if schedule_data:
                 # Update view
-                self.calendar_view.update_schedule(schedule_data, view_type)
+                self.calendar_view.display_schedule(schedule_data)
                 self.calendar_view.show()
             else:
                 self.calendar_view.display_schedule([])
