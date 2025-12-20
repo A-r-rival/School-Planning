@@ -2,8 +2,10 @@ import sys
 import os
 from PyQt5.QtWidgets import QApplication
 
-# Add project root to path
-sys.path.append(os.getcwd())
+# Add project root to path (go up one level from subfolder)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(script_dir)
+sys.path.append(project_root)
 
 try:
     from views.schedule_view import ScheduleView

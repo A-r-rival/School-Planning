@@ -45,10 +45,15 @@ def verify():
 
     # 2. Test View Instantiation
     print("\nTesting StudentView Instantiation...")
-    app = QApplication(sys.argv)
-    view = StudentView()
-    view.set_filter_options(model.get_all_faculties(), model.get_all_departments())
-    print("StudentView instantiated successfully.")
+    try:
+        app = QApplication(sys.argv)
+        view = StudentView()
+        view.set_filter_options(model.get_all_faculties(), model.get_all_departments())
+        print("StudentView instantiated successfully.")
+    except Exception as e:
+        print(f"ERROR instantiating StudentView: {e}")
+        import traceback
+        traceback.print_exc()
     
     print("\nVerification Complete.")
 
