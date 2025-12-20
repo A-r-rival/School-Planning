@@ -74,7 +74,6 @@ class ORToolsScheduler:
             FROM Dersler d
             LEFT JOIN Ders_Ogretmen_Iliskisi doi ON d.ders_adi = doi.ders_adi AND d.ders_instance = doi.ders_instance
             LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
-            LIMIT 50
         '''
         self.db_model.c.execute(query)
         rows = self.db_model.c.fetchall()
@@ -94,10 +93,11 @@ class ORToolsScheduler:
         print(f"Loaded {len(courses)} courses to schedule.")
         return courses
 
-    def create_variables(self):
+    def create_variables(self, ignore_fixed_rooms=False):
         """Create CP variables"""
         # 1. Slot assignment variables: vars[(c_idx, r_id, s_id)]
         # 2. Room assignment variables: room_vars[(c_idx, r_id)]
+        self.vars = {} # Reset variables
         self.room_vars = {}
 
         for c_idx, course in enumerate(self.courses):
@@ -106,7 +106,7 @@ class ORToolsScheduler:
             for r in self.rooms:
                 r_id = r[0]
                 # Check if room matches course requirements
-                if course['fixed_room'] and course['fixed_room'] != r_id:
+                if not ignore_fixed_rooms and course['fixed_room'] and course['fixed_room'] != r_id:
                     continue
                 
                 self.room_vars[(c_idx, r_id)] = self.cp_model.NewBoolVar(f'c{c_idx}_r{r_id}')
@@ -129,86 +129,220 @@ class ORToolsScheduler:
         """Add hard constraints"""
         
         # 1. Link Slot Variables to Room Variables
-        # for (c_idx, r_id, s_id), var in self.vars.items():
-        #     self.cp_model.AddImplication(var, self.room_vars[(c_idx, r_id)])
+        for (c_idx, r_id, s_id), var in self.vars.items():
+            self.cp_model.AddImplication(var, self.room_vars[(c_idx, r_id)])
 
         # 2. Each course must be assigned exactly 'duration' slots
-        # for c_idx, course in enumerate(self.courses):
-        #     all_course_slots = []
-        #     for r_id in [r[0] for r in self.rooms]:
-        #         for s in self.time_slots:
-        #             s_id = s['id']
-        #             if (c_idx, r_id, s_id) in self.vars:
-        #                 all_course_slots.append(self.vars[(c_idx, r_id, s_id)])
+        for c_idx, course in enumerate(self.courses):
+            all_course_slots = []
+            for r_id in [r[0] for r in self.rooms]:
+                for s in self.time_slots:
+                    s_id = s['id']
+                    if (c_idx, r_id, s_id) in self.vars:
+                        all_course_slots.append(self.vars[(c_idx, r_id, s_id)])
             
-        #     if all_course_slots:
-        #         self.cp_model.Add(sum(all_course_slots) == course['duration'])
+            if all_course_slots:
+                self.cp_model.Add(sum(all_course_slots) == course['duration'])
 
         # 3. No two courses in the same room at the same time
-        # for r in self.rooms:
-        #     r_id = r[0]
-        #     for s in self.time_slots:
-        #         s_id = s['id']
-        #         room_slot_vars = []
-        #         for c_idx in range(len(self.courses)):
-        #             if (c_idx, r_id, s_id) in self.vars:
-        #                 room_slot_vars.append(self.vars[(c_idx, r_id, s_id)])
-        #         if room_slot_vars:
-        #             self.cp_model.Add(sum(room_slot_vars) <= 1)
+        for r in self.rooms:
+            r_id = r[0]
+            for s in self.time_slots:
+                s_id = s['id']
+                room_slot_vars = []
+                for c_idx in range(len(self.courses)):
+                    if (c_idx, r_id, s_id) in self.vars:
+                        room_slot_vars.append(self.vars[(c_idx, r_id, s_id)])
+                if room_slot_vars:
+                    self.cp_model.Add(sum(room_slot_vars) <= 1)
 
         # 4. No two courses for the same teacher at the same time
-        # teacher_slot_vars = collections.defaultdict(list)
-        # for (c_idx, r_id, s_id), var in self.vars.items():
-        #     teacher_id = self.courses[c_idx]['teacher_id']
-        #     if teacher_id:
-        #         teacher_slot_vars[(teacher_id, s_id)].append(var)
+        teacher_slot_vars = collections.defaultdict(list)
+        for (c_idx, r_id, s_id), var in self.vars.items():
+            teacher_id = self.courses[c_idx]['teacher_id']
+            if teacher_id:
+                teacher_slot_vars[(teacher_id, s_id)].append(var)
         
-        # for (t_id, s_id), vars_list in teacher_slot_vars.items():
-        #     self.cp_model.Add(sum(vars_list) <= 1)
+        for (t_id, s_id), vars_list in teacher_slot_vars.items():
+            self.cp_model.Add(sum(vars_list) <= 1)
 
         # 5. No two courses for the same student group at the same time
-        # group_slot_vars = collections.defaultdict(list)
-        # for (c_idx, r_id, s_id), var in self.vars.items():
-        #     group_id = self.courses[c_idx]['group_id']
-        #     if group_id:
-        #         group_slot_vars[(group_id, s_id)].append(var)
+        group_slot_vars = collections.defaultdict(list)
+        for (c_idx, r_id, s_id), var in self.vars.items():
+            group_id = self.courses[c_idx]['group_id']
+            if group_id:
+                group_slot_vars[(group_id, s_id)].append(var)
                 
-        # for (g_id, s_id), vars_list in group_slot_vars.items():
-        #     self.cp_model.Add(sum(vars_list) <= 1)
+        for (g_id, s_id), vars_list in group_slot_vars.items():
+            self.cp_model.Add(sum(vars_list) <= 1)
 
         # 6. Teacher Unavailability
-        # for t in self.teachers:
-        #     t_id = t[0]
-        #     unavail = self.db_model.get_teacher_unavailability(t_id)
-        #     for u in unavail:
-        #         u_day, u_start, u_end, _ = u
-        #         for s in self.time_slots:
-        #             if s['day'] == u_day:
-        #                 if (u_start < s['end'] and u_end > s['start']):
-        #                     if (t_id, s['id']) in teacher_slot_vars:
-        #                         # Teacher is unavailable at this slot, prohibit all courses assigned to this teacher
-        #                         for var in teacher_slot_vars[(t_id, s['id'])]:
-        #                             self.cp_model.Add(var == 0)
+        for t in self.teachers:
+            t_id = t[0]
+            unavail = self.db_model.get_teacher_unavailability(t_id)
+            for u in unavail:
+                u_day, u_start, u_end, _ = u
+                for s in self.time_slots:
+                    if s['day'] == u_day:
+                        if (u_start < s['end'] and u_end > s['start']):
+                            if (t_id, s['id']) in teacher_slot_vars:
+                                # Teacher is unavailable at this slot, prohibit all courses assigned to this teacher
+                                for var in teacher_slot_vars[(t_id, s['id'])]:
+                                    self.cp_model.Add(var == 0)
 
     def solve(self):
         """Solve the scheduling problem"""
-        print("Solving...")
-        self.solver.parameters.log_search_progress = True
-        self.solver.parameters.log_to_stdout = True
+        # Initialize model
+        self.load_data()
+        self.create_variables()
+        
+        # 1. Try with ALL constraints
+        print("Attempting to solve with ALL constraints...")
+        self.cp_model = cp_model.CpModel()
+        self.create_variables()
+        self.add_hard_constraints(include_teacher_unavailability=True, include_fixed_rooms=True)
+        
+        self.solver.parameters.log_search_progress = False
+        self.solver.parameters.log_to_stdout = False 
+        self.solver.parameters.max_time_in_seconds = 30.0 
+        
+        try:
+            status = self.solver.Solve(self.cp_model)
+        except Exception as e:
+            print(f"CRITICAL ERROR in Solve: {e}")
+            return False
+        
+        if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+            print(f"Solved with ALL constraints! Status: {self.solver.StatusName(status)}")
+            self._save_solution()
+            return True
+            
+        print("Failed with ALL constraints. Trying to relax Teacher Unavailability...")
+        
+        # 2. Try without Teacher Unavailability
+        self.cp_model = cp_model.CpModel()
+        self.create_variables()
+        self.add_hard_constraints(include_teacher_unavailability=False, include_fixed_rooms=True)
+        
         status = self.solver.Solve(self.cp_model)
-        print(f"Solver Status: {self.solver.StatusName(status)}")
+        if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+            print(f"Solved by ignoring Teacher Unavailability! Status: {self.solver.StatusName(status)}")
+            self._save_solution()
+            return True
+            
+        print("Failed even without Teacher Unavailability. Trying to relax Fixed Rooms...")
         
-        if status == cp_model.INFEASIBLE:
-            print("Problem is INFEASIBLE. Checking conflicts...")
-            # We could add IIS computation here or relax constraints
+        # 3. Try without Fixed Rooms
+        self.cp_model = cp_model.CpModel()
+        self.create_variables(ignore_fixed_rooms=True)
+        self.add_hard_constraints(include_teacher_unavailability=False, include_fixed_rooms=False)
         
-        return status
+        status = self.solver.Solve(self.cp_model)
+        if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+            print(f"Solved by ignoring Fixed Rooms! Status: {self.solver.StatusName(status)}")
+            self._save_solution()
+            return True
+
+        print("Problem is INFEASIBLE even with relaxed constraints.")
+        return False
+
+    def _save_solution(self):
+        try:
+            self.clear_previous_schedule()
+            self.extract_schedule()
+            print("Schedule successfully generated and saved to database.")
+            return True
+        except Exception as e:
+            print(f"Error saving schedule: {e}")
+            raise
     
+    def clear_previous_schedule(self):
+        """Clear existing schedule from database"""
+        try:
+            self.db_model.c.execute("DELETE FROM Ders_Programi")
+            self.db_model.conn.commit()
+            print("Existing schedule cleared.")
+        except Exception as e:
+            print(f"Error clearing schedule: {e}")
+            raise
+    
+    def add_hard_constraints(self, include_teacher_unavailability=True, include_fixed_rooms=True):
+        """Add hard constraints"""
+        
+        # 1. Link Slot Variables to Room Variables
+        for (c_idx, r_id, s_id), var in self.vars.items():
+            self.cp_model.AddImplication(var, self.room_vars[(c_idx, r_id)])
+
+        # 2. Each course must be assigned exactly 'duration' slots
+        for c_idx, course in enumerate(self.courses):
+            all_course_slots = []
+            for r_id in [r[0] for r in self.rooms]:
+                # If ignore_fixed_rooms is False (default), create_variables already filtered rooms
+                # If ignore_fixed_rooms is True, create_variables created vars for all rooms
+                for s in self.time_slots:
+                    s_id = s['id']
+                    if (c_idx, r_id, s_id) in self.vars:
+                        all_course_slots.append(self.vars[(c_idx, r_id, s_id)])
+            
+            if all_course_slots:
+                self.cp_model.Add(sum(all_course_slots) == course['duration'])
+            else:
+                # Should not happen if vars created correctly, but logging here just in case
+                print(f"Warning: No variables for course {course['name']}")
+
+        # 3. No two courses in the same room at the same time
+        for r in self.rooms:
+            r_id = r[0]
+            for s in self.time_slots:
+                s_id = s['id']
+                room_slot_vars = []
+                for c_idx in range(len(self.courses)):
+                    if (c_idx, r_id, s_id) in self.vars:
+                        room_slot_vars.append(self.vars[(c_idx, r_id, s_id)])
+                if room_slot_vars:
+                    self.cp_model.Add(sum(room_slot_vars) <= 1)
+
+        # 4. No two courses for the same teacher at the same time
+        teacher_slot_vars = collections.defaultdict(list)
+        for (c_idx, r_id, s_id), var in self.vars.items():
+            teacher_id = self.courses[c_idx]['teacher_id']
+            if teacher_id:
+                teacher_slot_vars[(teacher_id, s_id)].append(var)
+        
+        for (t_id, s_id), vars_list in teacher_slot_vars.items():
+            self.cp_model.Add(sum(vars_list) <= 1)
+
+        # 5. No two courses for the same student group at the same time
+        group_slot_vars = collections.defaultdict(list)
+        for (c_idx, r_id, s_id), var in self.vars.items():
+            group_id = self.courses[c_idx]['group_id']
+            if group_id:
+                group_slot_vars[(group_id, s_id)].append(var)
+                
+        for (g_id, s_id), vars_list in group_slot_vars.items():
+            self.cp_model.Add(sum(vars_list) <= 1)
+
+        # 6. Teacher Unavailability
+        if include_teacher_unavailability:
+            for t in self.teachers:
+                t_id = t[0]
+                unavail = self.db_model.get_teacher_unavailability(t_id)
+                for u in unavail:
+                    u_day, u_start, u_end, _ = u
+                    for s in self.time_slots:
+                        if s['day'] == u_day:
+                            if (u_start < s['end'] and u_end > s['start']):
+                                if (t_id, s['id']) in teacher_slot_vars:
+                                    # Teacher is unavailable at this slot, prohibit all courses assigned to this teacher
+                                    for var in teacher_slot_vars[(t_id, s['id'])]:
+                                        self.cp_model.Add(var == 0)
+
     def extract_schedule(self):
         """Extract the schedule from the solved model and save to database"""
         # Track which room was assigned to which course to update Dersler table
         course_room_map = {} # (ders_adi, ders_instance) -> room_id
         
+        count = 0
         for (c_idx, r_id, s_id), var in self.vars.items():
             if self.solver.Value(var) == 1:
                 course = self.courses[c_idx]
@@ -222,6 +356,9 @@ class ORToolsScheduler:
                 
                 # Record room assignment
                 course_room_map[(course['name'], course['instance'])] = r_id
+                count += 1
+        
+        print(f"Schedule items extracted: {count}")
         
         # Update rooms in Dersler table
         for (ders_adi, ders_instance), room_id in course_room_map.items():
@@ -232,3 +369,4 @@ class ORToolsScheduler:
             ''', (room_id, ders_adi, ders_instance))
             
         self.db_model.conn.commit()
+

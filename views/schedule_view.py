@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (
     QListWidget, QComboBox, QLabel, QHBoxLayout, QCompleter, 
     QMessageBox, QInputDialog
 )
-from PyQt5.QtCore import QTime, pyqtSignal
+from PyQt5.QtCore import QTime, pyqtSignal, Qt
 from typing import List, Tuple, Optional
 
 
@@ -344,7 +344,7 @@ class ScheduleView(QWidget):
     
     def remove_course_from_list(self, course_info: str):
         """Remove a course from the list"""
-        items = self.ders_listesi.findItems(course_info, 0)
+        items = self.ders_listesi.findItems(course_info, Qt.MatchExactly)
         for item in items:
             row = self.ders_listesi.row(item)
             self.ders_listesi.takeItem(row)

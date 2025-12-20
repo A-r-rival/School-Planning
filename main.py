@@ -5,6 +5,13 @@ University Schedule Management Application
 """
 import sys
 import os
+
+# Import ORTools first to avoid conflict with PyQt5 (protobuf versions)
+try:
+    from ortools.sat.python import cp_model
+except ImportError:
+    pass
+
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QObject, pyqtSignal
 

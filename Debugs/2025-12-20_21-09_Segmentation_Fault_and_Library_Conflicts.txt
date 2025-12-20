@@ -1,0 +1,218 @@
+===================================================================================
+DEBUGGING 'DERS PROGRAMI YAP' CRASH - 2025-12-20 21:09
+===================================================================================
+
+## THE ISSUE
+-----------
+The crash was caused by two separate issues:
+1. **Uninitialized Scheduler**: The `ORToolsScheduler` class attempted to solve the 
+   model without loading data or creating variables first.
+2. **Library Conflict**: Importing `PyQt5` before `ORTools` caused a hard crash 
+   (segmentation fault) due to conflicting `protobuf` library versions.
+
+## THE FIX
+----------
+### 1. Scheduler Initialization
+Updated `controllers/scheduler.py` to ensure `load_data()`, `create_variables()`, 
+and `add_hard_constraints()` are called before solving.
+
+    def solve(self):
+        """Solve the scheduling problem"""
+        # Initialize model
+        self.load_data()
+        self.create_variables()
+        self.add_hard_constraints()
+        
+        # ... solving logic ...
+
+### 2. Import Order
+Updated `main.py` to import `ortools` *before* `PyQt5`. This ensures the correct 
+underlying libraries are loaded first.
+
+    import sys
+    import os
+
+    # Import ORTools first to avoid conflict with PyQt5 (protobuf versions)
+    try:
+        from ortools.sat.python import cp_model
+    except ImportError:
+        pass
+
+    from PyQt5.QtWidgets import QApplication
+    # ...
+
+## VERIFICATION
+--------------
+- Created a reproduction script `repro_crash.py` that mimicked the crash.
+- Confirmed the crash was resolved after applying both fixes.
+- Verified that ORTools acts correctly on the user's data (finding an OPTIMAL 
+  solution for the test set).
+
+===================================================================================
+TECHNICAL DEEP DIVE: SEGMENTATION FAULTS & LIBRARY CONFLICTS
+===================================================================================
+
+## WHAT IS A SEGMENTATION FAULT?
+--------------------------------
+A **segmentation fault** (segfault) is a specific kind of error caused by accessing 
+memory that "does not belong to you." It's a hardware-level protection mechanism.
+
+### How Memory Works
+- Your program gets allocated specific memory regions by the operating system
+- Each region has permissions (read, write, execute)
+- When you try to access memory outside your allocated regions, the CPU triggers 
+  a segmentation fault
+- The OS immediately terminates your program to prevent corruption
+
+### Common Causes
+Python usually protects you, but C/C++ libraries can cause segfaults:
+
+1. Null pointer dereference (C++ code)
+   char* ptr = nullptr;
+   *ptr = 'a';  // SEGFAULT!
+
+2. Buffer overflow
+   char buffer[10];
+   buffer[100] = 'x';  // SEGFAULT!
+
+3. Using freed memory
+   free(ptr);
+   *ptr = 'a';  // SEGFAULT!
+
+4. Library version conflicts (your case)
+   Two libraries trying to use incompatible memory structures
+
+## PROTOBUF LIBRARY CONFLICT
+----------------------------
+Protobuf (Protocol Buffers) is Google's data serialization library. Both **PyQt5** 
+and **ORTools** depend on it, but they may require different versions or have 
+different compiled bindings.
+
+### The Conflict
+When you import PyQt5 first, it loads its version of the protobuf library into 
+memory. Then when ORTools tries to load, it finds an incompatible version already 
+loaded, causing a **hard crash** (segmentation fault).
+
+By importing ORTools first, we ensure its protobuf version is loaded, and PyQt5 
+is flexible enough to work with it.
+
+### Technical Details
+- **ORTools** uses protobuf extensively for its constraint programming models
+- **PyQt5** may bundle or depend on protobuf for certain features
+- The crash happens at the C++ level (DLL/shared library conflict), which is why 
+  Python can't catch it as an exception
+- This is a common issue when mixing libraries that bundle native dependencies
+
+## MANUAL LIBRARY VERSION MANAGEMENT
+------------------------------------
+If import order doesn't work, here are advanced techniques:
+
+### 1. Virtual Environments with Pinned Versions
+# requirements.txt
+protobuf==3.20.3  # Pin exact version both libraries support
+ortools==9.7.2996
+PyQt5==5.15.9
+
+### 2. Lazy Loading / Dynamic Imports
+def use_ortools():
+    """Only import ORTools when needed"""
+    from ortools.sat.python import cp_model
+    # ... use it
+    
+def use_pyqt():
+    """Import PyQt in separate context"""
+    from PyQt5.QtWidgets import QApplication
+    # ... use it
+
+### 3. Subprocess Isolation (Nuclear Option)
+import subprocess
+import json
+
+# Run ORTools in completely separate process
+def solve_in_subprocess(data):
+    """Run scheduler in isolated process"""
+    result = subprocess.run(
+        ['python', 'isolated_scheduler.py'],
+        input=json.dumps(data),
+        capture_output=True,
+        text=True
+    )
+    return json.loads(result.stdout)
+
+# Main app uses PyQt
+app = QApplication(sys.argv)
+# ... when scheduling needed:
+schedule = solve_in_subprocess(course_data)
+
+### 4. LD_PRELOAD / DLL Injection (Linux/Windows)
+# Linux: Force specific library version to load first
+LD_PRELOAD=/path/to/libprotobuf.so.3.20 python main.py
+
+# Windows: Modify PATH to prioritize specific DLL directory
+set PATH=C:\specific\protobuf\version;%PATH%
+python main.py
+
+### 5. Conda Environments (Better Dependency Resolution)
+# Conda is better at resolving C++ library conflicts
+conda create -n myapp python=3.10
+conda install -c conda-forge ortools pyqt
+# Conda ensures compatible versions
+
+### 6. Check and Report Versions
+import sys
+
+def check_library_versions():
+    """Diagnostic tool"""
+    try:
+        import google.protobuf
+        print(f"Protobuf version: {google.protobuf.__version__}")
+    except ImportError:
+        print("Protobuf not found")
+    
+    try:
+        from ortools.sat.python import cp_model
+        print(f"ORTools imported successfully")
+    except ImportError as e:
+        print(f"ORTools import failed: {e}")
+    
+    try:
+        from PyQt5.QtCore import QT_VERSION_STR
+        print(f"PyQt5 version: {QT_VERSION_STR}")
+    except ImportError as e:
+        print(f"PyQt5 import failed: {e}")
+
+check_library_versions()
+
+### 7. Symbol Isolation (Advanced C++)
+If you control the build process:
+
+// Compile libraries with hidden symbols
+__attribute__((visibility("hidden"))) 
+void internal_function();
+
+// Only expose necessary API
+__attribute__((visibility("default")))
+void public_api();
+
+## WHY IMPORT ORDER WORKS FOR THIS CASE
+---------------------------------------
+For this application, the **import order fix** is the cleanest solution because:
+1. ✅ No code restructuring needed
+2. ✅ No performance overhead
+3. ✅ Both libraries can coexist
+4. ✅ Simple to maintain
+
+If you encounter this again with other libraries, the **subprocess isolation** 
+approach is the most robust but has overhead.
+
+===================================================================================
+DEBUG FILES ARCHIVED
+===================================================================================
+- scheduler_initialization_crash_repro.py - Reproduction script for the crash
+- pyqt_ortools_import_conflict_test.py - Import order conflict demonstration
+- simple_ortools_health_check.py - Minimal ORTools functionality test
+- scheduler_crash_stacktrace.txt - Captured error output (if any)
+
+===================================================================================
+END OF REPORT
+===================================================================================
