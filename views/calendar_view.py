@@ -127,13 +127,16 @@ class CalendarView(QWidget):
         """
         print(f"DEBUG: update_filter_options called with index {widget_index}, {len(items)} items")
         try:
+            print(f"DEBUG: widget_index type: {type(widget_index)}")
             widget = None
             if widget_index == 1:
                 widget = self.filter_widget_1
             elif widget_index == 2:
                 widget = self.filter_widget_2
+            
+            print(f"DEBUG: Selected widget: {widget}")
                 
-            if widget:
+            if widget is not None:
                 print(f"DEBUG: Found widget for index {widget_index}, populating...")
                 widget.blockSignals(True)
                 widget.clear()
