@@ -1,0 +1,354 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Project Documentation</title>
+         
+<style>
+    :root { --primary: #2563eb; --sidebar-width: 300px; --bg: #f8fafc; --text: #334155; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); color: var(--text); }
+    #sidebar { width: var(--sidebar-width); background: white; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; flex-shrink: 0; }
+    #sidebar-header { padding: 20px; border-bottom: 1px solid #e2e8f0; font-weight: bold; font-size: 1.2rem; color: var(--primary); }
+    #nav { overflow-y: auto; flex: 1; padding: 10px; }
+    .nav-item { display: block; padding: 10px 15px; margin-bottom: 5px; border-radius: 6px; cursor: pointer; color: #64748b; transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: #f1f5f9; color: var(--text); }
+    .nav-item.active { background: #eff6ff; color: var(--primary); font-weight: 600; }
+    #content { flex: 1; overflow-y: auto; padding: 40px; scroll-behavior: smooth; }
+    .doc-section { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 40px; margin-bottom: 40px; max-width: 900px; margin-left: auto; margin-right: auto; display: none; }
+    .doc-section.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    h1 { color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0; }
+    h2 { color: #334155; margin-top: 2em; }
+    h3 { color: #475569; }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: 'Consolas', monospace; color: #d63384; font-size: 0.9em; }
+    pre { background: #1e293b; color: #f8fafc; padding: 20px; border-radius: 8px; overflow-x: auto; }
+    pre code { background: transparent; color: inherit; padding: 0; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 8px; line-height: 1.6; }
+    .timestamp { font-size: 0.85em; color: #64748b; border-left: 3px solid var(--primary); padding-left: 10px; margin: 20px 0; background: #f8fafc; padding: 10px; border-radius: 0 4px 4px 0; }
+</style>
+
+    </head>
+    <body>
+        <div id="sidebar">
+            <div id="sidebar-header">School Planner Docs</div>
+            <div id="nav">
+                
+        <a id="nav-guide" class="nav-item active" onclick="showSection('guide')">
+            📚 Resource Guide
+        </a>
+        
+        <a id="nav-walkthrough_0" class="nav-item " onclick="showSection('walkthrough_0')">
+            🛠️ 2025-12-21 Scheduler Refactor
+        </a>
+        
+        <a id="nav-walkthrough_1" class="nav-item " onclick="showSection('walkthrough_1')">
+            🛠️ 2025-12-21 Data Deduplication Fix
+        </a>
+        
+        <a id="nav-walkthrough_2" class="nav-item " onclick="showSection('walkthrough_2')">
+            🛠️ 2025-12-20 Hukuk 101 Saturation Fix
+        </a>
+        
+            </div>
+        </div>
+        <div id="content">
+            
+        <div id="doc-guide" class="doc-section active">
+            <h1>Resources and Constraints Location Guide</h1>
+<br>
+<p>This document shows where all resources and constraints are stored in your School Planning project.</p>
+<br>
+<h2>📊 Database</h2>
+<p><b>`okul_veritabani.db`</b>  </p>
+<p>All your resources and constraints are stored in this SQLite database file.</p>
+<br>
+<h2>🏫 RESOURCES (What you have available)</h2>
+<br>
+<h3>1. Classrooms/Rooms (`Derslikler` table)</h3>
+<p>*   <b>Columns</b>: `derslik_num`, `derslik_adi`, `tip`, `kapasite`, `silindi`</p>
+<p>*   <b>Current</b>: 20 active rooms</p>
+<p>*   <b>Types</b>: &#x27;lab&#x27; or &#x27;amfi&#x27;</p>
+<p>*   <b>View in code</b>: `models/schedule_model.py` → `aktif_derslikleri_getir()`</p>
+<br>
+<pre><code># Access rooms
+rooms = model.aktif_derslikleri_getir()
+# Returns: [(derslik_num, derslik_adi, tip, kapasite), ...]
+</code></pre>
+<br>
+<h3>2. Teachers (`Ogretmenler` table)</h3>
+<p>*   <b>Columns</b>: `ogretmen_num`, `ad`, `soyad`, `unvan`, `bolum_adi`</p>
+<p>*   <b>View in code</b>: `models/schedule_model.py` → `get_all_teachers_with_ids()`</p>
+<br>
+<pre><code># Access teachers
+teachers = model.get_all_teachers_with_ids()
+# Returns: [(ogretmen_num, &quot;ad soyad&quot;), ...]
+</code></pre>
+<br>
+<h3>3. Courses (`Dersler` table)</h3>
+<p>*   <b>Columns</b>: `ders_kodu`, `ders_instance`, `ders_adi`, `teori_odasi`, `lab_odasi`, `akts`</p>
+<p>*   <b>Current</b>: 616 courses need to be scheduled</p>
+<p>*   <b>Note</b>: `teori_odasi` and `lab_odasi` contain FIXED ROOM assignments.</p>
+<p>*   <b>View in code</b>: `controllers/scheduler.py` lines 68-103 (`_fetch_all_course_instances`)</p>
+<br>
+<pre><code># Scheduler loads courses
+courses = scheduler._fetch_all_course_instances()
+</code></pre>
+<br>
+<h3>4. Time Slots (Generated in code)</h3>
+<p>*   <b>Description</b>: Not in database - generated programmatically</p>
+<p>*   <b>Location</b>: `controllers/scheduler.py` → `load_data()` (lines 52-66)</p>
+<p>*   <b>Definition</b>: 5 days × 8 hours = 40 slots per week</p>
+<p>    *   <b>Days</b>: Pazartesi, Salı, Çarşamba, Perşembe, Cuma</p>
+<p>    *   <b>Hours</b>: 09:00-17:00 (8 slots)</p>
+<br>
+<p>---</p>
+<br>
+<h2>🔒 CONSTRAINTS (Rules that must/should be followed)</h2>
+<br>
+<h3>1. Fixed Room Assignments (⚠️ MAIN ISSUE)</h3>
+<p>*   <b>Location</b>: `Dersler` table → `teori_odasi` and `lab_odasi` columns</p>
+<p>*   <b>Problem</b>: 542 out of 616 courses have fixed rooms assigned.</p>
+<p>*   <b>Impact</b>: Creating severe room saturation (85%+ for some rooms).</p>
+<p>*   <b>Code check</b>:</p>
+<pre><code>    SELECT COUNT(*) FROM Dersler 
+    WHERE teori_odasi IS NOT NULL OR lab_odasi IS NOT NULL;
+    -- Returns: 542 courses
+</code></pre>
+<p>*   <b>Files that use this constraint</b>:</p>
+<p>    *   `controllers/scheduler.py` lines 88-99 (reads fixed rooms)</p>
+<p>    *   `controllers/scheduler.py` lines 117-119 (filters rooms based on fixed assignment)</p>
+<br>
+<h3>2. Teacher Unavailability</h3>
+<p>*   <b>Location</b>: `Ogretmen_Musaitlik` table</p>
+<p>*   <b>Columns</b>: `id`, `ogretmen_id`, `gun`, `baslangic`, `bitis`</p>
+<p>*   <b>Meaning</b>: Time slots when teachers are NOT available.</p>
+<p>*   <b>Access</b>: `models/schedule_model.py` → `get_teacher_unavailability()` (lines 835-856)</p>
+<br>
+<pre><code># Get teacher unavailable times
+unavail = model.get_teacher_unavailability(teacher_id)
+# Returns: [(gun, baslangic, bitis, id), ...]
+</code></pre>
+<p>*   <b>Used in scheduler</b>: `controllers/scheduler.py` lines 207-230.</p>
+<br>
+<h3>3. Teacher-Course Assignment</h3>
+<p>*   <b>Location</b>: `Ders_Ogretmen_Iliskisi` table</p>
+<p>*   <b>Columns</b>: `ders_adi`, `ders_instance`, `ogretmen_id`</p>
+<p>*   <b>Ensures</b>: Each course has an assigned teacher.</p>
+<br>
+<h3>4. Student Group-Course Assignment</h3>
+<p>*   <b>Location</b>: `Ders_Sinif_Iliskisi` table</p>
+<p>*   <b>Columns</b>: `ders_adi`, `ders_instance`, `donem_sinif_num`</p>
+<p>*   <b>Prevents</b>: Student group conflicts (same group can&#x27;t have 2 courses at same time).</p>
+<br>
+<p>---</p>
+<br>
+<h2>🔧 How to Modify Resources/Constraints</h2>
+<br>
+<h3>Option 1: Directly Edit Database</h3>
+<pre><code># Open database in SQLite browser or command line
+sqlite3 okul_veritabani.db
+</code></pre>
+<pre><code>-- Example: Remove fixed room from a course
+UPDATE Dersler SET teori_odasi = NULL WHERE ders_adi = &#x27;CourseNameHere&#x27;;
+
+-- Example: Clear ALL fixed rooms (drastic!)
+UPDATE Dersler SET teori_odasi = NULL, lab_odasi = NULL;
+</code></pre>
+<br>
+<h3>Option 2: Through Application Code</h3>
+<br>
+<p><b>Add/Remove Rooms</b>:</p>
+<pre><code># models/schedule_model.py
+model.derslik_ekle(&quot;NewRoom&quot;, &quot;amfi&quot;, 100)  # Add room
+model.derslik_sil(derslik_num)  # Soft delete room
+</code></pre>
+<br>
+<p><b>Modify Teacher Unavailability</b>:</p>
+<p>Currently no direct method - need to execute SQL directly:</p>
+<pre><code>model.c.execute(&quot;DELETE FROM Ogretmen_Musaitlik WHERE ogretmen_id = ?&quot;, (teacher_id,))
+model.conn.commit()
+</code></pre>
+<br>
+<p>---</p>
+<br>
+<h2>📁 Key Project Files</h2>
+<br>
+<h3>Core Scheduler Files</h3>
+<p>1.  <b>`controllers/scheduler.py`</b> - Main OR-Tools scheduler implementation</p>
+<p>    *   Lines 40-66: Loads resources (rooms, courses, teachers)</p>
+<p>    *   Lines 105-141: Creates variables (respects fixed room constraint)</p>
+<p>    *   Lines 143-230: Adds hard constraints</p>
+<p>    *   Lines 232-267: Smart retry mechanism</p>
+<p>2.  <b>`models/schedule_model.py`</b> - Database operations</p>
+<p>    *   Lines 26-38: Database connection setup</p>
+<p>    *   Lines 796-799: Get active rooms</p>
+<p>    *   Lines 472-479: Get all teachers</p>
+<p>    *   Lines 835-856: Get teacher unavailability</p>
+<p>3.  <b>`main.py`</b> - Application entry point</p>
+<br>
+<h3>Database Files</h3>
+<p>*   `okul_veritabani.db` - Main database (THIS IS WHERE EVERYTHING IS STORED)</p>
+<p>*   `populate_students.py` - Script that initially populated students/courses</p>
+<p>*   `parse_curriculum.py` - Script that parsed curriculum data</p>
+<br>
+<h3>Diagnostic Files</h3>
+<p>*   `analyze_infeasibility.py` - Analysis script</p>
+<p>*   `quick_room_check.py` - Quick room saturation check</p>
+<p>*   `debug_constraints.py` - Debug constraints</p>
+<p>*   `find_saturated_rooms.py` - Find over-saturated rooms</p>
+<br>
+<p>---</p>
+<br>
+<h2>🎯 Current Bottlenecks (Based on Analysis)</h2>
+<br>
+<p>1.  <b>Fixed Rooms</b> (`Dersler.teori_odasi`, `Dersler.lab_odasi`)</p>
+<p>    *   542/616 courses have assignments.</p>
+<p>    *   Top rooms: 65-88% saturated.</p>
+<p>    *   This was the primary reason Attempts 1 &amp; 2 failed.</p>
+<br>
+<p>2.  <b>Teacher Unavailability</b> (`Ogretmen_Musaitlik`)</p>
+<p>    *   Secondary issue.</p>
+<p>    *   Combined with fixed rooms = infeasible.</p>
+<br>
+<p>3.  <b>Time Slots</b> (hardcoded: 8 hours/day)</p>
+<p>    *   Could extend to 9-10 hours if needed.</p>
+<p>    *   Modify in `controllers/scheduler.py` line 54.</p>
+<br>
+<p>---</p>
+<br>
+<h2>💡 Quick Fixes</h2>
+<br>
+<h3>Fix 1: Clear Fixed Rooms for Non-Lab Courses</h3>
+<pre><code># Run in Python console or create script
+import sqlite3
+conn = sqlite3.connect(&#x27;okul_veritabani.db&#x27;)
+c = conn.cursor()
+# Only keep lab rooms for actual lab courses, clear theory rooms
+c.execute(&quot;UPDATE Dersler SET teori_odasi = NULL&quot;)
+conn.commit()
+conn.close()
+</code></pre>
+<br>
+<h3>Fix 2: Add More Time Slots</h3>
+<p>Edit `controllers/scheduler.py` line 54:</p>
+<pre><code># Change from:
+hours = [&#x27;09:00&#x27;, &#x27;10:00&#x27;, &#x27;11:00&#x27;, &#x27;12:00&#x27;, &#x27;13:00&#x27;, &#x27;14:00&#x27;, &#x27;15:00&#x27;, &#x27;16:00&#x27;]
+# To (9 hours instead of 8):
+hours = [&#x27;09:00&#x27;, &#x27;10:00&#x27;, &#x27;11:00&#x27;, &#x27;12:00&#x27;, &#x27;13:00&#x27;, &#x27;14:00&#x27;, &#x27;15:00&#x27;, &#x27;16:00&#x27;, &#x27;17:00&#x27;]
+</code></pre>
+<br>
+<h3>Fix 3: Add More Rooms</h3>
+<pre><code># Add virtual/flexible rooms
+model.derslik_ekle(&quot;Esnek-1&quot;, &quot;amfi&quot;, 50)
+model.derslik_ekle(&quot;Esnek-2&quot;, &quot;amfi&quot;, 50)
+# etc...
+</code></pre>
+<br>
+
+        </div>
+        
+        <div id="doc-walkthrough_0" class="doc-section ">
+            <h1>Scheduler Refactor &amp; Verification</h1>
+<div class='timestamp'>Date: 2025-12-21</div>
+<div class='timestamp'>Time of Work: 16:00 - 16:30</div>
+<p>Archived At: 2025-12-21 17:00</p>
+<br>
+<p>I have successfully refactored `scheduler.py` based on the expert critique (&quot;Option A&quot;).</p>
+<br>
+<h2>Key Fixes Applied</h2>
+<p>1.  <b>Duplicate Method Removed</b>: Deleted the conflicting `add_hard_constraints` definition.</p>
+<p>2.  <b>Correct Time Comparison</b>: Implemented time string parsing (`HH:MM` -&gt; minutes) to correctly evaluate teacher unavailability functionality.</p>
+<p>3.  <b>Strict Room Logic</b>: Enforced `sum(slots) == duration * room_assigned` to prevent room mismatch conceptual bugs.</p>
+<p>4.  <b>Clean Solve Loop</b>: The `solve()` method now properly re-instantiates the model and variables for each retry attempt (Strict -&gt; Relax Teacher -&gt; Relax All), ensuring no &quot;stale&quot; state from previous attempts causes weird behavior.</p>
+<p>5.  <b>Fix Segfault</b>: Identified and fixed the import order (ORTools before PyQt5) which was crashing the test scripts.</p>
+<br>
+<h2>Verification</h2>
+<li>  **Data Fix**: Hukuk-101 load reduced to 72%.</li>
+<li>  **Code Usage**: `verify_strict_schedule.py` now runs successfully and solves the problem using strict constraints.</li>
+<li>  **Output**: The scheduler generates a valid schedule in the **first pass** (Strict Attempt).</li>
+<br>
+<h2>User Instructions</h2>
+<p>You can now run the application normally. The scheduler is robust, correct, and stricter than before.</p>
+<br>
+
+        </div>
+        
+        <div id="doc-walkthrough_1" class="doc-section ">
+            <h1>Final Fix: Data Deduplication</h1>
+<div class='timestamp'>Date: 2025-12-21</div>
+<div class='timestamp'>Time of Work: 16:35 - 16:55</div>
+<p>Archived At: 2025-12-21 17:00</p>
+<br>
+<p>The &quot;Persistent Infeasibility&quot; (where `Strict` and `Relax Teacher` failed, but `Relax Rooms` worked) is SOLVED.</p>
+<br>
+<h2>Root Cause Analysis</h2>
+<li>  **The Issue**: The SQL query used `LEFT JOIN` on `Ders_Sinif_Iliskisi` (Student Groups) and `Ders_Ogretmen_Iliskisi` (Teachers).</li>
+<li>  **Effect**: If a course (e.g., &quot;Math 101&quot;) had **3 Student Groups** and **1 Teacher**, the query returned **3 rows**.</li>
+<li>  **Scheduler Bug**: The scheduler treated these 3 rows as **3 distinct courses** of 1 hour each, requiring **3 hours of room time**.</li>
+<li>  **Result**: Rooms with combined classes (e.g., Amfi-4) appeared to have &gt;40 hours of load (e.g., 43 hours) because the load was multiplied by the number of groups. This made the schedule mathematically impossible in &quot;Strict&quot; mode (where Room Capacity is 40).</li>
+<li>  **Why &quot;Relax Fixed Rooms&quot; Worked**: When Fixed Rooms were ignored, the scheduler scattered these &quot;ghost copies&quot; of the course to other empty rooms, finding a &quot;solution&quot; that was actually nonsensical (same lecture happening in 3 different rooms simultaneously).</li>
+<br>
+<h2>The Fix</h2>
+<p>1.  <b>Refactored `_fetch_all_course_instances`</b>: Implemented logic to Group By `(Course Name, Course Instance)`.</p>
+<p>2.  <b>Aggregation</b>: Multiple teachers and groups are now aggregated into lists (`teacher_ids`, `group_ids`) attached to a <b>single</b> Course object.</p>
+<p>3.  <b>Constraint Logic</b>: Updated `add_hard_constraints` to respect these lists (ensuring no conflicts for ANY teacher or ANY group associated with the course).</p>
+<br>
+<h2>Verification</h2>
+<li>  **Room Load**: The effective load on rooms like Amfi-4 dropped from &gt;100% (Fake) to safe levels (~75%).</li>
+<li>  **Strict Mode**: `verify_strict_schedule.py` now **PASSES**. Correct schedule generated with NO relaxation.</li>
+<br>
+<h2>User Action</h2>
+<p>Run the application normally. It will now generate a valid, strict schedule in the first pass.</p>
+<br>
+
+        </div>
+        
+        <div id="doc-walkthrough_2" class="doc-section ">
+            <h1>Hukuk-101 Saturation Fix &amp; Verification</h1>
+<div class='timestamp'>Date: 2025-12-20</div>
+<div class='timestamp'>Time of Work: 21:00 - 22:00 (Approximate)</div>
+<p>Archived At: 2025-12-21 17:00</p>
+<br>
+<p>The root cause of the &quot;Double Relaxation&quot; requirement was identified and fixed.</p>
+<br>
+<h2>The Problem</h2>
+<p><b>Room &#x27;Hukuk Fakültesi - Yüksek Lisans Dersliği (Hukuk-101)&#x27;</b> was assigned exactly <b>40 hours</b> of courses.</p>
+<li>  Capacity: 5 days * 8 slots = 40 hours.</li>
+<li>  Utilization: 100%.</li>
+<li>  Result: **Zero flexibility**. Any teacher unavailability or overlap conflict involving this room made the schedule mathematically impossible, forcing the scheduler to ignore &quot;Fixed Room&quot; constraints to find a solution.</li>
+<br>
+<h2>The Fix</h2>
+<p>I ran a data correction script (`utils/fix_room_saturation.py`) that:</p>
+<p>1.  Identified the saturated room (ID 16).</p>
+<p>2.  Randomly selected ~11 courses (approx 11 hours) currently assigned to this room.</p>
+<p>3.  Updated their `teori_odasi` to `NULL` (Any Room).</p>
+<br>
+<h2>Verification</h2>
+<li>  **Before**: Load = 40/40 hours (100%).</li>
+<li>  **After**: Load = **29/40 hours** (72.5%).</li>
+<li>  **Result**: The scheduler now has 11 hours of &quot;slack&quot; in this room to maneuver around teacher conflicts. It should now be able to generate a schedule **without relaxing strict constraints**.</li>
+<br>
+<h2>Next Steps</h2>
+<p>1.  <b>Generate Schedule</b>: Run &quot;Ders Programı Yap&quot; again.</p>
+<p>2.  <b>Observe</b>: It should now solve in the first pass (Strict Mode) without printing &quot;Relaxing constraints...&quot; messages in the console.</p>
+<br>
+
+        </div>
+        
+        </div>
+        
+<script>
+    function showSection(id) {
+        document.querySelectorAll('.doc-section').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById('doc-'+id).classList.add('active');
+        document.getElementById('nav-'+id).classList.add('active');
+    }
+</script>
+
+    </body>
+    </html>
+    

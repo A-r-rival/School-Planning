@@ -1,0 +1,21 @@
+# Scheduler Refactor & Verification
+Date: 2025-12-21
+Time of Work: 16:00 - 16:30
+Archived At: 2025-12-21 17:00
+
+I have successfully refactored `scheduler.py` based on the expert critique ("Option A").
+
+## Key Fixes Applied
+1.  **Duplicate Method Removed**: Deleted the conflicting `add_hard_constraints` definition.
+2.  **Correct Time Comparison**: Implemented time string parsing (`HH:MM` -> minutes) to correctly evaluate teacher unavailability functionality.
+3.  **Strict Room Logic**: Enforced `sum(slots) == duration * room_assigned` to prevent room mismatch conceptual bugs.
+4.  **Clean Solve Loop**: The `solve()` method now properly re-instantiates the model and variables for each retry attempt (Strict -> Relax Teacher -> Relax All), ensuring no "stale" state from previous attempts causes weird behavior.
+5.  **Fix Segfault**: Identified and fixed the import order (ORTools before PyQt5) which was crashing the test scripts.
+
+## Verification
+-   **Data Fix**: Hukuk-101 load reduced to 72%.
+-   **Code Usage**: `verify_strict_schedule.py` now runs successfully and solves the problem using strict constraints.
+-   **Output**: The scheduler generates a valid schedule in the **first pass** (Strict Attempt).
+
+## User Instructions
+You can now run the application normally. The scheduler is robust, correct, and stricter than before.

@@ -440,7 +440,9 @@ class ScheduleController:
                 items = self.model.get_all_classrooms_with_ids()
                 self.calendar_view.update_filter_options(1, items)
             elif view_type == "Öğrenci Grubu":
+                print("DEBUG: Loading Student Group view filters")
                 items = self.model.get_faculties()
+                print(f"DEBUG: Loaded {len(items)} faculties")
                 self.calendar_view.update_filter_options(1, items)
                 
         elif event_type == "filter_selected":
@@ -456,11 +458,26 @@ class ScheduleController:
             elif "faculty_id" in data:
                 # If only faculty selected, update departments
                 if "dept_id" not in data or not data["dept_id"]:
+                    print(f"DEBUG: Fetching departments for faculty {data['faculty_id']}")
                     items = self.model.get_departments_by_faculty(data["faculty_id"])
+                    print(f"DEBUG: Found {len(items)} departments")
                     self.calendar_view.update_filter_options(2, items)
                 # If dept selected and year selected, fetch schedule
                 elif "year" in data and data["year"]:
-                     schedule_data = self.model.get_schedule_by_student_group(data["dept_id"], int(data["year"]))
+                     print(f"DEBUG: Fetching schedule for dept {data['dept_id']} year {data['year']}")
+                     raw_schedule = self.model.get_schedule_by_student_group(data["dept_id"], int(data["year"]))
+                     # Transform 6-item tuple to 5-item tuple for view
+                     # Model returns: (day, start, end, course, teacher, room)
+                     # View expects: (day, start, end, course, extra_info)
+                     schedule_data = []
+                     for item in raw_schedule:
+                         if len(item) == 6:
+                             day, start, end, course, teacher, room = item
+                             extra_info = f"{teacher}\n({room})"
+                             schedule_data.append((day, start, end, course, extra_info))
+                         else:
+                             # Fallback if format is different
+                             schedule_data.append(item)
             
             if schedule_data:
                 # Update view

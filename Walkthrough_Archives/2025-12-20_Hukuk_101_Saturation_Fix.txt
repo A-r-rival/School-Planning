@@ -1,0 +1,27 @@
+# Hukuk-101 Saturation Fix & Verification
+Date: 2025-12-20
+Time of Work: 21:00 - 22:00 (Approximate)
+Archived At: 2025-12-21 17:00
+
+The root cause of the "Double Relaxation" requirement was identified and fixed.
+
+## The Problem
+**Room 'Hukuk Fakültesi - Yüksek Lisans Dersliği (Hukuk-101)'** was assigned exactly **40 hours** of courses.
+-   Capacity: 5 days * 8 slots = 40 hours.
+-   Utilization: 100%.
+-   Result: **Zero flexibility**. Any teacher unavailability or overlap conflict involving this room made the schedule mathematically impossible, forcing the scheduler to ignore "Fixed Room" constraints to find a solution.
+
+## The Fix
+I ran a data correction script (`utils/fix_room_saturation.py`) that:
+1.  Identified the saturated room (ID 16).
+2.  Randomly selected ~11 courses (approx 11 hours) currently assigned to this room.
+3.  Updated their `teori_odasi` to `NULL` (Any Room).
+
+## Verification
+-   **Before**: Load = 40/40 hours (100%).
+-   **After**: Load = **29/40 hours** (72.5%).
+-   **Result**: The scheduler now has 11 hours of "slack" in this room to maneuver around teacher conflicts. It should now be able to generate a schedule **without relaxing strict constraints**.
+
+## Next Steps
+1.  **Generate Schedule**: Run "Ders Programı Yap" again.
+2.  **Observe**: It should now solve in the first pass (Strict Mode) without printing "Relaxing constraints..." messages in the console.

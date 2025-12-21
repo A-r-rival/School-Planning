@@ -1,0 +1,25 @@
+# Final Fix: Data Deduplication
+Date: 2025-12-21
+Time of Work: 16:35 - 16:55
+Archived At: 2025-12-21 17:00
+
+The "Persistent Infeasibility" (where `Strict` and `Relax Teacher` failed, but `Relax Rooms` worked) is SOLVED.
+
+## Root Cause Analysis
+-   **The Issue**: The SQL query used `LEFT JOIN` on `Ders_Sinif_Iliskisi` (Student Groups) and `Ders_Ogretmen_Iliskisi` (Teachers).
+-   **Effect**: If a course (e.g., "Math 101") had **3 Student Groups** and **1 Teacher**, the query returned **3 rows**.
+-   **Scheduler Bug**: The scheduler treated these 3 rows as **3 distinct courses** of 1 hour each, requiring **3 hours of room time**.
+-   **Result**: Rooms with combined classes (e.g., Amfi-4) appeared to have >40 hours of load (e.g., 43 hours) because the load was multiplied by the number of groups. This made the schedule mathematically impossible in "Strict" mode (where Room Capacity is 40).
+-   **Why "Relax Fixed Rooms" Worked**: When Fixed Rooms were ignored, the scheduler scattered these "ghost copies" of the course to other empty rooms, finding a "solution" that was actually nonsensical (same lecture happening in 3 different rooms simultaneously).
+
+## The Fix
+1.  **Refactored `_fetch_all_course_instances`**: Implemented logic to Group By `(Course Name, Course Instance)`.
+2.  **Aggregation**: Multiple teachers and groups are now aggregated into lists (`teacher_ids`, `group_ids`) attached to a **single** Course object.
+3.  **Constraint Logic**: Updated `add_hard_constraints` to respect these lists (ensuring no conflicts for ANY teacher or ANY group associated with the course).
+
+## Verification
+-   **Room Load**: The effective load on rooms like Amfi-4 dropped from >100% (Fake) to safe levels (~75%).
+-   **Strict Mode**: `verify_strict_schedule.py` now **PASSES**. Correct schedule generated with NO relaxation.
+
+## User Action
+Run the application normally. It will now generate a valid, strict schedule in the first pass.

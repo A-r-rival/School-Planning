@@ -125,19 +125,30 @@ class CalendarView(QWidget):
         Update items in a filter combobox
         items: List of (id, name) tuples
         """
-        widget = None
-        if widget_index == 1:
-            widget = self.filter_widget_1
-        elif widget_index == 2:
-            widget = self.filter_widget_2
-            
-        if widget:
-            widget.blockSignals(True)
-            widget.clear()
-            widget.addItem("Seçiniz...", None)
-            for item_id, name in items:
-                widget.addItem(name, item_id)
-            widget.blockSignals(False)
+        print(f"DEBUG: update_filter_options called with index {widget_index}, {len(items)} items")
+        try:
+            widget = None
+            if widget_index == 1:
+                widget = self.filter_widget_1
+            elif widget_index == 2:
+                widget = self.filter_widget_2
+                
+            if widget:
+                print(f"DEBUG: Found widget for index {widget_index}, populating...")
+                widget.blockSignals(True)
+                widget.clear()
+                widget.addItem("Seçiniz...", None)
+                for item_id, name in items:
+                    # print(f"DEBUG: Adding item {name} ({item_id})")
+                    widget.addItem(str(name), item_id)
+                widget.blockSignals(False)
+                print("DEBUG: Population complete.")
+            else:
+                print(f"DEBUG: No widget found for index {widget_index}")
+        except Exception as e:
+            print(f"ERROR in update_filter_options: {e}")
+            import traceback
+            traceback.print_exc()
 
     def display_schedule(self, schedule_data):
         """
