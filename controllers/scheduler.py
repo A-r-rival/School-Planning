@@ -64,6 +64,9 @@ class ORToolsScheduler:
                     'start_min': to_minutes(hour),
                     'end_min': to_minutes(end_hour)
                 })
+        
+        # 5. Load Course Faculty Map
+        self.course_faculties = self.db_model.get_course_faculty_map()
 
     def _fetch_all_course_instances(self) -> List[Dict]:
         """Fetch course instances, deduplicating multiple rows into teacher/group lists."""
@@ -131,6 +134,34 @@ class ORToolsScheduler:
                 # Filter rooms based on Fixed Room constraint (Logic kept in variable creation for efficiency)
                 if not ignore_fixed_rooms and course['fixed_room'] and course['fixed_room'] != r_id:
                      continue
+                
+                # Room Type Logic
+                # r structure: (id, name, tip, capacity)
+                if len(r) > 2:
+                    room_type = r[2] if r[2] else ""
+                    # If Room is a Lab
+                    if "Laboratuvar" in room_type or "Lab" in room_type:
+                        # 1. Heuristic: Course name must imply Lab need
+                        if not ("Laboratuvar" in course['name'] or "Uygulama" in course['name'] or "Lab" in course['name']):
+                            continue
+                        
+                        # 2. Faculty Constraint: Only Science, Engineering, Architecture can use Labs
+                        facs = self.course_faculties.get((course['name'], course['instance']), [])
+                        # Check if ANY associated faculty is allowed
+                        allowed_facs = ["Mühendislik", "Fen", "Mimarlık", "Engineering", "Science", "Architecture"]
+                        
+                        # If we have faculty info, enforce restriction
+                        if facs:
+                            is_allowed = False
+                            for f_name in facs:
+                                for allowed in allowed_facs:
+                                    if allowed in f_name:
+                                        is_allowed = True
+                                        break
+                                if is_allowed: break
+                            
+                            if not is_allowed:
+                                continue
                 
                 # Create boolean var for (Course, Room)
                 r_var = self.cp_model.NewBoolVar(f'c{c_idx}_r{r_id}')
@@ -352,5 +383,9 @@ class ORToolsScheduler:
             self.db_model.c.execute('''
                 UPDATE Dersler SET teori_odasi = ? WHERE ders_adi = ? AND ders_instance = ?
             ''', (room_id, ders_adi, ders_instance))
+            
+            # Debug update
+            if self.db_model.c.rowcount == 0:
+                print(f"WARNING: Failed to update room for {ders_adi} (inst {ders_instance})")
             
         self.db_model.conn.commit()

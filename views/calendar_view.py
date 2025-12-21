@@ -20,7 +20,7 @@ class CalendarView(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Haftalık Ders Programı")
-        self.setGeometry(150, 150, 1000, 700)
+        self.setGeometry(100, 100, 1400, 900)
         
         self._setup_ui()
         
@@ -45,9 +45,14 @@ class CalendarView(QWidget):
         self.filter_widget_2 = QComboBox() # Dept (for Student)
         self.filter_widget_3 = QComboBox() # Year (for Student)
         
-        self.filter_widget_1.currentIndexChanged.connect(self._on_filter_changed)
-        self.filter_widget_2.currentIndexChanged.connect(self._on_filter_changed)
-        self.filter_widget_3.currentIndexChanged.connect(self._on_filter_changed)
+        # UI fix: Increase width
+        self.filter_widget_1.setMinimumWidth(200)
+        self.filter_widget_2.setMinimumWidth(200)
+        self.filter_widget_3.setMinimumWidth(100)
+        
+        self.filter_widget_1.currentIndexChanged.connect(self._on_filter_1_changed)
+        self.filter_widget_2.currentIndexChanged.connect(self._on_filter_2_changed)
+        self.filter_widget_3.currentIndexChanged.connect(self._on_filter_3_changed)
         
         filter_layout.addWidget(self.filter_widget_1)
         filter_layout.addWidget(self.filter_widget_2)
@@ -69,7 +74,7 @@ class CalendarView(QWidget):
         
     def _setup_calendar_grid(self):
         """Setup the table widget as a calendar"""
-        days = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"]
+        days = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma"]
         hours = [f"{h:02d}:00" for h in range(8, 18)] # 08:00 to 17:00
         
         self.calendar_table.setColumnCount(len(days))
@@ -119,6 +124,34 @@ class CalendarView(QWidget):
             data["year"] = self.filter_widget_3.currentText()
             
         self.filter_changed.emit("filter_selected", data)
+    
+    def _on_filter_1_changed(self):
+        """Handle first filter change (Teacher/Classroom/Faculty)"""
+        view_type = self.view_type_combo.currentText()
+        
+        # If Student Group (Faculty changed), reset Dept and Year
+        if view_type == "Öğrenci Grubu":
+            self.filter_widget_2.blockSignals(True)
+            self.filter_widget_3.blockSignals(True)
+            self.filter_widget_2.clear()
+            self.filter_widget_3.clear()
+            self.filter_widget_3.addItem("Seçiniz...", None)
+            self.filter_widget_3.addItems([str(i) for i in range(1, 5)])
+            self.filter_widget_2.blockSignals(False)
+            self.filter_widget_3.blockSignals(False)
+            
+        self._on_filter_changed()
+
+    def _on_filter_2_changed(self):
+        """Handle second filter change (Dept)"""
+        view_type = self.view_type_combo.currentText()
+        # If Student Group (Dept changed), reset Year? 
+        # Actually year is static 1-4, maybe just let it be.
+        # But we need to ensure the correct signals flow.
+        self._on_filter_changed()
+
+    def _on_filter_3_changed(self):
+        self._on_filter_changed()
 
     def update_filter_options(self, widget_index, items):
         """
@@ -162,7 +195,7 @@ class CalendarView(QWidget):
         
         day_map = {
             "Pazartesi": 0, "Salı": 1, "Çarşamba": 2, "Perşembe": 3, 
-            "Cuma": 4, "Cumartesi": 5, "Pazar": 6
+            "Cuma": 4
         }
         
         for item in schedule_data:
@@ -183,6 +216,11 @@ class CalendarView(QWidget):
                     item = QTableWidgetItem(text)
                     item.setBackground(QColor(227, 242, 253)) # Light Blue
                     item.setTextAlignment(Qt.AlignCenter)
+                    
+                    # Tooltip
+                    tooltip = f"<b>Ders:</b> {course}<br><b>Bilgi:</b> {extra}<br><b>Saat:</b> {start}-{end}"
+                    item.setToolTip(tooltip)
+                    
                     self.calendar_table.setItem(row, col, item)
             except:
                 pass

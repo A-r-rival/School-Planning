@@ -147,34 +147,9 @@ def populate():
     
     dept_counter = 1
     
-    for fac_name, fac_data in DEPARTMENTS_DATA.items():
-        model.c.execute("INSERT OR IGNORE INTO Fakulteler (fakulte_adi) VALUES (?)", (fac_name,))
-        model.conn.commit()
-        model.c.execute("SELECT fakulte_num FROM Fakulteler WHERE fakulte_adi = ?", (fac_name,))
-        fac_id = model.c.fetchone()[0]
-        faculty_ids[fac_name] = fac_id
-        
-        # Departments are keys in DEPARTMENTS_DATA[fac_name]? 
-        # Wait, structure is DEPARTMENTS_DATA = { "Faculty": { "curriculum": ..., "pools": ... } } ?
-        # OR DEPARTMENTS_DATA = { "DeptName": { ... } } ?
-        # Let's check curriculum_data.py structure again.
-        # It is: DEPARTMENTS_DATA = { "Hukuk Fakültesi": { "curriculum": ... }, "ENERJİ...": ... }
-        # Ah, looking at the file I generated:
-        # "Hukuk Fakültesi": { "curriculum": ... } -> This is the Faculty Name acting as Department?
-        # No, Hukuk Fakültesi usually has Hukuk Bölümü.
-        # The parser used filename as key.
-        # "Bilgisayar Müh": { ... }
-        # So the keys in DEPARTMENTS_DATA are actually Department Names (mostly).
-        # But "Hukuk Fakültesi" key implies the department is Hukuk.
-        # I need to map these keys to Faculties.
-        
-        # Heuristic for Faculty mapping:
-        # If "Müh" in name -> Mühendislik
-        # If "Hukuk" -> Hukuk
-        # If "İşletme", "İktisat", "Siyaset" -> İİBF
-        # If "Kültür", "Sosyoloji" -> Kültür ve Sosyal
-        # If "Moleküler", "Malzeme", "Enerji" -> Fen
-        pass
+    # Removed incorrect initial insertion of DEPARTMENTS_DATA keys as Faculties.
+    # We will ONLY insert the mapped canonical faculties.
+    pass
 
     # Re-mapping logic because DEPARTMENTS_DATA keys are Dept Names (mostly)
     # But I need to insert them into Bolumler and link to Fakulteler.

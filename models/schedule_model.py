@@ -423,7 +423,8 @@ class ScheduleModel(QObject):
         try:
             query = '''
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, 
-                       (SELECT derslik_adi FROM Derslikler WHERE derslik_num = d.teori_odasi) as oda
+                       (SELECT derslik_adi FROM Derslikler WHERE derslik_num = d.teori_odasi) as oda,
+                       d.ders_kodu
                 FROM Ders_Programi dp
                 JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 WHERE dp.ogretmen_id = ?
@@ -439,7 +440,8 @@ class ScheduleModel(QObject):
         try:
             query = '''
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi,
-                       (SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = dp.ogretmen_id) as hoca
+                       (SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = dp.ogretmen_id) as hoca,
+                       d.ders_kodu
                 FROM Ders_Programi dp
                 JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 WHERE d.teori_odasi = ? OR d.lab_odasi = ?
@@ -456,7 +458,8 @@ class ScheduleModel(QObject):
             query = '''
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi,
                        (SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = dp.ogretmen_id) as hoca,
-                       (SELECT derslik_adi FROM Derslikler WHERE derslik_num = d.teori_odasi) as oda
+                       (SELECT derslik_adi FROM Derslikler WHERE derslik_num = d.teori_odasi) as oda,
+                       d.ders_kodu
                 FROM Ders_Programi dp
                 JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
@@ -596,7 +599,36 @@ class ScheduleModel(QObject):
     def fakulte_ekle(self, fakulte_adi):
         self.c.execute("INSERT INTO Fakulteler (fakulte_adi) VALUES (?)", (fakulte_adi,))
         self.conn.commit()
+        self.conn.commit()
         return self.c.lastrowid
+
+    def get_course_faculty_map(self) -> Dict[Tuple[str, int], List[str]]:
+        """
+        Get mapping of (course_name, instance) -> List[Faculty Names]
+        Used for restricting Labs to Science/Engineering faculties.
+        """
+        try:
+            query = '''
+                SELECT DISTINCT d.ders_adi, d.ders_instance, f.fakulte_adi
+                FROM Dersler d
+                JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
+                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                JOIN Bolumler b ON od.bolum_num = b.bolum_id
+                JOIN Fakulteler f ON b.fakulte_num = f.fakulte_num
+            '''
+            self.c.execute(query)
+            rows = self.c.fetchall()
+            
+            mapping = {}
+            for ders, instance, fakulte in rows:
+                key = (ders, instance)
+                if key not in mapping:
+                    mapping[key] = []
+                mapping[key].append(fakulte)
+            return mapping
+        except Exception as e:
+            print(f"Error fetching course faculty map: {e}")
+            return {}
     
     # Bölüm ekle (otomatik 4-digit global bolum_id ataması)
     def bolum_ekle(self, fakulte_identifier: int | str, bolum_adi: str, by_name: bool = False) -> int:

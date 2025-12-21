@@ -450,10 +450,28 @@ class ScheduleController:
             schedule_data = []
             
             if "teacher_id" in data and data["teacher_id"]:
-                schedule_data = self.model.get_schedule_by_teacher(data["teacher_id"])
+                raw_schedule = self.model.get_schedule_by_teacher(data["teacher_id"])
+                # Model: (day, start, end, course, room, code)
+                for item in raw_schedule:
+                    if len(item) == 6:
+                        day, start, end, course, room, code = item
+                        display_course = f"[{code}] {course}"
+                        extra = f"Oda: {room}"
+                        schedule_data.append((day, start, end, display_course, extra))
+                    else:
+                        schedule_data.append(item)
                 
             elif "classroom_id" in data and data["classroom_id"]:
-                schedule_data = self.model.get_schedule_by_classroom(data["classroom_id"])
+                raw_schedule = self.model.get_schedule_by_classroom(data["classroom_id"])
+                # Model: (day, start, end, course, teacher, code)
+                for item in raw_schedule:
+                    if len(item) == 6:
+                        day, start, end, course, teacher, code = item
+                        display_course = f"[{code}] {course}"
+                        extra = f"{teacher}"
+                        schedule_data.append((day, start, end, display_course, extra))
+                    else:
+                        schedule_data.append(item)
                 
             elif "faculty_id" in data:
                 # If only faculty selected, update departments
@@ -463,20 +481,23 @@ class ScheduleController:
                     print(f"DEBUG: Found {len(items)} departments")
                     self.calendar_view.update_filter_options(2, items)
                 # If dept selected and year selected, fetch schedule
-                elif "year" in data and data["year"]:
+                elif "year" in data and data["year"] and str(data["year"]).isdigit():
                      print(f"DEBUG: Fetching schedule for dept {data['dept_id']} year {data['year']}")
                      raw_schedule = self.model.get_schedule_by_student_group(data["dept_id"], int(data["year"]))
-                     # Transform 6-item tuple to 5-item tuple for view
-                     # Model returns: (day, start, end, course, teacher, room)
-                     # View expects: (day, start, end, course, extra_info)
+                     
+                     # Model: (day, start, end, course, teacher, room, code)
                      schedule_data = []
                      for item in raw_schedule:
-                         if len(item) == 6:
+                         if len(item) == 7:
+                             day, start, end, course, teacher, room, code = item
+                             display_course = f"[{code}] {course}"
+                             extra_info = f"{teacher}\n{room}"
+                             schedule_data.append((day, start, end, display_course, extra_info))
+                         elif len(item) == 6: # Legacy/Fallback
                              day, start, end, course, teacher, room = item
-                             extra_info = f"{teacher}\n({room})"
+                             extra_info = f"{teacher}\n{room}"
                              schedule_data.append((day, start, end, course, extra_info))
                          else:
-                             # Fallback if format is different
                              schedule_data.append(item)
             
             if schedule_data:
