@@ -1,0 +1,56 @@
+============================================================
+MATCH PATTERN KULLANIM DETAYLARI
+============================================================
+
+
+--- Enerji Bilimi ve Teknolojileri ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+--- Malzeme Bilimi ve Teknolojileri ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+--- Moleküler Biyoteknoloji ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+--- Hukuk Fakültesi ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+--- Kültür ve İletişim Bölümü ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+--- Sosyoloji ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+--- Bilgisayar Müh ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+--- Elektrik-Elektronik Müh ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+--- Endüstri Müh ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+--- Makine Müh ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+--- Mekatronik Müh ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+--- İnşaat Müh ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+--- Siyaset Bilimi ve Uluslararası İlişkiler ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+--- İktisat ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+--- İşletme ---
+Match Type: match1 ile tamamlandi | Tum donemler 30 AKTS
+
+============================================================
+OZET ISTATISTIKLER
+============================================================
+
+[OK] Tum pool kodlari ana regex (match1) ile basariyla yakalandi!
+============================================================

@@ -14,6 +14,8 @@ import json
 CURRICULUM_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Curriculum")
 OUTPUT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "curriculum_data.py")
 
+
+
 def parse_line(line):
     # Remove leading/trailing whitespace and split by '|'
     parts = [p.strip() for p in line.split('|')]
@@ -47,6 +49,7 @@ class Regexes:
     
     pool_header = re.compile(r'SEÇMELİ DERS|SEÇMELİLER|MODÜL|SD|HAVUZU', re.IGNORECASE)
 
+
     pool_code = re.compile(r'([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*)\s*([IVX0-9]+[a-zA-Z]?)?', re.IGNORECASE)
 
 def check_semester_akts(curriculum, dept_name):
@@ -65,6 +68,52 @@ def check_semester_akts(curriculum, dept_name):
     
     return akts_issues
 
+# Dynamic column extraction helper
+def detect_columns(header_line):
+    # Standardize header line
+    header = [h.strip().upper() for h in header_line.split('|') if h.strip()]
+    mapping = {}
+    
+    # Map 'T', 'U', 'L', 'AKTS' to their indices in the split parts
+    for idx, col in enumerate(header):
+        if col == 'T': mapping['T'] = idx
+        elif col == 'U': mapping['U'] = idx
+        elif col == 'L': mapping['L'] = idx
+        elif col == 'AKTS': mapping['AKTS'] = idx
+    
+    return mapping
+
+def extract_course_details(parts, col_mapping):
+    # Extracts T, U, L, AKTS based on mapping
+    # Defaults to 0 if column missing or parsing fails
+    
+    def get_val(key):
+        if key in col_mapping and col_mapping[key] < len(parts):
+            val = parts[col_mapping[key]].strip()
+            # Remove * or other markers
+            val = val.replace('*', '')
+            if val.isdigit():
+                return int(val)
+        return 0
+
+    t = get_val('T')
+    u = get_val('U')
+    l = get_val('L')
+    
+    # AKTS might be detected via column or fallback
+    ects = get_val('AKTS')
+    
+    # Fallback for AKTS if not found in mapping or 0 (some files might strictly follow old logic if header missing)
+    if ects == 0:
+         # Try logic from old extract_ects: look at last few columns
+        for p in reversed(parts):
+            clean_p = p.replace('*', '').strip()
+            if clean_p.isdigit():
+                ects = int(clean_p)
+                break
+                
+    return t, u, l, ects
+
 def parse_file(filepath, log_file=None):
     with open(filepath, 'r', encoding='utf-8') as f:
         lines = f.readlines()
@@ -75,6 +124,12 @@ def parse_file(filepath, log_file=None):
     current_semester = 0
     in_pool_section = False
     current_pool_codes = []
+    
+    # Dynamic Column Mapping
+    col_mapping = {} 
+    # Default fallback mapping if no header found (standard engineering format)
+    # This is risky, better to rely on finding a header.
+    # But usually T, U, L, AKTS are at the end.
     
     # Counters for tracking fallback match usage
     match2_count = 0
@@ -93,30 +148,24 @@ def parse_file(filepath, log_file=None):
         if line.startswith('-'): continue
         if line.startswith('+'): continue
         
-        # Check for Pool Section Start - be more specific to avoid catching normal semester courses
-        # Pool sections usually start with explicit headers like "SEÇMELİ DERS HAVUZLARI" after separator lines
-        # or with bracketed pool codes like "[SDP] SEÇMELİ ALAN - PROJE"
+        # Check for Header Line
+        # Matches lines containing | KOD | ... | AKTS |
+        if "| KOD" in line.upper() and "| AKTS" in line.upper():
+            col_mapping = detect_columns(line)
+            # print(f"DEBUG: Found columns for {filepath}: {col_mapping}")
+            continue
+
+        # Check for Pool Section Start
         if not in_pool_section:
-            # Only enter pool section if we see clear indicators
             if (Regexes.pool_header.search(line) and line.count('|') < 3) or \
-               (re.search(r'\[.*SD.*\]', line, re.IGNORECASE)):  # Bracketed pool code like [SDP]
+               (re.search(r'\[.*SD.*\]', line, re.IGNORECASE)):
                 in_pool_section = True
-                # Don't continue, might be a header line that also contains pool code
         
         # Check for Pool Code Header
         if in_pool_section:
-            # Look for "| CODE | DESCRIPTION |" pattern
-            # But ensure it's not a course line (which also has pipes)
-            # Pool headers usually don't have ECTS or have "Seçmeli Modül" text
-            # Also handle "| ZSD I - 12 AKTS |" format
-            
-            # Course lines have many pipes (e.g. | CODE | NAME | T | U | L | AKTS | ... |)
-            # Pool headers usually have 2 or 3 pipes.
             if Regexes.pool_header.search(line) and line.count('|') < 6:
                 found_codes = []
 
-                # Format 1: | CODE | DESCRIPTION | or | CODE1/CODE2 |
-                # Use findall for the main regex to capture multiple codes like SOZSDII/SOZSDIV
                 matches1 = Regexes.pool_code.findall(line)
                 if matches1:
                     for m in matches1:
@@ -124,58 +173,39 @@ def parse_file(filepath, log_file=None):
                         if m[1]:
                             c = f"{c} {m[1].strip()}"
                         c = c.strip()
-                        # Only add if it's a valid code (minimum 2 characters)
                         if len(c) >= 2:
                              found_codes.append(c)
 
-
-
-                # If no matches from main regex, try others (usually single code)
                 if not found_codes:
-                    # match1 = re.compile(r'([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*?)\s*([IVX0-9]*)', re.IGNORECASE)
-                    
-                    # Format 2: | DESCRIPTION (CODE) |
                     match2 = re.search(r'\((ZSD[IVX]*|SD[IVX]*|ÜSD[IVX]*|HUKSD[0-9]*)\)', line)
-                    # Format 3: | ZSD I - ... |
                     match3 = re.search(r'\|\s*(ZSD\s*.*?)\s*-', line)
-                    # Format 4: | CODE SEÇMELİ ... | or | CODE HAVUZU ... |
                     match4 = re.search(r'\|\s*([A-ZİĞÜŞÖÇ0-9_]{3,})\s+(?:SEÇMELİ|HAVUZU|DERSLER)', line, re.IGNORECASE)
 
                     if match2:
                         found_codes.append(match2.group(1).strip())
                         match2_count += 1
                         msg = f"[!] UYARI: match2 kullanildi - Satir: {line.strip()}"
-                        print(msg)
-                        if log_file:
-                            log_file.write(msg + "\n")
+                        if log_file: log_file.write(msg + "\n")
                     elif match3:
                         found_codes.append(match3.group(1).strip())
                         match3_count += 1
                         msg = f"[!] UYARI: match3 kullanildi - Satir: {line.strip()}"
-                        print(msg)
-                        if log_file:
-                            log_file.write(msg + "\n")
+                        if log_file: log_file.write(msg + "\n")
                     elif match4:
                         found_codes.append(match4.group(1).strip())
                         match4_count += 1
                         msg = f"[!] UYARI: match4 kullanildi - Satir: {line.strip()}"
-                        print(msg)
-                        if log_file:
-                            log_file.write(msg + "\n")
-
+                        if log_file: log_file.write(msg + "\n")
 
                 if found_codes:
                     current_pool_codes = found_codes
                     for c in current_pool_codes:
                         if c not in pools:
                             pools[c] = []
-                    # Only skip course processing if this is clearly just a header line (few pipes)
-                    # If it's a full course table row (8+ pipes), we should still process it as a course
                     if line.count('|') < 6:
                         continue
 
         # Semester Parsing
-        # Priority: YARIYIL/DÖNEM > GÜZ/BAHAR > YIL
         if not in_pool_section:
             term_match = Regexes.semester_term.search(line)
             season_match = Regexes.season.search(line)
@@ -190,7 +220,6 @@ def parse_file(filepath, log_file=None):
             elif year_match:
                 y_val = to_int(year_match.group(1))
                 if y_val > 0:
-                    # Check context for semester
                     if "III. YARIYIL" in line.upper() or "3. YARIYIL" in line.upper(): current_semester = 3
                     elif "IV. YARIYIL" in line.upper() or "4. YARIYIL" in line.upper(): current_semester = 4
                     elif "I. YARIYIL" in line.upper() or "1. YARIYIL" in line.upper(): current_semester = y_val * 2 - 1
@@ -206,18 +235,12 @@ def parse_file(filepath, log_file=None):
         code_idx = -1
         for i, p in enumerate(parts):
             p_clean = p.split(' - ')[0].strip()
-            # Regex for course code: 
-            # 1. Standard: 2+ letters + 3+ digits (e.g. MAT103)
-            # 2. Placeholders: ZSD, SD, ÜSD followed by optional Roman numerals or digits (e.g. ZSDII, SDI, ÜSD1)
-            # Exclude common headers
             if p_clean in ["KOD", "KODU", "TOPLAM", "AKTS", "DERSİN", "T", "U", "L", "DİL", "D/E", "E", "D"]:
                 continue
                 
             if re.match(r'^[A-ZİĞÜŞÖÇ]{2,}\s*[0-9IVXa-z]*$', p_clean):
-#pool_code = re.compile(r'([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*)\s*([IVX0-9]+[a-zA-Z]?)?', re.IGNORECASE)
                 code_idx = i
                 break
-        #fnord isim ve kod karıştırabilir?
 
         if code_idx != -1:
             raw_code = parts[code_idx]
@@ -232,16 +255,41 @@ def parse_file(filepath, log_file=None):
                     name = "Unknown"
             
             name = clean_course_name(name)
-            ects = extract_ects(parts)
+            
+            # Use dynamic extraction if mapping exists, otherwise try best guess (though mapping usually exists if header was found)
+            if col_mapping:
+                t, u, l, ects = extract_course_details(parts, col_mapping)
+            else:
+                # Fallback: assume last column is AKTS, others 0? 
+                # Or try to guess like before. 
+                # Let's use the old approach for ECTS and default T/U/L to 0
+                ects = extract_ects(parts) # This function still exists in the file (I kept it but not using it inside this block)
+                # Wait, I am replacing the block that contained extract_ects definition? NO.
+                # extract_ects defined at line 25 IS outside my replace block? 
+                # My replace block covers 17-258. So `extract_ects` IS being removed/replaced.
+                # I should re-define it or merge logic. 
+                # I defined `extract_course_details` inside, but let's handle the case where `col_mapping` is empty.
+                # In standard eng files, T, U, L, AKTS are usually -4, -3, -2, -1 if no extra columns.
+                # But safer to just set T=0, U=0, L=0 if we don't know columns.
+                t, u, l = 0, 0, 0
+                
+                # Re-implement simple ECTS extraction here since I removed the helper
+                found_ects = 0
+                for p in reversed(parts):
+                    clean_p = p.replace('*', '').strip()
+                    if clean_p.isdigit():
+                        found_ects = int(clean_p)
+                        break
+                ects = found_ects
             
             # Fix for 0 ECTS: check if last column is digit
             if ects == 0 and parts[-1].strip().isdigit():
                 ects = int(parts[-1].strip())
 
-            course_tuple = (code, name, ects)
+            # UPDATED: Tuple now includes T, U, L
+            course_tuple = (code, name, ects, t, u, l)
             
             if in_pool_section and current_pool_codes:
-                # Avoid adding the pool header itself as a course
                 if code not in current_pool_codes:
                     for pool_code in current_pool_codes:
                         pools[pool_code].append(course_tuple)
@@ -249,13 +297,26 @@ def parse_file(filepath, log_file=None):
                 if current_semester not in curriculum:
                     curriculum[current_semester] = []
                 
-                # Allow duplicates for placeholder courses (ZSD, SD, ÜSD, etc.)
                 is_placeholder = "SD" in code
                 
-                if is_placeholder or course_tuple not in curriculum[current_semester]:
-                    curriculum[current_semester].append(course_tuple)
+                # Check for duplicates (accounting for new tuple size)
+                # Since tuple is larger, simple containment check works if identical
+                # But if existing entries have different T/U/L (unlikely), it won't match.
+                
+                if is_placeholder:
+                     curriculum[current_semester].append(course_tuple)
+                else:
+                    # Check if code+name matches
+                    exists = False
+                    for existing in curriculum[current_semester]:
+                        if existing[0] == code and existing[1] == name:
+                            exists = True
+                            break
+                    if not exists:
+                        curriculum[current_semester].append(course_tuple)
 
     return curriculum, pools, (match2_count, match3_count, match4_count)
+
 
 def main():
     departments_data = {}

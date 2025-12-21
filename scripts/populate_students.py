@@ -83,9 +83,11 @@ def get_courses_for_slot(code, department, faculty, required_ects, taken_codes=N
     if not pool_courses:
         return None
 
+
     # Filter taken
     available = list(pool_courses)
     if taken_codes:
+        # Check against first element (code)
         available = [c for c in available if c[0] not in taken_codes]
         
     selected = []
@@ -95,6 +97,7 @@ def get_courses_for_slot(code, department, faculty, required_ects, taken_codes=N
     while current_ects < required_ects and available:
         course = available.pop()
         selected.append(course)
+        # course is (code, name, ects, t, u, l) -> index 2 is ects
         current_ects += course[2]
         
     return selected
@@ -307,9 +310,17 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
         
         is_current_term = (sem == current_semester)
         
+
         for course_data in courses:
-            # course_data is [code, name, ects]
-            code, name, ects = course_data
+            # course_data is [code, name, ects, t, u, l]
+            # We only need code, name, ects for now
+            if len(course_data) >= 3:
+                code = course_data[0]
+                name = course_data[1]
+                ects = course_data[2]
+            else:
+                # Fallback for some reason
+                code, name, ects = course_data
             
             # Handle Pools
             real_courses = []
@@ -318,9 +329,14 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
             if pool_courses:
                 real_courses = pool_courses
             else:
-                real_courses = [(code, name, ects)]
+                # Preserve the original tuple if it was a direct course
+                real_courses = [course_data]
             
-            for r_code, r_name, r_ects in real_courses:
+            for r_course in real_courses:
+                r_code = r_course[0]
+                r_name = r_course[1]
+                r_ects = r_course[2]
+                
                 if r_code in taken_codes: continue
                 
                 # Decision: Pass, Fail, or Take Now?
