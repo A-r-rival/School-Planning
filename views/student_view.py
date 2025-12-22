@@ -17,6 +17,9 @@ class StudentView(QWidget):
         self.init_ui()
 
     def init_ui(self):
+        self.setWindowTitle("Öğrenci Paneli")
+        self.resize(1400, 900)
+        
         main_layout = QHBoxLayout(self)
         
         # Splitter for resizable panels
@@ -79,6 +82,8 @@ class StudentView(QWidget):
         self.student_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.student_table.setSelectionMode(QTableWidget.SingleSelection)
         self.student_table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.student_table.setAlternatingRowColors(True)
+        self.student_table.setStyleSheet("QTableWidget { alternate-background-color: #f2f2f2; }")
         left_layout.addWidget(self.student_table)
         
         # --- Right Panel: Transcript & Details ---
@@ -114,6 +119,8 @@ class StudentView(QWidget):
         self.transcript_table.setHorizontalHeaderLabels(["Dönem", "Ders Kodu", "Ders Adı", "AKTS", "Not", "Durum"])
         self.transcript_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.transcript_table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.transcript_table.setAlternatingRowColors(True)
+        self.transcript_table.setStyleSheet("QTableWidget { alternate-background-color: #f9f9f9; }")
         right_layout.addWidget(self.transcript_table)
         
         # Add widgets to splitter

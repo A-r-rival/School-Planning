@@ -3,7 +3,7 @@
 Schedule Controller - MVC Pattern
 Handles communication between Model and View
 """
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from models.schedule_model import ScheduleModel
@@ -154,201 +154,7 @@ class ScheduleController:
         """Refresh all data from model to view"""
         # Reload courses
         courses = self.model.get_all_courses()
-        self.view.display_courses(courses)
-        
-        # Reload teachers
-        teachers = self.model.get_teachers()
-        self.view.update_teacher_completer(teachers)
-    
-    def close_application(self):
-        """Handle application close event"""
-        # Close database connections through model
-        self.model.close_connections()
-    
-    # Additional controller methods for future extensions
-    
-    def export_schedule(self, format_type: str = "text"):
-        """
-        Export schedule in specified format
-        
-        Args:
-            format_type: Export format ('text', 'csv', 'json')
-        """
-        # This can be implemented later for export functionality
-        courses = self.model.get_all_courses()
-        # Implementation would depend on format_type
-        pass
-    
-    def import_schedule(self, file_path: str):
-        """
-        Import schedule from file
-        
-        Args:
-            file_path: Path to import file
-        """
-        # This can be implemented later for import functionality
-        pass
-    
-    def validate_schedule(self) -> list:
-        """
-        Validate entire schedule for conflicts and issues
-        
-        Returns:
-            List of validation issues
-        """
-        # This can be implemented later for comprehensive validation
-        issues = []
-        # Implementation would check for various conflicts and issues
-        return issues
-    
-    def get_statistics(self) -> dict:
-        """
-        Get schedule statistics
-        
-        Returns:
-            Dictionary with statistics
-        """
-        courses = self.model.get_all_courses()
-        teachers = self.model.get_teachers()
-        
-        stats = {
-            'total_courses': len(courses),
-            'total_teachers': len(teachers),
-            'days_with_classes': len(set(course.split(' - ')[2].split(' ')[0] for course in courses)),
-            'courses_per_day': {}
-        }
-        
-        # Calculate courses per day
-        for course in courses:
-            parts = course.split(' - ')
-            if len(parts) >= 3:
-                day = parts[2].split(' ')[0]
-                stats['courses_per_day'][day] = stats['courses_per_day'].get(day, 0) + 1
-        
-        return stats
-        return stats
-
-    def open_calendar_view(self):
-        """Open the weekly calendar view"""
-        if not self.calendar_view:
-            self.calendar_view = CalendarView()
-            self.calendar_view.filter_changed.connect(self.handle_calendar_filter)
-            
-        # Populate initial filters (Teachers)
-        self.handle_calendar_filter("type_changed", {"type": "Öğretmen"})
-        
-        self.calendar_view.show()
-        
-    def handle_calendar_filter(self, event_type, data):
-        """Handle filter changes from calendar view"""
-        if event_type == "type_changed":
-            view_type = data["type"]
-            if view_type == "Öğretmen":
-                items = self.model.get_all_teachers_with_ids()
-                self.calendar_view.update_filter_options(1, items)
-            elif view_type == "Derslik":
-                items = self.model.get_all_classrooms_with_ids()
-                self.calendar_view.update_filter_options(1, items)
-            elif view_type == "Öğrenci Grubu":
-                items = self.model.get_faculties()
-                self.calendar_view.update_filter_options(1, items)
-                
-        elif event_type == "filter_selected":
-            # Handle specific selections
-            schedule_data = []
-            
-            if "teacher_id" in data and data["teacher_id"]:
-                schedule_data = self.model.get_schedule_by_teacher(data["teacher_id"])
-                
-            elif "classroom_id" in data and data["classroom_id"]:
-                schedule_data = self.model.get_schedule_by_classroom(data["classroom_id"])
-                
-            elif "faculty_id" in data:
-                # If only faculty selected, update departments
-                if "dept_id" not in data or not data["dept_id"]:
-                    items = self.model.get_departments_by_faculty(data["faculty_id"])
-                    self.calendar_view.update_filter_options(2, items)
-        teachers = self.model.get_teachers()
-        self.view.update_teacher_completer(teachers)
-    
-    def handle_add_course(self, course_data: dict):
-        """
-        Handle add course request from view
-        
-        Args:
-            course_data: Dictionary containing course information
-        """
-        # Model will handle validation and database operations
-        success = self.model.add_course(course_data)
-        
-        if success:
-            # Clear inputs on successful addition
-            self.view.clear_inputs()
-            
-            # Update teacher completer with new teacher if needed
-            teachers = self.model.get_teachers()
-            self.view.update_teacher_completer(teachers)
-    
-    def handle_remove_course(self, course_info: str):
-        """
-        Handle remove course request from view
-        
-        Args:
-            course_info: Course information string
-        """
-        # Model will handle database operations
-        success = self.model.remove_course(course_info)
-        
-        if success:
-            # Update teacher completer after removal
-            teachers = self.model.get_teachers()
-            self.view.update_teacher_completer(teachers)
-    
-    def handle_add_faculty(self, faculty_name: str):
-        """
-        Handle add faculty request from view
-        
-        Args:
-            faculty_name: Name of the faculty to add
-        """
-        faculty_id = self.model.add_faculty(faculty_name)
-        
-        if faculty_id:
-            self.view.show_success_message(f"Fakülte başarıyla eklendi! ID: {faculty_id}")
-        # Error message will be shown by model signal if failed
-    
-    def handle_add_department(self, faculty_id: int, department_name: str):
-        """
-        Handle add department request from view
-        
-        Args:
-            faculty_id: Faculty ID (ignored, will get from dialog)
-            department_name: Department name (ignored, will get from dialog)
-        """
-        # First, show faculty selection dialog
-        faculties = self.model.get_faculties()
-        ok, selected_faculty_id = self.view.show_faculty_selection_dialog(faculties)
-        
-        if not ok:
-            return  # User cancelled
-        
-        # Then, show department name input dialog
-        ok, department_name = self.view.show_department_input_dialog()
-        
-        if not ok or not department_name:
-            return  # User cancelled or empty name
-        
-        # Add department using model
-        department_id = self.model.add_department(selected_faculty_id, department_name)
-        
-        if department_id:
-            self.view.show_success_message(f"Bölüm başarıyla eklendi! ID: {department_id}")
-        # Error message will be shown by model signal if failed
-    
-    def refresh_data(self):
-        """Refresh all data from model to view"""
-        # Reload courses
-        courses = self.model.get_all_courses()
+        courses = self._merge_course_strings(courses) # Merge blocks
         self.view.display_courses(courses)
         
         # Reload teachers
@@ -465,26 +271,14 @@ class ScheduleController:
                  courses = self.model.get_courses_by_faculty(faculty_id, year, day)
         else:
              # No Faculty Selected -> Show All Courses (Ders_Programi)
-             # NOTE: get_all_courses currently doesn't take 'day'
-             # If filter "Day" is active but no faculty selected, we need logic for that.
-             # Implementation: get_all_courses could take params or we filter client side.
-             # Easier: Just reload all. But user wants 'day' filter.
-             # Assuming Day filter applies globally.
-             # I SHOULD update get_all_courses or filter locally.
-             # Local filter:
-             # No Faculty Selected -> Show All Courses (Ders_Programi)
              all_courses = self.model.get_all_courses()
              
              # Apply Day Filter (Client-side for 'All Courses' view)
              if day:
                  print(f"DEBUG: Filtering for day: {day}")
-                 # Filter checks if day string is in the course info string
-                 # Course info format: "[CODE] Name - Teacher (Day Time)"
                  courses = [c for c in all_courses if f"({day}" in c]
              else:
                  courses = all_courses
-             
-        # 3. Apply Text Filters (Client-side)
              
         # 3. Apply Text Filters (Client-side)
         search_text = filters.get("search_text", "").lower()
@@ -493,26 +287,18 @@ class ScheduleController:
         if search_text or teacher_text:
             filtered_courses = []
             for course_str in courses:
-                # Format is usually "[CODE] Name"
-                # To search teacher properly, we need teacher info in the list string or 
-                # fetch details. Currently list strings might not have teacher?
-                # Let's assume user searches what's visible.
-                # If teacher needs to be searchable, it must be in the string or we need structured data.
-                # Current get_courses returns strings.
-                
-                # Check for Course Name/Code match
                 if search_text and search_text not in course_str.lower():
                     continue
                     
-                # Check for Teacher match (If teacher name is not in string, this won't work perfectly yet)
-                # But user asked to use teacher form as filter.
-                # Assuming simple text filter for now.
                 if teacher_text and teacher_text not in course_str.lower():
                      continue
                 
                 filtered_courses.append(course_str)
             courses = filtered_courses
 
+        # Merge consecutive blocks
+        courses = self._merge_course_strings(courses)
+        
         self.view.display_courses(courses)
 
     def handle_calendar_filter(self, event_type, data):
@@ -594,11 +380,7 @@ class ScheduleController:
                      print(f"DEBUG: Fetching schedule for dept {data['dept_id']} year {data['year']}")
                      
                      # Ortak Dersler Handling
-                     department_id = int(data['dept_id']) # Might be None/String? Logic above ensures it exists if we are here?
-                     # Wait, if logic is "if faculty selected", dept_id might be missing?
-                     # No, elif "year" in data usually implies dept was selected too?
-                     # To be safe, check dept_id too? 
-                     # For now, let's fix the specific crash on year.
+                     department_id = int(data['dept_id']) 
                      
                      if department_id == -1:
                          # Fetch Common Courses Schedule
@@ -648,7 +430,7 @@ class ScheduleController:
             # Initial load (all students)
             self.handle_student_filter({})
             
-        self.student_view.show()
+        self.student_view.showMaximized()
         self.student_view.raise_()
 
     def handle_student_filter(self, filters):
@@ -738,3 +520,87 @@ class ScheduleController:
                     QMessageBox.warning(self.view, "Başarısız", "Uygun bir program bulunamadı!\nKısıtlamaları kontrol edin.")
             except Exception as e:
                 QMessageBox.critical(self.view, "Hata", f"Program oluşturulurken hata: {str(e)}")
+
+    def _merge_course_strings(self, course_list: List[str]) -> List[str]:
+        """
+        Merge consecutive course blocks in the list
+        Input format: "[Code] Name - Teacher (Day Start-End)"
+        """
+        if not course_list:
+            return []
+            
+        import re
+        # Regex to parse the string
+        # Matches: [Code] Name - Teacher (Day Start-End)
+        pattern = re.compile(r"\[(.*?)\] (.*?) - (.*?) \((.*?) (\d{2}:\d{2})-(\d{2}:\d{2})\)")
+        
+        parsed_items = []
+        unparsed_items = []
+        
+        for item in course_list:
+            match = pattern.match(item)
+            if match:
+                code, name, teacher, day, start, end = match.groups()
+                parsed_items.append({
+                    'code': code, 
+                    'name': name, 
+                    'teacher': teacher, 
+                    'day': day, 
+                    'start': start, 
+                    'end': end,
+                    'original': item
+                })
+            else:
+                unparsed_items.append(item)
+                
+        # Group by (Code, Name, Teacher, Day)
+        # We need to sort primarily by these to group, then by start time to merge
+        # Map days to index for sorting
+        day_map = {"Pazartesi": 0, "Salı": 1, "Çarşamba": 2, "Perşembe": 3, "Cuma": 4}
+        
+        def sort_key(x):
+            return (
+                x['name'], 
+                x['code'], 
+                x['teacher'], 
+                day_map.get(x['day'], 99), 
+                x['start']
+            )
+            
+        parsed_items.sort(key=sort_key)
+        
+        merged_items = []
+        if parsed_items:
+            current = parsed_items[0]
+            
+            for i in range(1, len(parsed_items)):
+                next_item = parsed_items[i]
+                
+                # Check for mergeability
+                if (current['name'] == next_item['name'] and
+                    current['code'] == next_item['code'] and
+                    current['teacher'] == next_item['teacher'] and
+                    current['day'] == next_item['day'] and
+                    current['end'] == next_item['start']): # Consecutive time
+                    
+                    # Merge: Update end time of current
+                    current['end'] = next_item['end']
+                else:
+                    # Push current and start new
+                    merged_items.append(current)
+                    current = next_item
+            
+            # Push last
+            merged_items.append(current)
+            
+        # Reconstruct strings
+        final_list = []
+        for item in merged_items:
+            # Rebuild: [Code] Name - Teacher (Day Start-End)
+            s = f"[{item['code']}] {item['name']} - {item['teacher']} ({item['day']} {item['start']}-{item['end']})"
+            final_list.append(s)
+            
+        # Add back unparsed items (if any)
+        final_list.extend(unparsed_items)
+        
+        return final_list

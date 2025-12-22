@@ -197,39 +197,89 @@ class CalendarView(QWidget):
 
     def display_schedule(self, schedule_data):
         """
-        Display schedule on the grid
+        Display schedule on the grid with merged blocks for consecutive hours
         schedule_data: List of tuples (Day, Start, End, CourseName, ExtraInfo)
         """
         self.calendar_table.clearContents()
+        self.calendar_table.clearSpans()
         
         day_map = {
             "Pazartesi": 0, "Salı": 1, "Çarşamba": 2, "Perşembe": 3, 
             "Cuma": 4
         }
         
+        # 1. Organize data onto a grid structure: slot[day_name][start_hour]
+        slots = {d: {} for d in day_map}
+
         for item in schedule_data:
             day, start, end, course, extra = item
+            if day not in day_map: continue
             
-            if day not in day_map:
-                continue
-                
-            col = day_map[day]
-            
-            # Simple hour matching (assuming starts on hour)
             try:
                 start_hour = int(start.split(':')[0])
-                row = start_hour - 8 # 08:00 is row 0
+                slots[day][start_hour] = {
+                    'start_str': start, 
+                    'end_str': end, 
+                    'course': course, 
+                    'extra': extra
+                }
+            except:
+                continue
+
+        # 2. Iterate each day and merge consecutive identical courses
+        for day_name, day_slots in slots.items():
+            col = day_map[day_name]
+            
+            # Sorted start hours for this day
+            start_hours = sorted(day_slots.keys())
+            
+            if not start_hours:
+                continue
+                
+            i = 0
+            while i < len(start_hours):
+                current_start = start_hours[i]
+                current_data = day_slots[current_start]
+                
+                # Check for consecutive blocks
+                span = 1
+                next_check_idx = i + 1
+                
+                while next_check_idx < len(start_hours):
+                    next_start = start_hours[next_check_idx]
+                    next_data = day_slots[next_start]
+                    
+                    # Criteria: Consecutive Hour AND Identical Course AND Identical Info
+                    if (current_start + span == next_start and 
+                        current_data['course'] == next_data['course'] and 
+                        current_data['extra'] == next_data['extra']):
+                        
+                        span += 1
+                        next_check_idx += 1
+                    else:
+                        break
+                
+                # Finalize Block
+                row = current_start - 8 # 08:00 is row 0
+                
+                # Last block determines end time
+                last_block_start = start_hours[i + span - 1]
+                final_end_str = day_slots[last_block_start]['end_str']
+                
+                display_start = current_data['start_str']
+                display_end = final_end_str
+                
+                text = f"{current_data['course']}\n{current_data['extra']}\n{display_start}-{display_end}"
+                item = QTableWidgetItem(text)
+                
+                item.setBackground(QColor(227, 242, 253)) # Light Blue
+                item.setTextAlignment(Qt.AlignCenter)
+                tooltip = f"<b>Ders:</b> {current_data['course']}<br><b>Bilgi:</b> {current_data['extra']}<br><b>Saat:</b> {display_start}-{display_end}"
+                item.setToolTip(tooltip)
                 
                 if 0 <= row < self.calendar_table.rowCount():
-                    text = f"{course}\n{extra}\n{start}-{end}"
-                    item = QTableWidgetItem(text)
-                    item.setBackground(QColor(227, 242, 253)) # Light Blue
-                    item.setTextAlignment(Qt.AlignCenter)
-                    
-                    # Tooltip
-                    tooltip = f"<b>Ders:</b> {course}<br><b>Bilgi:</b> {extra}<br><b>Saat:</b> {start}-{end}"
-                    item.setToolTip(tooltip)
-                    
                     self.calendar_table.setItem(row, col, item)
-            except:
-                pass
+                    if span > 1:
+                        self.calendar_table.setSpan(row, col, span, 1)
+                
+                i += span
