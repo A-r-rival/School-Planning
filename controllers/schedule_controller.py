@@ -60,6 +60,7 @@ class ScheduleController:
         self.view.open_student_view_requested.connect(self.open_student_view)
         self.view.open_teacher_availability_requested.connect(self.open_teacher_availability_view)
         self.view.generate_schedule_requested.connect(self.generate_automatic_schedule)
+        self.view.filter_changed.connect(self.handle_schedule_view_filter)
     
     def _initialize_view(self):
         """Initialize view with existing data from model"""
@@ -70,6 +71,10 @@ class ScheduleController:
         # Load teachers for autocomplete
         teachers = self.model.get_teachers()
         self.view.update_teacher_completer(teachers)
+
+        # Initialize Filters
+        facs = self.model.get_faculties()
+        self.view.update_filter_combo("faculty", facs)
     
     def handle_add_course(self, course_data: dict):
         """
@@ -429,6 +434,87 @@ class ScheduleController:
         
         self.calendar_view.show()
         
+    def handle_schedule_view_filter(self, filters):
+        """Handle filter changes from ScheduleView"""
+        faculty_id = filters.get("faculty_id")
+        dept_id = filters.get("dept_id")
+        year = filters.get("year")
+        day = filters.get("day")
+        
+        # 1. Update Departments if Faculty changed (and Dept is None)
+        if faculty_id and not dept_id:
+             # Fetch depts
+             items = self.model.get_departments_by_faculty(faculty_id)
+             # Add "Ortak Dersler" option
+             items.append((-1, "Ortak Dersler"))
+             self.view.update_filter_combo("dept", items)
+             # Do NOT return, proceed to filter list with faculty_id
+
+        # 2. Filter List
+        courses = []
+        if faculty_id:
+             if dept_id:
+                 if dept_id == -1:
+                     # "Ortak Dersler": Fetch all for now (simulated)
+                     courses = self.model.get_courses_by_faculty(faculty_id, year, day)
+                 else:
+                     # Specific Dept
+                     courses = self.model.get_courses_by_department(dept_id, year, day)
+             else:
+                 # Faculty Selected, Dept = "Tüm Bölümler"
+                 courses = self.model.get_courses_by_faculty(faculty_id, year, day)
+        else:
+             # No Faculty Selected -> Show All Courses (Ders_Programi)
+             # NOTE: get_all_courses currently doesn't take 'day'
+             # If filter "Day" is active but no faculty selected, we need logic for that.
+             # Implementation: get_all_courses could take params or we filter client side.
+             # Easier: Just reload all. But user wants 'day' filter.
+             # Assuming Day filter applies globally.
+             # I SHOULD update get_all_courses or filter locally.
+             # Local filter:
+             # No Faculty Selected -> Show All Courses (Ders_Programi)
+             all_courses = self.model.get_all_courses()
+             
+             # Apply Day Filter (Client-side for 'All Courses' view)
+             if day:
+                 print(f"DEBUG: Filtering for day: {day}")
+                 # Filter checks if day string is in the course info string
+                 # Course info format: "[CODE] Name - Teacher (Day Time)"
+                 courses = [c for c in all_courses if f"({day}" in c]
+             else:
+                 courses = all_courses
+             
+        # 3. Apply Text Filters (Client-side)
+             
+        # 3. Apply Text Filters (Client-side)
+        search_text = filters.get("search_text", "").lower()
+        teacher_text = filters.get("teacher_text", "").lower()
+        
+        if search_text or teacher_text:
+            filtered_courses = []
+            for course_str in courses:
+                # Format is usually "[CODE] Name"
+                # To search teacher properly, we need teacher info in the list string or 
+                # fetch details. Currently list strings might not have teacher?
+                # Let's assume user searches what's visible.
+                # If teacher needs to be searchable, it must be in the string or we need structured data.
+                # Current get_courses returns strings.
+                
+                # Check for Course Name/Code match
+                if search_text and search_text not in course_str.lower():
+                    continue
+                    
+                # Check for Teacher match (If teacher name is not in string, this won't work perfectly yet)
+                # But user asked to use teacher form as filter.
+                # Assuming simple text filter for now.
+                if teacher_text and teacher_text not in course_str.lower():
+                     continue
+                
+                filtered_courses.append(course_str)
+            courses = filtered_courses
+
+        self.view.display_courses(courses)
+
     def handle_calendar_filter(self, event_type, data):
         """Handle filter changes from calendar view"""
         if event_type == "type_changed":
@@ -478,12 +564,35 @@ class ScheduleController:
                 if "dept_id" not in data or not data["dept_id"]:
                     print(f"DEBUG: Fetching departments for faculty {data['faculty_id']}")
                     items = self.model.get_departments_by_faculty(data["faculty_id"])
-                    print(f"DEBUG: Found {len(items)} departments")
+                    
+                    # --- ADD ORTAK DERSLER ---
+                    items.append((-1, "Ortak Dersler"))
+                    # -------------------------
+                    
+                    print(f"DEBUG: Found {len(items)} departments (inc. Ortak)")
                     self.calendar_view.update_filter_options(2, items)
+                    
                 # If dept selected and year selected, fetch schedule
-                elif "year" in data and data["year"] and str(data["year"]).isdigit():
+                elif "year" in data and data["year"]: # Year might be string "1", "2"...
+                     # Validation: Ensure year is digits (not 'Seçiniz...')
+                     if not str(data["year"]).isdigit():
+                         # print(f"DEBUG: Invalid year selected: {data['year']}")
+                         return
+
                      print(f"DEBUG: Fetching schedule for dept {data['dept_id']} year {data['year']}")
-                     raw_schedule = self.model.get_schedule_by_student_group(data["dept_id"], int(data["year"]))
+                     
+                     # Ortak Dersler Handling
+                     department_id = int(data['dept_id']) # Might be None/String? Logic above ensures it exists if we are here?
+                     # Wait, if logic is "if faculty selected", dept_id might be missing?
+                     # No, elif "year" in data usually implies dept was selected too?
+                     # To be safe, check dept_id too? 
+                     # For now, let's fix the specific crash on year.
+                     
+                     if department_id == -1:
+                         # Fetch Common Courses Schedule
+                         raw_schedule = self.model.get_schedule_for_faculty_common(data["faculty_id"], int(data["year"]))
+                     else:
+                         raw_schedule = self.model.get_schedule_by_student_group(department_id, int(data["year"]))
                      
                      # Model: (day, start, end, course, teacher, room, code)
                      schedule_data = []

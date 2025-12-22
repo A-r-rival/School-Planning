@@ -157,9 +157,11 @@ def parse_file(filepath, log_file=None):
 
         # Check for Pool Section Start
         if not in_pool_section:
+            # Only enter pool section if we see clear indicators
             if (Regexes.pool_header.search(line) and line.count('|') < 3) or \
-               (re.search(r'\[.*SD.*\]', line, re.IGNORECASE)):
+               (re.search(r'\[.*SD.*\]', line, re.IGNORECASE)):  # Bracketed pool code like [SDP]
                 in_pool_section = True
+                # Don't continue, might be a header line that also contains pool code
         
         # Check for Pool Code Header
         if in_pool_section:
@@ -176,9 +178,17 @@ def parse_file(filepath, log_file=None):
                         if len(c) >= 2:
                              found_codes.append(c)
 
+
+
+                # If no matches from main regex, try others (usually single code)
                 if not found_codes:
+                    # match1 = re.compile(r'([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*?)\s*([IVX0-9]*)', re.IGNORECASE)
+                    
+                    # Format 2: | DESCRIPTION (CODE) |
                     match2 = re.search(r'\((ZSD[IVX]*|SD[IVX]*|ÜSD[IVX]*|HUKSD[0-9]*)\)', line)
+                    # Format 3: | ZSD I - ... |
                     match3 = re.search(r'\|\s*(ZSD\s*.*?)\s*-', line)
+                    # Format 4: | CODE SEÇMELİ ... | or | CODE HAVUZU ... |
                     match4 = re.search(r'\|\s*([A-ZİĞÜŞÖÇ0-9_]{3,})\s+(?:SEÇMELİ|HAVUZU|DERSLER)', line, re.IGNORECASE)
 
                     if match2:
@@ -202,10 +212,13 @@ def parse_file(filepath, log_file=None):
                     for c in current_pool_codes:
                         if c not in pools:
                             pools[c] = []
+                    # Only skip course processing if this is clearly just a header line (few pipes)
+                    # If it's a full course table row (8+ pipes), we should still process it as a course
                     if line.count('|') < 6:
                         continue
 
         # Semester Parsing
+        # Priority: YARIYIL/DÖNEM > GÜZ/BAHAR > YIL
         if not in_pool_section:
             term_match = Regexes.semester_term.search(line)
             season_match = Regexes.season.search(line)
@@ -220,6 +233,7 @@ def parse_file(filepath, log_file=None):
             elif year_match:
                 y_val = to_int(year_match.group(1))
                 if y_val > 0:
+                    # Check context for semester
                     if "III. YARIYIL" in line.upper() or "3. YARIYIL" in line.upper(): current_semester = 3
                     elif "IV. YARIYIL" in line.upper() or "4. YARIYIL" in line.upper(): current_semester = 4
                     elif "I. YARIYIL" in line.upper() or "1. YARIYIL" in line.upper(): current_semester = y_val * 2 - 1
@@ -235,6 +249,10 @@ def parse_file(filepath, log_file=None):
         code_idx = -1
         for i, p in enumerate(parts):
             p_clean = p.split(' - ')[0].strip()
+            # Regex for course code: 
+            # 1. Standard: 2+ letters + 3+ digits (e.g. MAT103)
+            # 2. Placeholders: ZSD, SD, ÜSD followed by optional Roman numerals or digits (e.g. ZSDII, SDI, ÜSD1)
+            # Exclude common headers
             if p_clean in ["KOD", "KODU", "TOPLAM", "AKTS", "DERSİN", "T", "U", "L", "DİL", "D/E", "E", "D"]:
                 continue
                 
@@ -290,6 +308,7 @@ def parse_file(filepath, log_file=None):
             course_tuple = (code, name, ects, t, u, l)
             
             if in_pool_section and current_pool_codes:
+                # Avoid adding the pool header itself as a course
                 if code not in current_pool_codes:
                     for pool_code in current_pool_codes:
                         pools[pool_code].append(course_tuple)
@@ -297,6 +316,7 @@ def parse_file(filepath, log_file=None):
                 if current_semester not in curriculum:
                     curriculum[current_semester] = []
                 
+                # Allow duplicates for placeholder courses (ZSD, SD, ÜSD, etc.)
                 is_placeholder = "SD" in code
                 
                 # Check for duplicates (accounting for new tuple size)

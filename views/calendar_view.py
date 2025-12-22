@@ -175,7 +175,6 @@ class CalendarView(QWidget):
                 widget.clear()
                 widget.addItem("Seçiniz...", None)
                 for item_id, name in items:
-                    # print(f"DEBUG: Adding item {name} ({item_id})")
                     widget.addItem(str(name), item_id)
                 widget.blockSignals(False)
                 print("DEBUG: Population complete.")

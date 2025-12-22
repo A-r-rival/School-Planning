@@ -73,6 +73,9 @@ class ScheduleModel(QObject):
                 teori_odasi INTEGER,
                 lab_odasi INTEGER,
                 akts INTEGER,
+                teori_saati INTEGER DEFAULT 0,
+                uygulama_saati INTEGER DEFAULT 0,
+                lab_saati INTEGER DEFAULT 0,
                 PRIMARY KEY (ders_instance, ders_adi),
                 FOREIGN KEY (teori_odasi) REFERENCES Derslikler(derslik_num) ON DELETE SET NULL,
                 FOREIGN KEY (lab_odasi) REFERENCES Derslikler(derslik_num) ON DELETE SET NULL
@@ -122,7 +125,7 @@ class ScheduleModel(QObject):
             '''CREATE TABLE IF NOT EXISTS Derslikler (
                 derslik_num INTEGER PRIMARY KEY AUTOINCREMENT,
                 derslik_adi TEXT NOT NULL,
-                tip TEXT NOT NULL CHECK (tip IN ('lab', 'amfi')),
+                derslik_tipi TEXT NOT NULL, -- Added for room types (Lab, Amfi, etc.)
                 kapasite INTEGER NOT NULL,
                 ozellikler TEXT,
                 silindi BOOLEAN DEFAULT 0,
@@ -340,7 +343,10 @@ class ScheduleModel(QObject):
             courses = []
             for ders, hoca, gun, baslangic, bitis in rows:
                 saat = f"{baslangic}-{bitis}"
-                course_info = f"{ders} - {hoca} - {gun} {saat}"
+                # Format match: [Codes?] Name - Teacher (Day Time)
+                # Since we don't have codes here easily, we omit them or could fetch. 
+                # Keeping it simple but matching the " (Day" pattern for the filter.
+                course_info = f"{ders} - {hoca} ({gun} {saat})"
                 courses.append(course_info)
             return courses
         except Exception as e:
@@ -441,10 +447,11 @@ class ScheduleModel(QObject):
             query = '''
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi,
                        (SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = dp.ogretmen_id) as hoca,
-                       d.ders_kodu
+                       GROUP_CONCAT(DISTINCT d.ders_kodu)
                 FROM Ders_Programi dp
                 JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 WHERE d.teori_odasi = ? OR d.lab_odasi = ?
+                GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, dp.ogretmen_id
             '''
             self.c.execute(query, (classroom_id, classroom_id))
             return self.c.fetchall()
@@ -498,6 +505,124 @@ class ScheduleModel(QObject):
         except Exception as e:
             print(f"Error fetching departments: {e}")
             return []  # Return True to be safe
+
+    def get_courses_by_faculty(self, faculty_id: int, year: str = None, day: str = None) -> List[str]:
+        """Fetch all scheduled courses for a faculty from Ders_Programi"""
+        try:
+            # Query Ders_Programi to get scheduled items with Teacher and Time
+            query = """
+                SELECT dp.ders_adi, GROUP_CONCAT(DISTINCT d.ders_kodu), 
+                       (o.ad || ' ' || o.soyad) as hoca, dp.gun, dp.baslangic, dp.bitis
+                FROM Ders_Programi dp
+                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                JOIN Ders_Sinif_Iliskisi dsi ON d.ders_instance = dsi.ders_instance AND d.ders_adi = dsi.ders_adi
+                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                JOIN Bolumler b ON od.bolum_num = b.bolum_id
+                LEFT JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
+                WHERE b.fakulte_num = ?
+            """
+            params = [faculty_id]
+            
+            if year and str(year).isdigit():
+                query += " AND od.sinif_duzeyi = ?"
+                params.append(int(year))
+                
+            if day:
+                query += " AND dp.gun = ?"
+                params.append(day)
+                
+            # Group by schedule slot to merge codes if same course is shared
+            query += " GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, o.ad, o.soyad ORDER BY dp.ders_adi, dp.baslangic"
+                
+            self.c.execute(query, params)
+            rows = self.c.fetchall()
+            
+            # Format: [CODE] Name - Teacher (Day Time)
+            result = []
+            for r in rows:
+                ders_adi = r[0]
+                codes = r[1]
+                hoca = r[2] if r[2] else "Belirsiz"
+                gun = r[3]
+                saat = f"{r[4]}-{r[5]}"
+                result.append(f"[{codes}] {ders_adi} - {hoca} ({gun} {saat})")
+            return result
+        except Exception as e:
+            print(f"Error fetching faculty courses: {e}")
+            return []
+
+    def get_courses_by_department(self, dept_id: int, year: str = None, day: str = None) -> List[str]:
+        """Fetch scheduled courses for a specific department from Ders_Programi"""
+        try:
+            query = """
+                SELECT dp.ders_adi, GROUP_CONCAT(DISTINCT d.ders_kodu),
+                       (o.ad || ' ' || o.soyad) as hoca, dp.gun, dp.baslangic, dp.bitis
+                FROM Ders_Programi dp
+                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                JOIN Ders_Sinif_Iliskisi dsi ON d.ders_instance = dsi.ders_instance AND d.ders_adi = dsi.ders_adi
+                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                LEFT JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
+                WHERE od.bolum_num = ?
+            """
+            params = [dept_id]
+            
+            if year and str(year).isdigit():
+                query += " AND od.sinif_duzeyi = ?"
+                params.append(int(year))
+                
+            if day:
+                query += " AND dp.gun = ?"
+                params.append(day)
+
+            query += " GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, o.ad, o.soyad ORDER BY dp.ders_adi, dp.baslangic"
+
+            self.c.execute(query, params)
+            rows = self.c.fetchall()
+            
+            result = []
+            for r in rows:
+                ders_adi = r[0]
+                codes = r[1]
+                hoca = r[2] if r[2] else "Belirsiz"
+                gun = r[3]
+                saat = f"{r[4]}-{r[5]}"
+                result.append(f"[{codes}] {ders_adi} - {hoca} ({gun} {saat})")
+            return result
+        except Exception as e:
+            print(f"Error fetching dept courses: {e}")
+            return []
+            
+    def get_schedule_for_faculty_common(self, faculty_id: int, year: int) -> List[Tuple]:
+        """Get schedule for Common Courses of a faculty."""
+        try:
+            # We group by the schedule slot (day, time, course, teacher) to avoid duplicates
+            q2 = """
+                SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, 
+                       (o.ad || ' ' || o.soyad), d.teori_odasi, GROUP_CONCAT(DISTINCT d.ders_kodu)
+                FROM Ders_Programi dp
+                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                LEFT JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
+                JOIN Ders_Sinif_Iliskisi dsi ON dsi.ders_instance = d.ders_instance AND dsi.ders_adi = d.ders_adi
+                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                JOIN Bolumler b ON od.bolum_num = b.bolum_id
+                WHERE b.fakulte_num = ? AND od.sinif_duzeyi = ?
+                GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, o.ad, o.soyad, d.teori_odasi
+            """
+            self.c.execute(q2, (faculty_id, year))
+            rows = self.c.fetchall()
+            result = []
+            for r in rows:
+                gun, start, end, ders, hoca, room_id, codes = r
+                room_name = "Belirsiz"
+                if room_id:
+                    self.c.execute("SELECT derslik_adi FROM Derslikler WHERE derslik_num=?", (room_id,))
+                    rr = self.c.fetchone()
+                    if rr: room_name = rr[0]
+                result.append((gun, start, end, ders, hoca, room_name, codes))
+            return result
+        except Exception as e:
+            print(f"Error fetching common schedule: {e}")
+            return []
     
     # Advanced database operations using DbManager
     def add_faculty(self, faculty_name: str) -> Optional[int]:
@@ -683,7 +808,7 @@ class ScheduleModel(QObject):
             return donem_sinif_num
     
     # Ders ekle (ders_instance otomatik atanır)
-    def ders_ekle(self, ders_adi, ders_kodu=None, teori_odasi=None, lab_odasi=None):
+    def ders_ekle(self, ders_adi, ders_kodu=None, teori_odasi=None, lab_odasi=None, teori_saati=0, uygulama_saati=0, lab_saati=0):
         self.c.execute('SELECT ders_instance FROM Dersler WHERE ders_adi = ?', (ders_adi,))
         kullanilanlar = {row[0] for row in self.c.fetchall()}
 
@@ -693,9 +818,9 @@ class ScheduleModel(QObject):
         # Kullanılmayan en küçük pozitif sayıyı bulana kadar devam eder.
 
         self.c.execute('''
-            INSERT INTO Dersler (ders_kodu, ders_adi, ders_instance, teori_odasi, lab_odasi)
-            VALUES (?, ?, ?, ?, ?)
-        ''', (ders_kodu, ders_adi, instance, teori_odasi, lab_odasi))
+            INSERT INTO Dersler (ders_kodu, ders_adi, ders_instance, teori_odasi, lab_odasi, teori_saati, uygulama_saati, lab_saati)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (ders_kodu, ders_adi, instance, teori_odasi, lab_odasi, teori_saati, uygulama_saati, lab_saati))
         self.conn.commit()
         return instance
     

@@ -12,7 +12,7 @@ from scripts.curriculum_data import DEPARTMENTS_DATA, COMMON_USD_POOL
 GRADES = ["AA", "BA", "BB", "CB", "CC", "DC", "DD", "FD", "FF"]
 PASSING_GRADES = ["AA", "BA", "BB", "CB", "CC", "DC", "DD"]
 
-def ensure_course_exists(model, code, name, ects):
+def ensure_course_exists(model, code, name, ects, t=0, u=0, l=0):
     """
     Ensures a course with the given properties exists.
     If a course with 'name' exists but has different code/ects, creates a new instance.
@@ -35,8 +35,8 @@ def ensure_course_exists(model, code, name, ects):
     while new_instance in instances:
         new_instance += 1
         
-    model.c.execute("INSERT INTO Dersler (ders_kodu, ders_instance, ders_adi, akts) VALUES (?, ?, ?, ?)",
-                  (code, new_instance, name, ects))
+    model.c.execute("INSERT INTO Dersler (ders_kodu, ders_instance, ders_adi, akts, teori_saati, uygulama_saati, lab_saati) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                  (code, new_instance, name, ects, t, u, l))
     # No commit here as the main loop commits later, or we rely on autocommit?
     # populate() calls commit at the end.
     return new_instance
@@ -333,9 +333,12 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
                 real_courses = [course_data]
             
             for r_course in real_courses:
-                r_code = r_course[0]
-                r_name = r_course[1]
-                r_ects = r_course[2]
+                r_t, r_u, r_l = 0, 0, 0
+                if len(r_course) == 6:
+                    r_code, r_name, r_ects, r_t, r_u, r_l = r_course
+                else:
+                    r_code, r_name, r_ects = r_course[:3]
+
                 
                 if r_code in taken_codes: continue
                 
@@ -351,7 +354,7 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
                     
                     
                     # Add to Dersler using helper
-                    instance = ensure_course_exists(model, r_code, r_name, r_ects)
+                    instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l)
                     
                     # Add to Ogrenci_Notlari
                     status = "Geçti" if grade != "FF" else "Kaldı"
@@ -383,7 +386,7 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
                             grade = "FF"
                             status = "Kaldı"
                             # Record failure
-                            instance = ensure_course_exists(model, r_code, r_name, r_ects)
+                            instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l)
                             model.c.execute("INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem) VALUES (?, ?, ?, ?, ?, ?)",
                                           (s_num, r_code, r_name, grade, status, term_str))
                             # Don't add to taken_codes so they can retake? 
@@ -397,7 +400,7 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
                             passed_courses.append(r_name)
                             taken_codes.add(r_code)
                             
-                            instance = ensure_course_exists(model, r_code, r_name, r_ects)
+                            instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l)
                             model.c.execute("INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem) VALUES (?, ?, ?, ?, ?, ?)",
                                           (s_num, r_code, r_name, grade, status, term_str))
                     else:
@@ -407,7 +410,7 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
                         passed_courses.append(r_name)
                         taken_codes.add(r_code)
                         
-                        instance = ensure_course_exists(model, r_code, r_name, r_ects)
+                        instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l)
                         model.c.execute("INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem) VALUES (?, ?, ?, ?, ?, ?)",
                                       (s_num, r_code, r_name, grade, status, term_str))
 
