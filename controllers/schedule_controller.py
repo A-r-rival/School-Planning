@@ -537,9 +537,15 @@ class ScheduleController:
             
             if "teacher_id" in data and data["teacher_id"]:
                 raw_schedule = self.model.get_schedule_by_teacher(data["teacher_id"])
-                # Model: (day, start, end, course, room, code)
+                # Model: (day, start, end, course, room, code, type)
                 for item in raw_schedule:
-                    if len(item) == 6:
+                    if len(item) == 7:
+                        day, start, end, course, room, code, ders_tipi = item
+                        tip_label = ders_tipi if ders_tipi else "?"
+                        display_course = f"[{code}] {course} ({tip_label})"
+                        extra = f"Oda: {room}"
+                        schedule_data.append((day, start, end, display_course, extra))
+                    elif len(item) == 6:  # Fallback for old data without type
                         day, start, end, course, room, code = item
                         display_course = f"[{code}] {course}"
                         extra = f"Oda: {room}"
@@ -549,9 +555,15 @@ class ScheduleController:
                 
             elif "classroom_id" in data and data["classroom_id"]:
                 raw_schedule = self.model.get_schedule_by_classroom(data["classroom_id"])
-                # Model: (day, start, end, course, teacher, code)
+                # Model: (day, start, end, course, teacher, code, type)
                 for item in raw_schedule:
-                    if len(item) == 6:
+                    if len(item) == 7:
+                        day, start, end, course, teacher, code, ders_tipi = item
+                        tip_label = ders_tipi if ders_tipi else "?"
+                        display_course = f"[{code}] {course} ({tip_label})"
+                        extra = f"{teacher}"
+                        schedule_data.append((day, start, end, display_course, extra))
+                    elif len(item) == 6:  # Fallback
                         day, start, end, course, teacher, code = item
                         display_course = f"[{code}] {course}"
                         extra = f"{teacher}"
@@ -597,17 +609,23 @@ class ScheduleController:
                      # Model: (day, start, end, course, teacher, room, code)
                      schedule_data = []
                      for item in raw_schedule:
-                         if len(item) == 7:
-                             day, start, end, course, teacher, room, code = item
-                             display_course = f"[{code}] {course}"
-                             extra_info = f"{teacher}\n{room}"
-                             schedule_data.append((day, start, end, display_course, extra_info))
-                         elif len(item) == 6: # Legacy/Fallback
-                             day, start, end, course, teacher, room = item
-                             extra_info = f"{teacher}\n{room}"
-                             schedule_data.append((day, start, end, course, extra_info))
-                         else:
-                             schedule_data.append(item)
+                          if len(item) == 8:
+                              day, start, end, course, teacher, room, code, ders_tipi = item
+                              tip_label = ders_tipi if ders_tipi else "?"
+                              display_course = f"[{code}] {course} ({tip_label})"
+                              extra_info = f"{teacher}\n{room}"
+                              schedule_data.append((day, start, end, display_course, extra_info))
+                          elif len(item) == 7:
+                              day, start, end, course, teacher, room, code = item
+                              display_course = f"[{code}] {course}"
+                              extra_info = f"{teacher}\n{room}"
+                              schedule_data.append((day, start, end, display_course, extra_info))
+                          elif len(item) == 6: # Legacy/Fallback
+                              day, start, end, course, teacher, room = item
+                              extra_info = f"{teacher}\n{room}"
+                              schedule_data.append((day, start, end, course, extra_info))
+                          else:
+                              schedule_data.append(item)
             
             if schedule_data:
                 # Update view
@@ -654,13 +672,37 @@ class ScheduleController:
     def load_teacher_availability(self, teacher_id: int):
         """Load availability for a teacher"""
         data = self.model.get_teacher_unavailability(teacher_id)
+        # Format: (day, start, end, id, teacher_name, teacher_id, description)
+        # Model returns: (day, start, end, id, description)
+        view_data = [(d[0], d[1], d[2], d[3], None, teacher_id, d[4]) for d in data] 
+        self.availability_view.update_table(view_data)
+
+    def load_all_teacher_availability(self):
+        """Load availability for ALL teachers"""
+        data = self.model.get_all_teacher_unavailability()
+        # Model returns: (day, start, end, id, teacher_name, teacher_id, description)
         self.availability_view.update_table(data)
+
         
-    def add_teacher_unavailability(self, teacher_id: int, day: str, start: str, end: str):
+    def add_teacher_unavailability(self, teacher_id: int, day: str, start: str, end: str, description: str = ""):
         """Add unavailability slot"""
-        success = self.model.add_teacher_unavailability(teacher_id, day, start, end)
+        success = self.model.add_teacher_unavailability(teacher_id, day, start, end, description)
         if success:
-            self.load_teacher_availability(teacher_id)
+            if self.availability_view.teacher_combo.currentData() == -1:
+                 self.load_all_teacher_availability()
+            else:
+                 self.load_teacher_availability(teacher_id)
+            QMessageBox.information(self.availability_view, "Başarılı", "Müsaitlik eklendi.")
+
+    def update_teacher_unavailability(self, u_id: int, teacher_id: int, day: str, start: str, end: str, description: str = ""):
+        """Update unavailability slot"""
+        success = self.model.update_teacher_unavailability(u_id, teacher_id, day, start, end, description)
+        if success:
+            if self.availability_view.teacher_combo.currentData() == -1:
+                 self.load_all_teacher_availability()
+            else:
+                 self.load_teacher_availability(teacher_id)
+            QMessageBox.information(self.availability_view, "Başarılı", "Güncelleme yapıldı.")
         else:
             QMessageBox.warning(self.availability_view, "Hata", "Bu saat aralığı zaten ekli veya çakışıyor!")
             

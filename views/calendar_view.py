@@ -50,6 +50,16 @@ class CalendarView(QWidget):
         self.filter_widget_2.setMinimumWidth(200)
         self.filter_widget_3.setMinimumWidth(100)
         
+        # Enforce scrollbars by limiting visible items
+        self.filter_widget_1.setMaxVisibleItems(20)
+        self.filter_widget_2.setMaxVisibleItems(20)
+        self.filter_widget_3.setMaxVisibleItems(20)
+        
+        # Style needed for some OS/Qt versions to ensure scrollbar visibility matches theme
+        self.filter_widget_1.setStyleSheet("QComboBox { combobox-popup: 0; }")
+        self.filter_widget_2.setStyleSheet("QComboBox { combobox-popup: 0; }")
+        self.filter_widget_3.setStyleSheet("QComboBox { combobox-popup: 0; }")
+        
         self.filter_widget_1.currentIndexChanged.connect(self._on_filter_1_changed)
         self.filter_widget_2.currentIndexChanged.connect(self._on_filter_2_changed)
         self.filter_widget_3.currentIndexChanged.connect(self._on_filter_3_changed)

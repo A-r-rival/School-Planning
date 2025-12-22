@@ -5,6 +5,7 @@ Handles all data operations and business logic
 """
 import os
 import sqlite3
+import re
 from datetime import datetime
 from typing import List, Dict, Optional, Tuple
 from PyQt5.QtCore import QObject, pyqtSignal
@@ -429,8 +430,8 @@ class ScheduleModel(QObject):
         try:
             query = '''
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, 
-                       (SELECT derslik_adi FROM Derslikler WHERE derslik_num = d.teori_odasi) as oda,
-                       d.ders_kodu
+                       (SELECT derslik_adi FROM Derslikler WHERE derslik_num = dp.derslik_id) as oda,
+                       d.ders_kodu, dp.ders_tipi
                 FROM Ders_Programi dp
                 JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 WHERE dp.ogretmen_id = ?
@@ -447,12 +448,13 @@ class ScheduleModel(QObject):
             query = '''
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi,
                        (SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = dp.ogretmen_id) as hoca,
-                       GROUP_CONCAT(DISTINCT d.ders_kodu)
+                       GROUP_CONCAT(DISTINCT d.ders_kodu), dp.ders_tipi
                 FROM Ders_Programi dp
                 JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 WHERE d.teori_odasi = ? OR d.lab_odasi = ?
-                GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, dp.ogretmen_id
+                GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, dp.ogretmen_id, dp.ders_tipi
             '''
+#SQL kuralı: GROUP BY kullanırken, SELECT'teki aggregate olmayan (örn: SUM, COUNT, GROUP_CONCAT gibi fonksiyon kullanmayan) tüm sütunlar GROUP BY'da da olmalı
             self.c.execute(query, (classroom_id, classroom_id))
             return self.c.fetchall()
         except Exception as e:
@@ -465,8 +467,8 @@ class ScheduleModel(QObject):
             query = '''
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi,
                        (SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = dp.ogretmen_id) as hoca,
-                       (SELECT derslik_adi FROM Derslikler WHERE derslik_num = d.teori_odasi) as oda,
-                       d.ders_kodu
+                       (SELECT derslik_adi FROM Derslikler WHERE derslik_num = dp.derslik_id) as oda,
+                       d.ders_kodu, dp.ders_tipi
                 FROM Ders_Programi dp
                 JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
@@ -489,10 +491,27 @@ class ScheduleModel(QObject):
             return []
             
     def get_all_classrooms_with_ids(self) -> List[Tuple[int, str]]:
-        """Get all classrooms with their IDs"""
+        """Get all classrooms with their IDs sorted naturally"""
         try:
-            self.c.execute("SELECT derslik_num, derslik_adi FROM Derslikler WHERE silindi = 0 ORDER BY derslik_adi")
-            return self.c.fetchall()
+            self.c.execute("SELECT derslik_num, derslik_adi FROM Derslikler WHERE silindi = 0")
+            rows = self.c.fetchall()
+            
+            # Natural sort helper - sorts "Derslik 2" before "Derslik 10"
+            def natural_keys(classroom_tuple):
+                classroom_name = classroom_tuple[1]  # Get name from (id, name) tuple
+                parts = re.split(r'(\d+)', classroom_name)  # Split into text and numbers
+                
+                # Convert number strings to integers, keep text as lowercase
+                converted_parts = []
+                for part in parts:
+                    if part.isdigit():
+                        converted_parts.append(int(part))  # "10" -> 10
+                    else:
+                        converted_parts.append(part.lower())  # "Derslik " -> "derslik "
+                
+                return converted_parts
+                
+            return sorted(rows, key=natural_keys)
         except Exception as e:
             print(f"Error fetching classrooms: {e}")
             return []
@@ -952,7 +971,7 @@ class ScheduleModel(QObject):
 
     def aktif_derslikleri_getir(self):
         """Sadece aktif (silinmemiş) derslikleri getir"""
-        self.c.execute('SELECT derslik_num, derslik_adi, tip, kapasite FROM Derslikler WHERE silindi = 0')
+        self.c.execute('SELECT derslik_num, derslik_adi, derslik_tipi, kapasite FROM Derslikler WHERE silindi = 0')
         return self.c.fetchall()
 
     def tum_derslikleri_getir(self):

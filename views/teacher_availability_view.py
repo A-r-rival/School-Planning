@@ -26,6 +26,7 @@ class TeacherAvailabilityView(QDialog):
         teacher_layout = QHBoxLayout()
         teacher_layout.addWidget(QLabel("Öğretmen Seç:"))
         self.teacher_combo = QComboBox()
+        self.teacher_combo.addItem("Tüm Öğretmenler", -1)  # Add All Teachers option
         for t_id, t_name in self.teachers:
             self.teacher_combo.addItem(t_name, t_id)
         self.teacher_combo.currentIndexChanged.connect(self._on_teacher_changed)
@@ -60,8 +61,8 @@ class TeacherAvailabilityView(QDialog):
         
         # List of Unavailability
         self.table = QTableWidget()
-        self.table.setColumnCount(4)
-        self.table.setHorizontalHeaderLabels(["Gün", "Başlangıç", "Bitiş", "İşlem"])
+        self.table.setColumnCount(5)  # Increased column count for Teacher Name
+        self.table.setHorizontalHeaderLabels(["Öğretmen", "Gün", "Başlangıç", "Bitiş", "İşlem"])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         layout.addWidget(self.table)
         
@@ -77,7 +78,13 @@ class TeacherAvailabilityView(QDialog):
     def _on_teacher_changed(self, index):
         if hasattr(self, 'controller'):
             teacher_id = self.teacher_combo.currentData()
-            self.controller.load_teacher_availability(teacher_id)
+            
+            if teacher_id == -1:
+                self.controller.load_all_teacher_availability()
+                self.add_button.setEnabled(False) # Cannot add to "All Teachers"
+            else:
+                self.controller.load_teacher_availability(teacher_id)
+                self.add_button.setEnabled(True)
             
     def _on_add_clicked(self):
         if hasattr(self, 'controller'):
@@ -95,12 +102,23 @@ class TeacherAvailabilityView(QDialog):
     def update_table(self, data):
         """Update table with unavailability data"""
         self.table.setRowCount(0)
-        for row_idx, (day, start, end, u_id) in enumerate(data):
+        # Data format: (day, start, end, u_id, teacher_name)
+        for row_idx, item in enumerate(data):
+            if len(item) == 5:
+                day, start, end, u_id, teacher_name = item
+            else:
+                # Fallback
+                day, start, end, u_id = item
+                teacher_name = None
+            
             self.table.insertRow(row_idx)
-            self.table.setItem(row_idx, 0, QTableWidgetItem(day))
-            self.table.setItem(row_idx, 1, QTableWidgetItem(start))
-            self.table.setItem(row_idx, 2, QTableWidgetItem(end))
+            
+            t_name_item = QTableWidgetItem(teacher_name if teacher_name else "-")
+            self.table.setItem(row_idx, 0, t_name_item)
+            self.table.setItem(row_idx, 1, QTableWidgetItem(day))
+            self.table.setItem(row_idx, 2, QTableWidgetItem(start))
+            self.table.setItem(row_idx, 3, QTableWidgetItem(end))
             
             delete_btn = QPushButton("Sil")
             delete_btn.clicked.connect(lambda checked, uid=u_id: self.controller.remove_teacher_unavailability(uid))
-            self.table.setCellWidget(row_idx, 3, delete_btn)
+            self.table.setCellWidget(row_idx, 4, delete_btn)

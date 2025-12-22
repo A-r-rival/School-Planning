@@ -114,12 +114,15 @@ class ORToolsScheduler:
         # `Verilen_Dersler` (Teachers) has `ders_listesi`.
         
         # Let's rebuild the teacher map first.
+        # Use Ders_Ogretmen_Iliskisi (Teacher-Course Relationship) table
         teacher_map = collections.defaultdict(set)
-        self.db_model.c.execute("SELECT ogretmen_num, ders_listesi FROM Verilen_Dersler")
-        for t_id, d_list in self.db_model.c.fetchall():
-            if d_list:
-                for d_name in d_list.split(','):
-                     teacher_map[d_name.strip()].add(t_id)
+        self.db_model.c.execute("""
+            SELECT ogretmen_id, ders_adi 
+            FROM Ders_Ogretmen_Iliskisi
+        """)
+        for t_id, d_name in self.db_model.c.fetchall():
+            if d_name:
+                teacher_map[d_name.strip()].add(t_id)
                      
         # Now fetch courses from DB linked with Fac/Dept
         query = '''
@@ -214,7 +217,7 @@ class ORToolsScheduler:
                 'instance': c_inst,
                 'teacher_ids': data['teacher_ids'],
                 'group_ids': data['group_ids'],
-                'parent_key': f"{name}_{c_inst}"
+                'parent_key': (name, c_inst)  # Tuple for unpacking in extract_schedule
             }
             
             # Add Theory Blocks
@@ -537,6 +540,77 @@ class ORToolsScheduler:
         if penalties:
             self.cp_model.Minimize(sum(penalties))
 
+    def add_soft_constraints_consecutive(self):
+        """
+        Soft Constraint: Encourage different session types (T/U/L) to be on DIFFERENT days.
+        Simplified version using day-level granularity to avoid variable explosion.
+        """
+        print("DEBUG: Adding Different-Day Soft Constraint for T/U/L...")
+        penalties = []
+        
+        # Group courses by parent_key (name, instance)
+        course_groups = collections.defaultdict(list)
+        for c_idx, course in enumerate(self.courses):
+            parent_key = course['parent_key']
+            course_groups[parent_key].append((c_idx, course))
+        
+        penalty_count = 0
+        # For each course with multiple session types
+        for parent_key, sessions in course_groups.items():
+            if len(sessions) < 2:
+                continue
+            
+            # For each pair of DIFFERENT session types
+            for i in range(len(sessions)):
+                for j in range(i + 1, len(sessions)):
+                    idx1, course1 = sessions[i]
+                    idx2, course2 = sessions[j]
+                    
+                    # Only apply if they are different types
+                    if course1['type'] == course2['type']:
+                        continue
+                    
+                    # For each day, check if both sessions are on that day
+                    for day_idx in range(5):  # 5 days
+                        # Collect all variables for session1 on this day
+                        vars1_day = []
+                        for key, var in self.vars.items():
+                            c_idx, r_id, s_id = key
+                            if c_idx == idx1 and s_id // 8 == day_idx:
+                                vars1_day.append(var)
+                        
+                        # Collect all variables for session2 on this day
+                        vars2_day = []
+                        for key, var in self.vars.items():
+                            c_idx, r_id, s_id = key
+                            if c_idx == idx2 and s_id // 8 == day_idx:
+                                vars2_day.append(var)
+                        
+                        if vars1_day and vars2_day:
+                            # If any var in session1 is active AND any var in session2 is active
+                            # on the same day -> penalty
+                            is_on_day_1 = self.cp_model.NewBoolVar(f's1_{idx1}_day{day_idx}')
+                            self.cp_model.Add(sum(vars1_day) > 0).OnlyEnforceIf(is_on_day_1)
+                            self.cp_model.Add(sum(vars1_day) == 0).OnlyEnforceIf(is_on_day_1.Not())
+                            
+                            is_on_day_2 = self.cp_model.NewBoolVar(f's2_{idx2}_day{day_idx}')
+                            self.cp_model.Add(sum(vars2_day) > 0).OnlyEnforceIf(is_on_day_2)
+                            self.cp_model.Add(sum(vars2_day) == 0).OnlyEnforceIf(is_on_day_2.Not())
+                            
+                            # Both on same day -> penalty
+                            both_same_day = self.cp_model.NewBoolVar(f'penalty_{idx1}_{idx2}_day{day_idx}')
+                            self.cp_model.AddBoolAnd([is_on_day_1, is_on_day_2]).OnlyEnforceIf(both_same_day)
+                            self.cp_model.AddBoolOr([is_on_day_1.Not(), is_on_day_2.Not()]).OnlyEnforceIf(both_same_day.Not())
+                            
+                            penalties.append(both_same_day * 10)  # Higher penalty for same-day different types
+                            penalty_count += 1
+        
+        if penalties:
+            print(f"DEBUG: Added {penalty_count} day-level penalty terms")
+            self.cp_model.Minimize(sum(penalties))
+        else:
+            print("DEBUG: No different-day penalties needed")
+
     def solve(self):
         """Solve with fallback strategy."""
         self.load_data()  # Loaded once
@@ -580,6 +654,8 @@ class ORToolsScheduler:
         self.create_variables(ignore_fixed_rooms=False)
         print("DEBUG: Adding hard constraints...")
         self.add_hard_constraints(include_teacher_unavailability=True) # Fixed Rooms implied by False above
+        print("DEBUG: Adding soft constraints (consecutive hours)...")
+        self.add_soft_constraints_consecutive()
         print("DEBUG: Starting solver...")
         
         if self._run_solver("STRICT"):
@@ -668,10 +744,10 @@ class ORToolsScheduler:
                 # Note: We treat each item (T/U/L) as a separate entry in Ders_Programi.
                 # If consecutiveness is enforced by duration block, this entry covers the whole duration.
                 self.db_model.c.execute('''
-                    INSERT INTO Ders_Programi (ders_adi, ders_instance, ogretmen_id, gun, baslangic, bitis)
-                    VALUES (?, ?, ?, ?, ?, ?)
+                    INSERT INTO Ders_Programi (ders_adi, ders_instance, ogretmen_id, gun, baslangic, bitis, ders_tipi)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
                 ''', (course['name'], course['instance'], main_teacher_id, 
-                      slot['day'], slot['start_str'], slot['end_str']))
+                      slot['day'], slot['start_str'], slot['end_str'], course['type']))
                 
                 # Logic Update: If we split T/U/L, we might overwrite the room assignment in Dersler table multiple times.
                 # Ideally, T overwrites 'teori_odasi', L overwrites 'lab_odasi'.
@@ -691,20 +767,26 @@ class ORToolsScheduler:
         # Let's fix course_room_map logic above first. 
         # Better: Execute updates directly inside the loop or accumulate properly.
         # Reverting to simplified update for now:
-        for key, val in course_room_map.items():
-            ders_adi, ders_instance = key
-            
-            if val['type'] == 'L':
-                 self.db_model.c.execute('''
-                    UPDATE Dersler SET lab_odasi = ? WHERE ders_adi = ? AND ders_instance = ?
-                ''', (val['room'], ders_adi, ders_instance))
-            else:
-                 self.db_model.c.execute('''
-                    UPDATE Dersler SET teori_odasi = ? WHERE ders_adi = ? AND ders_instance = ?
-                ''', (val['room'], ders_adi, ders_instance))
-            
-            # Debug update
-            # if self.db_model.c.rowcount == 0:
-            #     print(f"WARNING: Failed to update room for {ders_adi} (inst {ders_instance})")
+        try:
+            for key, val in course_room_map.items():
+                print(f"DEBUG: Processing key={key}, val={val}")  # Debug line
+                ders_adi, ders_instance = key
+                
+                if val['type'] == 'L':
+                     self.db_model.c.execute('''
+                        UPDATE Dersler SET lab_odasi = ? WHERE ders_adi = ? AND ders_instance = ?
+                    ''', (val['room'], ders_adi, ders_instance))
+                else:
+                     self.db_model.c.execute('''
+                        UPDATE Dersler SET teori_odasi = ? WHERE ders_adi = ? AND ders_instance = ?
+                    ''', (val['room'], ders_adi, ders_instance))
+                
+                # Debug update
+                # if self.db_model.c.rowcount == 0:
+                #     print(f"WARNING: Failed to update room for {ders_adi} (inst {ders_instance})")
+        except ValueError as e:
+            print(f"ERROR: Unpacking failed - {e}")
+            print(f"Problematic key: {key}")
+            raise
             
         self.db_model.conn.commit()
