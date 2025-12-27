@@ -329,12 +329,14 @@ class ScheduleController:
                         day, start, end, course, room, code, ders_tipi = item
                         tip_label = ders_tipi if ders_tipi else "?"
                         display_course = f"[{code}] {course} ({tip_label})"
-                        extra = f"Oda: {room}"
+                        room_label = room if room else "Belirsiz"
+                        extra = f"Oda: {room_label}"
                         schedule_data.append((day, start, end, display_course, extra))
                     elif len(item) == 6:  # Fallback for old data without type
                         day, start, end, course, room, code = item
                         display_course = f"[{code}] {course}"
-                        extra = f"Oda: {room}"
+                        room_label = room if room else "Belirsiz"
+                        extra = f"Oda: {room_label}"
                         schedule_data.append((day, start, end, display_course, extra))
                     else:
                         schedule_data.append(item)
@@ -347,12 +349,14 @@ class ScheduleController:
                         day, start, end, course, teacher, code, ders_tipi = item
                         tip_label = ders_tipi if ders_tipi else "?"
                         display_course = f"[{code}] {course} ({tip_label})"
-                        extra = f"{teacher}"
+                        teacher_label = teacher if teacher else "Belirsiz"
+                        extra = f"Öğretmen: {teacher_label}"
                         schedule_data.append((day, start, end, display_course, extra))
                     elif len(item) == 6:  # Fallback
                         day, start, end, course, teacher, code = item
                         display_course = f"[{code}] {course}"
-                        extra = f"{teacher}"
+                        teacher_label = teacher if teacher else "Belirsiz"
+                        extra = f"Öğretmen: {teacher_label}"
                         schedule_data.append((day, start, end, display_course, extra))
                     else:
                         schedule_data.append(item)
@@ -395,16 +399,22 @@ class ScheduleController:
                               day, start, end, course, teacher, room, code, ders_tipi = item
                               tip_label = ders_tipi if ders_tipi else "?"
                               display_course = f"[{code}] {course} ({tip_label})"
-                              extra_info = f"{teacher}\n{room}"
+                              room_label = room if room else "Belirsiz"
+                              teacher_label = teacher if teacher else "Belirsiz"
+                              extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
                               schedule_data.append((day, start, end, display_course, extra_info))
                           elif len(item) == 7:
                               day, start, end, course, teacher, room, code = item
                               display_course = f"[{code}] {course}"
-                              extra_info = f"{teacher}\n{room}"
+                              room_label = room if room else "Belirsiz"
+                              teacher_label = teacher if teacher else "Belirsiz"
+                              extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
                               schedule_data.append((day, start, end, display_course, extra_info))
                           elif len(item) == 6: # Legacy/Fallback
                               day, start, end, course, teacher, room = item
-                              extra_info = f"{teacher}\n{room}"
+                              room_label = room if room else "Belirsiz"
+                              teacher_label = teacher if teacher else "Belirsiz"
+                              extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
                               schedule_data.append((day, start, end, course, extra_info))
                           else:
                               schedule_data.append(item)
@@ -531,8 +541,9 @@ class ScheduleController:
             
         import re
         # Regex to parse the string
-        # Matches: [Code] Name - Teacher (Day Start-End)
-        pattern = re.compile(r"\[(.*?)\] (.*?) - (.*?) \((.*?) (\d{2}:\d{2})-(\d{2}:\d{2})\)")
+        # Matches: [Code] Name - Teacher (Day Start-End) [Classes]
+        # Added (.*) at the end to capture the suffix (e.g., student groups)
+        pattern = re.compile(r"\[(.*?)\] (.*?) - (.*?) \((.*?) (\d{2}:\d{2})-(\d{2}:\d{2})\)(.*)")
         
         parsed_items = []
         unparsed_items = []
@@ -540,7 +551,7 @@ class ScheduleController:
         for item in course_list:
             match = pattern.match(item)
             if match:
-                code, name, teacher, day, start, end = match.groups()
+                code, name, teacher, day, start, end, suffix = match.groups()
                 parsed_items.append({
                     'code': code, 
                     'name': name, 
@@ -548,6 +559,7 @@ class ScheduleController:
                     'day': day, 
                     'start': start, 
                     'end': end,
+                    'suffix': suffix, # Store the classes info
                     'original': item
                 })
             else:
@@ -596,8 +608,8 @@ class ScheduleController:
         # Reconstruct strings
         final_list = []
         for item in merged_items:
-            # Rebuild: [Code] Name - Teacher (Day Start-End)
-            s = f"[{item['code']}] {item['name']} - {item['teacher']} ({item['day']} {item['start']}-{item['end']})"
+            # Rebuild: [Code] Name - Teacher (Day Start-End) [Classes]
+            s = f"[{item['code']}] {item['name']} - {item['teacher']} ({item['day']} {item['start']}-{item['end']}){item['suffix']}"
             final_list.append(s)
             
         # Add back unparsed items (if any)

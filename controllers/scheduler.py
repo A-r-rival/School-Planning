@@ -255,93 +255,112 @@ class ORToolsScheduler:
         return self.courses
 
     def create_variables(self, ignore_fixed_rooms=False):
-        """Create CP variables and initialize model logic."""
+        """Create CP variables and initialize model logic with strict contiguity."""
         self.vars = {} 
         self.room_vars = {}
+        self.starts = {} # (c_idx, r_id, s_id) -> bool_var (Is this the START slot?)
 
         for c_idx, course in enumerate(self.courses):
-            # 1. Create Room Variables (Is course c assigned to room r?)
+            duration = course['duration']
+            
+            # 1. Create Room Variables
             possible_rooms = []
             
             for r in self.rooms:
                 r_id = r[0]
                 
-                # Filter rooms based on Fixed Room constraint (Logic kept in variable creation for efficiency)
+                # Filter rooms logic
                 if not ignore_fixed_rooms and course['fixed_room'] and course['fixed_room'] != r_id:
                      continue
                 
                 # Room Type Logic
-                # r structure: (id, name, tip, capacity)
                 if len(r) > 2:
                     room_type_str = (r[2] if r[2] else "").lower()
-                    
                     is_lab_room = "laboratuvar" in room_type_str or "lab" in room_type_str
-                    course_type = course.get('type', '') # 'Teori', 'Uygulama', 'Lab'
+                    course_type = course.get('type', '')
                     
-                    # STRICT LOGIC:
-                    # 1. If Course is 'Lab', it MUST go to a Lab Room.
                     if course_type == 'Lab':
-                         if not is_lab_room:
-                             continue
-                             
-                    # 2. If Course is 'Teori' or 'Uygulama', it MUST NOT go to a Lab Room 
-                    # (unless explicitly fixed, which is handled by previous check)
+                         if not is_lab_room: continue
                     elif course_type in ['Teori', 'Uygulama']:
-                        if is_lab_room:
-                            continue
-                            
-                    # 3. Fallback for legacy data (name-based) if type is missing
+                        if is_lab_room: continue
                     elif not course_type:
-                        # Legacy Logicy
                         if is_lab_room:
                              if not ("laboratuvar" in course['name'].lower() or "uygulama" in course['name'].lower() or "lab" in course['name'].lower()):
                                  continue
                 
-                # Create boolean var for (Course, Room)
+                # Create Room Var
                 r_var = self.cp_model.NewBoolVar(f'c{c_idx}_r{r_id}')
                 self.room_vars[(c_idx, r_id)] = r_var
                 possible_rooms.append(r_var)
 
-                # 2. Create Slot Variables for this valid room option
+                # 2. Identify Valid Start Slots (Enforce Same Day & Contiguity)
+                valid_start_vars = []
+                
                 for s in self.time_slots:
-                    s_id = s['id']
-                    # Var: Course c is in Room r at Slot s
-                    var = self.cp_model.NewBoolVar(f'c{c_idx}_r{r_id}_s{s_id}')
-                    self.vars[(c_idx, r_id, s_id)] = var
+                    start_id = s['id']
+                    end_id = start_id + duration - 1
                     
-                    # LINKAGE: If Course is in Room R at Slot S, then Course MUST be assigned to Room R
-                    self.cp_model.AddImplication(var, r_var)
+                    # Check 1: Must end within total slots
+                    if end_id >= len(self.time_slots):
+                        continue
+                        
+                    # Check 2: Must be on SAME DAY
+                    # Slots 0-7 (Day 0), 8-15 (Day 1)...
+                    start_day = start_id // 8
+                    end_day = end_id // 8
+                    
+                    if start_day == end_day:
+                        # This is a valid start slot
+                        s_var = self.cp_model.NewBoolVar(f'start_c{c_idx}_r{r_id}_s{start_id}')
+                        self.starts[(c_idx, r_id, start_id)] = s_var
+                        valid_start_vars.append(s_var)
+                
+                # Constraint: If assigned to room R, MUST have exactly ONE start time
+                if valid_start_vars:
+                    self.cp_model.Add(sum(valid_start_vars) == r_var)
+                else:
+                    # Duration too long for any day? Disable room
+                    self.cp_model.Add(r_var == 0)
+
+                # 3. Create Occupancy Vars (self.vars) linked to Starts
+                # Occ[t] = Sum(Start[s]) for all s where s <= t < s+dur
+                for t in self.time_slots:
+                    t_id = t['id']
+                    
+                    # Find all starts that would cover time t
+                    # A start at s covers t if: s <= t AND s + duration > t
+                    # => s <= t AND s > t - duration
+                    # => s in [t - duration + 1, t]
+                    
+                    relevant_starts = []
+                    min_s = max(0, t_id - duration + 1)
+                    max_s = t_id
+                    
+                    for s_id in range(min_s, max_s + 1):
+                        if (c_idx, r_id, s_id) in self.starts:
+                            relevant_starts.append(self.starts[(c_idx, r_id, s_id)])
+                    
+                    occ_var = self.cp_model.NewBoolVar(f'c{c_idx}_r{r_id}_s{t_id}')
+                    self.vars[(c_idx, r_id, t_id)] = occ_var
+                    
+                    if relevant_starts:
+                        self.cp_model.Add(occ_var == sum(relevant_starts))
+                    else:
+                        self.cp_model.Add(occ_var == 0)
+                        
+                    # Note: We don't need 'AddImplication' anymore, it's covered by the sum structure.
+                    # If r_var is 0, valid_starts is 0, so relevant_starts is 0, so occ_var is 0.
 
             # Constraint: Each course must be assigned to EXACTLY ONE room
             if possible_rooms:
                 self.cp_model.Add(sum(possible_rooms) == 1)
-            else:
-                # Should be caught by relaxed logic, but good for debug
-                pass
 
     def add_hard_constraints(self, include_teacher_unavailability=True):
         """Add system-wide hard constraints."""
         
         # 1. Course Duration Integrity
-        print("DEBUG: Adding Duration Constraints...")
-        for c_idx, course in enumerate(self.courses):
-            duration = course['duration']
-            # Iterate over all rooms that *could* host this course
-            for r in self.rooms:
-                r_id = r[0]
-                if (c_idx, r_id) in self.room_vars:
-                    room_var = self.room_vars[(c_idx, r_id)]
-                    
-                    # Gather all slot variables for this (Course, Room) pair
-                    course_room_slots = []
-                    for s in self.time_slots:
-                        s_id = s['id']
-                        if (c_idx, r_id, s_id) in self.vars:
-                            course_room_slots.append(self.vars[(c_idx, r_id, s_id)])
-                    
-                    if course_room_slots:
-                        # If RoomVar=1 -> Sum(slots)=duration. If RoomVar=0 -> Sum(slots)=0.
-                        self.cp_model.Add(sum(course_room_slots) == duration * room_var)
+        # [REMOVED] - Intrinsic to the variable creation logic now.
+        pass
 
         # 2. Room Conflict: No two courses in the same room at the same time
         for r in self.rooms:
@@ -743,10 +762,13 @@ class ORToolsScheduler:
                 # Insert into DB
                 # Note: We treat each item (T/U/L) as a separate entry in Ders_Programi.
                 # If consecutiveness is enforced by duration block, this entry covers the whole duration.
+                # Insert into DB
+                # Note: We treat each item (T/U/L) as a separate entry in Ders_Programi.
+                # If consecutiveness is enforced by duration block, this entry covers the whole duration.
                 self.db_model.c.execute('''
-                    INSERT INTO Ders_Programi (ders_adi, ders_instance, ogretmen_id, gun, baslangic, bitis, ders_tipi)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                ''', (course['name'], course['instance'], main_teacher_id, 
+                    INSERT INTO Ders_Programi (ders_adi, ders_instance, ogretmen_id, derslik_id, gun, baslangic, bitis, ders_tipi)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (course['name'], course['instance'], main_teacher_id, r_id, 
                       slot['day'], slot['start_str'], slot['end_str'], course['type']))
                 
                 # Logic Update: If we split T/U/L, we might overwrite the room assignment in Dersler table multiple times.

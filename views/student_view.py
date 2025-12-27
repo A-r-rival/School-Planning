@@ -84,6 +84,10 @@ class StudentView(QWidget):
         self.student_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.student_table.setAlternatingRowColors(True)
         self.student_table.setStyleSheet("QTableWidget { alternate-background-color: #f2f2f2; }")
+        
+        # Enable Sorting
+        self.student_table.setSortingEnabled(True)
+        
         left_layout.addWidget(self.student_table)
         
         # --- Right Panel: Transcript & Details ---
@@ -191,16 +195,25 @@ class StudentView(QWidget):
         Update the student list table.
         students: List of tuples (ogrenci_num, ad, soyad, bolum_adi, kacinci_donem)
         """
+        # Disable sorting during update to prevent performance issues
+        self.student_table.setSortingEnabled(False)
         self.student_table.setRowCount(0)
+        
         for row_idx, student in enumerate(students):
             self.student_table.insertRow(row_idx)
             # No, Ad, Soyad
-            item_no = QTableWidgetItem(str(student[0]))
+            
+            # For Number column, use setData with numeric type to enable integer sorting
+            item_no = QTableWidgetItem()
+            item_no.setData(Qt.DisplayRole, int(student[0]))
             item_no.setData(Qt.UserRole, student[4]) # Store semester
             
             self.student_table.setItem(row_idx, 0, item_no)
             self.student_table.setItem(row_idx, 1, QTableWidgetItem(student[1]))
             self.student_table.setItem(row_idx, 2, QTableWidgetItem(student[2]))
+            
+        # Re-enable sorting
+        self.student_table.setSortingEnabled(True)
             
     def update_transcript(self, grades):
         """

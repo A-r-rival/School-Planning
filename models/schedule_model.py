@@ -246,15 +246,19 @@ class ScheduleModel(QObject):
                 ogretmen_id = teacher_row[0]
 
             # 2. Ensure Course exists
-            self.c.execute("SELECT ders_instance FROM Dersler WHERE ders_adi = ?", (ders_adi,))
+            self.c.execute("SELECT ders_instance, ders_kodu FROM Dersler WHERE ders_adi = ?", (ders_adi,))
             course_rows = self.c.fetchall()
             
             if not course_rows:
                 # Create new course entry
-                instance = self.ders_ekle(ders_adi, ders_kodu="CODE", teori_odasi=None, lab_odasi=None)
+                # Default code is generated or placeholder
+                default_code = "CODE"
+                instance = self.ders_ekle(ders_adi, ders_kodu=default_code, teori_odasi=None, lab_odasi=None)
+                current_code = default_code
             else:
                 # Use the first instance found
                 instance = course_rows[0][0]
+                current_code = course_rows[0][1] if course_rows[0][1] else "CODE"
 
             # 3. Add to Ders_Programi
             self.c.execute('''
@@ -264,9 +268,21 @@ class ScheduleModel(QObject):
             
             self.conn.commit()
             
+            # Fetch connected classes for display
+            self.c.execute('''
+                SELECT GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf')
+                FROM Ders_Sinif_Iliskisi dsi
+                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                JOIN Bolumler b ON od.bolum_num = b.bolum_id
+                WHERE dsi.ders_instance = ? AND dsi.ders_adi = ?
+            ''', (instance, ders_adi))
+            class_row = self.c.fetchone()
+            classes_str = f" [{class_row[0]}]" if class_row and class_row[0] else ""
+
             # Emit signal
             saat = f"{baslangic}-{bitis}"
-            course_info = f"{ders_adi} - {hoca_adi} - {gun} {saat}"
+            # Format: [Code] Name - Teacher (Day Time) [Classes]
+            course_info = f"[{current_code}] {ders_adi} - {hoca_adi} ({gun} {saat}){classes_str}"
             self.course_added.emit(course_info)
             return True
             
@@ -285,18 +301,39 @@ class ScheduleModel(QObject):
             bool: True if successful, False otherwise
         """
         try:
-            # Parse info: "Matematik - Ahmet Hoca - Pazartesi 09:00-09:50"
-            parts = course_info.split(" - ")
-            if len(parts) != 3:
-                raise ValueError("Format hatası")
+            # Parse info: "[Code] Name - Teacher (Day Start-End) [Classes]"
             
-            ders_adi = parts[0]
-            hoca_adi = parts[1]
-            time_part = parts[2] # "Pazartesi 09:00-09:50"
+            # 1. Try regex for new format (flexible end)
+            import re
+            match = re.search(r"\[(.*?)\] (.*?) - (.*?) \((.*?) (\d{2}:\d{2})-(\d{2}:\d{2})\)", course_info)
             
-            gun = time_part.split(' ')[0]
-            saat_araligi = time_part.split(' ')[1]
-            baslangic = saat_araligi.split('-')[0]
+            if match:
+                code, ders_adi, hoca_adi, gun, baslangic, bitis = match.groups()
+            else:
+                # 2. Try legacy split (fallback)
+                parts = course_info.split(" - ")
+                if len(parts) >= 3:
+                    ders_adi = parts[0]
+                    hoca_adi = parts[1]
+                    # Handle "Pazartesi 09:00-09:50" or "[Code] Name ..." parts if split failed differently
+                    if "]" in ders_adi: # clean [Code] suffix if existing in split
+                         ders_adi = ders_adi.split("] ")[-1]
+                         
+                    # Handle "Pazartesi 09:00-09:50" or "(Pazartesi 09:00-09:50)"
+                    time_part_full = parts[2]
+                    # basic cleanup for time part
+                    if "(" in time_part_full:
+                         time_part_full = time_part_full.split("(")[1].split(")")[0]
+                    
+                    gun_parts = time_part_full.split(' ')
+                    if len(gun_parts) >= 2:
+                        gun = gun_parts[0]
+                        saat_araligi = gun_parts[1]
+                        baslangic = saat_araligi.split('-')[0]
+                    else:
+                        raise ValueError("Saat formatı hatası")
+                else:
+                    raise ValueError("Format hatası")
             
             # Find IDs to delete specific entry
             query = '''
@@ -334,20 +371,26 @@ class ScheduleModel(QObject):
         """
         try:
             query = '''
-                SELECT dp.ders_adi, o.ad || ' ' || o.soyad, dp.gun, dp.baslangic, dp.bitis
+                SELECT dp.ders_adi, o.ad || ' ' || o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu,
+                       GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf')
                 FROM Ders_Programi dp
                 JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
+                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
+                LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                LEFT JOIN Bolumler b ON od.bolum_num = b.bolum_id
+                GROUP BY dp.program_id, dp.ders_adi, o.ad, o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu
             '''
             self.c.execute(query)
             rows = self.c.fetchall()
             
             courses = []
-            for ders, hoca, gun, baslangic, bitis in rows:
+            for ders, hoca, gun, baslangic, bitis, kodu, siniflar in rows:
                 saat = f"{baslangic}-{bitis}"
-                # Format match: [Codes?] Name - Teacher (Day Time)
-                # Since we don't have codes here easily, we omit them or could fetch. 
-                # Keeping it simple but matching the " (Day" pattern for the filter.
-                course_info = f"{ders} - {hoca} ({gun} {saat})"
+                # Format match: [Code] Name - Teacher (Day Time) [Classes]
+                display_code = kodu if kodu else "CODE"
+                classes_str = f" [{siniflar}]" if siniflar else ""
+                course_info = f"[{display_code}] {ders} - {hoca} ({gun} {saat}){classes_str}"
                 courses.append(course_info)
             return courses
         except Exception as e:
@@ -531,7 +574,8 @@ class ScheduleModel(QObject):
             # Query Ders_Programi to get scheduled items with Teacher and Time
             query = """
                 SELECT dp.ders_adi, GROUP_CONCAT(DISTINCT d.ders_kodu), 
-                       (o.ad || ' ' || o.soyad) as hoca, dp.gun, dp.baslangic, dp.bitis
+                       (o.ad || ' ' || o.soyad) as hoca, dp.gun, dp.baslangic, dp.bitis,
+                       GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf') as siniflar
                 FROM Ders_Programi dp
                 JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 JOIN Ders_Sinif_Iliskisi dsi ON d.ders_instance = dsi.ders_instance AND d.ders_adi = dsi.ders_adi
@@ -556,7 +600,7 @@ class ScheduleModel(QObject):
             self.c.execute(query, params)
             rows = self.c.fetchall()
             
-            # Format: [CODE] Name - Teacher (Day Time)
+            # Format: [CODE] Name - Teacher (Day Time) [Classes]
             result = []
             for r in rows:
                 ders_adi = r[0]
@@ -564,7 +608,9 @@ class ScheduleModel(QObject):
                 hoca = r[2] if r[2] else "Belirsiz"
                 gun = r[3]
                 saat = f"{r[4]}-{r[5]}"
-                result.append(f"[{codes}] {ders_adi} - {hoca} ({gun} {saat})")
+                siniflar = r[6]
+                classes_str = f" [{siniflar}]" if siniflar else ""
+                result.append(f"[{codes}] {ders_adi} - {hoca} ({gun} {saat}){classes_str}")
             return result
         except Exception as e:
             print(f"Error fetching faculty courses: {e}")
@@ -575,11 +621,13 @@ class ScheduleModel(QObject):
         try:
             query = """
                 SELECT dp.ders_adi, GROUP_CONCAT(DISTINCT d.ders_kodu),
-                       (o.ad || ' ' || o.soyad) as hoca, dp.gun, dp.baslangic, dp.bitis
+                       (o.ad || ' ' || o.soyad) as hoca, dp.gun, dp.baslangic, dp.bitis,
+                       GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf') as siniflar
                 FROM Ders_Programi dp
                 JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 JOIN Ders_Sinif_Iliskisi dsi ON d.ders_instance = dsi.ders_instance AND d.ders_adi = dsi.ders_adi
                 JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                JOIN Bolumler b ON od.bolum_num = b.bolum_id
                 LEFT JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
                 WHERE od.bolum_num = ?
             """
@@ -605,7 +653,9 @@ class ScheduleModel(QObject):
                 hoca = r[2] if r[2] else "Belirsiz"
                 gun = r[3]
                 saat = f"{r[4]}-{r[5]}"
-                result.append(f"[{codes}] {ders_adi} - {hoca} ({gun} {saat})")
+                siniflar = r[6]
+                classes_str = f" [{siniflar}]" if siniflar else ""
+                result.append(f"[{codes}] {ders_adi} - {hoca} ({gun} {saat}){classes_str}")
             return result
         except Exception as e:
             print(f"Error fetching dept courses: {e}")
