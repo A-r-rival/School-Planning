@@ -259,6 +259,36 @@ class ScheduleView(QWidget):
         filter_layout.addWidget(self.search_teacher)
         
         layout.addLayout(filter_layout)
+        
+        # Course type filter - Radio buttons
+        type_filter_layout = QHBoxLayout()
+        
+        from PyQt5.QtWidgets import QRadioButton, QButtonGroup
+        
+        # Create button group to make them mutually exclusive
+        self.course_type_group = QButtonGroup()
+        
+        self.filter_all_courses = QRadioButton("Tüm Dersler")
+        self.filter_all_courses.setChecked(True)  # Default
+        self.filter_all_courses.toggled.connect(self._on_filter_changed)
+        
+        self.filter_only_core = QRadioButton("Sadece Doğrudan Zorunlu")
+        self.filter_only_core.toggled.connect(self._on_filter_changed)
+        
+        self.filter_only_elective = QRadioButton("Sadece Seçmeli")
+        self.filter_only_elective.toggled.connect(self._on_filter_changed)
+        
+        # Add to button group
+        self.course_type_group.addButton(self.filter_all_courses)
+        self.course_type_group.addButton(self.filter_only_core)
+        self.course_type_group.addButton(self.filter_only_elective)
+        
+        type_filter_layout.addWidget(self.filter_all_courses)
+        type_filter_layout.addWidget(self.filter_only_core)
+        type_filter_layout.addWidget(self.filter_only_elective)
+        type_filter_layout.addStretch()
+        
+        layout.addLayout(type_filter_layout)
         # ----------------------
         
         # Course list widget
@@ -301,6 +331,10 @@ class ScheduleView(QWidget):
 
     def _on_filter_changed(self):
         """Handle filter changes and emit signal"""
+        # Determine course type filter from radio buttons
+        only_elective = self.filter_only_elective.isChecked()
+        only_core = self.filter_only_core.isChecked()
+        
         filters = {
             "faculty_id": self.filter_faculty.currentData(),
             "dept_id": self.filter_dept.currentData(),
@@ -308,7 +342,9 @@ class ScheduleView(QWidget):
             "year": self.filter_year.currentText() if self.filter_year.currentIndex() > 0 else None,
             "day": self.filter_day.currentText() if self.filter_day.currentIndex() > 0 else None,
             "search_text": self.search_input.text(),
-            "teacher_text": self.search_teacher.text()
+            "teacher_text": self.search_teacher.text(),
+            "only_elective": only_elective,
+            "only_core": only_core
         }
         # If "Tüm Sınıflar" (None data) is not selected, pass the text value
         if self.filter_year.currentIndex() > 0:

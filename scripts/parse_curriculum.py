@@ -448,11 +448,31 @@ def main():
         f.write('    ("ELC108", "Gönüllülük Çalışmaları", 3),\n')
         f.write('    ("ELC109", "Girişimcilik", 3),\n')
         f.write('    ("ELC110", "Kariyer Planlama", 3)\n')
-        f.write("]\n\n")
+        f.write("]\n\n")  # Close COMMON_USD_POOL and add blank line
         
-        f.write("DEPARTMENTS_DATA = ")
-        f.write(json.dumps(departments_data, ensure_ascii=False, indent=4))
-        f.write("\n")
+        # Write departments_data with pool_codes included
+        # Use sorted() for deterministic output (important for git diffs)
+        f.write("DEPARTMENTS_DATA = {\n")
+        for dept_name in sorted(departments_data.keys()):
+            dept_info = departments_data[dept_name]
+            f.write(f'    "{dept_name}": {{\n')
+            f.write(f'        "curriculum": {json.dumps(dept_info["curriculum"], ensure_ascii=False, indent=4)},\n')
+            
+            # Convert pools dict to pool_codes format
+            pool_codes_dict = {}
+            # Sorted for deterministic output
+            for pool_code in sorted(dept_info["pools"].keys()):
+                courses = dept_info["pools"][pool_code]
+                # Safe tuple access - handle both old and new formats
+                pool_codes_dict[pool_code] = [
+                    course[1] if len(course) > 1 else course[0]
+                    for course in courses
+                ]
+            
+            # Pretty print with indent, trailing comma for PEP8
+            f.write(f'        "pool_codes": {json.dumps(pool_codes_dict, ensure_ascii=False, indent=4, sort_keys=True)},\n')
+            f.write('    },\n')
+        f.write("}\n")
     
     print(f"Successfully generated {OUTPUT_FILE}")
     

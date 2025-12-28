@@ -83,8 +83,8 @@ class ORToolsScheduler:
         # Merging Dictionary: (name, frozenset(teachers)) -> CourseDict
         merged_courses = {}
         
-        # Allowed Faculties Filter
-        ALLOWED_KEYWORDS = ["mühendislik", "fen", "engineering", "science"]
+        # Allowed Faculties Filter (TEMP: Engineering only for testing)
+        ALLOWED_KEYWORDS = ["mühendislik", "engineering"]
 
         # RE-STRATEGY: 
         # The previous implementation ignored curriculum_data loop for fetching instances? 
@@ -202,9 +202,41 @@ class ORToolsScheduler:
             for item_data in items_to_process:
                 i_name = item_data['name']
                 
+                
                 # Exclusions (Apply to expanded names too)
                 name_lower = i_name.lower()
+                
+                # Generic exclusions
                 if any(x in name_lower for x in ["staj", "işletmede mesleki eğitim", "mesleki uygulama", "lisans bitirme çalışması", "tez"]):
+                    continue
+                
+                # Pool placeholder exclusions (SDUx, USD000, ZSD000, etc.)
+                # These are student curriculum placeholders, not actual schedulable courses
+                if any(x in name_lower for x in [
+                    "seçmeli ders havuzu", "elective pool", "elective course pool",
+                    "uzmanlık a, b, c", "specialization a, b, c"
+                ]):
+                    continue
+                
+                # Also check course codes for placeholders
+                i_code = item_data.get('code', '')  # Get code from item_data
+                if i_code:
+                    code_upper = i_code.upper()
+                    # SDUx, USD000, GSD000, ZSD000, etc. (ends with x or 000)
+                    if code_upper.endswith('X') or code_upper.endswith('000'):
+                        if any(code_upper.startswith(prefix) for prefix in ['SDU', 'USD', 'GSD', 'ZSD', 'SD', 'ÜSD']):
+                            continue
+                
+                # Specific project exclusions (not regular courses)
+                if any(x in name_lower for x in [
+                    "proje i", "proje ii",  # Bitirme projeleri
+                    "bitirme projesi",
+                    "seçmeli alan - proje", "seçmeli ders alanı - proje",
+                    "yazılım projesi", "donanım projesi", "endüstri projesi",
+                    "mekatronik projesi", "elektrik-elektronik müh. projesi",
+                    "yazılım mühendisliği projesi", "elektrik ve elektronik mühendisliği projesi",
+                    "interdisipliner proje", "uygulamalı proje"
+                ]):
                     continue
 
                 # Fallback Hours
@@ -477,24 +509,26 @@ class ORToolsScheduler:
                 else:
                     entry['cores'].append(var)
 
+        # Store for later use in soft constraints
+        self.group_slot_data = group_slot_data
+        
         for (g_id, s_id), data in group_slot_data.items():
-            # Constraint: sum(Cores) + sum(Indicator(Each Pool)) <= 1
-            # Meaning:
-            # - If Core is active (1), then Sum is >= 1 -> No other Core or Pool can be active.
-            # - If Pool A is active (Indicator=1), then Core cannot be, Pool B cannot be (Indicator=1).
-            # - But multiple courses INSIDE Pool A can be active because Indicator stays 1.
-            
+            # NEW: Allow all elective overlaps, only prevent Core + Elective
             constraints_terms = list(data['cores'])
             
-            for pool_code, pool_vars in data['electives'].items():
-                if not pool_vars: continue
-                
-                # Indicator variable: 1 if ANY course in this pool is active
-                pool_active = self.cp_model.NewBoolVar(f'pool_active_g{g_id}_s{s_id}_{pool_code}')
-                self.cp_model.AddMaxEquality(pool_active, pool_vars)
-                constraints_terms.append(pool_active)
+            # Aggregate ALL elective vars (ignore pool separation)
+            all_elective_vars = []
+            for pool_vars in data['electives'].values():
+                all_elective_vars.extend(pool_vars)
+            
+            if all_elective_vars:
+                # Single indicator: ANY elective active?
+                elective_active = self.cp_model.NewBoolVar(f'elec_active_g{g_id}_s{s_id}')
+                self.cp_model.AddMaxEquality(elective_active, all_elective_vars)
+                constraints_terms.append(elective_active)
             
             if constraints_terms:
+                # At most core OR elective (not both)
                 self.cp_model.Add(sum(constraints_terms) <= 1)
 
         # 5. Teacher Unavailability (Corrected with Minute Comparison)
@@ -623,103 +657,114 @@ class ORToolsScheduler:
         if total_demand > total_capacity:
             print(f"CRITICAL WARNING: Demand exceeds Capacity!")
             
-        # Segregate Courses
+        # Segregate for diagnostics and optional handling
         core_indices = []
         elective_indices = []
         
         for i, c in enumerate(self.courses):
-            # Identification logic: Name contains "Seçmeli" or code starts with "SD" (if code was available here, but we use name/parent_key)
-            # parent_key is (name, instance)
-            
-            # Use flags from data loading
             is_elective = c.get('is_elective', False)
-            
             if is_elective:
                 elective_indices.append(i)
             else:
                 core_indices.append(i)
                 
-        print(f"DEBUG: Separation -> {len(core_indices)} Core, {len(elective_indices)} Elective")
+        print(f"DEBUG: {len(core_indices)} Core, {len(elective_indices)} Elective")
         
-        # --- PHASE 1: CORE COURSES ---
+        # --- PHASE 1: CORE COURSES ONLY ---
         print("\n=== PHASE 1: CORE COURSES ===")
-        # We need to temporarily "disable" variable creation for electives to save memory/time
         
         self.cp_model = cp_model.CpModel()
-        # Optimization: Only create vars for CORE indices
+        # Only create variables for cores
         self.create_variables(ignore_fixed_rooms=False, optional_indices=elective_indices, active_indices=core_indices)
         
-        # Force Electives OFF in Phase 1
+        # Force electives OFF in Phase 1
         for idx in elective_indices:
             for r_id in [r[0] for r in self.rooms]:
                 if (idx, r_id) in self.room_vars:
                     self.cp_model.Add(self.room_vars[(idx, r_id)] == 0)
-                    
+        
         self.add_hard_constraints(include_teacher_unavailability=True)
         self.add_soft_constraints_consecutive()
         
-        if not self._run_solver("PHASE1_CORE"):
+        if not self._run_solver("PHASE1_CORE", timeout=180.0):
             print("FAILED to schedule Core courses. Aborting.")
             return False
-            
-        # --- PHASE 2: ELECTIVE COURSES ---
-        # Retrieve Core Assignments
-        core_assignments = [] # List of (c_idx, r_id, start_s_id)
         
+        # Retrieve core assignments
+        core_assignments = []
         for idx in core_indices:
-            assigned = False
             for r in self.rooms:
                 r_id = r[0]
                 if (idx, r_id) in self.room_vars and self.solver.Value(self.room_vars[(idx, r_id)]) == 1:
-                    # Find start slot
                     for s in self.time_slots:
                         s_id = s['id']
                         if (idx, r_id, s_id) in self.starts and self.solver.Value(self.starts[(idx, r_id, s_id)]) == 1:
                             core_assignments.append((idx, r_id, s_id))
-                            assigned = True
                             break
-            if not assigned:
-                print(f"WARNING: Core course {idx} was not assigned in Phase 1!")
-
-        print("\n=== PHASE 2: ELECTIVES (Fixing Core) ===")
-        self.cp_model = cp_model.CpModel() # New Model
-        # Make electives optional so solver doesn't crash if they don't fit
+        
+        print(f"Phase 1 SUCCESS: {len(core_assignments)} core courses scheduled")
+        
+        # --- PHASE 2: ADD ELECTIVES (Fix Cores) ---
+        print("\n=== PHASE 2: ELECTIVES (Cores Fixed) ===")
+        
+        self.cp_model = cp_model.CpModel()
+        # Create variables for all courses, electives optional
         self.create_variables(ignore_fixed_rooms=False, optional_indices=elective_indices)
         
-        # FIX CORE ASSIGNMENTS
+        # FIX core assignments from Phase 1
         for (c_idx, r_id, s_id) in core_assignments:
-            # Re-enforce the start variable
             if (c_idx, r_id, s_id) in self.starts:
-                 self.cp_model.Add(self.starts[(c_idx, r_id, s_id)] == 1)
-            else:
-                 print(f"ERROR: Could not fix assignment c{c_idx}-r{r_id}-s{s_id}")
-
-        self.add_hard_constraints(include_teacher_unavailability=True)
-        self.add_soft_constraints_consecutive() # Applies to all
+                self.cp_model.Add(self.starts[(c_idx, r_id, s_id)] == 1)
         
-        # OBJECTIVE: Maximize Assigned Electives
+        self.add_hard_constraints(include_teacher_unavailability=True)
+        self.add_soft_constraints_consecutive()
+        
+        # OBJECTIVE: Maximize electives - penalty for pool overlaps
         elective_vars = []
         for idx in elective_indices:
-             for r in self.rooms:
-                 r_id = r[0]
-                 if (idx, r_id) in self.room_vars:
-                     elective_vars.append(self.room_vars[(idx, r_id)])
+            for r in self.rooms:
+                r_id = r[0]
+                if (idx, r_id) in self.room_vars:
+                    elective_vars.append(self.room_vars[(idx, r_id)])
+        
+        # Soft penalty for different-pool overlaps
+        penalty_vars = []
+        if hasattr(self, 'group_slot_data'):
+            for (g_id, s_id), data in self.group_slot_data.items():
+                pools = list(data['electives'].keys())
+                
+                for i, pool_a in enumerate(pools):
+                    for pool_b in pools[i+1:]:
+                        vars_a = data['electives'][pool_a]
+                        vars_b = data['electives'][pool_b]
+                        
+                        if vars_a and vars_b:
+                            a_active = self.cp_model.NewBoolVar(f'penalty_g{g_id}_s{s_id}_{pool_a}')
+                            self.cp_model.AddMaxEquality(a_active, vars_a)
+                            
+                            b_active = self.cp_model.NewBoolVar(f'penalty_g{g_id}_s{s_id}_{pool_b}')
+                            self.cp_model.AddMaxEquality(b_active, vars_b)
+                            
+                            overlap = self.cp_model.NewBoolVar(f'overlap_{g_id}_{s_id}_{pool_a}_{pool_b}')
+                            self.cp_model.AddBoolAnd([a_active, b_active]).OnlyEnforceIf(overlap)
+                            self.cp_model.AddBoolOr([a_active.Not(), b_active.Not()]).OnlyEnforceIf(overlap.Not())
+                            
+                            penalty_vars.append(overlap)
         
         if elective_vars:
-             self.cp_model.Maximize(sum(elective_vars))
-
-        if self._run_solver("PHASE2_FULL", timeout=300.0):
+            objective = sum(elective_vars)
+            if penalty_vars:
+                objective = objective - 10 * sum(penalty_vars)
+            self.cp_model.Maximize(objective)
+        
+        # Solve Phase 2
+        if self._run_solver("PHASE2_ELECTIVES", timeout=300.0):
             return True
         else:
-            print("WARNING: Phase 2 failed. Saving Phase 1 (Core Only) schedule as fallback.")
-            # We need to reconstruct Phase 1 vars or just use the core_assignments?
-            # Actually, the variables from Phase 1 are gone (new model).
-            # But we have `core_assignments` list: (c_idx, r_id, s_id).
-            # We can manually write these to DB.
+            print("WARNING: Phase 2 failed. Saving Phase 1 (cores only) as fallback.")
             self.save_manual_assignments(core_assignments)
             return True
-            
-        return False
+
 
     def _ensure_course_in_db(self, course):
         """
@@ -777,7 +822,7 @@ class ORToolsScheduler:
         
         if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
             print(f"SUCCESS: Solution found in {mode_name} mode!")
-            if mode_name == "PHASE2_FULL" or mode_name == "PHASE1_CORE_FALLBACK": 
+            if mode_name == "PHASE2_ELECTIVES" or mode_name == "PHASE1_CORE_FALLBACK": 
                 self._save_solution()
             return True
         return False

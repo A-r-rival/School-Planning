@@ -1,0 +1,74 @@
+Found 24 courses with 'proje/project' in name:
+
+1. [NWI106] Proje Yönetimi / Projektmanagement - 2 AKTS
+   Bölüm: Enerji Bilimi ve Teknolojileri, Dönem: 2
+
+2. [EBT401] Proje I (Tez Hazırlık ve Seminer) / Projekt I - 6 AKTS
+   Bölüm: Enerji Bilimi ve Teknolojileri, Dönem: 7
+
+3. [EBT402] Proje II - 10 AKTS
+   Bölüm: Enerji Bilimi ve Teknolojileri, Dönem: 8
+
+4. [NWI106] Proje Yönetimi - 2 AKTS
+   Bölüm: Malzeme Bilimi ve Teknolojileri, Dönem: 2
+
+5. [MWT401] Proje I - 6 AKTS
+   Bölüm: Malzeme Bilimi ve Teknolojileri, Dönem: 7
+
+6. [MWT402] Proje II - 12 AKTS
+   Bölüm: Malzeme Bilimi ve Teknolojileri, Dönem: 8
+
+7. [NWI106] Proje Yönetimi - 2 AKTS
+   Bölüm: Moleküler Biyoteknoloji, Dönem: 2
+
+8. [MBT441] Proje I - 6 AKTS
+   Bölüm: Moleküler Biyoteknoloji, Dönem: 7
+
+9. [MBT442] Proje II - 12 AKTS
+   Bölüm: Moleküler Biyoteknoloji, Dönem: 8
+
+10. [KKW426] Bitirme Projesi - 12 AKTS
+   Bölüm: Kültür ve İletişim Bölümü, Dönem: 8
+
+11. [SOZ426] Bitirme Projesi - 12 AKTS
+   Bölüm: Sosyoloji, Dönem: 8
+
+12. [SDP] Seçmeli Alan - Proje - 6 AKTS
+   Bölüm: Bilgisayar Müh, Dönem: 5
+
+13. [ETE292] Proje Yönetimi / Project Management - 2 AKTS
+   Bölüm: Elektrik-Elektronik Müh, Dönem: 4
+
+14. [SDP] Seçmeli Alan - Proje / Elective Courses - Project - 6 AKTS
+   Bölüm: Elektrik-Elektronik Müh, Dönem: 7
+
+15. [WIN292] Proje Yönetimi - 2 AKTS
+   Bölüm: Endüstri Müh, Dönem: 4
+
+16. [SDP] Seçmeli Alan - Proje - 6 AKTS
+   Bölüm: Endüstri Müh, Dönem: 5
+
+17. [WIN403] Proje II: Endüstri Projesi - 6 AKTS
+   Bölüm: Endüstri Müh, Dönem: 7
+
+18. [MAB292] Proje Yönetimi / Project Management - 2 AKTS
+   Bölüm: Makine Müh, Dönem: 4
+
+19. [SDP] Seçmeli Ders Alanı - Proje / Elective Course - Project - 6 AKTS
+   Bölüm: Makine Müh, Dönem: 6
+
+20. [SUP] Zorunlu Seçmeli - Uygulamalı Proje / Applied Project - 6 AKTS
+   Bölüm: Makine Müh, Dönem: 7
+
+21. [MEC292] Project Management / Proje Yönetimi - 2 AKTS
+   Bölüm: Mekatronik Müh, Dönem: 4
+
+22. [MEC319] Mechatronics Project / Mekatronik Projesi - 6 AKTS
+   Bölüm: Mekatronik Müh, Dönem: 5
+
+23. [SDP I] Elective Project I / Seçmeli Proje I - 6 AKTS
+   Bölüm: Mekatronik Müh, Dönem: 6
+
+24. [SDP II] Elective Project II / Seçmeli Proje II - 6 AKTS
+   Bölüm: Mekatronik Müh, Dönem: 7
+

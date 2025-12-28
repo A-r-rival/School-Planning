@@ -91,6 +91,17 @@ class ScheduleModel(QObject):
                 FOREIGN KEY (donem_sinif_num) REFERENCES Ogrenci_Donemleri(donem_sinif_num)
             )''',
 
+            '''CREATE TABLE IF NOT EXISTS Ders_Havuz_Iliskisi (
+                iliski_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                ders_instance INTEGER NOT NULL,
+                ders_adi TEXT NOT NULL,
+                bolum_num INTEGER NOT NULL,
+                havuz_kodu TEXT NOT NULL,
+                FOREIGN KEY (ders_instance, ders_adi) REFERENCES Dersler(ders_instance, ders_adi) ON DELETE CASCADE,
+                FOREIGN KEY (bolum_num) REFERENCES Bolumler(bolum_num) ON DELETE CASCADE,
+                UNIQUE(ders_instance, ders_adi, bolum_num, havuz_kodu)
+            )''',
+
             '''CREATE TABLE IF NOT EXISTS Ogrenciler (
                 ogrenci_num INTEGER PRIMARY KEY,
                 ad TEXT NOT NULL,

@@ -235,10 +235,60 @@ class ScheduleController:
             self.calendar_view = CalendarView()
             self.calendar_view.filter_changed.connect(self.handle_calendar_filter)
             
-        # Populate initial filters (Teachers)
-        self.handle_calendar_filter("type_changed", {"type": "Öğretmen"})
+        # Populate initial filters based on current view type
+        current_view = self.calendar_view.view_type_combo.currentText()
+        self.handle_calendar_filter("type_changed", {"type": current_view})
         
         self.calendar_view.show()
+        
+    def _merge_consecutive_blocks(self, schedule_data):
+        """Merge consecutive course blocks with same course and teacher"""
+        if not schedule_data:
+            return schedule_data
+        
+        # Group by day
+        day_groups = {}
+        for item in schedule_data:
+            day = item[0]
+            if day not in day_groups:
+                day_groups[day] = []
+            day_groups[day].append(item)
+        
+        merged = []
+        for day, items in day_groups.items():
+            # Sort by start time
+            items.sort(key=lambda x: x[1])
+            
+            i = 0
+            while i < len(items):
+                current = items[i]
+                # Use indices: day, start, end, display, extra, is_elec, course, [code, pools]
+                day, start, end, display, extra, is_elec, course_name = current[:7]
+                code = current[7] if len(current) > 7 else None
+                pools = current[8] if len(current) > 8 else []
+                
+                # Check consecutive
+                span = 1
+                while i + span < len(items):
+                    next_item = items[i + span]
+                    # Must be: same course, same teacher, consecutive hours
+                    if (next_item[6] == course_name and  # Same course name
+                        next_item[1] == end and  # Next starts where current ends
+                        next_item[4] == extra):  # Same teacher/room
+                        end = next_item[2]  # Extend end time
+                        span += 1
+                    else:
+                        break
+                
+                # Add merged block
+                merged_item = (day, start, end, display, extra, is_elec, course_name)
+                if code:
+                    merged_item = merged_item + (code, pools)
+                merged.append(merged_item)
+                
+                i += span
+        
+        return merged
         
     def handle_schedule_view_filter(self, filters):
         """Handle filter changes from ScheduleView"""
@@ -295,6 +345,19 @@ class ScheduleController:
                 
                 filtered_courses.append(course_str)
             courses = filtered_courses
+        
+        # 4. Apply Elective/Core Filters
+        only_elective = filters.get("only_elective", False)
+        only_core = filters.get("only_core", False)
+        
+        # If both checked or neither checked, show all
+        if only_elective and not only_core:
+            # Show only electives - check for "Seçmeli" in course string
+            courses = [c for c in courses if "seçmeli" in c.lower()]
+        elif only_core and not only_elective:
+            # Show only cores (not seçmeli)
+            courses = [c for c in courses if "seçmeli" not in c.lower()]
+        # else: show all (both checked or neither checked)
 
         # Merge consecutive blocks
         courses = self._merge_course_strings(courses)
@@ -403,9 +466,25 @@ class ScheduleController:
                               teacher_label = teacher if teacher else "Belirsiz"
                               extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
                               
-                              # Check elective
+                              # Check elective and get pool codes
                               is_elective = "seçmeli" in course.lower() or "sdi" in code.lower() or "gsd" in code.lower()
-                              schedule_data.append((day, start, end, display_course, extra_info, is_elective, course)) 
+                              
+                              # Determine pool codes from course code
+                              pool_codes = []
+                              if is_elective:
+                                  if code.startswith("ZSD"):
+                                      pool_codes.append("ZSD")
+                                  elif code.startswith("SD"):
+                                      pool_codes.append("SD")
+                                  elif code.startswith("ÜSD") or code.startswith("USD"):
+                                      pool_codes.append("ÜSD")
+                                  elif code.startswith("GSD"):
+                                      pool_codes.append("GSD")
+                                  elif "Seçmeli" in course:
+                                      pool_codes.append("SD")  # Default
+                              
+                              schedule_data.append((day, start, end, display_course, extra_info, is_elective, course, code, pool_codes))
+ 
                           elif len(item) == 7:
                               day, start, end, course, teacher, room, code = item
                               display_course = f"[{code}] {course}"
@@ -427,6 +506,8 @@ class ScheduleController:
                               schedule_data.append(item)
             
             if schedule_data:
+                # Merge consecutive blocks
+                schedule_data = self._merge_consecutive_blocks(schedule_data)
                 # Post-process for Student Group View mainly
                 if "dept_id" in data and data["dept_id"]:
                     final_data = []

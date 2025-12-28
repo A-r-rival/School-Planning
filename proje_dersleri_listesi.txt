@@ -1,0 +1,93 @@
+TÜM "PROJE/PROJECT" İÇEREN DERSLER LİSTESİ
+==========================================
+
+GREP SONUÇLARINDAN (curriculum_data.py):
+
+1. Proje Yönetimi / Projektmanagement
+2. Proje I (Tez Hazırlık ve Seminer) / Projekt I
+3. Proje II
+4. Proje Yönetimi
+5. Proje I
+6. Proje II
+7. Proje Yönetimi
+8. Proje I
+9. Proje II
+10. Bitirme Projesi
+11. Bitirme Projesi
+12. Proje Tasarımı
+13. Proje Tasarımı
+14. Seçmeli Alan - Proje
+15. Proje I: Yenilik ve Teknoloji Yönetimi Projesi
+16. Mekatronik Projesi
+17. Yazılım Mühendisliği Projesi
+18. Elektrik ve Elektronik Mühendisliği Projesi
+19. Yazılım Projesi I
+20. Yazılım Projesi II
+21. Yazılım Projesi III
+22. Donanım Projesi I
+23. Donanım Projesi II
+24. Donanım Projesi III
+25. Proje Yönetimi / Project Management
+26. Seçmeli Alan - Proje / Elective Courses - Project
+27. Elektrik-Elektronik Müh. Projesi / EEE Project
+28. Mekatronik Projesi / Mechatronics Project
+29. Yazılım Mühendisliği Projesi / Software Eng. Project
+30. Proje Yönetimi
+31. Seçmeli Alan - Proje
+32. Proje II: Endüstri Projesi
+33. Proje I: Yenilik ve Teknoloji Yönetimi Projesi
+34. Yazılım Mühendisliği Projesi
+35. Mekatronik Projesi
+36. Proje Yönetimi / Project Management
+37. Seçmeli Ders Alanı - Proje / Elective Course - Project
+38. Zorunlu Seçmeli - Uygulamalı Proje / Applied Project
+39. Proje: Üretim Teknikleri / Project: Production Tech.
+40. Proje: Tasarım / Project: Design
+41. Proje: Uzay Havacılık / Project: Aerospace Tech.
+42. Proje: Taşıt Sistemleri / Project: Transport Systems
+43. İnterdisipliner Proje / Interdisciplinary Project
+44. Endüstri Projesi / Industry Project
+45. Proje: Üretim Teknikleri / Project: Production Tech.
+46. Proje: Tasarım / Project: Design
+47. Proje: Uzay Havacılık / Project: Aerospace Technology
+48. Proje: Taşıt Sistemleri / Project: Transport Systems
+49. Project Management / Proje Yönetimi
+50. Mechatronics Project / Mekatronik Projesi
+
+KATEGORİZASYON ÖNERİSİ:
+========================
+
+❌ EXCLUDE EDİLMELİ (Ders programına konmamalı - kendi zamanlarında yapılan):
+- Proje I (tüm versiyonları)
+- Proje II (tüm versiyonları)
+- Bitirme Projesi
+- Seçmeli Alan - Proje
+- Elektrik-Elektronik Müh. Projesi / EEE Project
+- Mekatronik Projesi / Mechatronics Project
+- Yazılım Mühendisliği Projesi / Software Eng. Project
+- Yazılım Projesi I/II/III
+- Donanım Projesi I/II/III
+- Endüstri Projesi / Industry Project
+- İnterdisipliner Proje
+- Uygulamalı Proje
+
+✅ SCHEDULE EDİLMELİ (Normal dersler - haftalık saat ayrılmalı):
+- Proje Yönetimi / Project Management (tüm versiyonları)
+- Proje Tasarımı
+- Proje: Üretim Teknikleri
+- Proje: Tasarım
+- Proje: Uzay Havacılık
+- Proje: Taşıt Sistemleri
+
+EXCLUDE PATTERN ÖNERİSİ:
+=========================
+Aşağıdaki pattern'lerden BİRİ geçiyorsa EXCLUDE et:
+1. "Proje I" (tam eşleşme)
+2. "Proje II" (tam eşleşme)
+3. "Bitirme Projesi"
+4. "Seçmeli Alan - Proje" veya "Seçmeli Ders Alanı - Proje"
+5. İsmi direkt "... Mühendisliği Projesi" ile biten
+6. "Yazılım Projesi", "Donanım Projesi", "Endüstri Projesi"
+7. "İnterdisipliner Proje", "Uygulamalı Proje"
+
+NOT: "Proje Yönetimi", "Proje Tasarımı", "Proje: ..." formatlı dersler normal derslerdir.
