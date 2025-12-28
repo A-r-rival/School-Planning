@@ -72,6 +72,7 @@ def main():
     app.setApplicationName("Ders Programı Oluşturucu")
     app.setApplicationVersion("2.0.0")
     app.setOrganizationName("Schedule Management")
+    # app.setStyle("Fusion") # Fusion removed to force native Windows style
     
     try:
         # Create and show main application

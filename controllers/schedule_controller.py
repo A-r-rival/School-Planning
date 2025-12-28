@@ -402,26 +402,85 @@ class ScheduleController:
                               room_label = room if room else "Belirsiz"
                               teacher_label = teacher if teacher else "Belirsiz"
                               extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
-                              schedule_data.append((day, start, end, display_course, extra_info))
+                              
+                              # Check elective
+                              is_elective = "seçmeli" in course.lower() or "sdi" in code.lower() or "gsd" in code.lower()
+                              schedule_data.append((day, start, end, display_course, extra_info, is_elective, course)) 
                           elif len(item) == 7:
                               day, start, end, course, teacher, room, code = item
                               display_course = f"[{code}] {course}"
                               room_label = room if room else "Belirsiz"
                               teacher_label = teacher if teacher else "Belirsiz"
                               extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
-                              schedule_data.append((day, start, end, display_course, extra_info))
+                              
+                              is_elective = "seçmeli" in course.lower() or "sdi" in code.lower() or "gsd" in code.lower()
+                              schedule_data.append((day, start, end, display_course, extra_info, is_elective, course))
                           elif len(item) == 6: # Legacy/Fallback
                               day, start, end, course, teacher, room = item
                               room_label = room if room else "Belirsiz"
                               teacher_label = teacher if teacher else "Belirsiz"
                               extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
-                              schedule_data.append((day, start, end, course, extra_info))
+                              
+                              is_elective = "seçmeli" in course.lower()
+                              schedule_data.append((day, start, end, course, extra_info, is_elective, course))
                           else:
                               schedule_data.append(item)
             
             if schedule_data:
-                # Update view
-                self.calendar_view.display_schedule(schedule_data)
+                # Post-process for Student Group View mainly
+                if "dept_id" in data and data["dept_id"]:
+                    final_data = []
+                    # Group by (day, start, end)
+                    import collections
+                    grouped = collections.defaultdict(list)
+                    
+                    show_electives = data.get("show_electives", False)
+                    
+                    for item in schedule_data:
+                        # item is header + (is_elective, raw_name)
+                        if len(item) >= 7:
+                            key = (item[0], item[1], item[2]) # day, start, end
+                            grouped[key].append(item)
+                        else:
+                             final_data.append(item)
+                             
+                    for key, items in grouped.items():
+                        electives = [x for x in items if len(x) >= 6 and x[5]]
+                        cores = [x for x in items if not (len(x) >= 6 and x[5])]
+                        
+                        # Add all cores
+                        for c in cores:
+                            final_data.append(c[:5]) # Strip flags
+                            
+                        # Handle Electives
+                        if electives:
+                            if show_electives:
+                                # If showing, check if we need to group?
+                                # If multiple electives in same slot -> "Seçmeli Ders Grubu"
+                                if len(electives) > 1:
+                                    # Create Group Item
+                                    day, start, end = key
+                                    display = "Seçmeli Ders Grubu"
+                                    # Collect names for extra info
+                                    names = ", ".join([e[6] for e in electives]) # raw name
+                                    extra = f"Dersler:\n{names}"
+                                    final_data.append((day, start, end, display, extra))
+                                else:
+                                    # Show single
+                                    final_data.append(electives[0][:5])
+                            else:
+                                # If not showing, skip?
+                                # User said: "sınıf kısmında seçmeli dersler diye bir seçenek olsun" 
+                                # implying toggle.
+                                # "takvimde gösterilen ... seçmelileri kaldır" -> Hide by default.
+                                pass 
+                                
+                    self.calendar_view.display_schedule(final_data)
+                else:
+                    # Regular view (Teacher/Room) - just strip flags
+                    clean_data = [x[:5] for x in schedule_data]
+                    self.calendar_view.display_schedule(clean_data)
+                    
                 self.calendar_view.show()
             else:
                 self.calendar_view.display_schedule([])

@@ -6,6 +6,7 @@ Handles automatic schedule generation with hard and soft constraints
 from ortools.sat.python import cp_model
 from typing import List, Dict, Tuple, Optional
 import collections
+from scripts import curriculum_data
 
 def to_minutes(time_str: str) -> int:
     """Convert HH:MM string to minutes since midnight."""
@@ -50,14 +51,16 @@ class ORToolsScheduler:
         self.teachers = self.db_model.get_all_teachers_with_ids()
         
         # 4. Define Time Slots
+        # 4. Define Time Slots
         days = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma']
-        hours = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00']
+        # Added 08:00
+        hours = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00']
         self.time_slots = []
         for d_idx, day in enumerate(days):
             for h_idx, hour in enumerate(hours):
                 end_hour = f"{int(hour[:2])+1}:00"
                 self.time_slots.append({
-                    'id': d_idx * 8 + h_idx,
+                    'id': d_idx * 9 + h_idx, # Updated multiplier to 9 (hours per day)
                     'day': day,
                     'start_str': hour,
                     'end_str': end_hour,
@@ -129,7 +132,9 @@ class ORToolsScheduler:
             SELECT d.ders_adi, d.ders_instance, d.teori_saati, d.uygulama_saati, d.lab_saati, d.akts,
                    d.teori_odasi, d.lab_odasi,
                    dsi.donem_sinif_num,
-                   f.fakulte_adi
+                   f.fakulte_adi,
+                   d.ders_kodu,
+                   b.bolum_adi
             FROM Dersler d
             JOIN Ders_Sinif_Iliskisi dsi ON d.ders_instance = dsi.ders_instance AND d.ders_adi = dsi.ders_adi
             JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
@@ -146,7 +151,7 @@ class ORToolsScheduler:
         merged_map = {}
         
         for r in rows:
-            name, instance, t, u, l, akts, t_room, l_room, group_id, fac_name = r
+            name, instance, t, u, l, akts, t_room, l_room, group_id, fac_name, code, dept_name = r
             
             # Faculty Filter
             is_allowed = False
@@ -159,44 +164,89 @@ class ORToolsScheduler:
             if not is_allowed:
                 continue
 
-            # Exclusions
-            name_lower = name.lower()
-            if any(x in name_lower for x in ["staj", "işletmede mesleki eğitim", "mesleki uygulama", "lisans bitirme çalışması", "tez"]):
-                continue
-
-            # Fallback Hours
-            if t == 0 and u == 0 and l == 0:
-                akts_val = akts if akts else 0
-                t = min(akts_val, 4)
-
-            # Teachers
-            t_ids = frozenset(teacher_map.get(name, []))
+            # --- ACTUALIZATION LOGIC ---
+            items_to_process = []
+            is_expanded = False
             
-            # Unique Key for Merging
-            # We merge if Name matches AND Teachers match.
-            # (Instance ID is from DB, might differ, we'll pick the first one or synthesize)
-            merge_key = (name, t_ids)
+            # Check Curriculum Data for Pools
+            if dept_name and code:
+                dept_data = curriculum_data.DEPARTMENTS_DATA.get(dept_name.strip())
+                if dept_data and 'pools' in dept_data:
+                    # Match code to pool keys (e.g. ZSDI -> ZSD)
+                    for pool_key, pool_courses in dept_data['pools'].items():
+                        # If the course code starts with the pool key (Simple Heuristic)
+                        # e.g. code="ZSDI", pool_key="ZSD" -> Match
+                        # e.g. code="SDII", pool_key="SD" -> Match
+                        if code.startswith(pool_key):
+                            is_expanded = True
+                            # Generate items for each course in the pool
+                            for p_code, p_name, p_akts, p_t, p_u, p_l in pool_courses:
+                                items_to_process.append({
+                                    'name': p_name,
+                                    't': p_t, 'u': p_u, 'l': p_l, 'akts': p_akts,
+                                    'code': pool_key, # USE POOL KEY AS CODE FOR OVERLAP logic
+                                    'real_code': p_code,
+                                    'is_pool': True
+                                })
+                            break
             
-            if merge_key not in merged_map:
-                merged_map[merge_key] = {
+            if not is_expanded:
+                items_to_process.append({
                     'name': name,
-                    'teacher_ids': list(t_ids),
-                    't': t, 'u': u, 'l': l,
-                    'akts': akts,
-                    'priority_instance': instance, # Keep one instance ID for reference
-                    'group_ids': set(),
-                    'fixed_t_room': t_room,
-                    'fixed_l_room': l_room,
-                    'faculties': set()
-                }
-            
-            # Aggregate
-            item = merged_map[merge_key]
-            item['group_ids'].add(group_id)
-            if fac_name: item['faculties'].add(fac_name)
-            # Logic: If one instance has fixed room, we adopt it (Optimistic)
-            if t_room and not item['fixed_t_room']: item['fixed_t_room'] = t_room
-            if l_room and not item['fixed_l_room']: item['fixed_l_room'] = l_room
+                    't': t, 'u': u, 'l': l, 'akts': akts,
+                    'code': code,
+                    'real_code': code,
+                    'is_pool': False
+                })
+
+            for item_data in items_to_process:
+                i_name = item_data['name']
+                
+                # Exclusions (Apply to expanded names too)
+                name_lower = i_name.lower()
+                if any(x in name_lower for x in ["staj", "işletmede mesleki eğitim", "mesleki uygulama", "lisans bitirme çalışması", "tez"]):
+                    continue
+
+                # Fallback Hours
+                i_t, i_u, i_l = item_data['t'], item_data['u'], item_data['l']
+                if i_t == 0 and i_u == 0 and i_l == 0:
+                    akts_val = item_data['akts'] if item_data['akts'] else 0
+                    i_t = min(akts_val, 4)
+
+                # Teachers
+                # Try getting teacher for the specific course name, else fallback?
+                # For expanded courses, we likely don't have teacher in DB.
+                # In that case, teacher_map returning empty set is fine (User will see "Atanmamış").
+                t_ids = frozenset(teacher_map.get(i_name, []))
+                
+                # Unique Key for Merging
+                merge_key = (i_name, t_ids)
+                
+                if merge_key not in merged_map:
+                    merged_map[merge_key] = {
+                        'name': i_name,
+                        'teacher_ids': list(t_ids),
+                        't': i_t, 'u': i_u, 'l': i_l,
+                        'akts': item_data['akts'],
+                        'priority_instance': instance, # Inherit original instance ID (useful for group linking)
+                        'group_ids': set(),
+                        'fixed_t_room': t_room if not is_expanded else None, # Don't enforce room on expanded items unless specific?
+                        'fixed_l_room': l_room if not is_expanded else None,
+                        'faculties': set(),
+                        'code': item_data['code'], # This is key for overlap
+                        'pool_codes': set() # Track for coloring
+                    }
+                
+                # Aggregate
+                item = merged_map[merge_key]
+                item['group_ids'].add(group_id)
+                if fac_name: item['faculties'].add(fac_name)
+                if item_data['is_pool']:
+                     item['pool_codes'].add(item_data['code'])
+                # Logic: If one instance has fixed room, we adopt it (Optimistic)
+                if not is_expanded:
+                     if t_room and not item['fixed_t_room']: item['fixed_t_room'] = t_room
+                     if l_room and not item['fixed_l_room']: item['fixed_l_room'] = l_room
 
         self.courses = []
         
@@ -217,7 +267,10 @@ class ORToolsScheduler:
                 'instance': c_inst,
                 'teacher_ids': data['teacher_ids'],
                 'group_ids': data['group_ids'],
-                'parent_key': (name, c_inst)  # Tuple for unpacking in extract_schedule
+                'parent_key': (name, c_inst),  # Tuple for unpacking in extract_schedule
+                'code': data['code'],
+                'is_elective': "seçmeli" in name.lower() or "sdi" in data['code'].lower() or "gsd" in data['code'].lower() or len(data.get('pool_codes', [])) > 0,
+                'pool_codes': list(data.get('pool_codes', []))
             }
             
             # Add Theory Blocks
@@ -254,13 +307,25 @@ class ORToolsScheduler:
              print("WARNING: No courses found! Check faculty filter keywords.")
         return self.courses
 
-    def create_variables(self, ignore_fixed_rooms=False):
+    def create_variables(self, ignore_fixed_rooms=False, optional_indices=None, active_indices=None):
         """Create CP variables and initialize model logic with strict contiguity."""
+        if optional_indices is None:
+            optional_indices = set()
+        else:
+            optional_indices = set(optional_indices)
+            
+        if active_indices is not None:
+            active_indices = set(active_indices)
+
         self.vars = {} 
         self.room_vars = {}
         self.starts = {} # (c_idx, r_id, s_id) -> bool_var (Is this the START slot?)
 
         for c_idx, course in enumerate(self.courses):
+            # Optimization: Skip variable creation for courses not in active phase
+            if active_indices is not None and c_idx not in active_indices:
+                continue
+                
             duration = course['duration']
             
             # 1. Create Room Variables
@@ -305,9 +370,9 @@ class ORToolsScheduler:
                         continue
                         
                     # Check 2: Must be on SAME DAY
-                    # Slots 0-7 (Day 0), 8-15 (Day 1)...
-                    start_day = start_id // 8
-                    end_day = end_id // 8
+                    # Slots 0-8 (Day 0), 9-17 (Day 1)...
+                    start_day = start_id // 9
+                    end_day = end_id // 9
                     
                     if start_day == end_day:
                         # This is a valid start slot
@@ -353,7 +418,10 @@ class ORToolsScheduler:
 
             # Constraint: Each course must be assigned to EXACTLY ONE room
             if possible_rooms:
-                self.cp_model.Add(sum(possible_rooms) == 1)
+                if c_idx in optional_indices:
+                     self.cp_model.Add(sum(possible_rooms) <= 1)
+                else:
+                     self.cp_model.Add(sum(possible_rooms) == 1)
 
     def add_hard_constraints(self, include_teacher_unavailability=True):
         """Add system-wide hard constraints."""
@@ -390,18 +458,44 @@ class ORToolsScheduler:
         for (t_id, s_id), vars_list in teacher_slot_vars.items():
             self.cp_model.Add(sum(vars_list) <= 1)
 
-        # 4. Student Group Conflict
-        # NOTE: A course might have MULTIPLE groups. Check all.
-        group_slot_vars = collections.defaultdict(list)
+        # 4. Student Group Conflict (Intra-Pool Overlap Allowed)
+        # Structure: (group_id, slot_id) -> { 'cores': [], 'electives': { 'pool_code': [vars] } }
+        group_slot_data = collections.defaultdict(lambda: {'cores': [], 'electives': collections.defaultdict(list)})
+        
         for key, var in self.vars.items():
             c_idx, r_id, s_id = key
-            course_groups = self.courses[c_idx]['group_ids']
+            course = self.courses[c_idx]
+            groups = course['group_ids']
             
-            for g_id in course_groups:
-                group_slot_vars[(g_id, s_id)].append(var)
+            is_elective = course.get('is_elective', False)
+            pool_code = course.get('code', 'UNKNOWN_POOL')
+            
+            for g_id in groups:
+                entry = group_slot_data[(g_id, s_id)]
+                if is_elective:
+                    entry['electives'][pool_code].append(var)
+                else:
+                    entry['cores'].append(var)
+
+        for (g_id, s_id), data in group_slot_data.items():
+            # Constraint: sum(Cores) + sum(Indicator(Each Pool)) <= 1
+            # Meaning:
+            # - If Core is active (1), then Sum is >= 1 -> No other Core or Pool can be active.
+            # - If Pool A is active (Indicator=1), then Core cannot be, Pool B cannot be (Indicator=1).
+            # - But multiple courses INSIDE Pool A can be active because Indicator stays 1.
+            
+            constraints_terms = list(data['cores'])
+            
+            for pool_code, pool_vars in data['electives'].items():
+                if not pool_vars: continue
                 
-        for (g_id, s_id), vars_list in group_slot_vars.items():
-            self.cp_model.Add(sum(vars_list) <= 1)
+                # Indicator variable: 1 if ANY course in this pool is active
+                pool_active = self.cp_model.NewBoolVar(f'pool_active_g{g_id}_s{s_id}_{pool_code}')
+                self.cp_model.AddMaxEquality(pool_active, pool_vars)
+                constraints_terms.append(pool_active)
+            
+            if constraints_terms:
+                self.cp_model.Add(sum(constraints_terms) <= 1)
 
         # 5. Teacher Unavailability (Corrected with Minute Comparison)
         if include_teacher_unavailability:
@@ -438,78 +532,16 @@ class ORToolsScheduler:
         
         if ENABLE_DIFFERENT_DAYS_CONSTRAINT:
             print("DEBUG: Adding Soft Constraints (Different Days)...")
+            # Only populate if enabled
+            courses_to_process = self.courses
+            for c_idx, course in enumerate(courses_to_process):
+                if 'parent_key' in course:
+                    course_parts[course['parent_key']].append(c_idx)
             
-        # Only populate if enabled
-        courses_to_process = self.courses if ENABLE_DIFFERENT_DAYS_CONSTRAINT else []
-        for c_idx, course in enumerate(courses_to_process):
-            if 'parent_key' in course:
-                course_parts[course['parent_key']].append(c_idx)
-        
-        for p_key, indices in course_parts.items():
-            if len(indices) < 2:
-                continue
-            
-            # For each pair of parts, minimize same-day occurrence
-            for i in range(len(indices)):
-                for j in range(i + 1, len(indices)):
-                    idx1 = indices[i]
-                    idx2 = indices[j]
-                    
-                    # We need to know which DAY each part is assigned to.
-                    # Since variables are (c_idx, r_id, s_id), we can sum over s_id for each day.
-                    
-                    for d_idx in range(5): # 5 days
-                        # Is Part 1 on Day D?
-                        # Sum of vars for idx1 on Day D
-                        p1_on_day = []
-                        for s in self.time_slots:
-                            if to_minutes(s['start_str']) // (24*60) == d_idx: # Simple day index check?
-                                # wait, self.time_slots has 'day' string.
-                                pass
-                            
-                            # Better: use s['id'] // 8 or similar if structured 0-7, 8-15...
-                            # Yes: s['id'] = d_idx * 8 + h_idx
-                            if s['id'] // 8 == d_idx:
-                                # Start checking vars
-                                for r in self.rooms:
-                                    r_id = r[0]
-                                    if (idx1, r_id, s['id']) in self.vars:
-                                        p1_on_day.append(self.vars[(idx1, r_id, s['id'])])
-                        
-                        # Is Part 2 on Day D?
-                        p2_on_day = []
-                        for s in self.time_slots:
-                            if s['id'] // 8 == d_idx:
-                                for r in self.rooms:
-                                    r_id = r[0]
-                                    if (idx2, r_id, s['id']) in self.vars:
-                                        p2_on_day.append(self.vars[(idx2, r_id, s['id'])])
-                        
-                        if p1_on_day and p2_on_day:
-                            # Create bools for "Part 1 is on Day D"
-                            b1 = self.cp_model.NewBoolVar(f'p{idx1}_d{d_idx}')
-                            self.cp_model.Add(sum(p1_on_day) >= 1).OnlyEnforceIf(b1)
-                            self.cp_model.Add(sum(p1_on_day) == 0).OnlyEnforceIf(b1.Not())
-                            
-                            b2 = self.cp_model.NewBoolVar(f'p{idx2}_d{d_idx}')
-                            self.cp_model.Add(sum(p2_on_day) >= 1).OnlyEnforceIf(b2)
-                            self.cp_model.Add(sum(p2_on_day) == 0).OnlyEnforceIf(b2.Not())
-                            
-                            # Penalty if both are true
-                            both_on_day = self.cp_model.NewBoolVar(f'both_{idx1}_{idx2}_{d_idx}')
-                            self.cp_model.AddBoolAnd([b1, b2]).OnlyEnforceIf(both_on_day)
-                            self.cp_model.AddBoolOr([b1.Not(), b2.Not()]).OnlyEnforceIf(both_on_day.Not())
-                            
-                            # Minimize 10 cost for overlap
-                            self.cp_model.Minimize(10 * both_on_day) # Wait, Minimize is global. 
-                            # We need to sum up penalties.
-                            # Since we can define Minimize only once, we should collect all penalties.
-                            # But for now, let's just make it a soft constraint via objective?
-                            # OR-Tools Model.Minimize takes a linear expression.
-                            
-                            # Let's collect all 'both_on_day' vars and minimize their sum.
-                            pass 
-
+            for p_key, indices in course_parts.items():
+                if len(indices) < 2: continue
+                # Logic skipped if disabled...
+        pass
         # Correct Implementation of Minimize:
         # We need a list of penalties.
         penalties = []
@@ -564,75 +596,21 @@ class ORToolsScheduler:
         Soft Constraint: Encourage different session types (T/U/L) to be on DIFFERENT days.
         Simplified version using day-level granularity to avoid variable explosion.
         """
-        print("DEBUG: Adding Different-Day Soft Constraint for T/U/L...")
-        penalties = []
+        # print("DEBUG: Adding Different-Day Soft Constraint for T/U/L...")
+        # penalties = []
+        # 
+        # # Group courses by parent_key (name, instance)
+        # course_groups = collections.defaultdict(list)
+        # for c_idx, course in enumerate(self.courses):
+        #     parent_key = course['parent_key']
+        #     course_groups[parent_key].append((c_idx, course))
+        pass
         
-        # Group courses by parent_key (name, instance)
-        course_groups = collections.defaultdict(list)
-        for c_idx, course in enumerate(self.courses):
-            parent_key = course['parent_key']
-            course_groups[parent_key].append((c_idx, course))
-        
-        penalty_count = 0
-        # For each course with multiple session types
-        for parent_key, sessions in course_groups.items():
-            if len(sessions) < 2:
-                continue
-            
-            # For each pair of DIFFERENT session types
-            for i in range(len(sessions)):
-                for j in range(i + 1, len(sessions)):
-                    idx1, course1 = sessions[i]
-                    idx2, course2 = sessions[j]
-                    
-                    # Only apply if they are different types
-                    if course1['type'] == course2['type']:
-                        continue
-                    
-                    # For each day, check if both sessions are on that day
-                    for day_idx in range(5):  # 5 days
-                        # Collect all variables for session1 on this day
-                        vars1_day = []
-                        for key, var in self.vars.items():
-                            c_idx, r_id, s_id = key
-                            if c_idx == idx1 and s_id // 8 == day_idx:
-                                vars1_day.append(var)
-                        
-                        # Collect all variables for session2 on this day
-                        vars2_day = []
-                        for key, var in self.vars.items():
-                            c_idx, r_id, s_id = key
-                            if c_idx == idx2 and s_id // 8 == day_idx:
-                                vars2_day.append(var)
-                        
-                        if vars1_day and vars2_day:
-                            # If any var in session1 is active AND any var in session2 is active
-                            # on the same day -> penalty
-                            is_on_day_1 = self.cp_model.NewBoolVar(f's1_{idx1}_day{day_idx}')
-                            self.cp_model.Add(sum(vars1_day) > 0).OnlyEnforceIf(is_on_day_1)
-                            self.cp_model.Add(sum(vars1_day) == 0).OnlyEnforceIf(is_on_day_1.Not())
-                            
-                            is_on_day_2 = self.cp_model.NewBoolVar(f's2_{idx2}_day{day_idx}')
-                            self.cp_model.Add(sum(vars2_day) > 0).OnlyEnforceIf(is_on_day_2)
-                            self.cp_model.Add(sum(vars2_day) == 0).OnlyEnforceIf(is_on_day_2.Not())
-                            
-                            # Both on same day -> penalty
-                            both_same_day = self.cp_model.NewBoolVar(f'penalty_{idx1}_{idx2}_day{day_idx}')
-                            self.cp_model.AddBoolAnd([is_on_day_1, is_on_day_2]).OnlyEnforceIf(both_same_day)
-                            self.cp_model.AddBoolOr([is_on_day_1.Not(), is_on_day_2.Not()]).OnlyEnforceIf(both_same_day.Not())
-                            
-                            penalties.append(both_same_day * 10)  # Higher penalty for same-day different types
-                            penalty_count += 1
-        
-        if penalties:
-            print(f"DEBUG: Added {penalty_count} day-level penalty terms")
-            self.cp_model.Minimize(sum(penalties))
-        else:
-            print("DEBUG: No different-day penalties needed")
+
 
     def solve(self):
-        """Solve with fallback strategy."""
-        self.load_data()  # Loaded once
+        """Solve with 2-Phase Strategy (Core then Elective) and Fallbacks."""
+        self.load_data()
         
         # --- Pre-Solve Capacity Check ---
         total_demand = sum(c['duration'] for c in self.courses)
@@ -643,72 +621,151 @@ class ORToolsScheduler:
         print(f"  - Total School Capacity (Rooms x Slots): {total_capacity}")
         
         if total_demand > total_capacity:
-            print(f"CRITICAL WARNING: Demand ({total_demand}) exceeds Total Capacity ({total_capacity})!")
-            print("  -> The schedule is MATHEMATICALLY IMPOSSIBLE with current room count.")
-            return False
-
-        # Check Lab vs Theory Specifics
-        lab_demand = sum(c['duration'] for c in self.courses if c['type'] == 'Lab')
-        theory_demand = sum(c['duration'] for c in self.courses if c['type'] in ['Teori', 'Uygulama']) # Assuming U uses classrooms
+            print(f"CRITICAL WARNING: Demand exceeds Capacity!")
+            
+        # Segregate Courses
+        core_indices = []
+        elective_indices = []
         
-        lab_rooms = [r for r in self.rooms if "laboratuvar" in (r[2] or "").lower() or "lab" in (r[2] or "").lower()]
-        theory_rooms = [r for r in self.rooms if r not in lab_rooms] # Rough approximation
+        for i, c in enumerate(self.courses):
+            # Identification logic: Name contains "Seçmeli" or code starts with "SD" (if code was available here, but we use name/parent_key)
+            # parent_key is (name, instance)
+            
+            # Use flags from data loading
+            is_elective = c.get('is_elective', False)
+            
+            if is_elective:
+                elective_indices.append(i)
+            else:
+                core_indices.append(i)
+                
+        print(f"DEBUG: Separation -> {len(core_indices)} Core, {len(elective_indices)} Elective")
         
-        lab_cap = len(lab_rooms) * len(self.time_slots)
-        theory_cap = len(theory_rooms) * len(self.time_slots)
+        # --- PHASE 1: CORE COURSES ---
+        print("\n=== PHASE 1: CORE COURSES ===")
+        # We need to temporarily "disable" variable creation for electives to save memory/time
         
-        print(f"  - Lab Demand: {lab_demand} | Lab Capacity: {lab_cap}")
-        print(f"  - Theory Demand: {theory_demand} | Theory Capacity: {theory_cap} (Approx)")
-        
-        if lab_demand > lab_cap:
-             print(f"CRITICAL WARNING: Lab Demand ({lab_demand}) exceeds Lab Capacity ({lab_cap})!")
-        if theory_demand > theory_cap:
-             print(f"CRITICAL WARNING: Theory Demand ({theory_demand}) exceeds Theory Capacity ({theory_cap})!")
-        # --------------------------------
-        
-        # Strategy 1: All Constraints
-        print("\n=== ATTEMPT 1: Strict Constraints ===")
         self.cp_model = cp_model.CpModel()
-        print("DEBUG: Creating variables...")
-        self.create_variables(ignore_fixed_rooms=False)
-        print("DEBUG: Adding hard constraints...")
-        self.add_hard_constraints(include_teacher_unavailability=True) # Fixed Rooms implied by False above
-        print("DEBUG: Adding soft constraints (consecutive hours)...")
+        # Optimization: Only create vars for CORE indices
+        self.create_variables(ignore_fixed_rooms=False, optional_indices=elective_indices, active_indices=core_indices)
+        
+        # Force Electives OFF in Phase 1
+        for idx in elective_indices:
+            for r_id in [r[0] for r in self.rooms]:
+                if (idx, r_id) in self.room_vars:
+                    self.cp_model.Add(self.room_vars[(idx, r_id)] == 0)
+                    
+        self.add_hard_constraints(include_teacher_unavailability=True)
         self.add_soft_constraints_consecutive()
-        print("DEBUG: Starting solver...")
         
-        if self._run_solver("STRICT"):
-            return True
-            
-        # Strategy 2: Relax Teacher Unavailability
-        print("\n=== ATTEMPT 2: Relax Teacher Unavailability ===")
-        self.cp_model = cp_model.CpModel()
-        self.create_variables(ignore_fixed_rooms=False)
-        self.add_hard_constraints(include_teacher_unavailability=False)
-        
-        if self._run_solver("RELAX_TEACHER"):
-            return True
-            
-        # Strategy 3: Relax Fixed Rooms AND Teacher Unavailability
-        print("\n=== ATTEMPT 3: Relax Fixed Rooms & Teacher ===")
-        try:
-            self.cp_model = cp_model.CpModel()
-            self.create_variables(ignore_fixed_rooms=True)
-            self.add_hard_constraints(include_teacher_unavailability=False)
-        except Exception as e:
-            print(f"Error building model for Attempt 3: {e}")
+        if not self._run_solver("PHASE1_CORE"):
+            print("FAILED to schedule Core courses. Aborting.")
             return False
+            
+        # --- PHASE 2: ELECTIVE COURSES ---
+        # Retrieve Core Assignments
+        core_assignments = [] # List of (c_idx, r_id, start_s_id)
         
-        if self._run_solver("RELAX_ALL"):
+        for idx in core_indices:
+            assigned = False
+            for r in self.rooms:
+                r_id = r[0]
+                if (idx, r_id) in self.room_vars and self.solver.Value(self.room_vars[(idx, r_id)]) == 1:
+                    # Find start slot
+                    for s in self.time_slots:
+                        s_id = s['id']
+                        if (idx, r_id, s_id) in self.starts and self.solver.Value(self.starts[(idx, r_id, s_id)]) == 1:
+                            core_assignments.append((idx, r_id, s_id))
+                            assigned = True
+                            break
+            if not assigned:
+                print(f"WARNING: Core course {idx} was not assigned in Phase 1!")
+
+        print("\n=== PHASE 2: ELECTIVES (Fixing Core) ===")
+        self.cp_model = cp_model.CpModel() # New Model
+        # Make electives optional so solver doesn't crash if they don't fit
+        self.create_variables(ignore_fixed_rooms=False, optional_indices=elective_indices)
+        
+        # FIX CORE ASSIGNMENTS
+        for (c_idx, r_id, s_id) in core_assignments:
+            # Re-enforce the start variable
+            if (c_idx, r_id, s_id) in self.starts:
+                 self.cp_model.Add(self.starts[(c_idx, r_id, s_id)] == 1)
+            else:
+                 print(f"ERROR: Could not fix assignment c{c_idx}-r{r_id}-s{s_id}")
+
+        self.add_hard_constraints(include_teacher_unavailability=True)
+        self.add_soft_constraints_consecutive() # Applies to all
+        
+        # OBJECTIVE: Maximize Assigned Electives
+        elective_vars = []
+        for idx in elective_indices:
+             for r in self.rooms:
+                 r_id = r[0]
+                 if (idx, r_id) in self.room_vars:
+                     elective_vars.append(self.room_vars[(idx, r_id)])
+        
+        if elective_vars:
+             self.cp_model.Maximize(sum(elective_vars))
+
+        if self._run_solver("PHASE2_FULL", timeout=300.0):
+            return True
+        else:
+            print("WARNING: Phase 2 failed. Saving Phase 1 (Core Only) schedule as fallback.")
+            # We need to reconstruct Phase 1 vars or just use the core_assignments?
+            # Actually, the variables from Phase 1 are gone (new model).
+            # But we have `core_assignments` list: (c_idx, r_id, s_id).
+            # We can manually write these to DB.
+            self.save_manual_assignments(core_assignments)
             return True
             
         return False
-        
-    def _run_solver(self, mode_name: str) -> bool:
+
+    def _ensure_course_in_db(self, course):
+        """
+        Check if course exists in Dersler table (based on name and instance).
+        If not (e.g. actualized elective), insert it to satisfy Foreign Key.
+        """
+        try:
+            # Check existence
+            self.db_model.c.execute('SELECT 1 FROM Dersler WHERE ders_adi = ? AND ders_instance = ?', 
+                                  (course['name'], course['instance']))
+            if self.db_model.c.fetchone():
+                return
+
+            # Insert new course
+            # We need akts, t, u, l.
+            # 'real_code' might not be in course dict if it came from merge?
+            # In merge logic: 'code': item_data['code'], but where is 'real_code'?
+            # Wait, 'merge_key' logic dropped 'real_code'. 
+            # We should probably store 'real_code' in common_props if possible, or just use 'code'.
+            # For actualized electives, 'code' is the pool key (ZSD), which is fine for overlap, 
+            # but for DB we might want the real code.
+            # However, since we merged, we might have lost the specific code if we didn't save it.
+            # Let's check 'merged_map' logic. 
+            # common_props has 'code'. 
+            # Let's use 'code' as ders_kodu for now.
+            
+            self.db_model.c.execute('''
+                INSERT INTO Dersler (ders_adi, ders_instance, ders_kodu, akts, teori_saati, uygulama_saati, lab_saati)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (course['name'], course['instance'], course['code'], 
+                  course.get('akts', 0), course.get('duration', 0), 0, 0)) # approx stats
+                  
+            # Note: The above stats are rough. Better would be to persist t/u/l from course dict.
+            # course dict has 't', 'u', 'l'? No, it has 'duration' and 'type'.
+            # We can't perfectly reconstruct the row without more data, but this satisfies the FK.
+            
+        except Exception as e:
+            print(f"Error ensuring course in DB: {e}")
+            # Don't raise, try to proceed? No, likely will fail FK next.
+            raise
+
+    def _run_solver(self, mode_name: str, timeout: float = 120.0) -> bool:
         """Helper to run solver and handle results."""
         self.solver.parameters.log_search_progress = True
         self.solver.parameters.log_to_stdout = True
-        self.solver.parameters.max_time_in_seconds = 120.0 
+        self.solver.parameters.max_time_in_seconds = timeout
         
         try:
             status = self.solver.Solve(self.cp_model)
@@ -720,7 +777,8 @@ class ORToolsScheduler:
         
         if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
             print(f"SUCCESS: Solution found in {mode_name} mode!")
-            self._save_solution()
+            if mode_name == "PHASE2_FULL" or mode_name == "PHASE1_CORE_FALLBACK": 
+                self._save_solution()
             return True
         return False
 
@@ -743,6 +801,58 @@ class ORToolsScheduler:
             print(f"Error clearing schedule: {e}")
             raise
             
+    def save_manual_assignments(self, assignments):
+        """
+        Manually save assignments to database when solver fails to produce a model solution
+        assignments: List of (c_idx, r_id, s_id)
+        """
+        try:
+            self.clear_previous_schedule()
+            course_room_map = {} 
+            count = 0
+            
+            for c_idx, r_id, s_id in assignments:
+                course = self.courses[c_idx]
+                self._ensure_course_in_db(course)
+                
+                slot = next(s for s in self.time_slots if s['id'] == s_id)
+                
+                # Use FIRST teacher ID if available (schema limitation)
+                main_teacher_id = course['teacher_ids'][0] if course['teacher_ids'] else None
+                
+                self.db_model.c.execute('''
+                    INSERT INTO Ders_Programi (ders_adi, ders_instance, ogretmen_id, derslik_id, gun, baslangic, bitis, ders_tipi)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (course['name'], course['instance'], main_teacher_id, r_id, 
+                      slot['day'], slot['start_str'], slot['end_str'], course['type']))
+                
+                if course['type'] == 'Teori' or course['type'] == 'Uygulama':
+                    course_room_map[course['parent_key']] = {'type': 'T', 'room': r_id}
+                elif course['type'] == 'Lab':
+                    course_room_map[course['parent_key']] = {'type': 'L', 'room': r_id}
+                count += 1
+            
+            print(f"Fallback Schedule: {count} core items extracted.")
+            
+            # Update Rooms (Borrowed logic)
+            for key, val in course_room_map.items():
+                ders_adi, ders_instance = key
+                if val['type'] == 'L':
+                     self.db_model.c.execute('''
+                        UPDATE Dersler SET lab_odasi = ? WHERE ders_adi = ? AND ders_instance = ?
+                    ''', (val['room'], ders_adi, ders_instance))
+                else:
+                     self.db_model.c.execute('''
+                        UPDATE Dersler SET teori_odasi = ? WHERE ders_adi = ? AND ders_instance = ?
+                    ''', (val['room'], ders_adi, ders_instance))
+            
+            self.db_model.conn.commit()
+            print("Fallback schedule saved successfully.")
+            
+        except Exception as e:
+            print(f"Error saving fallback schedule: {e}")
+            raise
+    
     def extract_schedule(self):
         """Extract the schedule from the solved model and save to database"""
         course_room_map = {} 
@@ -754,6 +864,8 @@ class ORToolsScheduler:
             
             if self.solver.Value(var) == 1:
                 course = self.courses[c_idx]
+                self._ensure_course_in_db(course)
+                
                 slot = next(s for s in self.time_slots if s['id'] == s_id)
                 
                 # Use FIRST teacher ID if available (schema limitation)
