@@ -72,18 +72,18 @@ class ScheduleService:
             course.bitis
         )
         
-        # Business rule: Check for time conflicts
-        if self._schedule_repo.has_conflict(slot):
-            raise ScheduleConflictError(
-                f"Time slot conflict: {slot.day} {slot.to_display_string()}"
-            )
-        
         # Transaction: all operations atomic
         with self._conn:
-            # 1. Get or create teacher
+            # 1. Get or create teacher FIRST (needed for conflict check)
             teacher_id = self._teacher_repo.get_or_create(course.hoca)
             
-            # 2. Get or create course
+            # 2. Business rule: Check for teacher conflicts
+            if self._schedule_repo.has_conflict(slot, teacher_id=teacher_id):
+                raise ScheduleConflictError(
+                    f"Teacher '{course.hoca}' already has a course at {slot.day} {slot.to_display_string()}"
+                )
+            
+            # 3. Get or create course
             # TODO: Course code generation logic needed here instead of "CODE" placeholder
             course_result = self._course_repo.get_or_create(course.ders, "CODE")
             
@@ -101,15 +101,13 @@ class ScheduleService:
             else:
                 instance = course_result.instance
             
-            # 3. Get course ID for schedule insertion
-            ders_id = self._course_repo.get_id(course.ders, instance)
-            
             # 4. Extract time strings
             gun, baslangic, bitis = slot.to_db_tuple()
             
             # 5. Insert into schedule via repository
+            # Note: Using ders_adi (course name) not ders_id - matches schema
             self._schedule_repo.add_raw(
-                ders_id=ders_id,
+                ders_adi=course.ders,
                 instance=instance,
                 teacher_id=teacher_id,
                 gun=gun,

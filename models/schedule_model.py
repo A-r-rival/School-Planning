@@ -12,6 +12,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 
 # Import type-safe entities
 from models.entities import ScheduleSlot, CourseInput, ScheduledCourse
+from models.services.exceptions import ScheduleConflictError, CourseCreationError
 
 simdiki_sene = datetime.now().year
 
@@ -48,6 +49,15 @@ class ScheduleModel(QObject):
         self.teacher_repo = TeacherRepository(self.c, self.conn)
         self.schedule_repo = ScheduleRepository(self.c, self.conn)
         self.course_repo = CourseRepository(self.c)  # Course repo doesn't need conn
+        
+        # Initialize service layer
+        from models.services import ScheduleService
+        self.schedule_service = ScheduleService(
+            self.conn,
+            self.teacher_repo,
+            self.course_repo,
+            self.schedule_repo
+        )
         
     def _create_tables(self):
         """Create all database tables"""
@@ -226,73 +236,29 @@ class ScheduleModel(QObject):
     
     def add_course(self, course_data: CourseInput) -> bool:
         """
-        Add a new course to the schedule
+        Add a new course to the schedule.
+        Delegates to service layer for business logic.
         
         Args:
-            course_data: CourseInput instance with validated course information
+            course_data: Validated course input
         
         Returns:
             bool: True if successful, False otherwise
         """
         try:
-            # Create typed slot for validation and conflict checking
-            slot = ScheduleSlot.from_strings(
-                course_data.gun,
-                course_data.baslangic,
-                course_data.bitis
-            )
-            
-            # Check for time conflicts using repository
-            if self.schedule_repo.has_conflict(slot):
-                self.error_occurred.emit("Bu saat aralığında zaten bir ders var!")
-                return False
-
-            ders_adi = course_data.ders
-            hoca_adi = course_data.hoca
-            gun, baslangic, bitis = slot.to_db_tuple()
-
-            # Transaction: all operations atomic
-            with self.conn:
-                # 1. Get or create teacher using repository
-                ogretmen_id = self.teacher_repo.get_or_create(hoca_adi)
-
-                # 2. Get or create course using repository
-                result = self.course_repo.get_or_create(ders_adi, "CODE")
-                
-                # If course doesn't exist, create it
-                if not result.exists:
-                    instance = self.ders_ekle(ders_adi, ders_kodu=result.code, teori_odasi=None, lab_odasi=None)
-                else:
-                    instance = result.instance
-                    current_code = result.code
-
-                # 3. Add to Ders_Programi
-                self.c.execute('''
-                    INSERT INTO Ders_Programi (ders_adi, ders_instance, ogretmen_id, gun, baslangic, bitis)
-                    VALUES (?, ?, ?, ?, ?, ?)
-                ''', (ders_adi, instance, ogretmen_id, gun, baslangic, bitis))
-                
-                # Auto-commits here if no exception
-            
-            # Emit signal with formatted course info
-            from models.formatters import ScheduleFormatter
-            
-            course_info = ScheduleFormatter.format_course(
-                code=result.code if result.exists else "CODE",
-                name=ders_adi,
-                teacher=hoca_adi,
-                day=gun,
-                start=baslangic,
-                end=bitis
-            )
+            # Delegate to service layer
+            course_info = self.schedule_service.add_course(course_data)
             self.course_added.emit(course_info)
             return True
-            
+        except ScheduleConflictError as e:
+            self.error_occurred.emit(str(e))
+            return False
+        except CourseCreationError as e:
+            self.error_occurred.emit(f"Failed to create course: {e}")
+            return False
         except Exception as e:
-            # Auto-rollback on exception
-            error_msg = f"Ders eklenirken hata oluştu: {str(e)}"
-            self.error_occurred.emit(error_msg)
-            print(f"[ERROR] {error_msg}")
+            self.error_occurred.emit(f"Unexpected error: {e}")
+            print(f"[ERROR] add_course failed: {e}")
             return False
     
     def remove_course_by_id(self, program_id: int) -> bool:

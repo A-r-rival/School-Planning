@@ -39,18 +39,27 @@ class ScheduleRepository:
 
     # ---------- conflict detection ----------
 
-    def has_conflict(self, slot: ScheduleSlot, exclude_id: Optional[int] = None) -> bool:
+    def has_conflict(
+        self, 
+        slot: ScheduleSlot, 
+        teacher_id: Optional[int] = None,
+        room_id: Optional[int] = None,
+        exclude_id: Optional[int] = None
+    ) -> bool:
         """
         Check if a time slot conflicts with existing schedule.
-        SQL-level optimization: O(1) instead of O(n) Python loop.
+        Checks for teacher OR room conflicts (not global time block).
         
         Args:
             slot: ScheduleSlot to check
+            teacher_id: Teacher ID to check for conflicts (optional)
+            room_id: Room ID to check for conflicts (optional)
             exclude_id: Optional program_id to exclude (for updates)
         
         Returns:
-            bool: True if conflict exists
+            bool: True if same teacher or same room is occupied
         """
+        # Build query to check teacher OR room conflict
         query = """
             SELECT 1 FROM Ders_Programi
             WHERE gun = ?
@@ -62,6 +71,22 @@ class ScheduleRepository:
             slot.end_str,
             slot.start_str,
         ]
+        
+        # Add teacher OR room constraint
+        constraints = []
+        if teacher_id is not None:
+            constraints.append("ogretmen_id = ?")
+            params.append(teacher_id)
+        
+        if room_id is not None:
+            constraints.append("derslik_id = ?")
+            params.append(room_id)
+        
+        # If no constraints, no conflict (allow any course at this time)
+        if not constraints:
+            return False
+        
+        query += " AND (" + " OR ".join(constraints) + ")"
 
         if exclude_id is not None:
             query += " AND program_id != ?"
@@ -142,13 +167,12 @@ class ScheduleRepository:
 
     def add_raw(
         self,
-        ders_id: int,
+        ders_adi: str,
         instance: int,
         teacher_id: int,
         gun: str,
         baslangic: str,
-        bitis: str,
-        siniflar: str = ""
+        bitis: str
     ) -> None:
         """
         Raw insert into Ders_Programi table.
@@ -157,22 +181,21 @@ class ScheduleRepository:
         Will be replaced with add(ScheduledCourse) in future refactor.
         
         Args:
-            ders_id: Course database ID
+            ders_adi: Course name (TEXT - matches schema)
             instance: Course instance number
             teacher_id: Teacher database ID
             gun: Day of week
             baslangic: Start time (HH:MM)
             bitis: End time (HH:MM)
-            siniflar: Connected classes (optional)
         """
         self.c.execute(
             """
             INSERT INTO Ders_Programi (
-                ders_id, ders_instance, ogretmen_id,
-                gun, baslangic, bitis, siniflar
-            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                ders_adi, ders_instance, ogretmen_id,
+                gun, baslangic, bitis
+            ) VALUES (?, ?, ?, ?, ?, ?)
             """,
-            (ders_id, instance, teacher_id, gun, baslangic, bitis, siniflar)
+            (ders_adi, instance, teacher_id, gun, baslangic, bitis)
         )
 
     # ---------- helpers ----------
