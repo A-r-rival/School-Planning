@@ -6,11 +6,25 @@ from dataclasses import dataclass
 from typing import Optional
 
 
-@dataclass
+# ---------- helpers ----------
+
+def _clean(value: str) -> str:
+    return value.strip()
+
+
+def _require_fields(**fields: str) -> None:
+    missing = [name for name, value in fields.items() if not value or not value.strip()]
+    if missing:
+        raise ValueError(f"Missing required fields: {', '.join(missing)}")
+
+
+# ---------- entities ----------
+
+@dataclass(slots=True, frozen=True)
 class CourseInput:
     """
     Validated input for adding a course to the schedule.
-    Replaces Dict[str, str] with type-safe validation.
+    Immutable, type-safe replacement for Dict[str, str].
     """
     ders: str
     hoca: str
@@ -20,34 +34,28 @@ class CourseInput:
     ders_tipi: str = "Ders"
 
     def __post_init__(self):
-        """
-        Validate fields on construction.
-        Raises ValueError with specific missing fields for better UI error messages.
-        """
-        fields = {
-            "ders": self.ders,
-            "hoca": self.hoca,
-            "gun": self.gun,
-            "baslangic": self.baslangic,
-            "bitis": self.bitis,
-        }
-        missing = [k for k, v in fields.items() if not v or not str(v).strip()]
-        if missing:
-            raise ValueError(f"Missing required fields: {', '.join(missing)}")
-        
-        # Trim whitespace
-        self.ders = self.ders.strip()
-        self.hoca = self.hoca.strip()
-        self.gun = self.gun.strip()
-        self.baslangic = self.baslangic.strip()
-        self.bitis = self.bitis.strip()
+        _require_fields(
+            ders=self.ders,
+            hoca=self.hoca,
+            gun=self.gun,
+            baslangic=self.baslangic,
+            bitis=self.bitis,
+        )
+
+        # Normalize values (immutable-safe)
+        object.__setattr__(self, "ders", _clean(self.ders))
+        object.__setattr__(self, "hoca", _clean(self.hoca))
+        object.__setattr__(self, "gun", _clean(self.gun))
+        object.__setattr__(self, "baslangic", _clean(self.baslangic))
+        object.__setattr__(self, "bitis", _clean(self.bitis))
+        object.__setattr__(self, "ders_tipi", _clean(self.ders_tipi))
 
 
-@dataclass
+@dataclass(slots=True)
 class ScheduledCourse:
     """
     Complete representation of a scheduled course with all metadata.
-    Used for queries that return full course information.
+    Returned from repository/query layer.
     """
     program_id: int
     ders_adi: str
@@ -59,21 +67,24 @@ class ScheduledCourse:
     bitis: str
     siniflar: Optional[str] = None
     havuz_kodlari: Optional[str] = None
-    
+
+    @property
+    def time_range(self) -> str:
+        return f"{self.baslangic}-{self.bitis}"
+
     def to_display_string(self) -> str:
         """
-        Format for display in UI list.
-        Format: [CODE] Name - Teacher (Day Time) [Classes]
+        UI display format:
+        [CODE] Name [Pools] - Teacher (Day Time) [Classes]
         """
-        saat = f"{self.baslangic}-{self.bitis}"
-        result = f"[{self.ders_kodu}] {self.ders_adi}"
-        
+        parts = [f"[{self.ders_kodu}] {self.ders_adi}"]
+
         if self.havuz_kodlari:
-            result += f" [{self.havuz_kodlari}]"
-        
-        result += f" - {self.hoca} ({self.gun} {saat})"
-        
+            parts.append(f"[{self.havuz_kodlari}]")
+
+        parts.append(f"- {self.hoca} ({self.gun} {self.time_range})")
+
         if self.siniflar:
-            result += f" [{self.siniflar}]"
-        
-        return result
+            parts.append(f"[{self.siniflar}]")
+
+        return " ".join(parts)
