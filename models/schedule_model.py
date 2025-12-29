@@ -42,6 +42,10 @@ class ScheduleModel(QObject):
         self._create_tables()
         self._check_and_migrate_teacher_table()
         
+        # Initialize repositories
+        from models.repositories import TeacherRepository
+        self.teacher_repo = TeacherRepository(self.c, self.conn)
+        
     def _check_and_migrate_teacher_table(self):
         """Check if Ogretmenler table needs migration for day span support"""
         try:
