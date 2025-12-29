@@ -534,7 +534,12 @@ class ScheduleView(QWidget):
         """Handle remove course button click"""
         selected_item = self.ders_listesi.currentItem()
         if selected_item:
-            self.course_remove_requested.emit(selected_item.text())
+            reply = QMessageBox.question(self, 'Silme Onayı', 
+                                         f"'{selected_item.text()}' dersini silmek istediğinize emin misiniz?",
+                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            
+            if reply == QMessageBox.Yes:
+                self.course_remove_requested.emit(selected_item.text())
     
     def _on_add_faculty_clicked(self):
         """Handle add faculty button click"""

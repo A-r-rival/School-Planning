@@ -116,7 +116,7 @@ class AddUnavailabilityDialog(QDialog):
             return
 
         t_id = self.teacher_combo.currentData()
-        print(f"DEBUG: Dialog Teacher changed. ID: {t_id}, Type: {type(t_id)}")
+        t_id = self.teacher_combo.currentData()
         
         # Ensure t_id is a valid integer
         if t_id is None:
@@ -153,7 +153,7 @@ class TeacherAvailabilityView(QDialog):
     def __init__(self, parent=None, teachers=None):
         super().__init__(parent)
         self.setWindowTitle("Öğretmen Müsaitlik Durumu")
-        self.setGeometry(200, 200, 600, 500)
+        self.setGeometry(100, 100, 1100, 700)
         self.teachers = teachers or []
         
         self._setup_ui()
@@ -214,15 +214,14 @@ class TeacherAvailabilityView(QDialog):
         try:
             if hasattr(self, 'controller'):
                 teacher_id = self.teacher_combo.currentData()
-                print(f"DEBUG: Teacher changed. ID: {teacher_id}, Type: {type(teacher_id)}")
+            if hasattr(self, 'controller'):
+                teacher_id = self.teacher_combo.currentData()
                 
                 # Check for validity
                 if teacher_id is None:
-                    print("DEBUG: Teacher ID is None, returning.")
                     return
                     
                 if not isinstance(teacher_id, int):
-                    print(f"DEBUG: Teacher ID is not int ({type(teacher_id)}), returning.")
                     return
 
                 if teacher_id == -1:
@@ -235,14 +234,12 @@ class TeacherAvailabilityView(QDialog):
             
     def _on_add_clicked(self):
         """Open Add Dialog"""
-        print("DEBUG: _on_add_clicked called")
+    def _on_add_clicked(self):
+        """Open Add Dialog"""
         try:
             if hasattr(self, 'controller'):
-                print(f"DEBUG: Opening dialog with {len(self.teachers)} teachers")
                 dialog = AddUnavailabilityDialog(self.teachers, self.controller, self)
-                print("DEBUG: Dialog created, executing...")
                 if dialog.exec_():
-                    print("DEBUG: Dialog accepted")
                     data = dialog.get_data()
                     
                     if data['action_type'] == 'span':
