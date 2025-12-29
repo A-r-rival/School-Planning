@@ -43,9 +43,10 @@ class ScheduleModel(QObject):
         self._check_and_migrate_teacher_table()
         
         # Initialize repositories
-        from models.repositories import TeacherRepository, ScheduleRepository
+        from models.repositories import TeacherRepository, ScheduleRepository, CourseRepository
         self.teacher_repo = TeacherRepository(self.c, self.conn)
         self.schedule_repo = ScheduleRepository(self.c, self.conn)
+        self.course_repo = CourseRepository(self.c)  # Course repo doesn't need conn
         
     def _check_and_migrate_teacher_table(self):
         """Check if Ogretmenler table needs migration for day span support"""
@@ -275,20 +276,12 @@ class ScheduleModel(QObject):
             # 1. Get or create teacher using repository
             ogretmen_id = self.teacher_repo.get_or_create(hoca_adi)
 
-            # 2. Ensure Course exists
-            self.c.execute("SELECT ders_instance, ders_kodu FROM Dersler WHERE ders_adi = ?", (ders_adi,))
-            course_rows = self.c.fetchall()
+            # 2. Get or create course using repository
+            instance, current_code, exists = self.course_repo.get_or_create(ders_adi, "CODE")
             
-            if not course_rows:
-                # Create new course entry
-                # Default code is generated or placeholder
-                default_code = "CODE"
-                instance = self.ders_ekle(ders_adi, ders_kodu=default_code, teori_odasi=None, lab_odasi=None)
-                current_code = default_code
-            else:
-                # Use the first instance found
-                instance = course_rows[0][0]
-                current_code = course_rows[0][1] if course_rows[0][1] else "CODE"
+            # If course doesn't exist, create it
+            if not exists:
+                instance = self.ders_ekle(ders_adi, ders_kodu=current_code, teori_odasi=None, lab_odasi=None)
 
             # 3. Add to Ders_Programi
             self.c.execute('''
@@ -298,21 +291,18 @@ class ScheduleModel(QObject):
             
             self.conn.commit()
             
-            # Fetch connected classes for display
-            self.c.execute('''
-                SELECT GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf')
-                FROM Ders_Sinif_Iliskisi dsi
-                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
-                JOIN Bolumler b ON od.bolum_num = b.bolum_id
-                WHERE dsi.ders_instance = ? AND dsi.ders_adi = ?
-            ''', (instance, ders_adi))
-            class_row = self.c.fetchone()
-            classes_str = f" [{class_row[0]}]" if class_row and class_row[0] else ""
-
-            # Emit signal
-            saat = f"{baslangic}-{bitis}"
-            # Format: [Code] Name - Teacher (Day Time) [Classes]
-            course_info = f"[{current_code}] {ders_adi} - {hoca_adi} ({gun} {saat}){classes_str}"
+            # Emit signal with formatted course info
+            from models.formatters import ScheduleFormatter
+            
+            course_info = ScheduleFormatter.format_course(
+                code=current_code,
+                name=ders_adi,
+                teacher=hoca_adi,
+                day=gun,
+                start=baslangic,
+                end=bitis,
+                classes=classes_str.strip('[] ') if classes_str else None
+            )
             self.course_added.emit(course_info)
             return True
             
