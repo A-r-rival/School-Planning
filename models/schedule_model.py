@@ -360,46 +360,27 @@ class ScheduleModel(QObject):
             return []  # Return True to be safe
 
     def get_courses_by_faculty(self, faculty_id: int, year: str = None, day: str = None) -> List[str]:
-        """Fetch all scheduled courses for a faculty from Ders_Programi"""
+        """Fetch all scheduled courses for a faculty from Ders_Programi""" 
         try:
-            # Query Ders_Programi to get scheduled items with Teacher and Time
-            query = """
-                SELECT dp.ders_adi, GROUP_CONCAT(DISTINCT d.ders_kodu), 
-                       (o.ad || ' ' || o.soyad) as hoca, dp.gun, dp.baslangic, dp.bitis,
-                       GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf') as siniflar
-                FROM Ders_Programi dp
-                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
-                JOIN Ders_Sinif_Iliskisi dsi ON d.ders_instance = dsi.ders_instance AND d.ders_adi = dsi.ders_adi
-                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
-                JOIN Bolumler b ON od.bolum_num = b.bolum_id
-                LEFT JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
-                WHERE b.fakulte_num = ?
-            """
-            params = [faculty_id]
+            from models.services.query_builder import ScheduleQueryBuilder, ScheduleQueryFilter
             
-            if year and str(year).isdigit():
-                query += " AND od.sinif_duzeyi = ?"
-                params.append(int(year))
-                
-            if day:
-                query += " AND dp.gun = ?"
-                params.append(day)
-                
-            # Group by schedule slot to merge codes if same course is shared
-            query += " GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, o.ad, o.soyad ORDER BY dp.ders_adi, dp.baslangic"
-                
-            self.c.execute(query, params)
+            # Build query using DRY builder
+            filters = ScheduleQueryFilter(
+                faculty_id=faculty_id,
+                year=int(year) if year and str(year).isdigit() else None,
+                day=day
+            )
+            sql, params = ScheduleQueryBuilder().build(filters)
+            
+            self.c.execute(sql, params)
             rows = self.c.fetchall()
             
             # Format: [CODE] Name - Teacher (Day Time) [Classes]
             result = []
             for r in rows:
-                ders_adi = r[0]
-                codes = r[1]
-                hoca = r[2] if r[2] else "Belirsiz"
-                gun = r[3]
-                saat = f"{r[4]}-{r[5]}"
-                siniflar = r[6]
+                ders_adi, codes, hoca, gun, baslangic, bitis, siniflar = r
+                hoca = hoca if hoca else "Belirsiz"
+                saat = f"{baslangic}-{bitis}"
                 classes_str = f" [{siniflar}]" if siniflar else ""
                 result.append(f"[{codes}] {ders_adi} - {hoca} ({gun} {saat}){classes_str}")
             return result
@@ -410,41 +391,25 @@ class ScheduleModel(QObject):
     def get_courses_by_department(self, dept_id: int, year: str = None, day: str = None) -> List[str]:
         """Fetch scheduled courses for a specific department from Ders_Programi"""
         try:
-            query = """
-                SELECT dp.ders_adi, GROUP_CONCAT(DISTINCT d.ders_kodu),
-                       (o.ad || ' ' || o.soyad) as hoca, dp.gun, dp.baslangic, dp.bitis,
-                       GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf') as siniflar
-                FROM Ders_Programi dp
-                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
-                JOIN Ders_Sinif_Iliskisi dsi ON d.ders_instance = dsi.ders_instance AND d.ders_adi = dsi.ders_adi
-                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
-                JOIN Bolumler b ON od.bolum_num = b.bolum_id
-                LEFT JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
-                WHERE od.bolum_num = ?
-            """
-            params = [dept_id]
+            from models.services.query_builder import ScheduleQueryBuilder, ScheduleQueryFilter
             
-            if year and str(year).isdigit():
-                query += " AND od.sinif_duzeyi = ?"
-                params.append(int(year))
-                
-            if day:
-                query += " AND dp.gun = ?"
-                params.append(day)
-
-            query += " GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, o.ad, o.soyad ORDER BY dp.ders_adi, dp.baslangic"
-
-            self.c.execute(query, params)
+            # Build query using DRY builder
+            filters = ScheduleQueryFilter(
+                department_id=dept_id,
+                year=int(year) if year and str(year).isdigit() else None,
+                day=day
+            )
+            sql, params = ScheduleQueryBuilder().build(filters)
+            
+            self.c.execute(sql, params)
             rows = self.c.fetchall()
             
+            # Format: [CODE] Name - Teacher (Day Time) [Classes]
             result = []
             for r in rows:
-                ders_adi = r[0]
-                codes = r[1]
-                hoca = r[2] if r[2] else "Belirsiz"
-                gun = r[3]
-                saat = f"{r[4]}-{r[5]}"
-                siniflar = r[6]
+                ders_adi, codes, hoca, gun, baslangic, bitis, siniflar = r
+                hoca = hoca if hoca else "Belirsiz"
+                saat = f"{baslangic}-{bitis}"
                 classes_str = f" [{siniflar}]" if siniflar else ""
                 result.append(f"[{codes}] {ders_adi} - {hoca} ({gun} {saat}){classes_str}")
             return result
