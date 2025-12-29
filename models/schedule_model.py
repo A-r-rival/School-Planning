@@ -325,52 +325,50 @@ class ScheduleModel(QObject):
             self.error_occurred.emit(f"Ders eklenirken hata oluştu: {str(e)}")
             return False
     
-    def remove_course(self, course_info: str) -> bool:
+    def remove_course_by_id(self, program_id: int) -> bool:
         """
-        Remove a course from the schedule
+        Remove a course by its database ID (no parsing required).
+        This is the preferred method - uses direct ID instead of parsing strings.
         
         Args:
-            course_info: Course information string
+            program_id: Database ID from Ders_Programi table
         
         Returns:
             bool: True if successful, False otherwise
         """
         try:
-            # Parse info: "[Code] Name - Teacher (Day Start-End) [Classes]"
-            
-            # 1. Try regex for new format (flexible end)
+            self.c.execute("DELETE FROM Ders_Programi WHERE program_id = ?", (program_id,))
+            self.conn.commit()
+            return self.c.rowcount > 0
+        except Exception as e:
+            self.error_occurred.emit(f"Ders silinirken hata: {str(e)}")
+            return False
+    
+    def remove_course(self, course_info: str) -> bool:
+        """
+        DEPRECATED: Remove a course from the schedule by parsing string.
+        Use remove_course_by_id instead for better reliability.
+        
+        This method delegates to remove_course_by_id after minimal parsing.
+        
+        Args:
+            course_info: Course information string (format: "[CODE] Name - Teacher (Day HH:MM-HH:MM)")
+        
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        try:
+            # Parse minimal info needed to find the course
             import re
             match = re.search(r"\[(.*?)\] (.*?) - (.*?) \((.*?) (\d{2}:\d{2})-(\d{2}:\d{2})\)", course_info)
             
-            if match:
-                code, ders_adi, hoca_adi, gun, baslangic, bitis = match.groups()
-            else:
-                # 2. Try legacy split (fallback)
-                parts = course_info.split(" - ")
-                if len(parts) >= 3:
-                    ders_adi = parts[0]
-                    hoca_adi = parts[1]
-                    # Handle "Pazartesi 09:00-09:50" or "[Code] Name ..." parts if split failed differently
-                    if "]" in ders_adi: # clean [Code] suffix if existing in split
-                         ders_adi = ders_adi.split("] ")[-1]
-                         
-                    # Handle "Pazartesi 09:00-09:50" or "(Pazartesi 09:00-09:50)"
-                    time_part_full = parts[2]
-                    # basic cleanup for time part
-                    if "(" in time_part_full:
-                         time_part_full = time_part_full.split("(")[1].split(")")[0]
-                    
-                    gun_parts = time_part_full.split(' ')
-                    if len(gun_parts) >= 2:
-                        gun = gun_parts[0]
-                        saat_araligi = gun_parts[1]
-                        baslangic = saat_araligi.split('-')[0]
-                    else:
-                        raise ValueError("Saat formatı hatası")
-                else:
-                    raise ValueError("Format hatası")
+            if not match:
+                self.error_occurred.emit("Format hatası: Ders bilgisi okunamadı")
+                return False
             
-            # Find IDs to delete specific entry
+            code, ders_adi, hoca_adi, gun, baslangic, bitis = match.groups()
+            
+            # Find program_id in database
             query = '''
                 SELECT dp.program_id
                 FROM Ders_Programi dp
@@ -384,11 +382,11 @@ class ScheduleModel(QObject):
             row = self.c.fetchone()
             
             if row:
-                program_id = row[0]
-                self.c.execute("DELETE FROM Ders_Programi WHERE program_id = ?", (program_id,))
-                self.conn.commit()
-                self.course_removed.emit(course_info)
-                return True
+                # Delegate to ID-based method
+                success = self.remove_course_by_id(row[0])
+                if success:
+                    self.course_removed.emit(course_info)
+                return success
             else:
                 self.error_occurred.emit("Silinecek ders bulunamadı!")
                 return False
