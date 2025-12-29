@@ -85,8 +85,25 @@ class ScheduleController:
         Args:
             course_data: Dictionary containing course information
         """
+        # Convert dict to CourseInput entity
+        from models.entities import CourseInput
+        
+        try:
+            course_input = CourseInput(
+                ders=course_data['ders'],
+                hoca=course_data['hoca'],
+                gun=course_data['gun'],
+                baslangic=course_data['baslangic'],
+                bitis=course_data['bitis']
+            )
+        except (KeyError, ValueError) as e:
+            # Validation error - show to user
+            from PyQt5.QtWidgets import QMessageBox
+            QMessageBox.warning(self.view, "Hata", f"Geçersiz ders bilgisi: {e}")
+            return
+        
         # Model will handle validation and database operations
-        success = self.model.add_course(course_data)
+        success = self.model.add_course(course_input)
         
         if success:
             # Clear inputs on successful addition

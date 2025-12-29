@@ -132,6 +132,38 @@ class ScheduleRepository:
         )
         return self.c.lastrowid
 
+    def add_from_components(
+        self,
+        ders_adi: str,
+        instance: int,
+        teacher_id: int,
+        slot: ScheduleSlot
+    ) -> int:
+        """
+        Add a course to schedule using components.
+        
+        Args:
+            ders_adi: Course name
+            instance: Course instance number
+            teacher_id: Teacher ID
+            slot: Time slot
+        
+        Returns:
+            int: program_id
+        """
+        gun, baslangic, bitis = slot.to_db_tuple()
+        
+        self.c.execute(
+            """
+            INSERT INTO Ders_Programi (
+                ders_adi, ders_instance, ogretmen_id,
+                gun, baslangic, bitis
+            ) VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (ders_adi, instance, teacher_id, gun, baslangic, bitis)
+        )
+        return self.c.lastrowid
+
     def remove_by_id(self, program_id: int) -> bool:
         """Remove a schedule entry by ID."""
         self.c.execute("DELETE FROM Ders_Programi WHERE program_id = ?", (program_id,))

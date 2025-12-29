@@ -4,9 +4,9 @@ ScheduleService - Business logic layer
 Separates business rules from UI (Qt) and data access (repositories)
 """
 import sqlite3
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
-from models.entities import ScheduleSlot, CourseInput
+from models.entities import ScheduleSlot, CourseInput, ScheduledCourse
 from models.formatters import ScheduleFormatter
 from .exceptions import (
     ScheduleConflictError,
@@ -88,9 +88,9 @@ class ScheduleService:
             course_result = self._course_repo.get_or_create(course.ders, "CODE")
             
             if not course_result.exists:
-                # Create new course instance
+                # Create new course instance via repository
                 try:
-                    instance = self._create_course_instance(
+                    instance = self._course_repo.create_instance(
                         course.ders,
                         course_result.code
                     )
@@ -101,18 +101,15 @@ class ScheduleService:
             else:
                 instance = course_result.instance
             
-            # 4. Extract time strings
+            # 4. Extract time slot
             gun, baslangic, bitis = slot.to_db_tuple()
             
             # 5. Insert into schedule via repository
-            # Note: Using ders_adi (course name) not ders_id - matches schema
-            self._schedule_repo.add_raw(
+            self._schedule_repo.add_from_components(
                 ders_adi=course.ders,
                 instance=instance,
                 teacher_id=teacher_id,
-                gun=gun,
-                baslangic=baslangic,
-                bitis=bitis
+                slot=slot
             )
             
             # Transaction commits automatically here
@@ -144,37 +141,25 @@ class ScheduleService:
                     f"Course with program_id={program_id} not found"
                 )
     
-    # ---------- Private helpers ----------
+    # ---------- Query methods ----------
     
-    def _create_course_instance(self, name: str, code: str) -> int:
+    def get_all_courses(self) -> List[ScheduledCourse]:
         """
-        Create a new course instance in Dersler table.
-        Properly calculates next instance number to avoid conflicts.
+        Get all scheduled courses.
         
-        Note: This is a temporary method. Will be replaced when
-        CourseRepository gets a proper create() method.
+        Returns:
+            List of all courses in schedule
         """
-        cursor = self._conn.cursor()
+        return self._schedule_repo.get_all()
+    
+    def get_courses_by_teacher(self, teacher_id: int) -> List[ScheduledCourse]:
+        """
+        Get all courses for a specific teacher.
         
-        # Calculate next instance number
-        cursor.execute(
-            """
-            SELECT MAX(ders_instance)
-            FROM Dersler
-            WHERE ders_adi = ?
-            """,
-            (name,)
-        )
-        row = cursor.fetchone()
-        next_instance = (row[0] or 0) + 1
+        Args:
+            teacher_id: Teacher database ID
         
-        # Create new instance
-        cursor.execute(
-            """
-            INSERT INTO Dersler (ders_adi, ders_instance, ders_kodu)
-            VALUES (?, ?, ?)
-            """,
-            (name, next_instance, code)
-        )
-        
-        return next_instance
+        Returns:
+            List of courses for this teacher
+        """
+        return self._schedule_repo.get_by_teacher(teacher_id)

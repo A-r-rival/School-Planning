@@ -126,6 +126,42 @@ class CourseRepository:
             )
         
         return row[0]
+    
+    def create_instance(self, name: str, code: str) -> int:
+        """
+        Create a new course instance with auto-calculated instance number.
+        
+        Args:
+            name: Course name
+            code: Course code
+        
+        Returns:
+            int: New instance number
+        
+        Note: Properly calculates next instance to avoid conflicts.
+        """
+        # Calculate next instance number
+        row = self._execute(
+            """
+            SELECT MAX(ders_instance)
+            FROM Dersler
+            WHERE ders_adi = ?
+            """,
+            (name,)
+        ).fetchone()
+        
+        next_instance = (row[0] or 0) + 1
+        
+        # Create new instance
+        self._execute(
+            """
+            INSERT INTO Dersler (ders_adi, ders_instance, ders_kodu)
+            VALUES (?, ?, ?)
+            """,
+            (name, next_instance, code)
+        )
+        
+        return next_instance
 
     # ---------- Internal helpers ----------
 
