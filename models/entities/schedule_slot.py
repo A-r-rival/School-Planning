@@ -1,100 +1,110 @@
 # -*- coding: utf-8 -*-
 """
 ScheduleSlot - Immutable time slot entity
-Replaces string-based time conflict detection with proper type safety
+Type-safe time handling and overlap detection
 """
+from __future__ import annotations
+
 from dataclasses import dataclass
 from datetime import time, datetime
-from typing import ClassVar
+from typing import ClassVar, Tuple
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ScheduleSlot:
-    """
-    Immutable representation of a scheduled time slot.
-    Provides type-safe time comparison and conflict detection.
-    """
+    """Immutable representation of a scheduled time slot."""
+    
     day: str
     start: time
     end: time
-    
-    # Valid day names for validation
-    VALID_DAYS: ClassVar[list[str]] = [
-        "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"
-    ]
 
-    def __post_init__(self):
-        """Validate slot on creation"""
+    VALID_DAYS: ClassVar[Tuple[str, ...]] = (
+        "Pazartesi", "Salı", "Çarşamba",
+        "Perşembe", "Cuma", "Cumartesi", "Pazar"
+    )
+
+    TIME_FMT: ClassVar[str] = "%H:%M"
+
+    # ---------- Lifecycle ----------
+
+    def __post_init__(self) -> None:
+        self._validate_day()
+        self._validate_time_range()
+
+    # ---------- Validation ----------
+
+    def _validate_day(self) -> None:
         if self.day not in self.VALID_DAYS:
-            raise ValueError(f"Invalid day: {self.day}. Must be one of {self.VALID_DAYS}")
-        
+            raise ValueError(
+                f"Invalid day '{self.day}'. Must be one of {self.VALID_DAYS}"
+            )
+
+    def _validate_time_range(self) -> None:
         if self.start >= self.end:
-            raise ValueError(f"Start time ({self.start}) must be before end time ({self.end})")
+            raise ValueError(
+                f"Start time ({self.start}) must be before end time ({self.end})"
+            )
+
+    # ---------- Factories ----------
 
     @classmethod
-    def from_strings(cls, day: str, start_str: str, end_str: str) -> "ScheduleSlot":
+    def from_strings(
+        cls,
+        day: str,
+        start: str,
+        end: str,
+    ) -> ScheduleSlot:
         """
-        Factory method: Create from HH:MM string format.
-        
-        Args:
-            day: Day of the week (e.g., "Pazartesi")
-            start_str: Start time in HH:MM format (e.g., "09:00")
-            end_str: End time in HH:MM format (e.g., "10:50")
-            
-        Returns:
-            ScheduleSlot instance
-            
-        Raises:
-            ValueError: If time strings are invalid
+        Create ScheduleSlot from HH:MM strings.
+        Whitespace-safe and UI-friendly.
         """
         try:
-            start_time = datetime.strptime(start_str, "%H:%M").time()
-            end_time = datetime.strptime(end_str, "%H:%M").time()
-            return cls(day=day, start=start_time, end=end_time)
-        except ValueError as e:
-            raise ValueError(f"Invalid time format. Expected HH:MM, got '{start_str}'-'{end_str}': {e}")
+            return cls(
+                day=day.strip(),
+                start=cls._parse_time(start),
+                end=cls._parse_time(end),
+            )
+        except ValueError as exc:
+            raise ValueError(
+                f"Invalid time format (expected HH:MM): '{start}' - '{end}'"
+            ) from exc
 
-    def overlaps(self, other: "ScheduleSlot") -> bool:
+    @staticmethod
+    def _parse_time(value: str) -> time:
+        return datetime.strptime(value.strip(), ScheduleSlot.TIME_FMT).time()
+
+    # ---------- Domain Logic ----------
+
+    def overlaps(self, other: ScheduleSlot) -> bool:
+        """Check whether two slots overlap on the same day."""
+        if self.day != other.day:
+            return False
+        return self.start < other.end and self.end > other.start
+
+    # ---------- Persistence Helpers ----------
+
+    def overlaps_sql_condition(self) -> tuple[str, tuple[str, str, str]]:
         """
-        Check if this slot overlaps with another slot.
-        Two slots overlap if they're on the same day and their time ranges intersect.
-        
-        Args:
-            other: Another ScheduleSlot to check against
-            
-        Returns:
-            True if slots overlap, False otherwise
-            
-        Example:
-            >>> slot1 = ScheduleSlot.from_strings("Pazartesi", "09:00", "10:50")
-            >>> slot2 = ScheduleSlot.from_strings("Pazartesi", "10:00", "11:50")
-            >>> slot1.overlaps(slot2)
-            True
+        SQL WHERE fragment for overlap detection.
         """
         return (
-            self.day == other.day and
-            self.start < other.end and
-            self.end > other.start
+            "gun = ? AND baslangic < ? AND bitis > ?",
+            (self.day, self.end_str, self.start_str),
         )
-
-    def to_display_string(self) -> str:
-        """
-        Format slot for display in UI.
-        
-        Returns:
-            Formatted string like "09:00-10:50"
-        """
-        return f"{self.start.strftime('%H:%M')}-{self.end.strftime('%H:%M')}"
 
     def to_db_tuple(self) -> tuple[str, str, str]:
-        """
-        Convert to database-friendly tuple.
-        
-        Returns:
-            (day, start_str, end_str) tuple ready for SQL insertion
-        """
-        return (
-            self.day,
-            self.start.strftime("%H:%M"),
-            self.end.strftime("%H:%M")
-        )
+        """Database-ready tuple."""
+        return (self.day, self.start_str, self.end_str)
+
+    # ---------- Presentation ----------
+
+    @property
+    def start_str(self) -> str:
+        return self.start.strftime(self.TIME_FMT)
+
+    @property
+    def end_str(self) -> str:
+        return self.end.strftime(self.TIME_FMT)
+
+    def to_display_string(self) -> str:
+        return f"{self.start_str}-{self.end_str}"

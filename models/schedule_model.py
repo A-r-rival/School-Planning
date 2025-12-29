@@ -43,8 +43,9 @@ class ScheduleModel(QObject):
         self._check_and_migrate_teacher_table()
         
         # Initialize repositories
-        from models.repositories import TeacherRepository
+        from models.repositories import TeacherRepository, ScheduleRepository
         self.teacher_repo = TeacherRepository(self.c, self.conn)
+        self.schedule_repo = ScheduleRepository(self.c, self.conn)
         
     def _check_and_migrate_teacher_table(self):
         """Check if Ogretmenler table needs migration for day span support"""
@@ -262,8 +263,8 @@ class ScheduleModel(QObject):
                 course_data.bitis
             )
             
-            # Check for time conflicts using typed entity
-            if self._has_slot_conflict(slot):
+            # Check for time conflicts using repository
+            if self.schedule_repo.has_conflict(slot):
                 self.error_occurred.emit("Bu saat aralığında zaten bir ders var!")
                 return False
 
@@ -271,18 +272,8 @@ class ScheduleModel(QObject):
             hoca_adi = course_data.hoca
             gun, baslangic, bitis = slot.to_db_tuple()
 
-            # 1. Ensure Teacher exists
-            self.c.execute("SELECT ogretmen_num FROM Ogretmenler WHERE ad || ' ' || soyad = ?", (hoca_adi,))
-            teacher_row = self.c.fetchone()
-            if not teacher_row:
-                # Simple name splitting for ad/soyad
-                parts = hoca_adi.split(' ')
-                ad = parts[0]
-                soyad = ' '.join(parts[1:]) if len(parts) > 1 else ''
-                self.c.execute("INSERT INTO Ogretmenler (ad, soyad, bolum_adi) VALUES (?, ?, ?)", (ad, soyad, "Genel"))
-                ogretmen_id = self.c.lastrowid
-            else:
-                ogretmen_id = teacher_row[0]
+            # 1. Get or create teacher using repository
+            ogretmen_id = self.teacher_repo.get_or_create(hoca_adi)
 
             # 2. Ensure Course exists
             self.c.execute("SELECT ders_instance, ders_kodu FROM Dersler WHERE ders_adi = ?", (ders_adi,))
@@ -332,7 +323,7 @@ class ScheduleModel(QObject):
     def remove_course_by_id(self, program_id: int) -> bool:
         """
         Remove a course by its database ID (no parsing required).
-        This is the preferred method - uses direct ID instead of parsing strings.
+        Delegates to ScheduleRepository.
         
         Args:
             program_id: Database ID from Ders_Programi table
@@ -341,9 +332,10 @@ class ScheduleModel(QObject):
             bool: True if successful, False otherwise
         """
         try:
-            self.c.execute("DELETE FROM Ders_Programi WHERE program_id = ?", (program_id,))
-            self.conn.commit()
-            return self.c.rowcount > 0
+            success = self.schedule_repo.remove_by_id(program_id)
+            if success:
+                self.conn.commit()
+            return success
         except Exception as e:
             self.error_occurred.emit(f"Ders silinirken hata: {str(e)}")
             return False
@@ -442,8 +434,8 @@ class ScheduleModel(QObject):
             List[str]: List of teacher names
         """
         try:
-            self.c.execute("SELECT ad || ' ' || soyad FROM Ogretmenler")
-            return [row[0] for row in self.c.fetchall()]
+            teachers = self.teacher_repo.get_all()
+            return [name for _, name in teachers]
         except Exception as e:
             self.error_occurred.emit(f"Öğretmenler yüklenirken hata oluştu: {str(e)}")
             return []
@@ -483,37 +475,18 @@ class ScheduleModel(QObject):
     
     def _has_slot_conflict(self, slot: ScheduleSlot) -> bool:
         """
-        Check if a time slot conflicts with existing schedule.
-        Uses typed ScheduleSlot for proper time comparison.
-        
-        Args:
-            slot: ScheduleSlot to check for conflicts
-        
-        Returns:
-            bool: True if conflict exists, False otherwise
+        DEPRECATED: Use schedule_repo.has_conflict instead.
+        Kept for backward compatibility.
         """
-        try:
-            self.c.execute(
-                "SELECT baslangic, bitis FROM Ders_Programi WHERE gun = ?",
-                (slot.day,)
-            )
-            
-            for start_str, end_str in self.c.fetchall():
-                existing = ScheduleSlot.from_strings(slot.day, start_str, end_str)
-                if slot.overlaps(existing):
-                    return True
-            return False
-        except Exception as e:
-            print(f"Conflict check error: {e}")
-            return True
+        return self.schedule_repo.has_conflict(slot)
     
     def _check_time_conflict(self, gun: str, baslangic: str, bitis: str) -> bool:
         """
-        DEPRECATED: Use _has_slot_conflict instead.
+        DEPRECATED: Use schedule_repo.has_conflict instead.
         Kept for backward compatibility during refactoring.
         """
         slot = ScheduleSlot.from_strings(gun, baslangic, bitis)
-        return self._has_slot_conflict(slot)
+        return self.schedule_repo.has_conflict(slot)
 
     def get_schedule_by_teacher(self, teacher_id: int) -> List[tuple]:
         """Get schedule for a specific teacher"""
