@@ -552,9 +552,65 @@ class ORToolsScheduler:
                             # Overlap condition: (StartA < EndB) and (EndA > StartB)
                             if (u_start_min < slot_end and u_end_min > slot_start):
                                 # This slot is unavailable for this teacher
-                                if (t_id, s['id']) in teacher_slot_vars:
                                     for var in teacher_slot_vars[(t_id, s['id'])]:
                                         self.cp_model.Add(var == 0)
+
+        # 6. Teacher Day Span Constraint (Sliding Window)
+        print("Model: Applying Teacher Day Span Constraints...")
+        # Define days and indices
+        days_lookup = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma']
+        num_days = 5
+        
+        for t in self.teachers:
+            t_id = t[0]
+            # Fetch preference
+            span = self.db_model.get_teacher_span(t_id)
+            
+            if span > 0 and span < num_days:
+                # 1. Create Active Day Variables
+                day_active_vars = []
+                for d_idx in range(num_days):
+                    # Gather all slot vars for this day for this teacher
+                    day_vars = []
+                    for s in self.time_slots:
+                        if s['day'] == days_lookup[d_idx]: 
+                            if (t_id, s['id']) in teacher_slot_vars:
+                                day_vars.extend(teacher_slot_vars[(t_id, s['id'])])
+                    
+                    d_act = self.cp_model.NewBoolVar(f't{t_id}_day{d_idx}_active')
+                    day_active_vars.append(d_act)
+                    
+                    if day_vars:
+                        # d_act is TRUE if ANY class is assigned on this day
+                        self.cp_model.AddMaxEquality(d_act, day_vars)
+                    else:
+                        self.cp_model.Add(d_act == 0)
+
+                # 2. Sliding Window Logic
+                # Valid windows start at index 0 to (num_days - span)
+                window_vars = []
+                for start_day in range(num_days - span + 1):
+                    w_var = self.cp_model.NewBoolVar(f't{t_id}_window{start_day}')
+                    window_vars.append(w_var)
+                
+                # Must select exactly one window
+                if window_vars:
+                    self.cp_model.Add(sum(window_vars) == 1)
+                    
+                    # 3. Link Days to Windows
+                    # day_active[d] <= Sum(windows covering d)
+                    for d_idx in range(num_days):
+                        covering_windows = []
+                        for w_idx in range(len(window_vars)):
+                            # Window starts at w_idx, covers [w_idx, w_idx + span - 1]
+                            if w_idx <= d_idx < w_idx + span:
+                                covering_windows.append(window_vars[w_idx])
+                        
+                        if covering_windows:
+                            self.cp_model.Add(day_active_vars[d_idx] <= sum(covering_windows))
+                        else:
+                            # Day not covered by ANY valid window
+                            self.cp_model.Add(day_active_vars[d_idx] == 0)
 
         # 6. Soft Constraint: Spread parts of the same course (T, U, L) across DIFFERENT days
         # NOTE: Disabled for performance/feasibility. Enabling this adds significant complexity 

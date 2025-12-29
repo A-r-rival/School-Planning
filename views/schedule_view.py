@@ -399,7 +399,7 @@ class ScheduleView(QWidget):
                 background-color: #2196F3;
                 color: white;
                 border: none;
-                padding: 10px;
+                padding: 12px;
                 font-size: 13px;
                 border-radius: 5px;
             }
@@ -416,7 +416,7 @@ class ScheduleView(QWidget):
                 background-color: #FF9800;
                 color: white;
                 border: none;
-                padding: 10px;
+                padding: 12px;
                 font-size: 13px;
                 border-radius: 5px;
             }
@@ -435,10 +435,10 @@ class ScheduleView(QWidget):
                 background-color: #673AB7;
                 color: white;
                 border: none;
-                padding: 8px;
-                font-size: 12px;
+                padding: 12px;
+                font-size: 13px;
                 border-radius: 3px;
-                margin-top: 5px;
+                margin-top: 8px;
             }
             QPushButton:hover {
                 background-color: #5E35B1;
@@ -453,16 +453,15 @@ class ScheduleView(QWidget):
                 background-color: #009688;
                 color: white;
                 border: none;
-                padding: 8px;
-                font-size: 12px;
+                padding: 12px;
+                font-size: 13px;
                 border-radius: 3px;
+                margin-top: 5px;
             }
             QPushButton:hover {
                 background-color: #00796B;
             }
         """)
-        layout.addWidget(self.student_button)
-
         layout.addWidget(self.student_button)
 
         # Teacher Availability button
@@ -472,8 +471,8 @@ class ScheduleView(QWidget):
                 background-color: #FF5722;
                 color: white;
                 border: none;
-                padding: 8px;
-                font-size: 12px;
+                padding: 12px;
+                font-size: 13px;
                 border-radius: 3px;
                 margin-top: 5px;
             }
@@ -490,11 +489,11 @@ class ScheduleView(QWidget):
                 background-color: #3F51B5;
                 color: white;
                 border: none;
-                padding: 12px;
-                font-size: 14px;
+                padding: 15px;
+                font-size: 15px;
                 font-weight: bold;
                 border-radius: 5px;
-                margin-top: 15px;
+                margin-top: 20px;
             }
             QPushButton:hover {
                 background-color: #303F9F;

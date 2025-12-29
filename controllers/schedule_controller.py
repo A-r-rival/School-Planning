@@ -596,23 +596,37 @@ class ScheduleController:
     # Teacher Availability Methods
     def open_teacher_availability_view(self):
         """Open teacher availability dialog"""
+        # Ensure only one instance exists
+        if hasattr(self, 'availability_view') and self.availability_view is not None:
+            try:
+                self.availability_view.close()
+                self.availability_view.deleteLater()
+            except:
+                pass
+        
         teachers = self.model.get_all_teachers_with_ids()
         self.availability_view = TeacherAvailabilityView(self.view, teachers)
         self.availability_view.set_controller(self)
         self.availability_view.show()
         
     def load_teacher_availability(self, teacher_id: int):
-        """Load availability for a teacher"""
-        data = self.model.get_teacher_unavailability(teacher_id)
-        # Format: (day, start, end, id, teacher_name, teacher_id, description)
-        # Model returns: (day, start, end, id, description)
-        view_data = [(d[0], d[1], d[2], d[3], None, teacher_id, d[4]) for d in data] 
-        self.availability_view.update_table(view_data)
+        """Load availability for specific teacher"""
+        # Updated to use combined availability (Fixes previous partial update)
+        data = self.model.get_combined_availability(teacher_id)
+        self.availability_view.update_table(data)
+        
+        # Span is now handled in the Add Dialog, not set on the main view
+        # span = self.model.get_teacher_span(teacher_id)
+        # self.availability_view.set_span(span)
+
+    def handle_teacher_span_change(self, teacher_id: int, span: int):
+        """Handle teacher span preference change"""
+        self.model.update_teacher_span(teacher_id, span)
 
     def load_all_teacher_availability(self):
         """Load availability for ALL teachers"""
-        data = self.model.get_all_teacher_unavailability()
-        # Model returns: (day, start, end, id, teacher_name, teacher_id, description)
+        # New model method returns list of dicts
+        data = self.model.get_combined_availability() 
         self.availability_view.update_table(data)
 
         
@@ -638,15 +652,26 @@ class ScheduleController:
         else:
             QMessageBox.warning(self.availability_view, "Hata", "Bu saat aralığı zaten ekli veya çakışıyor!")
             
-    def remove_teacher_unavailability(self, unavailability_id: int):
-        """Remove unavailability slot"""
-        success = self.model.remove_teacher_unavailability(unavailability_id)
+    def handle_delete_request(self, item_type: str, item_id: int):
+        """Handle deletion of either a slot or a span"""
+        success = False
+        if item_type == 'slot':
+            success = self.model.remove_teacher_unavailability(item_id)
+        elif item_type == 'span':
+            # item_id here is actually teacher_id for span
+            success = self.model.update_teacher_span(item_id, 0)
+            
         if success:
-            # We need to refresh the current teacher's list. 
-            # But we don't have the teacher_id here directly.
-            # We can get it from the view's current selection.
+             # Refresh view logic
             teacher_id = self.availability_view.teacher_combo.currentData()
-            self.load_teacher_availability(teacher_id)
+            if teacher_id == -1:
+                self.load_all_teacher_availability()
+            else:
+                self.load_teacher_availability(teacher_id)
+                
+    # Keep wrapper for compatibility or direct slot deletion if needed
+    def remove_teacher_unavailability(self, unavailability_id: int):
+         self.handle_delete_request('slot', unavailability_id)
             
     # Automatic Scheduler
     def generate_automatic_schedule(self):

@@ -37,9 +37,30 @@ class ScheduleModel(QObject):
         self.c = self.conn.cursor()
         self.c.execute("PRAGMA foreign_keys = ON")
         self._create_tables()
+        self._check_and_migrate_teacher_table()
         
-        # Create simple tables if they don't exist
-        # self._create_simple_tables() # Removed legacy call
+    def _check_and_migrate_teacher_table(self):
+        """Check if Ogretmenler table needs migration for day span support"""
+        try:
+            self.c.execute("PRAGMA table_info(Ogretmenler)")
+            columns = [info[1] for info in self.c.fetchall()]
+            
+            if 'preferred_day_span' not in columns:
+                print("Migrating Ogretmenler table: Adding preferred_day_span column")
+                self.c.execute("ALTER TABLE Ogretmenler ADD COLUMN preferred_day_span INTEGER DEFAULT NULL")
+                self.conn.commit()
+
+            # Also check Ogretmen_Musaitlik for description
+            self.c.execute("PRAGMA table_info(Ogretmen_Musaitlik)")
+            columns_om = [info[1] for info in self.c.fetchall()]
+            
+            if 'description' not in columns_om:
+                print("Migrating Ogretmen_Musaitlik table: Adding description column")
+                self.c.execute("ALTER TABLE Ogretmen_Musaitlik ADD COLUMN description TEXT DEFAULT ''")
+                self.conn.commit()
+
+        except Exception as e:
+            print(f"Migration error: {e}")
     
     def _create_tables(self):
         """Create all database tables"""
@@ -1040,7 +1061,7 @@ class ScheduleModel(QObject):
         self.c.execute('SELECT derslik_num, derslik_adi, tip, kapasite, silindi, silinme_tarihi FROM Derslikler')
         return self.c.fetchall()
 
-    def add_teacher_unavailability(self, teacher_id: int, day: str, start_time: str, end_time: str) -> bool:
+    def add_teacher_unavailability(self, teacher_id: int, day: str, start_time: str, end_time: str, description: str = "") -> bool:
         """
         Add a time slot where the teacher is NOT available.
         """
@@ -1060,9 +1081,9 @@ class ScheduleModel(QObject):
                 return False # Already marked as unavailable
 
             self.c.execute('''
-                INSERT INTO Ogretmen_Musaitlik (ogretmen_id, gun, baslangic, bitis)
-                VALUES (?, ?, ?, ?)
-            ''', (teacher_id, day, start_time, end_time))
+                INSERT INTO Ogretmen_Musaitlik (ogretmen_id, gun, baslangic, bitis, description)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (teacher_id, day, start_time, end_time, description))
             self.conn.commit()
             return True
         except Exception as e:
@@ -1072,11 +1093,75 @@ class ScheduleModel(QObject):
     def get_teacher_unavailability(self, teacher_id: int) -> List[tuple]:
         """Get all unavailable slots for a teacher"""
         try:
+            # Controller expects: (day, start, end, id, description)
             self.c.execute('''
-                SELECT gun, baslangic, bitis, id 
-                FROM Ogretmen_Musaitlik 
-                WHERE ogretmen_id = ? 
+                SELECT om.gun, om.baslangic, om.bitis, om.id, om.description, o.preferred_day_span
+                FROM Ogretmen_Musaitlik om
+                JOIN Ogretmenler o ON om.ogretmen_id = o.ogretmen_num
+                WHERE om.ogretmen_id = ? 
                 ORDER BY 
+                    CASE om.gun 
+                        WHEN 'Pazartesi' THEN 1 
+                        WHEN 'Salı' THEN 2 
+                        WHEN 'Çarşamba' THEN 3 
+                        WHEN 'Perşembe' THEN 4 
+                        WHEN 'Cuma' THEN 5 
+                        WHEN 'Cumartesi' THEN 6 
+                        WHEN 'Pazar' THEN 7 
+                    END, om.baslangic
+            ''', (teacher_id,))
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching unavailability: {e}")
+            return []
+
+    def get_combined_availability(self, teacher_id: int = None) -> List[dict]:
+        """
+        Get both Day Spans and Unavailability Slots combined.
+        Returns list of dicts:
+        {
+            'type': 'span' | 'slot',
+            'teacher_id': int,
+            'teacher_name': str,
+            # For Span:
+            'span_value': int,
+            # For Slot:
+            'id': int,
+            'day': str,
+            'start': str,
+            'end': str,
+            'description': str
+        }
+        """
+        results = []
+        try:
+            # 1. Fetch Teachers (Filtered or All)
+            if teacher_id:
+                self.c.execute("SELECT ogretmen_num, ad, soyad, preferred_day_span FROM Ogretmenler WHERE ogretmen_num = ?", (teacher_id,))
+            else:
+                self.c.execute("SELECT ogretmen_num, ad, soyad, preferred_day_span FROM Ogretmenler ORDER BY ad, soyad")
+            
+            teachers = self.c.fetchall()
+            
+            for t in teachers:
+                t_num, t_ad, t_soyad, t_span = t
+                t_name = f"{t_ad} {t_soyad}"
+                
+                # Add Span Entry if exists
+                if t_span and t_span > 0:
+                    results.append({
+                        'type': 'span',
+                        'teacher_id': t_num,
+                        'teacher_name': t_name,
+                        'span_value': t_span
+                    })
+                
+                # 2. Fetch Slots for this teacher
+                self.c.execute('''
+                    SELECT id, gun, baslangic, bitis, description 
+                    FROM Ogretmen_Musaitlik 
+                    WHERE ogretmen_id = ?
+                    ORDER BY 
                     CASE gun 
                         WHEN 'Pazartesi' THEN 1 
                         WHEN 'Salı' THEN 2 
@@ -1086,10 +1171,25 @@ class ScheduleModel(QObject):
                         WHEN 'Cumartesi' THEN 6 
                         WHEN 'Pazar' THEN 7 
                     END, baslangic
-            ''', (teacher_id,))
-            return self.c.fetchall()
+                ''', (t_num,))
+                slots = self.c.fetchall()
+                
+                for s in slots:
+                    results.append({
+                        'type': 'slot',
+                        'teacher_id': t_num,
+                        'teacher_name': t_name,
+                        'id': s[0],
+                        'day': s[1],
+                        'start': s[2],
+                        'end': s[3],
+                        'description': s[4]
+                    })
+                    
+            return results
+            
         except Exception as e:
-            print(f"Error fetching unavailability: {e}")
+            print(f"Error fetching combined availability: {e}")
             return []
 
     def remove_teacher_unavailability(self, unavailability_id: int) -> bool:
@@ -1100,6 +1200,34 @@ class ScheduleModel(QObject):
             return True
         except Exception as e:
             self.error_occurred.emit(f"Müsaitlik silinirken hata: {str(e)}")
+            return False
+
+    def update_teacher_unavailability(self, u_id: int, teacher_id: int, day: str, start: str, end: str, description: str = "") -> bool:
+        """Update unavailability slot"""
+        try:
+            # Check for existing overlap (excluding self)
+            self.c.execute('''
+                SELECT id FROM Ogretmen_Musaitlik 
+                WHERE ogretmen_id = ? AND gun = ? AND id != ?
+                AND (
+                    (baslangic <= ? AND bitis >= ?) OR
+                    (baslangic <= ? AND bitis >= ?) OR
+                    (baslangic >= ? AND bitis <= ?)
+                )
+            ''', (teacher_id, day, u_id, start, start, end, end, start, end))
+            
+            if self.c.fetchone():
+                return False # Overlap
+            
+            self.c.execute('''
+                UPDATE Ogretmen_Musaitlik 
+                SET gun = ?, baslangic = ?, bitis = ?, description = ?
+                WHERE id = ?
+            ''', (day, start, end, description, u_id))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            self.error_occurred.emit(f"Müsaitlik güncellenirken hata: {str(e)}")
             return False
 
 
@@ -1237,3 +1365,26 @@ class ScheduleModel(QObject):
         except Exception as e:
             print(f"Error fetching departments: {e}")
             return []
+
+    def get_teacher_span(self, teacher_id: int) -> int:
+        """Get preferred day span for a teacher"""
+        try:
+            self.c.execute("SELECT preferred_day_span FROM Ogretmenler WHERE ogretmen_num = ?", (teacher_id,))
+            row = self.c.fetchone()
+            # Return 0 if NULL or not set
+            return row[0] if row and row[0] is not None else 0
+        except Exception as e:
+            print(f"Error getting teacher span: {e}")
+            return 0
+
+    def update_teacher_span(self, teacher_id: int, span: int) -> bool:
+        """Update preferred day span for a teacher"""
+        try:
+            # Clean span value: 0 for "No Constraint"
+            val = span if span > 0 else None
+            self.c.execute("UPDATE Ogretmenler SET preferred_day_span = ? WHERE ogretmen_num = ?", (val, teacher_id))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            self.error_occurred.emit(f"Çalışma bloğu güncellenirken hata: {str(e)}")
+            return False
