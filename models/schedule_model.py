@@ -38,9 +38,10 @@ class ScheduleModel(QObject):
         # Initialize database connection
         self.conn = sqlite3.connect(db_path)
         self.c = self.conn.cursor()
-        self.c.execute("PRAGMA foreign_keys = ON")
-        self._create_tables()
-        self._check_and_migrate_teacher_table()
+        # Initialize database and run migrations
+        from models.repositories.migration import DatabaseMigration
+        migration = DatabaseMigration(self.conn)
+        migration.run_all()
         
         # Initialize repositories
         from models.repositories import TeacherRepository, ScheduleRepository, CourseRepository
@@ -48,29 +49,6 @@ class ScheduleModel(QObject):
         self.schedule_repo = ScheduleRepository(self.c, self.conn)
         self.course_repo = CourseRepository(self.c)  # Course repo doesn't need conn
         
-    def _check_and_migrate_teacher_table(self):
-        """Check if Ogretmenler table needs migration for day span support"""
-        try:
-            self.c.execute("PRAGMA table_info(Ogretmenler)")
-            columns = [info[1] for info in self.c.fetchall()]
-            
-            if 'preferred_day_span' not in columns:
-                print("Migrating Ogretmenler table: Adding preferred_day_span column")
-                self.c.execute("ALTER TABLE Ogretmenler ADD COLUMN preferred_day_span INTEGER DEFAULT NULL")
-                self.conn.commit()
-
-            # Also check Ogretmen_Musaitlik for description
-            self.c.execute("PRAGMA table_info(Ogretmen_Musaitlik)")
-            columns_om = [info[1] for info in self.c.fetchall()]
-            
-            if 'description' not in columns_om:
-                print("Migrating Ogretmen_Musaitlik table: Adding description column")
-                self.c.execute("ALTER TABLE Ogretmen_Musaitlik ADD COLUMN description TEXT DEFAULT ''")
-                self.conn.commit()
-
-        except Exception as e:
-            print(f"Migration error: {e}")
-    
     def _create_tables(self):
         """Create all database tables"""
         db_create = [
@@ -273,47 +251,54 @@ class ScheduleModel(QObject):
             hoca_adi = course_data.hoca
             gun, baslangic, bitis = slot.to_db_tuple()
 
-            # 1. Get or create teacher using repository
-            ogretmen_id = self.teacher_repo.get_or_create(hoca_adi)
+            # Transaction: all operations atomic
+            with self.conn:
+                # 1. Get or create teacher using repository
+                ogretmen_id = self.teacher_repo.get_or_create(hoca_adi)
 
-            # 2. Get or create course using repository
-            instance, current_code, exists = self.course_repo.get_or_create(ders_adi, "CODE")
-            
-            # If course doesn't exist, create it
-            if not exists:
-                instance = self.ders_ekle(ders_adi, ders_kodu=current_code, teori_odasi=None, lab_odasi=None)
+                # 2. Get or create course using repository
+                result = self.course_repo.get_or_create(ders_adi, "CODE")
+                
+                # If course doesn't exist, create it
+                if not result.exists:
+                    instance = self.ders_ekle(ders_adi, ders_kodu=result.code, teori_odasi=None, lab_odasi=None)
+                else:
+                    instance = result.instance
+                    current_code = result.code
 
-            # 3. Add to Ders_Programi
-            self.c.execute('''
-                INSERT INTO Ders_Programi (ders_adi, ders_instance, ogretmen_id, gun, baslangic, bitis)
-                VALUES (?, ?, ?, ?, ?, ?)
-            ''', (ders_adi, instance, ogretmen_id, gun, baslangic, bitis))
-            
-            self.conn.commit()
+                # 3. Add to Ders_Programi
+                self.c.execute('''
+                    INSERT INTO Ders_Programi (ders_adi, ders_instance, ogretmen_id, gun, baslangic, bitis)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                ''', (ders_adi, instance, ogretmen_id, gun, baslangic, bitis))
+                
+                # Auto-commits here if no exception
             
             # Emit signal with formatted course info
             from models.formatters import ScheduleFormatter
             
             course_info = ScheduleFormatter.format_course(
-                code=current_code,
+                code=result.code if result.exists else "CODE",
                 name=ders_adi,
                 teacher=hoca_adi,
                 day=gun,
                 start=baslangic,
-                end=bitis,
-                classes=classes_str.strip('[] ') if classes_str else None
+                end=bitis
             )
             self.course_added.emit(course_info)
             return True
             
         except Exception as e:
-            self.error_occurred.emit(f"Ders eklenirken hata oluştu: {str(e)}")
+            # Auto-rollback on exception
+            error_msg = f"Ders eklenirken hata oluştu: {str(e)}"
+            self.error_occurred.emit(error_msg)
+            print(f"[ERROR] {error_msg}")
             return False
     
     def remove_course_by_id(self, program_id: int) -> bool:
         """
-        Remove a course by its database ID (no parsing required).
-        Delegates to ScheduleRepository.
+        Remove a course by its database ID.
+        Uses transaction for safety.
         
         Args:
             program_id: Database ID from Ders_Programi table
@@ -322,12 +307,14 @@ class ScheduleModel(QObject):
             bool: True if successful, False otherwise
         """
         try:
-            success = self.schedule_repo.remove_by_id(program_id)
-            if success:
-                self.conn.commit()
+            with self.conn:  # Transaction
+                success = self.schedule_repo.remove_by_id(program_id)
+                # Commits automatically if successful
             return success
         except Exception as e:
-            self.error_occurred.emit(f"Ders silinirken hata: {str(e)}")
+            error_msg = f"Ders silinirken hata: {str(e)}"
+            self.error_occurred.emit(error_msg)
+            print(f"[ERROR] {error_msg}")
             return False
     
     def remove_course(self, course_info: str) -> bool:
