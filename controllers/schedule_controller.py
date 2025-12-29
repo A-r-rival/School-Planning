@@ -15,6 +15,7 @@ from controllers.scheduler import ORToolsScheduler
 from scripts.parse_curriculum import Regexes  # Import central Regex logic
 from scripts import curriculum_data # Import data source
 from PyQt5.QtWidgets import QMessageBox
+from utils.schedule_merger import merge_course_strings, merge_consecutive_blocks
 
 
 class ScheduleController:
@@ -173,7 +174,7 @@ class ScheduleController:
         """Refresh all data from model to view"""
         # Reload courses
         courses = self.model.get_all_courses()
-        courses = self._merge_course_strings(courses) # Merge blocks
+        courses = merge_course_strings(courses) # Merge blocks
         self.view.display_courses(courses)
         
         # Reload teachers
@@ -260,54 +261,7 @@ class ScheduleController:
         
         self.calendar_view.show()
         
-    def _merge_consecutive_blocks(self, schedule_data):
-        """Merge consecutive course blocks with same course and teacher"""
-        if not schedule_data:
-            return schedule_data
-        
-        # Group by day
-        day_groups = {}
-        for item in schedule_data:
-            day = item[0]
-            if day not in day_groups:
-                day_groups[day] = []
-            day_groups[day].append(item)
-        
-        merged = []
-        for day, items in day_groups.items():
-            # Sort by start time
-            items.sort(key=lambda x: x[1])
-            
-            i = 0
-            while i < len(items):
-                current = items[i]
-                # Use indices: day, start, end, display, extra, is_elec, course, [code, pools]
-                day, start, end, display, extra, is_elec, course_name = current[:7]
-                code = current[7] if len(current) > 7 else None
-                pools = current[8] if len(current) > 8 else []
-                
-                # Check consecutive
-                span = 1
-                while i + span < len(items):
-                    next_item = items[i + span]
-                    # Must be: same course, same teacher, consecutive hours
-                    if (next_item[6] == course_name and  # Same course name
-                        next_item[1] == end and  # Next starts where current ends
-                        next_item[4] == extra):  # Same teacher/room
-                        end = next_item[2]  # Extend end time
-                        span += 1
-                    else:
-                        break
-                
-                # Add merged block
-                merged_item = (day, start, end, display, extra, is_elec, course_name)
-                if code:
-                    merged_item = merged_item + (code, pools)
-                merged.append(merged_item)
-                
-                i += span
-        
-        return merged
+    # Merging utilities moved to utils/schedule_merger.py
         
     def handle_schedule_view_filter(self, filters):
         """Handle filter changes from ScheduleView"""
@@ -379,7 +333,7 @@ class ScheduleController:
         # else: show all (both checked or neither checked)
 
         # Merge consecutive blocks
-        courses = self._merge_course_strings(courses)
+        courses = merge_course_strings(courses)
         
         self.view.display_courses(courses)
 
@@ -586,7 +540,7 @@ class ScheduleController:
             
             if schedule_data:
                 # Merge consecutive blocks
-                schedule_data = self._merge_consecutive_blocks(schedule_data)
+                schedule_data = merge_consecutive_blocks(schedule_data)
                 # Post-process for Student Group View mainly
                 if "dept_id" in data and data["dept_id"]:
                     final_data = []
@@ -766,88 +720,4 @@ class ScheduleController:
             except Exception as e:
                 QMessageBox.critical(self.view, "Hata", f"Program oluşturulurken hata: {str(e)}")
 
-    def _merge_course_strings(self, course_list: List[str]) -> List[str]:
-        """
-        Merge consecutive course blocks in the list
-        Input format: "[Code] Name - Teacher (Day Start-End)"
-        """
-        if not course_list:
-            return []
-            
-        import re
-        # Regex to parse the string
-        # Matches: [Code] Name - Teacher (Day Start-End) [Classes]
-        # Added (.*) at the end to capture the suffix (e.g., student groups)
-        pattern = re.compile(r"\[(.*?)\] (.*?) - (.*?) \((.*?) (\d{2}:\d{2})-(\d{2}:\d{2})\)(.*)")
-        
-        parsed_items = []
-        unparsed_items = []
-        
-        for item in course_list:
-            match = pattern.match(item)
-            if match:
-                code, name, teacher, day, start, end, suffix = match.groups()
-                parsed_items.append({
-                    'code': code, 
-                    'name': name, 
-                    'teacher': teacher, 
-                    'day': day, 
-                    'start': start, 
-                    'end': end,
-                    'suffix': suffix, # Store the classes info
-                    'original': item
-                })
-            else:
-                unparsed_items.append(item)
-                
-        # Group by (Code, Name, Teacher, Day)
-        # We need to sort primarily by these to group, then by start time to merge
-        # Map days to index for sorting
-        day_map = {"Pazartesi": 0, "Salı": 1, "Çarşamba": 2, "Perşembe": 3, "Cuma": 4}
-        
-        def sort_key(x):
-            return (
-                x['name'], 
-                x['code'], 
-                x['teacher'], 
-                day_map.get(x['day'], 99), 
-                x['start']
-            )
-            
-        parsed_items.sort(key=sort_key)
-        
-        merged_items = []
-        if parsed_items:
-            current = parsed_items[0]
-            
-            for i in range(1, len(parsed_items)):
-                next_item = parsed_items[i]
-                
-                # Check for mergeability
-                if (current['name'] == next_item['name'] and
-                    current['code'] == next_item['code'] and
-                    current['teacher'] == next_item['teacher'] and
-                    current['day'] == next_item['day'] and
-                    current['end'] == next_item['start']): # Consecutive time
-                    
-                    # Merge: Update end time of current
-                    current['end'] = next_item['end']
-                else:
-                    # Push current and start new
-                    merged_items.append(current)
-                    current = next_item
-            
-            # Push last
-            merged_items.append(current)
-            
-        # Reconstruct strings
-        final_list = []
-        for item in merged_items:
-            # Rebuild: [Code] Name - Teacher (Day Start-End) [Classes]
-            s = f"[{item['code']}] {item['name']} - {item['teacher']} ({item['day']} {item['start']}-{item['end']}){item['suffix']}"
-            final_list.append(s)
-            
-        # Add back unparsed items (if any)
-        final_list.extend(unparsed_items)
-        
-        return final_list
+    # Merging utilities moved to utils/schedule_merger.py
