@@ -132,6 +132,50 @@ class ScheduleRepository:
         )
         return self.c.lastrowid
 
+    def add(self, course: ScheduledCourse) -> int:
+        """
+        Add a scheduled course using entity.
+        
+        This is the preferred API - type-safe and future-proof.
+        Takes a complete ScheduledCourse entity instead of raw parameters.
+        
+        Args:
+            course: Complete ScheduledCourse entity
+        
+        Returns:
+            int: program_id of inserted course
+        
+        Example:
+            course = ScheduledCourse(
+                program_id=0,  # Will be auto-generated
+                ders_adi="Math",
+                ders_instance=1,
+                ders_kodu="MAT101",
+                hoca="Dr. Smith",
+                gun="Pazartesi",
+                baslangic="09:00",
+                bitis="10:50"
+            )
+            program_id = schedule_repo.add(course)
+        """
+        self.c.execute(
+            """
+            INSERT INTO Ders_Programi (
+                ders_adi, ders_instance, ogretmen_id,
+                gun, baslangic, bitis
+            ) VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (
+                course.ders_adi,
+                course.ders_instance,
+                course.ogretmen_id if hasattr(course, 'ogretmen_id') else None,
+                course.gun,
+                course.baslangic,
+                course.bitis
+            )
+        )
+        return self.c.lastrowid
+
     def add_from_components(
         self,
         ders_adi: str,
