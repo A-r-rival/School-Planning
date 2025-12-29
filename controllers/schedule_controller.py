@@ -12,6 +12,8 @@ from views.calendar_view import CalendarView
 from views.student_view import StudentView
 from views.teacher_availability_view import TeacherAvailabilityView
 from controllers.scheduler import ORToolsScheduler
+from scripts.parse_curriculum import Regexes  # Import central Regex logic
+from scripts import curriculum_data # Import data source
 from PyQt5.QtWidgets import QMessageBox
 
 
@@ -394,13 +396,14 @@ class ScheduleController:
                         display_course = f"[{code}] {course} ({tip_label})"
                         room_label = room if room else "Belirsiz"
                         extra = f"Oda: {room_label}"
-                        schedule_data.append((day, start, end, display_course, extra))
+                        # Pad with is_elective=False, real_course_name
+                        schedule_data.append((day, start, end, display_course, extra, False, course))
                     elif len(item) == 6:  # Fallback for old data without type
                         day, start, end, course, room, code = item
                         display_course = f"[{code}] {course}"
                         room_label = room if room else "Belirsiz"
                         extra = f"Oda: {room_label}"
-                        schedule_data.append((day, start, end, display_course, extra))
+                        schedule_data.append((day, start, end, display_course, extra, False, course))
                     else:
                         schedule_data.append(item)
                 
@@ -414,13 +417,14 @@ class ScheduleController:
                         display_course = f"[{code}] {course} ({tip_label})"
                         teacher_label = teacher if teacher else "Belirsiz"
                         extra = f"Öğretmen: {teacher_label}"
-                        schedule_data.append((day, start, end, display_course, extra))
+                        # Pad with is_elective=False, real_course_name
+                        schedule_data.append((day, start, end, display_course, extra, False, course))
                     elif len(item) == 6:  # Fallback
                         day, start, end, course, teacher, code = item
                         display_course = f"[{code}] {course}"
                         teacher_label = teacher if teacher else "Belirsiz"
                         extra = f"Öğretmen: {teacher_label}"
-                        schedule_data.append((day, start, end, display_course, extra))
+                        schedule_data.append((day, start, end, display_course, extra, False, course))
                     else:
                         schedule_data.append(item)
                 
@@ -449,61 +453,119 @@ class ScheduleController:
                      # Ortak Dersler Handling
                      department_id = int(data['dept_id']) 
                      
+                     
                      if department_id == -1:
                          # Fetch Common Courses Schedule
                          raw_schedule = self.model.get_schedule_for_faculty_common(data["faculty_id"], int(data["year"]))
                      else:
                          raw_schedule = self.model.get_schedule_by_student_group(department_id, int(data["year"]))
                      
+                     print(f"DEBUG: Raw schedule fetched. Count: {len(raw_schedule)}")
+                     if raw_schedule:
+                         print(f"DEBUG: First item sample: {raw_schedule[0]}")
+                     
                      # Model: (day, start, end, course, teacher, room, code)
                      schedule_data = []
-                     for item in raw_schedule:
-                          if len(item) == 8:
-                              day, start, end, course, teacher, room, code, ders_tipi = item
-                              tip_label = ders_tipi if ders_tipi else "?"
-                              display_course = f"[{code}] {course} ({tip_label})"
-                              room_label = room if room else "Belirsiz"
-                              teacher_label = teacher if teacher else "Belirsiz"
-                              extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
+                     for idx, item in enumerate(raw_schedule):
+                          try:
+                              if len(item) == 8: # New format with ders_tipi
+                                  day, start, end, course, teacher, room, code, ders_tipi = item
+                                  tip_label = ders_tipi if ders_tipi else "?"
+                                  display_course = f"[{code}] {course} ({tip_label})"
+                                  room_label = room if room else "Belirsiz"
+                                  teacher_label = teacher if teacher else "Belirsiz"
+                                  extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
+                                  
+                                  
+                                  # Check elective and get pool codes
+                                  # Strategy: Look up in curriculum_data first (Truth), then fallback to Regex/Name
+                                  
+                                  # 1. Determine Dept Name from ID if available
+                                  dept_name_for_lookup = None
+                                  if "dept_id" in data and data["dept_id"] and int(data["dept_id"]) != -1:
+                                       dept_name_for_lookup = self.model.get_department_name(int(data["dept_id"]))
+                                  # If not available (e.g. Teacher View), we might try to infer or skip specific pool lookup
+                                  
+                                  pool_codes = []
+                                  is_elective = False
+                                  
+                                  # 2. Look up in curriculum_data
+                                  if dept_name_for_lookup:
+                                       dept_data = curriculum_data.DEPARTMENTS_DATA.get(dept_name_for_lookup)
+                                       # The key in curriculum_data.py is 'pool_codes', not 'pools'
+                                       if dept_data and 'pool_codes' in dept_data:
+                                           
+                                           # Clean name from " (Seçmeli)" suffix for lookup tests
+                                           # Also remove square brackets if internal code puts them? No, usually not.
+                                           clean_name = course.split(" (S")[0].strip()
+                                           
+                                           for p_code_key, p_course_names in dept_data['pool_codes'].items():
+                                                # p_course_names is a list of STRINGS (course names)
+                                                for db_name in p_course_names:
+                                                     # db_name is already the course name string
+                                                     # Robust check: case-insensitive, strip whitespace
+                                                     # Also check if one contains the other (e.g. "Makine Öğrenmesi" vs "Makine Öğrenmesi (Seçmeli)")
+                                                     if db_name.lower().strip() == clean_name.lower().strip() or \
+                                                        db_name.lower().strip() in clean_name.lower().strip() or \
+                                                        clean_name.lower().strip() in db_name.lower().strip():
+                                                          pool_codes.append(p_code_key)
+                                                          is_elective = True
+                                                          break
+                                  
+                                  # 3. Fallback: If not found in curriculum_data (or no dept context), use Regex/Name
+                                  if not is_elective:
+                                      # Use Regex for robust detection of pool codes from the COURSE CODE string
+                                      pool_code_match = Regexes.pool_code.search(code)
+                                      if pool_code_match:
+                                          is_elective = True
+                                          # Extract known types
+                                          upper_code = code.upper()
+                                          if upper_code.startswith("ZSD"): pool_codes.append("ZSD")
+                                          elif upper_code.startswith("ÜSD") or upper_code.startswith("USD"): pool_codes.append("ÜSD")
+                                          elif upper_code.startswith("GSD"): pool_codes.append("GSD")
+                                          elif "SD" in upper_code: pool_codes.append("SD")
+                                      elif "seçmeli" in course.lower() or "sdi" in code.lower() or "gsd" in code.lower():
+                                          is_elective = True
+                                          # No default pool assigned
+                                  
+                                  # Deduplicate validation
+                                  pool_codes = sorted(list(set(pool_codes)))
+                                  
+                                  if "CSE301" in code:
+                                      print(f"DEBUG: Processing CSE301. Dept: {dept_name_for_lookup}")
+                                      print(f"DEBUG: Clean Name: '{clean_name}'")
+                                      print(f"DEBUG: Found Pools: {pool_codes}")
+                                      print(f"DEBUG: is_elective: {is_elective}")
+                                  
+                                  schedule_data.append((day, start, end, display_course, extra_info, is_elective, course, code, pool_codes))
+         
+                              elif len(item) == 7:
+                                  day, start, end, course, teacher, room, code = item
+                                  display_course = f"[{code}] {course}"
+                                  room_label = room if room else "Belirsiz"
+                                  teacher_label = teacher if teacher else "Belirsiz"
+                                  extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
+                                  
+                                  is_elective = "seçmeli" in course.lower() or "sdi" in code.lower() or "gsd" in code.lower()
+                                  schedule_data.append((day, start, end, display_course, extra_info, is_elective, course))
+                              elif len(item) == 6: # Legacy/Fallback
+                                  day, start, end, course, teacher, room = item
+                                  room_label = room if room else "Belirsiz"
+                                  teacher_label = teacher if teacher else "Belirsiz"
+                                  extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
+                                  
+                                  is_elective = "seçmeli" in course.lower()
+                                  schedule_data.append((day, start, end, course, extra_info, is_elective, course))
+                              else:
+                                  schedule_data.append(item)
+                          except Exception as e:
+                              print(f"ERROR processing item {idx}: {item} - Error: {e}")
+                              import traceback
+                              traceback.print_exc()
+                              continue
                               
-                              # Check elective and get pool codes
-                              is_elective = "seçmeli" in course.lower() or "sdi" in code.lower() or "gsd" in code.lower()
-                              
-                              # Determine pool codes from course code
-                              pool_codes = []
-                              if is_elective:
-                                  if code.startswith("ZSD"):
-                                      pool_codes.append("ZSD")
-                                  elif code.startswith("SD"):
-                                      pool_codes.append("SD")
-                                  elif code.startswith("ÜSD") or code.startswith("USD"):
-                                      pool_codes.append("ÜSD")
-                                  elif code.startswith("GSD"):
-                                      pool_codes.append("GSD")
-                                  elif "Seçmeli" in course:
-                                      pool_codes.append("SD")  # Default
-                              
-                              schedule_data.append((day, start, end, display_course, extra_info, is_elective, course, code, pool_codes))
- 
-                          elif len(item) == 7:
-                              day, start, end, course, teacher, room, code = item
-                              display_course = f"[{code}] {course}"
-                              room_label = room if room else "Belirsiz"
-                              teacher_label = teacher if teacher else "Belirsiz"
-                              extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
-                              
-                              is_elective = "seçmeli" in course.lower() or "sdi" in code.lower() or "gsd" in code.lower()
-                              schedule_data.append((day, start, end, display_course, extra_info, is_elective, course))
-                          elif len(item) == 6: # Legacy/Fallback
-                              day, start, end, course, teacher, room = item
-                              room_label = room if room else "Belirsiz"
-                              teacher_label = teacher if teacher else "Belirsiz"
-                              extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
-                              
-                              is_elective = "seçmeli" in course.lower()
-                              schedule_data.append((day, start, end, course, extra_info, is_elective, course))
-                          else:
-                              schedule_data.append(item)
+                          if False: # Placeholder to maintain indentation flow if needed
+                              pass
             
             if schedule_data:
                 # Merge consecutive blocks
@@ -535,26 +597,17 @@ class ScheduleController:
                             
                         # Handle Electives
                         if electives:
-                            if show_electives:
-                                # If showing, check if we need to group?
-                                # If multiple electives in same slot -> "Seçmeli Ders Grubu"
-                                if len(electives) > 1:
-                                    # Create Group Item
-                                    day, start, end = key
-                                    display = "Seçmeli Ders Grubu"
-                                    # Collect names for extra info
-                                    names = ", ".join([e[6] for e in electives]) # raw name
-                                    extra = f"Dersler:\n{names}"
-                                    final_data.append((day, start, end, display, extra))
+                            # PASS ALL ELECTIVE DATA TO CALENDAR VIEW
+                            # The View will handle filtering based on checkboxes!
+                            for e in electives:
+                                # Ensure we pass the full extended data tuple (9 items)
+                                # (day, start, end, display, extra, is_e, real_name, code, pools)
+                                # item may have more than 9, but we need at least up to pools
+                                if len(e) >= 9:
+                                    final_data.append(e[:9])
                                 else:
-                                    # Show single
-                                    final_data.append(electives[0][:5])
-                            else:
-                                # If not showing, skip?
-                                # User said: "sınıf kısmında seçmeli dersler diye bir seçenek olsun" 
-                                # implying toggle.
-                                # "takvimde gösterilen ... seçmelileri kaldır" -> Hide by default.
-                                pass 
+                                    # Fallback if somehow shorter? Should not happen with new loop
+                                    final_data.append(e) 
                                 
                     self.calendar_view.display_schedule(final_data)
                 else:

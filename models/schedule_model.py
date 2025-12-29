@@ -799,6 +799,18 @@ class ScheduleModel(QObject):
         if sonuc:
             return sonuc[0]
         else:
+            return 0
+            
+    def get_department_name(self, dept_id: int) -> Optional[str]:
+        """Get department name from ID"""
+        try:
+            self.c.execute("SELECT bolum_adi FROM Bolumler WHERE bolum_id = ?", (dept_id,))
+            row = self.c.fetchone()
+            return row[0] if row else None
+        except Exception as e:
+            print(f"Error fetching dept name: {e}")
+            return None
+        else:
             raise ValueError(f"{bolum_adi} adında ve {fakulte_num} fakülte numarasında bir bölüm bulunamadı.")
 
     def _format_ogrenci_num(self, girme_senesi, fakulte_num, bolum_num, program_tipi, sira):

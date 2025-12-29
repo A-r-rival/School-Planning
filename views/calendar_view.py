@@ -8,8 +8,8 @@ from PyQt5.QtWidgets import (
     QTableWidget, QTableWidgetItem, QHeaderView, QFrame, QCheckBox,
     QListView
 )
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QColor, QBrush, QPainter, QPen
+from PyQt5.QtCore import Qt, pyqtSignal, QSignalBlocker
+from PyQt5.QtGui import QColor, QBrush
 import hashlib
 from scripts import curriculum_data
 
@@ -155,7 +155,7 @@ class CalendarView(QWidget):
     def _setup_calendar_grid(self):
         """Setup the table widget as a calendar"""
         days = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma"]
-        hours = [f"{h:02d}:00" for h in range(8, 18)] # 08:00 to 17:00
+        hours = [f"{h:02d}:00" for h in range(8, 17)] # 08:00 to 16:00 (End 17:00)
         
         self.calendar_table.setColumnCount(len(days))
         self.calendar_table.setRowCount(len(hours))
@@ -168,8 +168,8 @@ class CalendarView(QWidget):
         self.calendar_table.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.calendar_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.calendar_table.setSelectionMode(QTableWidget.NoSelection)
-        
-    def _on_view_type_changed(self):
+
+    def _on_view_type_changed(self, idx=None):
         """Handle view type change"""
         view_type = self.view_type_combo.currentText()
         
@@ -213,9 +213,6 @@ class CalendarView(QWidget):
             self.update_pool_checkboxes()
             
         self.filter_changed.emit("filter_selected", data)
-
-    # Removed _on_elective_filter_changed and _update_elective_options
-    # Replaced by dynamic pool checkbox logic
     
     def _clear_pool_checkboxes(self):
         """Remove all dynamic pool checkboxes"""
@@ -227,138 +224,122 @@ class CalendarView(QWidget):
     
     def update_pool_checkboxes(self):
         """Create color-coded checkboxes for each elective pool in current semester"""
-        if self.view_type_combo.currentText() != "Öğrenci Grubu":
-            return
-
-        dept_text = self.filter_widget_2.currentText()
-        year_text = self.filter_widget_3.currentText()
-
-        if not dept_text or not year_text or year_text == "Seçiniz...":
-            self.pool_checks_frame.hide()
-            self._clear_pool_checkboxes()
-            return
-
-        # Clean dept name
-        dept_name = dept_text.split('(')[0].strip()
-        
         try:
-            year = int(year_text)
-        except ValueError:
-            return
+            print("DEBUG: update_pool_checkboxes started")
+            if self.view_type_combo.currentText() != "Öğrenci Grubu":
+                return
 
-        # Get curriculum data
-        dept_data = curriculum_data.DEPARTMENTS_DATA.get(dept_name)
-        if not dept_data or 'curriculum' not in dept_data:
-            return
+            dept_text = self.filter_widget_2.currentText()
+            year_text = self.filter_widget_3.currentText()
 
-        # Auto-detect Semester
-        from datetime import datetime
-        current_month = datetime.now().month
-        
-        # Fall: 8, 9, 10, 11, 12, 1 | Spring: 2, 3, 4, 5, 6, 7
-        is_fall = current_month in [8, 9, 10, 11, 12, 1]
-        
-        # Calculate target semester ID (1-8)
-        semester_num = (year - 1) * 2 + (1 if is_fall else 2)
-        semester_name = "Güz" if is_fall else "Bahar"
-        
-        sem_courses = dept_data['curriculum'].get(str(semester_num), [])
-        
-        # Identify Pools and Internships in this semester
-        required_pools = {}  # pool_type -> sum_akts
-        internship_akts = 0  # Total internship AKTS
-        project_courses = []  # List of (code, name, akts) for excluded projects
-        
-        for course in sem_courses:
-            if len(course) < 3:
-                continue
-            code = course[0]
-            name = course[1]
-            akts = course[2]
+            if not dept_text or not year_text or year_text == "Seçiniz...":
+                self.pool_checks_frame.hide()
+                self._clear_pool_checkboxes()
+                return
+
+            # Clean dept name
+            dept_name = dept_text.split('(')[0].strip()
+            print(f"DEBUG: Processing pool checkboxes for Dept: {dept_name}, Year: {year_text}")
             
+            try:
+                year = int(year_text)
+            except ValueError:
+                return
+
+            # Get curriculum data
+            dept_data = curriculum_data.DEPARTMENTS_DATA.get(dept_name)
+            if not dept_data or 'curriculum' not in dept_data:
+                print(f"DEBUG: No curriculum data found for {dept_name}")
+                return
+
+            # Auto-detect Semester
+            from datetime import datetime
+            current_month = datetime.now().month
+            
+            is_fall = current_month in [8, 9, 10, 11, 12, 1]
+            
+            semester_num = (year - 1) * 2 + (1 if is_fall else 2)
+            semester_name = "Güz" if is_fall else "Bahar"
+            
+            sem_courses = dept_data['curriculum'].get(str(semester_num), [])
+            print(f"DEBUG: Found {len(sem_courses)} courses in curriculum for Sem {semester_num}")
+            
+            required_pools = {}
+            internship_akts = 0
+            project_courses = []
+            
+            for course in sem_courses:
+                if len(course) < 3: continue
+                code, name, akts = course[0], course[1], course[2]
+                
             # Check for internship first
-            if code.startswith("PRK") or "Staj" in name or "Internship" in name:
-                internship_akts += akts
-                continue
-            
+                if code.startswith("PRK") or "Staj" in name or "Internship" in name:
+                    internship_akts += akts
+                    continue
+                
             # Check for excluded project courses (matching scheduler logic)
-            name_lower = name.lower()
-            if any(x in name_lower for x in [
-                "proje i", "proje ii",
-                "bitirme projesi",
-                "seçmeli alan - proje", "seçmeli ders alanı - proje",
-                "yazılım projesi", "donanım projesi", "endüstri projesi",
-                "mekatronik projesi", "elektrik-elektronik müh. projesi",
-                "yazılım mühendisliği projesi", "elektrik ve elektronik mühendisliği projesi",
-                "interdisipliner proje", "uygulamalı proje"
-            ]):
-                project_courses.append((code, name, akts))
-                continue
-            
-            pool_type = None
+                name_lower = name.lower()
+                if any(x in name_lower for x in ["proje", "project"]):
+                    project_courses.append((code, name, akts))
+                    continue
+                
+                pool_type = None
+                if code.startswith("ZSD"): pool_type = "ZSD"
+                elif code.startswith("USD") or code.startswith("ÜSD"): pool_type = "ÜSD"
+                elif code.startswith("SD"): pool_type = code # Keep specific code
+                
+                if "Seçmeli Ders" in name and not pool_type: pool_type = "SD"
+                
+                if pool_type:
+                    required_pools[pool_type] = required_pools.get(pool_type, 0) + akts
 
-            if code.startswith("ZSD"):
-                pool_type = "ZSD"
-            elif code.startswith("USD") or code.startswith("ÜSD"):
-                pool_type = "ÜSD"
-            elif code.startswith("SD"): 
-                pool_type = "SD"
+            self._clear_pool_checkboxes()
             
-            if "Seçmeli Ders" in name and not pool_type:
-                pool_type = "SD"
+            if not required_pools and internship_akts == 0 and not project_courses:
+                self.pool_checks_frame.hide()
+                return
             
-            if pool_type:
-                required_pools[pool_type] = required_pools.get(pool_type, 0) + akts
-
-        # Clear and recreate checkboxes
-        self._clear_pool_checkboxes()
-        
-        if not required_pools and internship_akts == 0 and not project_courses:
-            self.pool_checks_frame.hide()
-            return
-        
-        # Show frame and add label
-        self.pool_checks_frame.show()
-        label = QLabel(f"{semester_name} Seçmelileri:")
-        label.setStyleSheet("font-weight: bold; margin-right: 5px;")
-        self.pool_checks_layout.addWidget(label)
-        
-        # Create checkbox for each pool
-        for pool_type in sorted(required_pools.keys()):
-            akts = required_pools[pool_type]
-            color = self._generate_color(pool_type)
+            self.pool_checks_frame.show()
+            label = QLabel(f"{semester_name} Seçmelileri:")
+            label.setStyleSheet("font-weight: bold; margin-right: 5px;")
+            self.pool_checks_layout.addWidget(label)
             
-            chk = QCheckBox(f"{pool_type} ({akts} AKTS)")
-            chk.setStyleSheet(f"font-weight: bold; color: {color.name()};")
-            chk.setChecked(False)  # Default unchecked
-            chk.toggled.connect(self._on_pool_toggled)
+            print(f"DEBUG: Adding checkboxes for pools: {list(required_pools.keys())}")
+            for pool_type in sorted(required_pools.keys()):
+                akts = required_pools[pool_type]
+                color = self._generate_color(pool_type)
+                
+                chk = QCheckBox(f"{pool_type} ({akts} AKTS)")
+                chk.setStyleSheet(f"font-weight: bold; color: {color.name()};")
+                # Block signals to prevent triggering toggle immediately
+                with  QSignalBlocker(chk):
+                     chk.setChecked(False)
+                chk.toggled.connect(self._on_pool_toggled)
+                self.pool_checks_layout.addWidget(chk)
+                self.pool_checkboxes[pool_type] = chk
             
-            self.pool_checks_layout.addWidget(chk)
-            self.pool_checkboxes[pool_type] = chk
+            if internship_akts > 0:
+                lbl = QLabel(f"Staj ({internship_akts} AKTS)")
+                lbl.setStyleSheet("font-weight: bold; color: black; margin-left: 10px;")
+                self.pool_checks_layout.addWidget(lbl)
         
-        # Add internship info (if exists) - no checkbox, just label
-        if internship_akts > 0:
-            internship_label = QLabel(f"Staj ({internship_akts} AKTS)")
-            internship_label.setStyleSheet("font-weight: bold; color: black; margin-left: 10px;")
-            self.pool_checks_layout.addWidget(internship_label)
-    
-        # Add project labels (no checkbox, just info with full details)
-        for code, name, akts in project_courses:
-            project_label = QLabel(f"  [{code}] {name} ({akts} AKTS)")
-            project_label.setStyleSheet("font-weight: bold; color: #444; margin-left: 10px; font-size: 9pt;")
-            self.pool_checks_layout.addWidget(project_label)
+            for code, name, akts in project_courses:
+                lbl = QLabel(f"  [{code}] {name} ({akts} AKTS)")
+                lbl.setStyleSheet("font-weight: bold; color: #444; margin-left: 10px; font-size: 9pt;")
+                self.pool_checks_layout.addWidget(lbl)
+                
+            print("DEBUG: update_pool_checkboxes complete")
+        except Exception as e:
+            print(f"ERROR in update_pool_checkboxes: {e}")
+            import traceback
+            traceback.print_exc()
 
     def _on_pool_toggled(self, checked):
-        """Handle pool checkbox toggle - re-render with new filter"""
-        # Re-display schedule with updated pool filters
         if self.last_schedule_data:
             self.display_schedule(self.last_schedule_data)
     
     def _on_filter_1_changed(self):
-        """Handle first filter change (Teacher/Classroom/Faculty)"""
         view_type = self.view_type_combo.currentText()
-        
-        # If Student Group (Faculty changed), reset Dept and Year
         if view_type == "Öğrenci Grubu":
             self.filter_widget_2.blockSignals(True)
             self.filter_widget_3.blockSignals(True)
@@ -368,261 +349,247 @@ class CalendarView(QWidget):
             self.filter_widget_3.addItems([str(i) for i in range(1, 5)])
             self.filter_widget_2.blockSignals(False)
             self.filter_widget_3.blockSignals(False)
-            
         self._on_filter_changed()
 
     def _on_filter_2_changed(self):
-        """Handle second filter change (Dept)"""
-        view_type = self.view_type_combo.currentText()
-        # If Student Group (Dept changed), reset Year? 
-        # Actually year is static 1-4, maybe just let it be.
-        # But we need to ensure the correct signals flow.
         self._on_filter_changed()
 
     def _on_filter_3_changed(self):
         self._on_filter_changed()
 
     def update_filter_options(self, widget_index, items):
-        """
-        Update items in a filter combobox
-        items: List of (id, name) tuples
-        """
-        print(f"DEBUG: update_filter_options called with index {widget_index}, {len(items)} items")
         try:
-            print(f"DEBUG: widget_index type: {type(widget_index)}")
             widget = None
-            if widget_index == 1:
-                widget = self.filter_widget_1
-            elif widget_index == 2:
-                widget = self.filter_widget_2
-            
-            print(f"DEBUG: Selected widget: {widget}")
+            if widget_index == 1: widget = self.filter_widget_1
+            elif widget_index == 2: widget = self.filter_widget_2
                 
             if widget is not None:
-                print(f"DEBUG: Found widget for index {widget_index}, populating...")
                 widget.blockSignals(True)
                 widget.clear()
                 widget.addItem("Seçiniz...", None)
                 for item_id, name in items:
                     widget.addItem(str(name), item_id)
-                widget.setCurrentIndex(0) # Select "Seçiniz..." explicitly
-                widget.show() # Force visibility (Critical fix)
+                widget.setCurrentIndex(0)
                 widget.blockSignals(False)
-                widget.show() # Force Show (Fix for missing dropdown)
-                print(f"DEBUG: Population complete. Widget visible: {widget.isVisible()}")
-                print("DEBUG: Population complete.")
-            else:
-                print(f"DEBUG: No widget found for index {widget_index}")
-        except Exception as e:
-            print(f"ERROR in update_filter_options: {e}")
-            import traceback
-            traceback.print_exc()
+                widget.show()
+        except Exception:
+            pass
 
     def display_schedule(self, schedule_data):
         """
         Display schedule on the grid with merged blocks for consecutive hours
         schedule_data: List of tuples (Day, Start, End, CourseName, ExtraInfo)
         """
-        # Store for client-side filtering when checkboxes change
-        self.last_schedule_data = schedule_data
-        
-        self.calendar_table.clearContents()
-        self.calendar_table.clearSpans()
-        
-        day_map = {
-            "Pazartesi": 0, "Salı": 1, "Çarşamba": 2, "Perşembe": 3, 
-            "Cuma": 4
-        }
-        
-        # Determine Context (Dept Name) for Pool Lookup
-        current_dept_name = None
-        if self.view_type_combo.currentText() == "Öğrenci Grubu":
-             full_text = self.filter_widget_2.currentText() 
-             current_dept_name = full_text.split('(')[0].strip()
-        
-        # Get active pool filters
-        active_pools = {name for name, chk in self.pool_checkboxes.items() if chk.isChecked()}
-        
-        # 1. Organize data onto a grid structure: slot[day_name][start_hour]
-        slots = {d: {} for d in day_map}
-        seen_pools = {} # name -> color
-
-        for item in schedule_data:
-            if len(item) < 4: continue
-            day, start, end, course = item[0], item[1], item[2], item[3]
-            extra = item[4] if len(item) > 4 else ""
+        try:
+            print(f"DEBUG: display_schedule started. Items: {len(schedule_data)}")
+            # Store for client-side filtering when checkboxes change
+            self.last_schedule_data = schedule_data
             
-            # Unpack extended data if available
-            is_elective = False
-            pool_codes = set()
-            if len(item) > 8: # (day, start, end, display, extra, is_e, real_name, code, pool_codes)
-                 is_elective = item[5]
-                 pool_codes = set(item[8]) if item[8] else set()
+            self.calendar_table.clearContents()
+            self.calendar_table.clearSpans()
             
-            # Pool Identification (for Coloring & Filtering)
-            pools_found = set()
-            if is_elective and current_dept_name:
-                if pool_codes:
-                     pools_found = pool_codes
-                else:
-                     # Fallback to text search if pool_codes missing
-                     search_text = course
-                     if isinstance(extra, str):
-                         search_text += " " + extra
-                     pools_found = self._identify_pools(search_text, current_dept_name)
+            day_map = {
+                "Pazartesi": 0, "Salı": 1, "Çarşamba": 2, "Perşembe": 3, 
+                "Cuma": 4
+            }
             
-            # --- FILTERING ---
+            # Determine Context (Dept Name)
+            current_dept_name = None
             if self.view_type_combo.currentText() == "Öğrenci Grubu":
-                if is_elective:
-                    # Only show if at least one of its pools is checked
-                    if not pools_found:
-                        # Elective but no pool identified - hide if any filters active
-                        if active_pools:
-                            continue
+                full_text = self.filter_widget_2.currentText() 
+                current_dept_name = full_text.split('(')[0].strip()
+            
+            active_pools = {name for name, chk in self.pool_checkboxes.items() if chk.isChecked()}
+            
+            slots = {d: {} for d in day_map}
+            seen_pools = {} 
+
+            for item in schedule_data:
+                if len(item) < 4: continue
+                day, start, end, course = item[0], item[1], item[2], item[3]
+                extra = item[4] if len(item) > 4 else ""
+                
+                # Unpack extended data
+                is_elective = False
+                pool_codes = set()
+                if len(item) > 8: 
+                    is_elective = item[5]
+                    pool_codes = set(item[8]) if item[8] else set()
+                
+                # Pool Identification
+                pools_found = set()
+                if is_elective and current_dept_name:
+                    if pool_codes:
+                        pools_found = pool_codes
                     else:
-                        # Check if any of the course's pools are selected
-                        if not any(p in active_pools for p in pools_found):
-                            continue
-            
-            if day not in day_map: continue
-            
-            pool_colors = []
-            if pools_found:
-                for p_name in sorted(pools_found):
-                    color = self._generate_color(p_name)
-                    seen_pools[p_name] = color
-                    pool_colors.append(color)
+                        search_text = course
+                        if isinstance(extra, str):
+                            search_text += " " + extra
+                        pools_found = self._identify_pools(search_text, current_dept_name)
+                
+                # --- FILTERING ---
+                if self.view_type_combo.currentText() == "Öğrenci Grubu":
+                    if is_elective:
+                        # Debug logic for filtering using a hash to prevent spam
+                        # if "Makine" in course:
+                        #    print(f"DEBUG_FILTER: Course 'Makine' | Pools Found: {pools_found} | Active Pools: {active_pools}")
 
-            try:
-                start_hour = int(start.split(':')[0])
+                        if not pools_found:
+                            if active_pools:
+                                continue
+                        else:
+                            if not any(p in active_pools for p in pools_found):
+                                continue
                 
-                # Store as LIST to support multiple courses per slot
-                if start_hour not in slots[day]:
-                    slots[day][start_hour] = []
+                if day not in day_map: continue
                 
-                slots[day][start_hour].append({
-                    'start_str': start, 
-                    'end_str': end, 
-                    'course': course, 
-                    'extra': extra,
-                    'pool_colors': pool_colors,
-                    'is_elective': is_elective
-                })
-            except:
-                continue
+                pool_colors = []
+                if pools_found:
+                    for p_name in sorted(pools_found):
+                        color = self._generate_color(p_name)
+                        seen_pools[p_name] = color
+                        pool_colors.append(color)
 
-        # 2. Render: Handle multiple courses per slot + merge consecutive
-        for day_name, day_slots in slots.items():
-            if day_name not in day_map: continue 
-            col = day_map[day_name]
-            
-            start_hours = sorted(day_slots.keys())
-            if not start_hours:
-                continue
+                try:
+                    start_hour = int(start.split(':')[0])
+                    if start_hour not in slots[day]:
+                        slots[day][start_hour] = []
+                    
+                    slots[day][start_hour].append({
+                        'start_str': start, 
+                        'end_str': end, 
+                        'course': course, 
+                        'extra': extra,
+                        'pool_colors': pool_colors,
+                        'is_elective': is_elective
+                    })
+                except:
+                    continue
+
+            # 2. Render
+            print("DEBUG: slots prepared, starting render loop")
+            for day_name, day_slots in slots.items():
+                if day_name not in day_map: continue 
+                col = day_map[day_name]
                 
-            i = 0
-            while i < len(start_hours):
-                current_start = start_hours[i]
-                courses_in_slot = day_slots[current_start]  # Now a LIST
-                
-                row = current_start - 8  # 08:00 is row 0
-                if row < 0 or row >= self.calendar_table.rowCount():
-                    i += 1
+                start_hours = sorted(day_slots.keys())
+                if not start_hours:
                     continue
                 
-                # CASE 1: Multiple courses in same slot → Vertical split
-                if len(courses_in_slot) > 1:
-                    from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
+                i = 0
+                while i < len(start_hours):
+                    current_start = start_hours[i]
+                    courses_in_slot = day_slots[current_start] 
                     
-                    container = QWidget()
-                    vlayout = QVBoxLayout(container)
-                    vlayout.setContentsMargins(1, 1, 1, 1)
-                    vlayout.setSpacing(2)
+                    row = current_start - 8 
+                    if row < 0 or row >= self.calendar_table.rowCount():
+                        i += 1
+                        continue
                     
-                    for course_data in courses_in_slot:
-                        text = f"{course_data['course']}"
-                        if course_data['start_str']:
-                            text += f"\n{course_data['start_str']}-{course_data['end_str']}"
+                    # CASE 1: Multiple courses -> Horizontal split (side-by-side)
+                    if len(courses_in_slot) > 1:
+                        from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel
                         
-                        lbl = QLabel(text)
-                        lbl.setAlignment(Qt.AlignCenter)
-                        lbl.setWordWrap(True)
+                        container = QWidget()
+                        hlayout = QHBoxLayout(container) # Horizontal Layout
+                        hlayout.setContentsMargins(1, 1, 1, 1)
+                        hlayout.setSpacing(2)
                         
-                        # Background color based on pool
-                        p_colors = course_data['pool_colors']
-                        if p_colors:
-                            bg_color = p_colors[0].name()
-                        else:
-                            bg_color = "#E3F2FD"  # Baby blue for mandatory
-                        
-                        lbl.setStyleSheet(f"background-color: {bg_color}; border: 1px solid #aaa; padding: 3px; font-size: 8pt;")
-                        vlayout.addWidget(lbl)
-                    
-                    self.calendar_table.setCellWidget(row, col, container)
-                    i += 1
-                    
-                # CASE 2: Single course → Use merge logic
-                else:
-                    current_data = courses_in_slot[0]
-                    
-                    # Check for consecutive blocks
-                    span = 1
-                    next_check_idx = i + 1
-                    
-                    while next_check_idx < len(start_hours):
-                        next_start = start_hours[next_check_idx]
-                        next_courses = day_slots[next_start]
-                        
-                        # Only merge if next slot also has 1 course AND it's the same
-                        if len(next_courses) == 1:
-                            next_data = next_courses[0]
+                        for course_data in courses_in_slot:
+                            text = f"{course_data['course']}"
+                            if course_data['start_str']:
+                                text += f"\n{course_data['start_str']}-{course_data['end_str']}"
                             
-                            if (current_start + span == next_start and 
-                                current_data['course'] == next_data['course'] and 
-                                str(current_data['extra']) == str(next_data['extra'])):
+                            lbl = QLabel(text)
+                            lbl.setAlignment(Qt.AlignCenter)
+                            lbl.setWordWrap(True)
+                            
+                            # Set Tooltip
+                            full_tooltip = f"{course_data['course']}\n{course_data['extra']}\n{course_data['start_str']}-{course_data['end_str']}"
+                            lbl.setToolTip(full_tooltip)
+                            
+                            # Background color
+                            p_colors = course_data['pool_colors']
+                            if p_colors:
+                                bg_color = p_colors[0].name()
+                            else:
+                                bg_color = "#E3F2FD" 
+                            
+                            lbl.setStyleSheet(f"background-color: {bg_color}; border: 1px solid #aaa; padding: 2px; font-size: 8pt;")
+                            hlayout.addWidget(lbl)
+                        
+                        self.calendar_table.setCellWidget(row, col, container)
+                        i += 1
+                        
+                    # CASE 2: Single course -> Use merge logic
+                    else:
+                        current_data = courses_in_slot[0]
+                        
+                        # Check for consecutive blocks
+                        span = 1
+                        next_check_idx = i + 1
+                        
+                        while next_check_idx < len(start_hours):
+                            next_start = start_hours[next_check_idx]
+                            next_courses = day_slots[next_start]
+                            
+                            # Only merge if next slot also has 1 course AND it's the same
+                            if len(next_courses) == 1:
+                                next_data = next_courses[0]
                                 
-                                span += 1
-                                next_check_idx += 1
+                                if (current_start + span == next_start and 
+                                    current_data['course'] == next_data['course'] and 
+                                    str(current_data['extra']) == str(next_data['extra'])):
+                                    
+                                    span += 1
+                                    next_check_idx += 1
+                                else:
+                                    break
                             else:
                                 break
+                        
+                        # Determine final end time
+                        if span > 1:
+                            last_block_start = start_hours[i + span - 1]
+                            final_end_str = day_slots[last_block_start][0]['end_str']
                         else:
-                            break
-                    
-                    # Determine final end time
-                    if span > 1:
-                        last_block_start = start_hours[i + span - 1]
-                        final_end_str = day_slots[last_block_start][0]['end_str']
-                    else:
-                        final_end_str = current_data['end_str']
-                    
-                    text = f"{current_data['course']}\n{current_data['extra']}"
-                    if current_data['start_str'] and current_data['end_str']:
-                         text += f"\n{current_data['start_str']}-{final_end_str}"
-                    
-                    item = QTableWidgetItem(text)
-                    item.setTextAlignment(Qt.AlignCenter)
-                    item.setToolTip(text.replace('\n', '<br>'))
-                    
-                    # Apply Colors based on pool
-                    p_colors = current_data['pool_colors']
-                    if p_colors:
-                         if len(p_colors) == 1:
-                             item.setBackground(p_colors[0])
-                         else:
-                             # Multiple pools - diagonal pattern
-                             brush = QBrush(p_colors[0], Qt.FDiagPattern)
-                             item.setBackground(brush)
-                    else:
-                         # Mandatory course - Baby blue
-                         item.setBackground(QColor(227, 242, 253))
-                    
-                    self.calendar_table.setItem(row, col, item)
-                    if span > 1:
-                        self.calendar_table.setSpan(row, col, span, 1)
-                    
-                    i += span
+                            final_end_str = current_data['end_str']
+                        
+                        text = f"{current_data['course']}\n{current_data['extra']}"
+                        if current_data['start_str'] and current_data['end_str']:
+                            text += f"\n{current_data['start_str']}-{final_end_str}"
+                        
+                        item = QTableWidgetItem(text)
+                        item.setTextAlignment(Qt.AlignCenter)
+                        item.setToolTip(text.replace('\n', '<br>'))
+                        
+                        # Apply Colors based on pool
+                        p_colors = current_data['pool_colors']
+                        if p_colors:
+                            if len(p_colors) == 1:
+                                item.setBackground(p_colors[0])
+                            else:
+                                # Multiple pools - diagonal pattern
+                                brush = QBrush(p_colors[0], Qt.FDiagPattern)
+                                item.setBackground(brush)
+                        else:
+                            # Mandatory course - Baby blue
+                            item.setBackground(QColor(227, 242, 253))
+                        
+                        self.calendar_table.setItem(row, col, item)
+                        if span > 1:
+                            self.calendar_table.setSpan(row, col, span, 1)
+                        
+                        i += span
 
-        self.legend.update_legend(seen_pools)
+            self.legend.update_legend(seen_pools)
+            print("DEBUG: display_schedule complete")
+        except Exception as e:
+            print(f"ERROR in display_schedule: {e}")
+            import traceback
+            traceback.print_exc()
+        
+
 
     def _identify_pools(self, text, dept_name):
         """Identify which pools the courses in 'text' belong to."""
