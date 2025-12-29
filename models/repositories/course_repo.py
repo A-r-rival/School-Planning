@@ -96,6 +96,37 @@ class CourseRepository:
         rows = self._fetch_instances(name)
         return [CourseInstance(inst, code) for inst, code in rows]
 
+    def get_id(self, name: str, instance: int) -> int:
+        """
+        Get course database ID by name and instance.
+        
+        Args:
+            name: Course name
+            instance: Course instance number
+        
+        Returns:
+            ders_id from Dersler table
+        
+        Raises:
+            CourseCreationError: Course instance not found
+        """
+        row = self._execute(
+            """
+            SELECT ders_id
+            FROM Dersler
+            WHERE ders_adi = ? AND ders_instance = ?
+            """,
+            (name, instance)
+        ).fetchone()
+        
+        if not row:
+            from models.services.exceptions import CourseCreationError
+            raise CourseCreationError(
+                f"Course instance not found: {name} (instance {instance})"
+            )
+        
+        return row[0]
+
     # ---------- Internal helpers ----------
 
     def _execute(self, sql: str, params: tuple = ()):

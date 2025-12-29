@@ -140,6 +140,41 @@ class ScheduleRepository:
         )
         return [self._row_to_entity(row) for row in self.c.fetchall()]
 
+    def add_raw(
+        self,
+        ders_id: int,
+        instance: int,
+        teacher_id: int,
+        gun: str,
+        baslangic: str,
+        bitis: str,
+        siniflar: str = ""
+    ) -> None:
+        """
+        Raw insert into Ders_Programi table.
+        
+        Note: Temporary method for service layer integration.
+        Will be replaced with add(ScheduledCourse) in future refactor.
+        
+        Args:
+            ders_id: Course database ID
+            instance: Course instance number
+            teacher_id: Teacher database ID
+            gun: Day of week
+            baslangic: Start time (HH:MM)
+            bitis: End time (HH:MM)
+            siniflar: Connected classes (optional)
+        """
+        self.c.execute(
+            """
+            INSERT INTO Ders_Programi (
+                ders_id, ders_instance, ogretmen_id,
+                gun, baslangic, bitis, siniflar
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (ders_id, instance, teacher_id, gun, baslangic, bitis, siniflar)
+        )
+
     # ---------- helpers ----------
 
     @staticmethod
