@@ -1,0 +1,20 @@
+--- Searching for Machine Learning ---
+ID: 16092 | Name: Elektrik Makineleri I / Electrical Machines I | Day: Perşembe | Time: 14:00-15:00 | Type: Teori | Code: ETE331 | Inst: 1
+ID: 16093 | Name: Elektrik Makineleri I / Electrical Machines I | Day: Perşembe | Time: 15:00-16:00 | Type: Teori | Code: ETE331 | Inst: 1
+ID: 16094 | Name: Elektrik Makineleri I / Electrical Machines I | Day: Perşembe | Time: 16:00-17:00 | Type: Teori | Code: ETE331 | Inst: 1
+ID: 16095 | Name: Elektrik Makineleri I / Electrical Machines I | Day: Pazartesi | Time: 15:00-16:00 | Type: Uygulama | Code: ETE331 | Inst: 1
+ID: 16096 | Name: Elektrik Makineleri I / Electrical Machines I | Day: Cuma | Time: 12:00-13:00 | Type: Lab | Code: ETE331 | Inst: 1
+ID: 16114 | Name: Makine Öğrenmesiyle Biyomedikal Modelleme | Day: Pazartesi | Time: 13:00-14:00 | Type: Uygulama | Code: SDV | Inst: 1
+ID: 16187 | Name: Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics | Day: Cuma | Time: 14:00-15:00 | Type: Teori | Code: MAB317 | Inst: 1
+ID: 16188 | Name: Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics | Day: Cuma | Time: 15:00-16:00 | Type: Teori | Code: MAB317 | Inst: 1
+ID: 16189 | Name: Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics | Day: Cuma | Time: 16:00-17:00 | Type: Teori | Code: MAB317 | Inst: 1
+ID: 16190 | Name: Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics | Day: Perşembe | Time: 08:00-9:00 | Type: Uygulama | Code: MAB317 | Inst: 1
+ID: 16191 | Name: Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics | Day: Perşembe | Time: 09:00-10:00 | Type: Uygulama | Code: MAB317 | Inst: 1
+ID: 16292 | Name: Human-Machine Interaction / Bilg.-Makine Etkileşimi | Day: Perşembe | Time: 12:00-13:00 | Type: Teori | Code: ZSD | Inst: 1
+ID: 16293 | Name: Human-Machine Interaction / Bilg.-Makine Etkileşimi | Day: Perşembe | Time: 13:00-14:00 | Type: Teori | Code: ZSD | Inst: 1
+ID: 16294 | Name: Electrical Machines I / Elektrik Makinaları I | Day: Perşembe | Time: 13:00-14:00 | Type: Uygulama | Code: ZSD | Inst: 1
+ID: 16295 | Name: Electrical Machines I / Elektrik Makinaları I | Day: Çarşamba | Time: 15:00-16:00 | Type: Lab | Code: ZSD | Inst: 1
+ID: 16305 | Name: Machine Learning / Makine Öğrenmesi | Day: Perşembe | Time: 12:00-13:00 | Type: Teori | Code: ZSD | Inst: 1
+ID: 16306 | Name: Machine Learning / Makine Öğrenmesi | Day: Perşembe | Time: 13:00-14:00 | Type: Teori | Code: ZSD | Inst: 1
+ID: 16581 | Name: Makine Öğrenmesi | Day: Pazartesi | Time: 10:00-12:00 | Type: None | Code: SDIa | Inst: 1
+ID: 16582 | Name: Makine Öğrenmesi (Seçmeli) | Day: Pazartesi | Time: 10:00-12:00 | Type: None | Code: CSE301 | Inst: 1
