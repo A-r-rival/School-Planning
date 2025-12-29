@@ -10,6 +10,9 @@ from datetime import datetime
 from typing import List, Dict, Optional, Tuple
 from PyQt5.QtCore import QObject, pyqtSignal
 
+# Import type-safe entities
+from models.entities import ScheduleSlot, CourseInput, ScheduledCourse
+
 simdiki_sene = datetime.now().year
 
 
@@ -237,32 +240,32 @@ class ScheduleModel(QObject):
         self.conn.commit()
     
     
-    def add_course(self, course_data: Dict[str, str]) -> bool:
+    def add_course(self, course_data: CourseInput) -> bool:
         """
         Add a new course to the schedule
         
         Args:
-            course_data: Dictionary containing course information
-                       {'ders': str, 'hoca': str, 'gun': str, 'baslangic': str, 'bitis': str}
+            course_data: CourseInput instance with validated course information
         
         Returns:
             bool: True if successful, False otherwise
         """
         try:
-            # Validate input data
-            if not self._validate_course_data(course_data):
-                return False
+            # Create typed slot for validation and conflict checking
+            slot = ScheduleSlot.from_strings(
+                course_data.gun,
+                course_data.baslangic,
+                course_data.bitis
+            )
             
-            # Check for time conflicts
-            if self._check_time_conflict(course_data['gun'], course_data['baslangic'], course_data['bitis']):
+            # Check for time conflicts using typed entity
+            if self._has_slot_conflict(slot):
                 self.error_occurred.emit("Bu saat aralığında zaten bir ders var!")
                 return False
 
-            ders_adi = course_data['ders']
-            hoca_adi = course_data['hoca']
-            gun = course_data['gun']
-            baslangic = course_data['baslangic']
-            bitis = course_data['bitis']
+            ders_adi = course_data.ders
+            hoca_adi = course_data.hoca
+            gun, baslangic, bitis = slot.to_db_tuple()
 
             # 1. Ensure Teacher exists
             self.c.execute("SELECT ogretmen_num FROM Ogretmenler WHERE ad || ' ' || soyad = ?", (hoca_adi,))
@@ -476,29 +479,39 @@ class ScheduleModel(QObject):
         
         return True
     
-    def _check_time_conflict(self, gun: str, baslangic: str, bitis: str) -> bool:
+    def _has_slot_conflict(self, slot: ScheduleSlot) -> bool:
         """
-        Check for time conflicts on the same day
+        Check if a time slot conflicts with existing schedule.
+        Uses typed ScheduleSlot for proper time comparison.
         
         Args:
-            gun: Day of the week
-            baslangic: Start time
-            bitis: End time
+            slot: ScheduleSlot to check for conflicts
         
         Returns:
             bool: True if conflict exists, False otherwise
         """
         try:
-            self.c.execute("SELECT baslangic, bitis FROM Ders_Programi WHERE gun = ?", (gun,))
-            existing_times = self.c.fetchall()
+            self.c.execute(
+                "SELECT baslangic, bitis FROM Ders_Programi WHERE gun = ?",
+                (slot.day,)
+            )
             
-            for exist_start, exist_end in existing_times:
-                if (baslangic < exist_end and bitis > exist_start):
+            for start_str, end_str in self.c.fetchall():
+                existing = ScheduleSlot.from_strings(slot.day, start_str, end_str)
+                if slot.overlaps(existing):
                     return True
             return False
         except Exception as e:
             print(f"Conflict check error: {e}")
             return True
+    
+    def _check_time_conflict(self, gun: str, baslangic: str, bitis: str) -> bool:
+        """
+        DEPRECATED: Use _has_slot_conflict instead.
+        Kept for backward compatibility during refactoring.
+        """
+        slot = ScheduleSlot.from_strings(gun, baslangic, bitis)
+        return self._has_slot_conflict(slot)
 
     def get_schedule_by_teacher(self, teacher_id: int) -> List[tuple]:
         """Get schedule for a specific teacher"""
