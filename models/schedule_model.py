@@ -59,7 +59,6 @@ class ScheduleModel(QObject):
             self.schedule_repo
         )
         
-    
     def add_course(self, course_data: CourseInput) -> bool:
         """
         Add a new course to the schedule.
@@ -72,19 +71,22 @@ class ScheduleModel(QObject):
             bool: True if successful, False otherwise
         """
         try:
-            # Delegate to service layer
-            course_info = self.schedule_service.add_course(course_data)
+            # Delegate to service layer - returns entity
+            scheduled_course = self.schedule_service.add_course(course_data)
+            
+            # Format entity for UI display
+            from models.formatters import ScheduleFormatter
+            course_info = ScheduleFormatter.from_scheduled_course(scheduled_course)
+            
+            # Emit signal with formatted string
             self.course_added.emit(course_info)
             return True
+            
         except ScheduleConflictError as e:
             self.error_occurred.emit(str(e))
             return False
-        except CourseCreationError as e:
-            self.error_occurred.emit(f"Failed to create course: {e}")
-            return False
-        except Exception as e:
-            self.error_occurred.emit(f"Unexpected error: {e}")
-            print(f"[ERROR] add_course failed: {e}")
+        except (CourseCreationError, Exception) as e:
+            self.error_occurred.emit(f"Failed to add course: {e}")
             return False
     
     def remove_course_by_id(self, program_id: int) -> bool:

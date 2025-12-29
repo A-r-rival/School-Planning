@@ -7,7 +7,6 @@ import sqlite3
 from typing import TYPE_CHECKING, List
 
 from models.entities import ScheduleSlot, CourseInput, ScheduledCourse
-from models.formatters import ScheduleFormatter
 from .exceptions import (
     ScheduleConflictError,
     CourseCreationError,
@@ -32,9 +31,11 @@ class ScheduleService:
     - Emit Qt signals (that's ScheduleModel's job)
     - Know about UI
     - Directly access database (uses repositories)
+    - Format strings for display (that's Formatter's job)
     
     Design:
     - No Qt dependency → fully testable
+    - No Formatter dependency → pure business logic
     - Fail-fast with exceptions
     - Transaction boundaries clearly defined
     """
@@ -51,7 +52,7 @@ class ScheduleService:
         self._course_repo = course_repo
         self._schedule_repo = schedule_repo
     
-    def add_course(self, course: CourseInput) -> str:
+    def add_course(self, course: CourseInput) -> ScheduledCourse:
         """
         Add a course to the schedule.
         
@@ -59,7 +60,7 @@ class ScheduleService:
             course: Validated course input
         
         Returns:
-            Formatted course info string for UI display
+            ScheduledCourse entity (NOT formatted string - let Model/Controller format)
             
         Raises:
             ScheduleConflictError: Time slot conflict detected
@@ -105,7 +106,7 @@ class ScheduleService:
             gun, baslangic, bitis = slot.to_db_tuple()
             
             # 5. Insert into schedule via repository
-            self._schedule_repo.add_from_components(
+            program_id = self._schedule_repo.add_from_components(
                 ders_adi=course.ders,
                 instance=instance,
                 teacher_id=teacher_id,
@@ -114,14 +115,16 @@ class ScheduleService:
             
             # Transaction commits automatically here
         
-        # Format for UI display
-        return ScheduleFormatter.format_course(
-            code=course_result.code,
-            name=course.ders,
-            teacher=course.hoca,
-            day=gun,
-            start=baslangic,
-            end=bitis
+        # Return entity - let Model/Controller format for UI
+        return ScheduledCourse(
+            program_id=program_id,
+            ders_adi=course.ders,
+            ders_instance=instance,
+            ders_kodu=course_result.code,
+            hoca=course.hoca,
+            gun=gun,
+            baslangic=baslangic,
+            bitis=bitis
         )
     
     def remove_course(self, program_id: int) -> None:

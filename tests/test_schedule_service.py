@@ -13,7 +13,7 @@ class TestScheduleServiceAddCourse:
     """Tests for ScheduleService.add_course()"""
     
     def test_add_course_success(self, schedule_service):
-        """Adding a course should succeed and return formatted string."""
+        """Adding a course should succeed and return ScheduledCourse entity."""
         course_input = CourseInput(
             ders="Matematik",
             hoca="Dr. Ahmet Yılmaz",
@@ -25,10 +25,13 @@ class TestScheduleServiceAddCourse:
         
         result = schedule_service.add_course(course_input)
         
-        # Should return formatted string
-        assert "Matematik" in result
-        assert "Dr. Ahmet Yılmaz" in result
-        assert "Pazartesi" in result
+        # Should return ScheduledCourse entity
+        assert isinstance(result, ScheduledCourse)
+        assert result.ders_adi == "Matematik"
+        assert result.hoca == "Dr. Ahmet Yılmaz"
+        assert result.gun == "Pazartesi"
+        assert result.baslangic == "09:00"
+        assert result.bitis == "10:50"
     
     def test_teacher_conflict_raises_error(self, schedule_service):
         """Same teacher at same time should raise ScheduleConflictError."""
@@ -80,7 +83,7 @@ class TestScheduleServiceAddCourse:
         
         # Should NOT raise
         result = schedule_service.add_course(course2)
-        assert "Fizik" in result
+        assert result.ders_adi == "Fizik"
     
     def test_same_teacher_different_time_succeeds(self, schedule_service):
         """Same teacher at different time should succeed."""
@@ -104,7 +107,7 @@ class TestScheduleServiceAddCourse:
         )
         
         result = schedule_service.add_course(course2)
-        assert "İstatistik" in result
+        assert result.ders_adi == "İstatistik"
 
 
 class TestScheduleServiceQueryMethods:
