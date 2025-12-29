@@ -2,6 +2,17 @@
 """
 Schedule Model - MVC Pattern
 Handles all data operations and business logic
+
+⚠️ FROZEN: Transitional ScheduleModel
+This file is intentionally NOT clean.
+Do not refactor further until:
+- StudentModel
+- FacultyModel
+- ClassroomModel
+- AvailabilityModel
+are extracted.
+
+Only bugfixes allowed.
 """
 import os
 import sqlite3
