@@ -13,7 +13,7 @@ from views.student_view import StudentView
 from views.teacher_availability_view import TeacherAvailabilityView
 from controllers.scheduler import ORToolsScheduler
 from PyQt5.QtWidgets import QMessageBox
-from utils.schedule_merger import merge_course_strings, merge_consecutive_blocks
+from utils.schedule_merger import merge_course_strings
 from services.calendar_schedule_builder import CalendarScheduleBuilder
 
 
@@ -249,7 +249,6 @@ class ScheduleController:
                 stats['courses_per_day'][day] = stats['courses_per_day'].get(day, 0) + 1
         
         return stats
-        return stats
 
     def open_calendar_view(self):
         """Open the weekly calendar view"""
@@ -266,7 +265,22 @@ class ScheduleController:
     # Merging utilities moved to utils/schedule_merger.py
         
     def handle_schedule_view_filter(self, filters):
-        """Handle filter changes from ScheduleView"""
+        """
+        LEGACY LIST-VIEW FILTERING LOGIC
+        
+        NOTE:
+        This logic predates CalendarScheduleBuilder.
+        Do NOT refactor until ScheduleModel refactor is complete.
+        Eventually replace with a ListScheduleBuilder service.
+        
+        Contains:
+        - Query model
+        - Faculty/dept/year logic
+        - Day/teacher filtering
+        - Elective detection (string matching)
+        - Merge blocks (merge_course_strings)
+        - Format output
+        """
         faculty_id = filters.get("faculty_id")
         dept_id = filters.get("dept_id")
         year = filters.get("year")
