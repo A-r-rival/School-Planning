@@ -137,8 +137,10 @@ class ScheduleModel(QObject):
         """
         try:
             # Parse minimal info needed to find the course
+            # Updated regex to handle optional {Havuzlar: ...} part
             import re
-            match = re.search(r"\[(.*?)\] (.*?) - (.*?) \((.*?) (\d{2}:\d{2})-(\d{2}:\d{2})\)", course_info)
+            # Pattern: [CODE] {optional pools} Name - Teacher (Day Time)
+            match = re.search(r"\[(.*?)\](?:\s*\{Havuzlar:.*?\})?\s*(.*?)\s*-\s*(.*?)\s*\((.*?)\s*(\d{2}:\d{2})-(\d{2}:\d{2})\)", course_info)
             
             if not match:
                 self.error_occurred.emit("Format hatası: Ders bilgisi okunamadı")
@@ -183,25 +185,37 @@ class ScheduleModel(QObject):
         try:
             query = '''
                 SELECT dp.ders_adi, o.ad || ' ' || o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu,
-                       GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf')
+                       GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf'),
+                       GROUP_CONCAT(DISTINCT dhi.havuz_kodu)
                 FROM Ders_Programi dp
                 JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
                 JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
                 LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
                 LEFT JOIN Bolumler b ON od.bolum_num = b.bolum_id
+                LEFT JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
                 GROUP BY dp.program_id, dp.ders_adi, o.ad, o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu
             '''
             self.c.execute(query)
             rows = self.c.fetchall()
             
             courses = []
-            for ders, hoca, gun, baslangic, bitis, kodu, siniflar in rows:
+            for ders, hoca, gun, baslangic, bitis, kodu, siniflar, havuzlar in rows:
                 saat = f"{baslangic}-{bitis}"
-                # Format match: [Code] Name - Teacher (Day Time) [Classes]
+                # Format: [Code] {Pools: X,Y} Name - Teacher (Day Time) [Classes]
                 display_code = kodu if kodu else "CODE"
+                
+                # Add pool information if available (for elective courses)
+                pool_str = ""
+                if havuzlar:
+                    # Clean up and sort pool codes
+                    pool_codes = sorted(set(p.strip() for p in havuzlar.split(',') if p.strip()))
+                    if pool_codes:
+                        pools_display = ', '.join(pool_codes)
+                        pool_str = f" {{Havuzlar: {pools_display}}}"
+                
                 classes_str = f" [{siniflar}]" if siniflar else ""
-                course_info = f"[{display_code}] {ders} - {hoca} ({gun} {saat}){classes_str}"
+                course_info = f"[{display_code}]{pool_str} {ders} - {hoca} ({gun} {saat}){classes_str}"
                 courses.append(course_info)
             return courses
         except Exception as e:

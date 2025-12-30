@@ -444,17 +444,22 @@ class CalendarView(QWidget):
             
             try:
                 start_hour = int(start.split(':')[0])
-                if start_hour not in slots[day]:
-                    slots[day][start_hour] = []
+                end_hour = int(end.split(':')[0])
                 
-                slots[day][start_hour].append({
-                    'start_str': start, 
-                    'end_str': end, 
-                    'course': course, 
-                    'extra': extra,
-                    'pools_found': pools_found, # Store raw pools, resolve colors later
-                    'is_elective': is_elective
-                })
+                # Create slot entries for ALL hours the course spans
+                # This allows the merge logic to correctly span consecutive hours
+                for hour in range(start_hour, end_hour):
+                    if hour not in slots[day]:
+                        slots[day][hour] = []
+                    
+                    slots[day][hour].append({
+                        'start_str': start, 
+                        'end_str': end, 
+                        'course': course, 
+                        'extra': extra,
+                        'pools_found': pools_found, # Store raw pools, resolve colors later
+                        'is_elective': is_elective
+                    })
             except:
                 continue
                 
