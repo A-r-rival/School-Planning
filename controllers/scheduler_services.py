@@ -219,8 +219,9 @@ class CourseMerger:
             context = resolver.resolve_context(row)
             
             # 2. Merge Key
-            # (Name, Teachers, T, U, L)
-            key = (row.name, frozenset(row.teacher_ids), row.t, row.u, row.l)
+            # (Name, Teachers, T, U, L, Instance)
+            # Fix: Include instance in unique key to prevent merging distinct instances of same course
+            key = (row.name, frozenset(row.teacher_ids), row.t, row.u, row.l, row.instance)
             
             if key not in merged_map:
                 merged_map[key] = PhysicalCourse(
@@ -247,6 +248,8 @@ class CourseMerger:
                     existing.fixed_t_room = row.t_room
                 if row.l_room and not existing.fixed_l_room:
                     existing.fixed_l_room = row.l_room
+
+
 
         # 3. Validate Contexts
         final_courses = []
@@ -292,8 +295,7 @@ class SchedulableCourseBuilder:
                 'departments': list(set(ctx.department for ctx in pc.contexts)),
                 'program_contexts': list(pc.contexts), # THE NEW TRUTH
                 'faculties': list(pc.faculties),
-                'program_contexts': list(pc.contexts), # THE NEW TRUTH
-                'faculties': list(pc.faculties),
+
                 'parent_key': (pc.name, pc.instance), # Standardized for DB Update usage
                 'instance': pc.instance
             }

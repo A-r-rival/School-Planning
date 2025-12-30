@@ -50,6 +50,7 @@ class ORToolsScheduler:
         """Load necessary data from database. Called once."""
         # 1. Load Rooms
         self.rooms = self.db_model.aktif_derslikleri_getir() 
+        self.rooms.sort(key=lambda x: x[0]) # Deterministic Sort by ID
         print(f"Loaded {len(self.rooms)} rooms.")
         
         # 2. Load Courses 
@@ -94,9 +95,7 @@ class ORToolsScheduler:
         builder = SchedulableCourseBuilder()
         
         # 2. Fetch Raw Data
-        print("DEBUG: Pipeline Step 2 - Fetching Raw Data...")
         raw_rows = repo.fetch_course_rows()
-        print(f"DEBUG: Fetched {len(raw_rows)} raw rows.")
         
         # 3. Populate Metadata (Required for Constraints)
         self.group_metadata = {}
@@ -105,12 +104,11 @@ class ORToolsScheduler:
                 self.group_metadata[r.group_id] = (r.department, r.class_year)
         
         # 4. Merge & Build
-        print("DEBUG: Pipeline Step 4 - Merging Courses...")
         physical_courses = merger.merge(raw_rows, resolver)
-        print(f"DEBUG: Merged into {len(physical_courses)} physical courses.")
-        
-        print("DEBUG: Pipeline Step 5 - Building Blocks...")
         self.courses = builder.build_blocks(physical_courses)
+        
+        # FIX: Sort courses deterministically for index stability
+        self.courses.sort(key=lambda x: (x['name'], x['instance'], x['type']))
         
         print(f"DEBUG: Pipeline generated {len(self.courses)} schedulable blocks.")
         return self.courses
@@ -156,19 +154,44 @@ class ORToolsScheduler:
                      continue
                 
                 # Room Type Logic
-                if len(r) > 2:
-                    room_type_str = (r[2] if r[2] else "").lower()
-                    is_lab_room = "laboratuvar" in room_type_str or "lab" in room_type_str
-                    course_type = course.get('type', '')
-                    
-                    if course_type == 'Lab':
-                         if not is_lab_room: continue
-                    elif course_type in ['Teori', 'Uygulama']:
-                        if is_lab_room: continue
-                    elif not course_type:
-                        if is_lab_room:
-                             if not ("laboratuvar" in course['name'].lower() or "uygulama" in course['name'].lower() or "lab" in course['name'].lower()):
-                                 continue
+                # Strict matching based on course 'type' provided by Builder
+                # --- ROBUST ROOM TYPE LOGIC ---
+                
+                # 1. Normalize Room Type
+                room_type_str = ""
+                if len(r) > 2 and r[2]:
+                    room_type_str = str(r[2]).lower()
+                
+                # Check capabilities
+                is_lab_room = any(k in room_type_str for k in ["laboratuvar", "lab"])
+                is_amfi = "amfi" in room_type_str
+                
+                # 2. Normalize Course Type
+                raw_type = course.get('type')
+                course_type_norm = str(raw_type).lower() if raw_type else "teori"
+                
+                # Check requirements
+                is_lab_course = "lab" in course_type_norm
+                
+                # DEBUG: Trace specifically for Derslik-1 or questionable assignments
+                if r[1] == "Derslik-1" and is_lab_course:
+                     # This should theoretically NEVER happen if logic works
+                     pass
+
+                # 3. Apply Usage Rules
+                
+                # Rule A: Lab Courses -> ONLY in Lab Rooms, NEVER in Amfi
+                if is_lab_course:
+                    if not is_lab_room:
+                        continue # Skip non-lab rooms
+                    if is_amfi:
+                        continue # Skip amfis (even if named 'Lab Amfi' etc)
+                        
+                # Rule B: Non-Lab Courses (Teori/Uygulama) -> NEVER in Lab Rooms
+                # (Unless strictly overridden by fixed_room, but that's handled above)
+                else:
+                    if is_lab_room:
+                        continue # Keep classrooms for theory
                 
                 # Create Room Var
                 r_var = self.cp_model.NewBoolVar(f'c{c_idx}_r{r_id}')
@@ -443,9 +466,19 @@ class ORToolsScheduler:
             if core_vars and elective_vars:
                 any_elec = self.cp_model.NewBoolVar(f'ae_g{g_id}_s{s_id}')
                 self.cp_model.AddMaxEquality(any_elec, elective_vars)
-                # If any elective is active, no core can be active (and vice versa)
-                # Since cores are <= 1, sum(cores) behaves like a bool
-                self.cp_model.Add(sum(core_vars) + any_elec <= 1)
+                
+                # REFACTOR: Soft Constraint to prevent infeasibility in Phase 2
+                # Instead of strict <= 1, we penalize == 2 (Conflict)
+                conflict = self.cp_model.NewBoolVar(f'core_elec_conflict_g{g_id}_s{s_id}')
+                
+                # If sum is > 1 (meaning both Active), Conflict is TRUE
+                self.cp_model.Add(sum(core_vars) + any_elec > 1).OnlyEnforceIf(conflict)
+                self.cp_model.Add(sum(core_vars) + any_elec <= 1).OnlyEnforceIf(conflict.Not())
+                
+                # Track penalty
+                if not hasattr(self, 'core_elective_penalties'):
+                    self.core_elective_penalties = []
+                self.core_elective_penalties.append(conflict)
 
         
 
@@ -454,15 +487,7 @@ class ORToolsScheduler:
         Soft Constraint: Encourage different session types (T/U/L) to be on DIFFERENT days.
         Simplified version using day-level granularity to avoid variable explosion.
         """
-        # print("DEBUG: Adding Different-Day Soft Constraint for T/U/L...")
-        # penalties = []
-        # 
-        # # Group courses by parent_key (name, instance)
-        # course_groups = collections.defaultdict(list)
-        # for c_idx, course in enumerate(self.courses):
-        #     parent_key = course['parent_key']
-        #     course_groups[parent_key].append((c_idx, course))
-        pass
+        return
         
 
 
@@ -474,12 +499,28 @@ class ORToolsScheduler:
         total_demand = sum(c['duration'] for c in self.courses)
         total_capacity = len(self.rooms) * len(self.time_slots)
         
+        # Room Type Capacity Check
+        lab_rooms = [r for r in self.rooms if any(k in (str(r[2]) if len(r)>2 else "").lower() for k in ["lab", "laboratuvar"])]
+        std_rooms = [r for r in self.rooms if r not in lab_rooms]
+        
+        lab_courses = [c for c in self.courses if c.get('type') == 'Lab']
+        std_courses = [c for c in self.courses if c not in lab_courses]
+        
+        lab_demand = sum(c['duration'] for c in lab_courses)
+        std_demand = sum(c['duration'] for c in std_courses)
+        
+        lab_capacity = len(lab_rooms) * len(self.time_slots)
+        std_capacity = len(std_rooms) * len(self.time_slots)
+        
         print(f"\n[DIAGNOSTIC] Capacity Check:")
-        print(f"  - Total Course Hours Needed: {total_demand}")
-        print(f"  - Total School Capacity (Rooms x Slots): {total_capacity}")
+        print(f"  - Total: Needed {total_demand} / Cap {total_capacity}")
+        print(f"  - Labs : Needed {lab_demand} / Cap {lab_capacity} (Rooms: {len(lab_rooms)})")
+        print(f"  - Theory: Needed {std_demand} / Cap {std_capacity} (Rooms: {len(std_rooms)})")
         
         if total_demand > total_capacity:
             print(f"CRITICAL WARNING: Demand exceeds Capacity!")
+        if lab_demand > lab_capacity:
+             print(f"CRITICAL WARNING: LAB Demand exceeds LAB Capacity!")
             
         # Segregate for diagnostics and optional handling
         core_indices = []
@@ -526,19 +567,22 @@ class ORToolsScheduler:
             print("FAILED to schedule Core courses. Aborting.")
             return False
         
-        # Retrieve core assignments
-        core_assignments = []
+        # Retrieve core assignments using STABLE KEYS
+        core_assignments_stable = []
         for idx in core_indices:
+            course = self.courses[idx]
             for r in self.rooms:
                 r_id = r[0]
                 if (idx, r_id) in self.room_vars and self.solver.Value(self.room_vars[(idx, r_id)]) == 1:
                     for s in self.time_slots:
                         s_id = s['id']
                         if (idx, r_id, s_id) in self.starts and self.solver.Value(self.starts[(idx, r_id, s_id)]) == 1:
-                            core_assignments.append((idx, r_id, s_id))
+                            # Use Stable Key: (Name, Instance, Type)
+                            stable_key = (course['name'], course['instance'], course['type'])
+                            core_assignments_stable.append((stable_key, r_id, s_id))
                             break
         
-        print(f"Phase 1 SUCCESS: {len(core_assignments)} core courses scheduled")
+        print(f"Phase 1 SUCCESS: {len(core_assignments_stable)} core courses scheduled")
         
         # --- PHASE 2: ADD ELECTIVES (Fix Cores) ---
         print("\n=== PHASE 2: ELECTIVES (Cores Fixed) ===")
@@ -547,10 +591,19 @@ class ORToolsScheduler:
         # Create variables for all courses, electives optional
         self.create_variables(ignore_fixed_rooms=False, optional_indices=elective_indices)
         
+        # Re-Map Stable Keys to New Indices
+        course_index_map = {}
+        for idx, course in enumerate(self.courses):
+            stable_key = (course['name'], course['instance'], course['type'])
+            course_index_map[stable_key] = idx
+            
         # FIX core assignments from Phase 1
-        for (c_idx, r_id, s_id) in core_assignments:
-            if (c_idx, r_id, s_id) in self.starts:
+        for (stable_key, r_id, s_id) in core_assignments_stable:
+            c_idx = course_index_map.get(stable_key)
+            if c_idx is not None and (c_idx, r_id, s_id) in self.starts:
                 self.cp_model.Add(self.starts[(c_idx, r_id, s_id)] == 1)
+            else:
+                print(f"WARNING: Could not map stable key {stable_key} in Phase 2!")
         
         self.add_hard_constraints(include_teacher_unavailability=True)
         self.add_soft_constraints_consecutive()
@@ -591,6 +644,10 @@ class ORToolsScheduler:
             objective = sum(elective_vars)
             if penalty_vars:
                 objective = objective - 10 * sum(penalty_vars)
+            
+            # Penalize Core-Elective Conflicts (Soft Constraint)
+            if hasattr(self, 'core_elective_penalties') and self.core_elective_penalties:
+                objective = objective - 1000 * sum(self.core_elective_penalties) # High penalty
             self.cp_model.Maximize(objective)
         
         # Solve Phase 2
@@ -598,7 +655,16 @@ class ORToolsScheduler:
             return True
         else:
             print("WARNING: Phase 2 failed. Saving Phase 1 (cores only) as fallback.")
-            self.save_manual_assignments(core_assignments)
+            
+            # Re-convert stable keys to indices for saving
+            fallback_assignments = []
+            c_map = { (c['name'], c['instance'], c['type']): i for i, c in enumerate(self.courses) }
+            
+            for (stable_key, r_id, s_id) in core_assignments_stable:
+                if stable_key in c_map:
+                    fallback_assignments.append((c_map[stable_key], r_id, s_id))
+            
+            self.save_manual_assignments(fallback_assignments)
             return True
 
 
@@ -647,6 +713,9 @@ class ORToolsScheduler:
         self.solver.parameters.log_search_progress = True
         self.solver.parameters.log_to_stdout = True
         self.solver.parameters.max_time_in_seconds = timeout
+        # Enable Randomization for different results on retry
+        self.solver.parameters.random_seed = int(timeout * 100) # Simple varying seed
+        self.solver.parameters.linearization_level = 0 # Encourages diversity
         
         try:
             status = self.solver.Solve(self.cp_model)
