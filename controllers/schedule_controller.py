@@ -12,10 +12,9 @@ from views.calendar_view import CalendarView
 from views.student_view import StudentView
 from views.teacher_availability_view import TeacherAvailabilityView
 from controllers.scheduler import ORToolsScheduler
-from scripts.parse_curriculum import Regexes  # Import central Regex logic
-from scripts import curriculum_data # Import data source
 from PyQt5.QtWidgets import QMessageBox
 from utils.schedule_merger import merge_course_strings, merge_consecutive_blocks
+from services.calendar_schedule_builder import CalendarScheduleBuilder
 
 
 class ScheduleController:
@@ -34,6 +33,9 @@ class ScheduleController:
         """
         self.model = model
         self.view = view
+        
+        # Initialize calendar builder service
+        self.calendar_builder = CalendarScheduleBuilder(model)
         
         # Connect signals
         self._connect_model_signals()
@@ -340,255 +342,26 @@ class ScheduleController:
     def handle_calendar_filter(self, event_type, data):
         """Handle filter changes from calendar view"""
         if event_type == "type_changed":
-            view_type = data["type"]
-            if view_type == "Öğretmen":
-                items = self.model.get_all_teachers_with_ids()
-                self.calendar_view.update_filter_options(1, items)
-            elif view_type == "Derslik":
-                items = self.model.get_all_classrooms_with_ids()
-                self.calendar_view.update_filter_options(1, items)
-            elif view_type == "Öğrenci Grubu":
-                print("DEBUG: Loading Student Group view filters")
-                items = self.model.get_faculties()
-                print(f"DEBUG: Loaded {len(items)} faculties")
-                self.calendar_view.update_filter_options(1, items)
-                
+            # Handle view type change
+            result = self.calendar_builder.build_for_type_change(data["type"])
+            if result:
+                filter_level, items = result
+                self.calendar_view.update_filter_options(filter_level, items)
+        
         elif event_type == "filter_selected":
-            # Handle specific selections
-            schedule_data = []
+            # Check if we need to update department dropdown
+            if "faculty_id" in data and ("dept_id" not in data or not data["dept_id"]):
+                items = self.calendar_builder.get_departments_for_faculty(data["faculty_id"])
+                self.calendar_view.update_filter_options(2, items)
+                return
             
-            if "teacher_id" in data and data["teacher_id"]:
-                raw_schedule = self.model.get_schedule_by_teacher(data["teacher_id"])
-                # Model: (day, start, end, course, room, code, type)
-                for item in raw_schedule:
-                    if len(item) == 7:
-                        day, start, end, course, room, code, ders_tipi = item
-                        tip_label = ders_tipi if ders_tipi else "?"
-                        display_course = f"[{code}] {course} ({tip_label})"
-                        room_label = room if room else "Belirsiz"
-                        extra = f"Oda: {room_label}"
-                        # Pad with is_elective=False, real_course_name
-                        schedule_data.append((day, start, end, display_course, extra, False, course))
-                    elif len(item) == 6:  # Fallback for old data without type
-                        day, start, end, course, room, code = item
-                        display_course = f"[{code}] {course}"
-                        room_label = room if room else "Belirsiz"
-                        extra = f"Oda: {room_label}"
-                        schedule_data.append((day, start, end, display_course, extra, False, course))
-                    else:
-                        schedule_data.append(item)
-                
-            elif "classroom_id" in data and data["classroom_id"]:
-                raw_schedule = self.model.get_schedule_by_classroom(data["classroom_id"])
-                # Model: (day, start, end, course, teacher, code, type)
-                for item in raw_schedule:
-                    if len(item) == 7:
-                        day, start, end, course, teacher, code, ders_tipi = item
-                        tip_label = ders_tipi if ders_tipi else "?"
-                        display_course = f"[{code}] {course} ({tip_label})"
-                        teacher_label = teacher if teacher else "Belirsiz"
-                        extra = f"Öğretmen: {teacher_label}"
-                        # Pad with is_elective=False, real_course_name
-                        schedule_data.append((day, start, end, display_course, extra, False, course))
-                    elif len(item) == 6:  # Fallback
-                        day, start, end, course, teacher, code = item
-                        display_course = f"[{code}] {course}"
-                        teacher_label = teacher if teacher else "Belirsiz"
-                        extra = f"Öğretmen: {teacher_label}"
-                        schedule_data.append((day, start, end, display_course, extra, False, course))
-                    else:
-                        schedule_data.append(item)
-                
-            elif "faculty_id" in data:
-                # If only faculty selected, update departments
-                if "dept_id" not in data or not data["dept_id"]:
-                    print(f"DEBUG: Fetching departments for faculty {data['faculty_id']}")
-                    items = self.model.get_departments_by_faculty(data["faculty_id"])
-                    
-                    # --- ADD ORTAK DERSLER ---
-                    items.append((-1, "Ortak Dersler"))
-                    # -------------------------
-                    
-                    print(f"DEBUG: Found {len(items)} departments (inc. Ortak)")
-                    self.calendar_view.update_filter_options(2, items)
-                    
-                # If dept selected and year selected, fetch schedule
-                elif "year" in data and data["year"]: # Year might be string "1", "2"...
-                     # Validation: Ensure year is digits (not 'Seçiniz...')
-                     if not str(data["year"]).isdigit():
-                         # print(f"DEBUG: Invalid year selected: {data['year']}")
-                         return
-
-                     print(f"DEBUG: Fetching schedule for dept {data['dept_id']} year {data['year']}")
-                     
-                     # Ortak Dersler Handling
-                     department_id = int(data['dept_id']) 
-                     
-                     
-                     if department_id == -1:
-                         # Fetch Common Courses Schedule
-                         raw_schedule = self.model.get_schedule_for_faculty_common(data["faculty_id"], int(data["year"]))
-                     else:
-                         raw_schedule = self.model.get_schedule_by_student_group(department_id, int(data["year"]))
-                     
-                     print(f"DEBUG: Raw schedule fetched. Count: {len(raw_schedule)}")
-                     if raw_schedule:
-                         print(f"DEBUG: First item sample: {raw_schedule[0]}")
-                     
-                     # Model: (day, start, end, course, teacher, room, code)
-                     schedule_data = []
-                     for idx, item in enumerate(raw_schedule):
-                          try:
-                              if len(item) == 8: # New format with ders_tipi
-                                  day, start, end, course, teacher, room, code, ders_tipi = item
-                                  tip_label = ders_tipi if ders_tipi else "?"
-                                  display_course = f"[{code}] {course} ({tip_label})"
-                                  room_label = room if room else "Belirsiz"
-                                  teacher_label = teacher if teacher else "Belirsiz"
-                                  extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
-                                  
-                                  
-                                  # Check elective and get pool codes
-                                  # Strategy: Look up in curriculum_data first (Truth), then fallback to Regex/Name
-                                  
-                                  # 1. Determine Dept Name from ID if available
-                                  dept_name_for_lookup = None
-                                  if "dept_id" in data and data["dept_id"] and int(data["dept_id"]) != -1:
-                                       dept_name_for_lookup = self.model.get_department_name(int(data["dept_id"]))
-                                  # If not available (e.g. Teacher View), we might try to infer or skip specific pool lookup
-                                  
-                                  pool_codes = []
-                                  is_elective = False
-                                  
-                                  # 2. Look up in curriculum_data
-                                  if dept_name_for_lookup:
-                                       dept_data = curriculum_data.DEPARTMENTS_DATA.get(dept_name_for_lookup)
-                                       # The key in curriculum_data.py is 'pool_codes', not 'pools'
-                                       if dept_data and 'pool_codes' in dept_data:
-                                           
-                                           # Clean name from " (Seçmeli)" suffix for lookup tests
-                                           # Also remove square brackets if internal code puts them? No, usually not.
-                                           clean_name = course.split(" (S")[0].strip()
-                                           
-                                           for p_code_key, p_course_names in dept_data['pool_codes'].items():
-                                                # p_course_names is a list of STRINGS (course names)
-                                                for db_name in p_course_names:
-                                                     # db_name is already the course name string
-                                                     # Robust check: case-insensitive, strip whitespace
-                                                     # Also check if one contains the other (e.g. "Makine Öğrenmesi" vs "Makine Öğrenmesi (Seçmeli)")
-                                                     if db_name.lower().strip() == clean_name.lower().strip() or \
-                                                        db_name.lower().strip() in clean_name.lower().strip() or \
-                                                        clean_name.lower().strip() in db_name.lower().strip():
-                                                          pool_codes.append(p_code_key)
-                                                          is_elective = True
-                                                          break
-                                  
-                                  # 3. Fallback: If not found in curriculum_data (or no dept context), use Regex/Name
-                                  if not is_elective:
-                                      # Use Regex for robust detection of pool codes from the COURSE CODE string
-                                      pool_code_match = Regexes.pool_code.search(code)
-                                      if pool_code_match:
-                                          is_elective = True
-                                          # Extract known types
-                                          upper_code = code.upper()
-                                          if upper_code.startswith("ZSD"): pool_codes.append("ZSD")
-                                          elif upper_code.startswith("ÜSD") or upper_code.startswith("USD"): pool_codes.append("ÜSD")
-                                          elif upper_code.startswith("GSD"): pool_codes.append("GSD")
-                                          elif "SD" in upper_code: pool_codes.append("SD")
-                                      elif "seçmeli" in course.lower() or "sdi" in code.lower() or "gsd" in code.lower():
-                                          is_elective = True
-                                          # No default pool assigned
-                                  
-                                  # Deduplicate validation
-                                  pool_codes = sorted(list(set(pool_codes)))
-                                  
-                                  if "CSE301" in code:
-                                      print(f"DEBUG: Processing CSE301. Dept: {dept_name_for_lookup}")
-                                      print(f"DEBUG: Clean Name: '{clean_name}'")
-                                      print(f"DEBUG: Found Pools: {pool_codes}")
-                                      print(f"DEBUG: is_elective: {is_elective}")
-                                  
-                                  schedule_data.append((day, start, end, display_course, extra_info, is_elective, course, code, pool_codes))
-         
-                              elif len(item) == 7:
-                                  day, start, end, course, teacher, room, code = item
-                                  display_course = f"[{code}] {course}"
-                                  room_label = room if room else "Belirsiz"
-                                  teacher_label = teacher if teacher else "Belirsiz"
-                                  extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
-                                  
-                                  is_elective = "seçmeli" in course.lower() or "sdi" in code.lower() or "gsd" in code.lower()
-                                  schedule_data.append((day, start, end, display_course, extra_info, is_elective, course))
-                              elif len(item) == 6: # Legacy/Fallback
-                                  day, start, end, course, teacher, room = item
-                                  room_label = room if room else "Belirsiz"
-                                  teacher_label = teacher if teacher else "Belirsiz"
-                                  extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
-                                  
-                                  is_elective = "seçmeli" in course.lower()
-                                  schedule_data.append((day, start, end, course, extra_info, is_elective, course))
-                              else:
-                                  schedule_data.append(item)
-                          except Exception as e:
-                              print(f"ERROR processing item {idx}: {item} - Error: {e}")
-                              import traceback
-                              traceback.print_exc()
-                              continue
-                              
-                          if False: # Placeholder to maintain indentation flow if needed
-                              pass
+            # Build schedule data using service
+            schedule_data = self.calendar_builder.build(data)
             
+            # Display
+            self.calendar_view.display_schedule(schedule_data)
             if schedule_data:
-                # Merge consecutive blocks
-                schedule_data = merge_consecutive_blocks(schedule_data)
-                # Post-process for Student Group View mainly
-                if "dept_id" in data and data["dept_id"]:
-                    final_data = []
-                    # Group by (day, start, end)
-                    import collections
-                    grouped = collections.defaultdict(list)
-                    
-                    show_electives = data.get("show_electives", False)
-                    
-                    for item in schedule_data:
-                        # item is header + (is_elective, raw_name)
-                        if len(item) >= 7:
-                            key = (item[0], item[1], item[2]) # day, start, end
-                            grouped[key].append(item)
-                        else:
-                             final_data.append(item)
-                             
-                    for key, items in grouped.items():
-                        electives = [x for x in items if len(x) >= 6 and x[5]]
-                        cores = [x for x in items if not (len(x) >= 6 and x[5])]
-                        
-                        # Add all cores
-                        for c in cores:
-                            final_data.append(c[:5]) # Strip flags
-                            
-                        # Handle Electives
-                        if electives:
-                            # PASS ALL ELECTIVE DATA TO CALENDAR VIEW
-                            # The View will handle filtering based on checkboxes!
-                            for e in electives:
-                                # Ensure we pass the full extended data tuple (9 items)
-                                # (day, start, end, display, extra, is_e, real_name, code, pools)
-                                # item may have more than 9, but we need at least up to pools
-                                if len(e) >= 9:
-                                    final_data.append(e[:9])
-                                else:
-                                    # Fallback if somehow shorter? Should not happen with new loop
-                                    final_data.append(e) 
-                                
-                    self.calendar_view.display_schedule(final_data)
-                else:
-                    # Regular view (Teacher/Room) - just strip flags
-                    clean_data = [x[:5] for x in schedule_data]
-                    self.calendar_view.display_schedule(clean_data)
-                    
                 self.calendar_view.show()
-            else:
-                self.calendar_view.display_schedule([])
 
     def open_student_view(self):
         """Open the student management view"""
