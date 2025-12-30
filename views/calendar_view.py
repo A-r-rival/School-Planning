@@ -133,6 +133,11 @@ class CalendarView(QWidget):
         self.pool_checks_layout.setSpacing(10)
         self.pool_checks_frame.hide()  # Hidden by default
         filter_layout.addWidget(self.pool_checks_frame)
+        # Constraint Label (for Teacher View metadata)
+        self.constraint_label = QLabel("")
+        self.constraint_label.setStyleSheet("color: #d32f2f; font-weight: bold; font-size: 11pt; margin-right: 15px;")
+        filter_layout.addWidget(self.constraint_label)
+        
         filter_layout.addStretch()
         layout.addWidget(filter_frame)
         
@@ -191,6 +196,7 @@ class CalendarView(QWidget):
             self.filter_widget_2.hide()
             self.filter_widget_3.hide()
             self.pool_checks_frame.hide()
+            self.constraint_label.setText("") # Clear constraint label
             self._clear_pool_checkboxes()
             
         # Emit signal to request data for filters
@@ -381,10 +387,22 @@ class CalendarView(QWidget):
         Display schedule using Prepare-Filter-Render pipeline
         """
         try:
+            # Handle dictionary input (with metadata)
+            metadata = {}
+            if isinstance(schedule_data, dict):
+                metadata = schedule_data.get('metadata', {})
+                schedule_data = schedule_data.get('schedule', [])
+
             print(f"DEBUG: display_schedule started. Items: {len(schedule_data)}")
             # Store for client-side filtering when checkboxes change
             self.last_schedule_data = schedule_data
             
+            # Update metadata UI (Day Span)
+            if 'day_span' in metadata and metadata['day_span'] > 0:
+                self.constraint_label.setText(f"Haftalık Gün Kısıtı: {metadata['day_span']} Gün")
+            else:
+                self.constraint_label.setText("")
+
             # 1. Prepare
             slots = self._prepare_slots(schedule_data)
             
@@ -424,6 +442,12 @@ class CalendarView(QWidget):
             # Unpack extended data if available
             is_elective = False
             pool_codes = set()
+            is_unavailability = False
+            
+            # Identify Unavailability (always at index 6 if present)
+            if len(item) > 6:
+                is_unavailability = (item[6] == "UNAVAILABLE")
+                
             if len(item) > 8: 
                 is_elective = item[5]
                 pool_codes = set(item[8]) if item[8] else set()
@@ -458,7 +482,8 @@ class CalendarView(QWidget):
                         'course': course, 
                         'extra': extra,
                         'pools_found': pools_found, # Store raw pools, resolve colors later
-                        'is_elective': is_elective
+                        'is_elective': is_elective,
+                        'is_unavailability': is_unavailability
                     })
             except:
                 continue
@@ -563,7 +588,12 @@ class CalendarView(QWidget):
                         lbl.setToolTip(full_tooltip)
                         
                         p_colors = course_data['pool_colors']
-                        bg_color = p_colors[0].name() if p_colors else "#E3F2FD"
+                        if course_data.get('is_unavailability'):
+                            bg_color = "#FFC8C8" # Light Red
+                        elif p_colors:
+                            bg_color = p_colors[0].name()
+                        else:
+                            bg_color = "#E3F2FD"
                         
                         lbl.setStyleSheet(f"background-color: {bg_color}; border: 1px solid #aaa; padding: 2px; font-size: 8pt;")
                         hlayout.addWidget(lbl)
@@ -613,7 +643,9 @@ class CalendarView(QWidget):
                     
                     # Coloring
                     p_colors = current_data['pool_colors']
-                    if p_colors:
+                    if current_data.get('is_unavailability'):
+                        item.setBackground(QColor(255, 200, 200)) # Light Red (#FFC8C8)
+                    elif p_colors:
                         if len(p_colors) == 1:
                             item.setBackground(p_colors[0])
                         else:

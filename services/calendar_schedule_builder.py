@@ -65,7 +65,7 @@ class CalendarScheduleBuilder:
             return (1, items)
         return None
     
-    def build(self, data: Dict[str, Any]) -> List[Tuple]:
+    def build(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Build schedule data based on filters.
         
@@ -79,13 +79,17 @@ class CalendarScheduleBuilder:
                 - show_electives: bool
         
         Returns:
-            List of schedule tuples for calendar display
+            Dictionary with:
+                - 'schedule': List of schedule tuples for calendar display
+                - 'metadata': dict with extra info (e.g. day_span)
         """
         schedule_data = []
+        metadata = {}
         
         # Teacher view
         if data.get("teacher_id"):
             schedule_data = self._build_teacher_schedule(data["teacher_id"])
+            metadata['day_span'] = self.model.get_teacher_span(data["teacher_id"])
         
         # Classroom view
         elif data.get("classroom_id"):
@@ -104,9 +108,16 @@ class CalendarScheduleBuilder:
                 schedule_data = self._post_process_student_view(schedule_data, data)
             else:
                 # Regular view (Teacher/Room) - strip to display format
-                schedule_data = [self._strip_for_regular_view(x) for x in schedule_data]
+                # Keep 9-tuple for Teacher view if it contains UNAVAILABLE tag
+                schedule_data = [
+                    self._strip_for_regular_view(x) if x[6] != "UNAVAILABLE" else x 
+                    for x in schedule_data
+                ]
         
-        return schedule_data
+        return {
+            'schedule': schedule_data,
+            'metadata': metadata
+        }
     
     def get_departments_for_faculty(self, faculty_id: int) -> List[Tuple[int, str]]:
         """
@@ -142,6 +153,7 @@ class CalendarScheduleBuilder:
         raw_schedule = self.model.get_schedule_by_teacher(teacher_id)
         schedule_data = []
         
+        # 1. Add booked courses
         for item in raw_schedule:
             if len(item) == 7:
                 day, start, end, course, room, code, ders_tipi = item
@@ -150,13 +162,10 @@ class CalendarScheduleBuilder:
                 room_label = room if room else "Belirsiz"
                 extra = f"Oda: {room_label}"
                 
-                # Normalize to 9-tuple (pad elective fields)
+                # Normalize to 9-tuple
                 schedule_data.append((
                     day, start, end, display_course, extra,
-                    False,  # is_elective
-                    course,  # real_course_name
-                    code,    # course_code
-                    []       # pool_codes
+                    False, course, code, []
                 ))
             elif len(item) == 6:  # Fallback
                 day, start, end, course, room, code = item
@@ -169,7 +178,14 @@ class CalendarScheduleBuilder:
                     day, start, end, display_course, extra,
                     False, course, code, []
                 ))
-            # Skip malformed items
+        
+        # 2. Add unavailability (restricted hours)
+        unavailability = self.model.get_teacher_unavailability(teacher_id)
+        for gun, baslangic, bitis, u_id, desc, _span in unavailability:
+            schedule_data.append((
+                gun, baslangic, bitis, "KISITLI / MÜSAİT DEĞİL", desc,
+                False, "UNAVAILABLE", "", []
+            ))
         
         return schedule_data
     

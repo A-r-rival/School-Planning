@@ -1,0 +1,31 @@
+=== BOLUMLER ===
+{'bolum_id': 101, 'bolum_num': 101, 'bolum_adi': 'Enerji Bilimi ve Teknolojileri', 'fakulte_num': 5}
+{'bolum_id': 102, 'bolum_num': 102, 'bolum_adi': 'Malzeme Bilimi ve Teknolojileri', 'fakulte_num': 5}
+{'bolum_id': 103, 'bolum_num': 103, 'bolum_adi': 'Moleküler Biyoteknoloji', 'fakulte_num': 5}
+{'bolum_id': 104, 'bolum_num': 104, 'bolum_adi': 'Hukuk Fakültesi', 'fakulte_num': 1}
+{'bolum_id': 105, 'bolum_num': 105, 'bolum_adi': 'Kültür ve İletişim Bölümü', 'fakulte_num': 2}
+{'bolum_id': 106, 'bolum_num': 106, 'bolum_adi': 'Sosyoloji', 'fakulte_num': 2}
+{'bolum_id': 107, 'bolum_num': 107, 'bolum_adi': 'Bilgisayar Müh', 'fakulte_num': 3}
+{'bolum_id': 108, 'bolum_num': 108, 'bolum_adi': 'Elektrik-Elektronik Müh', 'fakulte_num': 3}
+{'bolum_id': 109, 'bolum_num': 109, 'bolum_adi': 'Endüstri Müh', 'fakulte_num': 3}
+{'bolum_id': 110, 'bolum_num': 110, 'bolum_adi': 'Makine Müh', 'fakulte_num': 3}
+{'bolum_id': 111, 'bolum_num': 111, 'bolum_adi': 'Mekatronik Müh', 'fakulte_num': 3}
+{'bolum_id': 112, 'bolum_num': 112, 'bolum_adi': 'İnşaat Müh', 'fakulte_num': 3}
+{'bolum_id': 113, 'bolum_num': 113, 'bolum_adi': 'Siyaset Bilimi ve Uluslararası İlişkiler', 'fakulte_num': 4}
+{'bolum_id': 114, 'bolum_num': 114, 'bolum_adi': 'İktisat', 'fakulte_num': 4}
+{'bolum_id': 115, 'bolum_num': 115, 'bolum_adi': 'İşletme', 'fakulte_num': 4}
+
+=== POOL STATS ===
+{'bolum_num': 101, 'COUNT(*)': 36}
+{'bolum_num': 102, 'COUNT(*)': 15}
+{'bolum_num': 103, 'COUNT(*)': 19}
+{'bolum_num': 105, 'COUNT(*)': 8}
+{'bolum_num': 107, 'COUNT(*)': 139}
+{'bolum_num': 108, 'COUNT(*)': 228}
+{'bolum_num': 109, 'COUNT(*)': 44}
+{'bolum_num': 110, 'COUNT(*)': 3}
+{'bolum_num': 111, 'COUNT(*)': 41}
+{'bolum_num': 112, 'COUNT(*)': 34}
+{'bolum_num': 113, 'COUNT(*)': 52}
+{'bolum_num': 114, 'COUNT(*)': 33}
+{'bolum_num': 115, 'COUNT(*)': 15}

@@ -1,0 +1,176 @@
+=== SEARCHING FOR 'Seçmeli' IN DERSLER ===
+{'ders_kodu': 'ZSDI', 'ders_instance': 1, 'ders_adi': 'Zorunlu Seçmeli Ders', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 2, 'uygulama_saati': 1, 'lab_saati': 0}
+{'ders_kodu': 'SDI', 'ders_instance': 1, 'ders_adi': 'Seçmeli Ders', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 2, 'uygulama_saati': 1, 'lab_saati': 0}
+{'ders_kodu': 'ZSDII', 'ders_instance': 2, 'ders_adi': 'Zorunlu Seçmeli Ders', 'teori_odasi': 37, 'lab_odasi': None, 'akts': 6, 'teori_saati': 2, 'uygulama_saati': 1, 'lab_saati': 0}
+{'ders_kodu': 'ZSDIII', 'ders_instance': 3, 'ders_adi': 'Zorunlu Seçmeli Ders', 'teori_odasi': 22, 'lab_odasi': None, 'akts': 6, 'teori_saati': 2, 'uygulama_saati': 1, 'lab_saati': 0}
+{'ders_kodu': 'ZSDIV', 'ders_instance': 4, 'ders_adi': 'Zorunlu Seçmeli Ders', 'teori_odasi': 49, 'lab_odasi': None, 'akts': 6, 'teori_saati': 2, 'uygulama_saati': 1, 'lab_saati': 0}
+{'ders_kodu': 'ZSDV', 'ders_instance': 5, 'ders_adi': 'Zorunlu Seçmeli Ders', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 3, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ZSDVI', 'ders_instance': 6, 'ders_adi': 'Zorunlu Seçmeli Ders', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 2, 'uygulama_saati': 1, 'lab_saati': 0}
+{'ders_kodu': 'ZSDVII', 'ders_instance': 7, 'ders_adi': 'Zorunlu Seçmeli Ders', 'teori_odasi': 17, 'lab_odasi': None, 'akts': 6, 'teori_saati': 2, 'uygulama_saati': 1, 'lab_saati': 0}
+{'ders_kodu': 'ZSDVIII', 'ders_instance': 8, 'ders_adi': 'Zorunlu Seçmeli Ders', 'teori_odasi': 25, 'lab_odasi': None, 'akts': 6, 'teori_saati': 2, 'uygulama_saati': 1, 'lab_saati': 0}
+{'ders_kodu': 'SDII', 'ders_instance': 2, 'ders_adi': 'Seçmeli Ders', 'teori_odasi': 11, 'lab_odasi': None, 'akts': 6, 'teori_saati': 2, 'uygulama_saati': 1, 'lab_saati': 0}
+{'ders_kodu': 'ÜSDI', 'ders_instance': 1, 'ders_adi': 'Üniversite Seçmeli Ders', 'teori_odasi': 47, 'lab_odasi': None, 'akts': 2, 'teori_saati': 2, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ZSD I', 'ders_instance': 1, 'ders_adi': 'Zorunlu Seçmeli Ders I', 'teori_odasi': 20, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ZSD II', 'ders_instance': 1, 'ders_adi': 'Zorunlu Seçmeli Ders II', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ZSD III', 'ders_instance': 1, 'ders_adi': 'Zorunlu Seçmeli Ders III', 'teori_odasi': 48, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ZSD IV', 'ders_instance': 1, 'ders_adi': 'Zorunlu Seçmeli Ders IV', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ZSD V', 'ders_instance': 1, 'ders_adi': 'Zorunlu Seçmeli Ders V', 'teori_odasi': 21, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDBIOI', 'ders_instance': 1, 'ders_adi': 'Seçmeli Dersler-BIO I', 'teori_odasi': 57, 'lab_odasi': None, 'akts': 18, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ÜSD000', 'ders_instance': 1, 'ders_adi': 'Üniversite Seçmeli Ders Havuzu', 'teori_odasi': 11, 'lab_odasi': None, 'akts': 2, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDBIOII', 'ders_instance': 1, 'ders_adi': 'Seçmeli Dersler', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDBIOIII', 'ders_instance': 2, 'ders_adi': 'Seçmeli Dersler', 'teori_odasi': 54, 'lab_odasi': None, 'akts': 12, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDMATI', 'ders_instance': 3, 'ders_adi': 'Seçmeli Dersler', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'KKWSDI', 'ders_instance': 1, 'ders_adi': 'Seçmeli Ders I', 'teori_odasi': None, 'lab_odasi': None, 'akts': 10, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'KKWSDII', 'ders_instance': 1, 'ders_adi': 'Seçmeli Ders II', 'teori_odasi': None, 'lab_odasi': None, 'akts': 10, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'KKWSDIII', 'ders_instance': 1, 'ders_adi': 'Seçmeli Dersler III', 'teori_odasi': None, 'lab_odasi': None, 'akts': 16, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'KKWSDIV', 'ders_instance': 1, 'ders_adi': 'Seçmeli Dersler IV', 'teori_odasi': None, 'lab_odasi': None, 'akts': 16, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'KKWSDV', 'ders_instance': 1, 'ders_adi': 'Seçmeli Dersler V', 'teori_odasi': None, 'lab_odasi': None, 'akts': 3, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SOZSDI', 'ders_instance': 3, 'ders_adi': 'Seçmeli Ders', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ÜSD001', 'ders_instance': 1, 'ders_adi': 'Üniversite Seçmeli Ders Havuzu I', 'teori_odasi': None, 'lab_odasi': None, 'akts': 2, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SOZSDII', 'ders_instance': 4, 'ders_adi': 'Seçmeli Ders', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ÜSD002', 'ders_instance': 1, 'ders_adi': 'Üniversite Seçmeli Ders Havuzu II', 'teori_odasi': None, 'lab_odasi': None, 'akts': 2, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SOZSDIII', 'ders_instance': 5, 'ders_adi': 'Seçmeli Ders', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SOZSDIV', 'ders_instance': 6, 'ders_adi': 'Seçmeli Ders', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDP', 'ders_instance': 1, 'ders_adi': 'Seçmeli Alan - Proje', 'teori_odasi': 14, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDIa', 'ders_instance': 1, 'ders_adi': 'Seçmeli I - Uygulamalı Bilgisayar Mühendisliği', 'teori_odasi': 66, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDIb', 'ders_instance': 1, 'ders_adi': 'Seçmeli I - Bilgisayar Donanımı', 'teori_odasi': 20, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDIc', 'ders_instance': 1, 'ders_adi': 'Seçmeli I - Bilg. Müh. Kuramsal Temelleri ve Matematik', 'teori_odasi': 67, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'USD001', 'ders_instance': 2, 'ders_adi': 'Üniversite Seçmeli Ders Havuzu I', 'teori_odasi': 72, 'lab_odasi': None, 'akts': 2, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDIIa', 'ders_instance': 1, 'ders_adi': 'Seçmeli II - Uygulamalı Bilgisayar Müh.', 'teori_odasi': None, 'lab_odasi': None, 'akts': 12, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDIIb', 'ders_instance': 1, 'ders_adi': 'Seçmeli II - Bilgisayar Donanımı', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDIIc', 'ders_instance': 1, 'ders_adi': 'Seçmeli II - Bilg. Müh. Kuramsal Temelleri ve Matematik', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'USD002', 'ders_instance': 2, 'ders_adi': 'Üniversite Seçmeli Ders Havuzu II', 'teori_odasi': None, 'lab_odasi': None, 'akts': 2, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDIII', 'ders_instance': 2, 'ders_adi': 'Seçmeli Dersler III', 'teori_odasi': 41, 'lab_odasi': None, 'akts': 18, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDII', 'ders_instance': 1, 'ders_adi': 'Seçmeli Ders Alanı II / Elective Pool II', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'USD000', 'ders_instance': 1, 'ders_adi': 'Üniversite Seçmeli Ders Havuzu / University Elective Pool', 'teori_odasi': 78, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDV', 'ders_instance': 1, 'ders_adi': 'Seçmeli Ders Alanı V / Elective Pool V', 'teori_odasi': 72, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDT', 'ders_instance': 1, 'ders_adi': 'Seçmeli Ders Alanı T / Elective Pool T', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDM', 'ders_instance': 1, 'ders_adi': 'Seçmeli Ders Alanı M / Elective Pool M', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDVI', 'ders_instance': 1, 'ders_adi': 'Seçmeli Ders Alanı VI / Elective Pool VI', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDP', 'ders_instance': 1, 'ders_adi': 'Seçmeli Alan - Proje / Elective Courses - Project', 'teori_odasi': 76, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDVII', 'ders_instance': 1, 'ders_adi': 'Seçmeli Ders Alanı VII', 'teori_odasi': 18, 'lab_odasi': None, 'akts': 12, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDI', 'ders_instance': 1, 'ders_adi': 'Seçmeli Alan I - İktisadi Bilimler', 'teori_odasi': 69, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ZSDI', 'ders_instance': 1, 'ders_adi': 'Zorunlu Seçmeli Alan I', 'teori_odasi': 13, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDII', 'ders_instance': 1, 'ders_adi': 'Seçmeli Alan II - Endüstri Müh. Araştırma Alanı', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ZSDII', 'ders_instance': 1, 'ders_adi': 'Zorunlu Seçmeli Alan II', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'USD000', 'ders_instance': 2, 'ders_adi': 'Üniversite Seçmeli Ders Havuzu', 'teori_odasi': 15, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDUx', 'ders_instance': 1, 'ders_adi': 'Zorunlu Seçmeli I - Uzmanlık A, B, C veya D', 'teori_odasi': 64, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDK', 'ders_instance': 1, 'ders_adi': 'Zorunlu Seçmeli - Kontrol / Compulsary Elective - Control', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDP', 'ders_instance': 1, 'ders_adi': 'Seçmeli Ders Alanı - Proje / Elective Course - Project', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SUP', 'ders_instance': 1, 'ders_adi': 'Zorunlu Seçmeli - Uygulamalı Proje / Applied Project', 'teori_odasi': 34, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDUx', 'ders_instance': 1, 'ders_adi': 'Zorunlu Seçmeli - Uzmanlık A, B, C veya D', 'teori_odasi': 16, 'lab_odasi': None, 'akts': 12, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ZSD I', 'ders_instance': 1, 'ders_adi': 'Elective I / Zorunlu Seçmeli Ders I', 'teori_odasi': 27, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDP I', 'ders_instance': 1, 'ders_adi': 'Elective Project I / Seçmeli Proje I', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ZSD II', 'ders_instance': 1, 'ders_adi': 'Elective II / Zorunlu Seçmeli Ders II', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'USD000', 'ders_instance': 1, 'ders_adi': 'University Elective / Üniversite Seçmeli', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SDP II', 'ders_instance': 1, 'ders_adi': 'Elective Project II / Seçmeli Proje II', 'teori_odasi': 54, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ZSD III', 'ders_instance': 1, 'ders_adi': 'Elective III / Zorunlu Seçmeli Ders III', 'teori_odasi': 78, 'lab_odasi': None, 'akts': 12, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'ZSD', 'ders_instance': 1, 'ders_adi': 'Zorunlu Seçmeli Ders Alanı', 'teori_odasi': 22, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'POLSDI', 'ders_instance': 1, 'ders_adi': 'Seçmeli Ders Alanı I', 'teori_odasi': None, 'lab_odasi': None, 'akts': 8, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'POLSDII', 'ders_instance': 1, 'ders_adi': 'Seçmeli Ders Alanı II', 'teori_odasi': None, 'lab_odasi': None, 'akts': 13, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'POLSDIII', 'ders_instance': 1, 'ders_adi': 'Seçmeli Ders Alanı III', 'teori_odasi': None, 'lab_odasi': None, 'akts': 5, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'POLSDIV', 'ders_instance': 1, 'ders_adi': 'Seçmeli Ders Alanı IV', 'teori_odasi': None, 'lab_odasi': None, 'akts': 20, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'BSD', 'ders_instance': 7, 'ders_adi': 'Seçmeli Ders', 'teori_odasi': None, 'lab_odasi': None, 'akts': 3, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+{'ders_kodu': 'SD', 'ders_instance': 8, 'ders_adi': 'Seçmeli Ders', 'teori_odasi': None, 'lab_odasi': None, 'akts': 6, 'teori_saati': 0, 'uygulama_saati': 0, 'lab_saati': 0}
+
+=== SAMPLE DERS_SINIF_ILISKISI ===
+{'ders_adi': 'Fizik I / Physik I', 'ders_instance': 1, 'donem_sinif_num': '2024_101_1'}
+{'ders_adi': 'Kimya I / Chemie I', 'ders_instance': 1, 'donem_sinif_num': '2024_101_1'}
+{'ders_adi': 'Enerji Bilimi ve Teknolojilerine Giriş / Einführung...', 'ders_instance': 1, 'donem_sinif_num': '2024_101_1'}
+{'ders_adi': 'Analiz I / Analysis I', 'ders_instance': 1, 'donem_sinif_num': '2024_101_1'}
+{'ders_adi': 'Teknik Çizim ve CAD / Technisches Zeichnen und CAD', 'ders_instance': 1, 'donem_sinif_num': '2024_101_1'}
+{'ders_adi': 'Teknik Almanca I / Technisches Deutsch I', 'ders_instance': 1, 'donem_sinif_num': '2024_101_1'}
+{'ders_adi': 'İngilizce I / Englisch I', 'ders_instance': 1, 'donem_sinif_num': '2024_101_1'}
+{'ders_adi': 'Yenilenebilir Enerji Teknolojileri / Erneuerbare...', 'ders_instance': 1, 'donem_sinif_num': '2023_101_2'}
+{'ders_adi': 'Elektrokimya / Electrochemie', 'ders_instance': 1, 'donem_sinif_num': '2023_101_2'}
+{'ders_adi': 'Diferansiyel Denklemler / Diferentialgleichungen', 'ders_instance': 1, 'donem_sinif_num': '2023_101_2'}
+{'ders_adi': 'Elektroteknik / Elektrotechnik', 'ders_instance': 1, 'donem_sinif_num': '2023_101_2'}
+{'ders_adi': 'Türkçe I / Türkisch I', 'ders_instance': 1, 'donem_sinif_num': '2023_101_2'}
+{'ders_adi': 'Atatürk İlkeleri ve İnkılap Tarihi I', 'ders_instance': 1, 'donem_sinif_num': '2023_101_2'}
+{'ders_adi': 'İngilizce III / Englisch III', 'ders_instance': 1, 'donem_sinif_num': '2023_101_2'}
+{'ders_adi': 'Akışkanlar Mekaniği / Strömungsmechanik', 'ders_instance': 1, 'donem_sinif_num': '2022_101_3'}
+{'ders_adi': 'İstatistik / Statistik', 'ders_instance': 1, 'donem_sinif_num': '2022_101_3'}
+{'ders_adi': 'Zorunlu Seçmeli Ders', 'ders_instance': 2, 'donem_sinif_num': '2022_101_3'}
+{'ders_adi': 'Zorunlu Seçmeli Ders', 'ders_instance': 3, 'donem_sinif_num': '2022_101_3'}
+{'ders_adi': 'Zorunlu Seçmeli Ders', 'ders_instance': 4, 'donem_sinif_num': '2022_101_3'}
+{'ders_adi': 'Proje I (Tez Hazırlık ve Seminer) / Projekt I', 'ders_instance': 1, 'donem_sinif_num': '2021_101_4'}
+{'ders_adi': 'İş Sağlığı ve Güvenliği I / Arbeitsschutz... I', 'ders_instance': 1, 'donem_sinif_num': '2021_101_4'}
+{'ders_adi': 'İleri İngilizce I / Fortgeschrittenes Englisch I', 'ders_instance': 1, 'donem_sinif_num': '2021_101_4'}
+{'ders_adi': 'Zorunlu Seçmeli Ders', 'ders_instance': 7, 'donem_sinif_num': '2021_101_4'}
+{'ders_adi': 'Zorunlu Seçmeli Ders', 'ders_instance': 8, 'donem_sinif_num': '2021_101_4'}
+{'ders_adi': 'Seçmeli Ders', 'ders_instance': 2, 'donem_sinif_num': '2021_101_4'}
+{'ders_adi': 'Üniversite Seçmeli Ders', 'ders_instance': 1, 'donem_sinif_num': '2021_101_4'}
+{'ders_adi': 'Fizik I', 'ders_instance': 1, 'donem_sinif_num': '2024_102_1'}
+{'ders_adi': 'Kimya I', 'ders_instance': 1, 'donem_sinif_num': '2024_102_1'}
+{'ders_adi': 'Biyoloji', 'ders_instance': 1, 'donem_sinif_num': '2024_102_1'}
+{'ders_adi': 'Analiz I', 'ders_instance': 1, 'donem_sinif_num': '2024_102_1'}
+{'ders_adi': 'Malzeme Bilimi: Kariyere Giriş ve Etik', 'ders_instance': 1, 'donem_sinif_num': '2024_102_1'}
+{'ders_adi': 'Teknik Almanca I', 'ders_instance': 1, 'donem_sinif_num': '2024_102_1'}
+{'ders_adi': 'İngilizce I', 'ders_instance': 1, 'donem_sinif_num': '2024_102_1'}
+{'ders_adi': 'Fiziksel Kimya I', 'ders_instance': 1, 'donem_sinif_num': '2023_102_2'}
+{'ders_adi': 'Malzeme Biliminin Temelleri', 'ders_instance': 1, 'donem_sinif_num': '2023_102_2'}
+{'ders_adi': 'Türkçe I', 'ders_instance': 1, 'donem_sinif_num': '2023_102_2'}
+{'ders_adi': 'Atatürk İlkeleri ve İnkılap Tarihi I', 'ders_instance': 1, 'donem_sinif_num': '2023_102_2'}
+{'ders_adi': 'İngilizce III', 'ders_instance': 1, 'donem_sinif_num': '2023_102_2'}
+{'ders_adi': 'Zorunlu Seçmeli Ders I', 'ders_instance': 1, 'donem_sinif_num': '2023_102_2'}
+{'ders_adi': 'Diferansiyel Denklemler', 'ders_instance': 1, 'donem_sinif_num': '2022_102_3'}
+{'ders_adi': 'Reel Kristaller ve Özellikleri', 'ders_instance': 1, 'donem_sinif_num': '2022_102_3'}
+{'ders_adi': 'Teknik Mekanik', 'ders_instance': 1, 'donem_sinif_num': '2022_102_3'}
+{'ders_adi': 'Malzeme Biliminde Karakterizasyon Metotları', 'ders_instance': 1, 'donem_sinif_num': '2022_102_3'}
+{'ders_adi': 'Zorunlu Seçmeli Ders III', 'ders_instance': 1, 'donem_sinif_num': '2022_102_3'}
+{'ders_adi': 'Proje I', 'ders_instance': 1, 'donem_sinif_num': '2021_102_4'}
+{'ders_adi': 'Bilimsel Çalışma Yöntemleri', 'ders_instance': 1, 'donem_sinif_num': '2021_102_4'}
+{'ders_adi': 'İş Sağlığı ve İş Güvenliği I', 'ders_instance': 1, 'donem_sinif_num': '2021_102_4'}
+{'ders_adi': 'İleri İngilizce I', 'ders_instance': 1, 'donem_sinif_num': '2021_102_4'}
+{'ders_adi': 'Zorunlu Seçmeli Ders V', 'ders_instance': 1, 'donem_sinif_num': '2021_102_4'}
+{'ders_adi': 'Biyoloji', 'ders_instance': 1, 'donem_sinif_num': '2024_103_1'}
+{'ders_adi': 'Kimya I', 'ders_instance': 1, 'donem_sinif_num': '2024_103_1'}
+{'ders_adi': 'Teknik Almanca I', 'ders_instance': 1, 'donem_sinif_num': '2024_103_1'}
+{'ders_adi': 'İngilizce I', 'ders_instance': 1, 'donem_sinif_num': '2024_103_1'}
+{'ders_adi': 'Analiz I', 'ders_instance': 1, 'donem_sinif_num': '2024_103_1'}
+{'ders_adi': "Moleküler Biyoteknoloji'ye Giriş", 'ders_instance': 1, 'donem_sinif_num': '2024_103_1'}
+{'ders_adi': 'Fizik I', 'ders_instance': 1, 'donem_sinif_num': '2024_103_1'}
+{'ders_adi': 'Atatürk İlkeleri ve İnkılap Tarihi I', 'ders_instance': 1, 'donem_sinif_num': '2023_103_2'}
+{'ders_adi': 'İngilizce III', 'ders_instance': 1, 'donem_sinif_num': '2023_103_2'}
+{'ders_adi': 'Diferansiyel Denklemler', 'ders_instance': 1, 'donem_sinif_num': '2023_103_2'}
+{'ders_adi': 'Hücre Biyolojisi', 'ders_instance': 1, 'donem_sinif_num': '2023_103_2'}
+{'ders_adi': 'Biyokimya I', 'ders_instance': 1, 'donem_sinif_num': '2023_103_2'}
+{'ders_adi': 'Fiziksel Kimya I', 'ders_instance': 1, 'donem_sinif_num': '2023_103_2'}
+{'ders_adi': 'Türkçe I', 'ders_instance': 1, 'donem_sinif_num': '2023_103_2'}
+{'ders_adi': 'İleri İngilizce I', 'ders_instance': 1, 'donem_sinif_num': '2022_103_3'}
+{'ders_adi': 'İş Sağlığı ve Güvenliği I', 'ders_instance': 1, 'donem_sinif_num': '2022_103_3'}
+{'ders_adi': 'Moleküler Biyoteknoloji II', 'ders_instance': 1, 'donem_sinif_num': '2022_103_3'}
+{'ders_adi': 'Seçmeli Dersler-BIO I', 'ders_instance': 1, 'donem_sinif_num': '2022_103_3'}
+{'ders_adi': 'Üniversite Seçmeli Ders Havuzu', 'ders_instance': 1, 'donem_sinif_num': '2022_103_3'}
+{'ders_adi': 'Proje I', 'ders_instance': 2, 'donem_sinif_num': '2021_103_4'}
+{'ders_adi': 'Staj', 'ders_instance': 1, 'donem_sinif_num': '2021_103_4'}
+{'ders_adi': 'Seçmeli Dersler', 'ders_instance': 2, 'donem_sinif_num': '2021_103_4'}
+{'ders_adi': 'Seçmeli Dersler', 'ders_instance': 3, 'donem_sinif_num': '2021_103_4'}
+{'ders_adi': 'Hukuka Giriş', 'ders_instance': 1, 'donem_sinif_num': '2024_104_1'}
+{'ders_adi': 'Anayasa Hukuku I', 'ders_instance': 1, 'donem_sinif_num': '2024_104_1'}
+{'ders_adi': 'Ceza Hukukunun Temel Prensipleri', 'ders_instance': 1, 'donem_sinif_num': '2024_104_1'}
+{'ders_adi': 'Hukuki İşlem Teorisi', 'ders_instance': 1, 'donem_sinif_num': '2024_104_1'}
+{'ders_adi': 'Anayasa Hukukunun Temel Prensipleri', 'ders_instance': 1, 'donem_sinif_num': '2024_104_1'}
+{'ders_adi': 'Medeni Hukuka Giriş ve Başlangıç Hükümleri', 'ders_instance': 1, 'donem_sinif_num': '2024_104_1'}
+{'ders_adi': 'Ceza Hukukuna Giriş', 'ders_instance': 1, 'donem_sinif_num': '2024_104_1'}
+{'ders_adi': 'İngilizce I', 'ders_instance': 1, 'donem_sinif_num': '2024_104_1'}
+{'ders_adi': 'Ceza Hukuku Genel Hükümler I', 'ders_instance': 1, 'donem_sinif_num': '2023_104_2'}
+{'ders_adi': 'İdare Hukuku I', 'ders_instance': 1, 'donem_sinif_num': '2023_104_2'}
+{'ders_adi': 'Milletlerarası Hukuk I', 'ders_instance': 1, 'donem_sinif_num': '2023_104_2'}
+{'ders_adi': 'Alman Sözleşme Hukuku', 'ders_instance': 1, 'donem_sinif_num': '2023_104_2'}
+{'ders_adi': 'Hukuk Felsefesi ve Hukuk Sosyolojisi', 'ders_instance': 1, 'donem_sinif_num': '2023_104_2'}
+{'ders_adi': 'Borçlar Hukuku Genel Hükümler I', 'ders_instance': 1, 'donem_sinif_num': '2023_104_2'}
+{'ders_adi': 'İngilizce III', 'ders_instance': 1, 'donem_sinif_num': '2023_104_2'}
+{'ders_adi': 'Ceza Hukuku Özel Hükümler I', 'ders_instance': 1, 'donem_sinif_num': '2022_104_3'}
+{'ders_adi': 'Ticari İşletme Hukuku', 'ders_instance': 1, 'donem_sinif_num': '2022_104_3'}
+{'ders_adi': 'Eşya Hukuku I', 'ders_instance': 1, 'donem_sinif_num': '2022_104_3'}
+{'ders_adi': 'Medeni Usul Hukuku I', 'ders_instance': 1, 'donem_sinif_num': '2022_104_3'}
+{'ders_adi': 'Avrupa Hukuku', 'ders_instance': 1, 'donem_sinif_num': '2022_104_3'}
+{'ders_adi': 'Alman İdare Hukuku – Temel Kavramlar', 'ders_instance': 1, 'donem_sinif_num': '2022_104_3'}
+{'ders_adi': 'Özel Borç İlişkileri I', 'ders_instance': 1, 'donem_sinif_num': '2022_104_3'}
+{'ders_adi': 'İş ve Sosyal Güvenlik Hukuku I', 'ders_instance': 1, 'donem_sinif_num': '2022_104_3'}
+{'ders_adi': 'İleri İngilizce I', 'ders_instance': 1, 'donem_sinif_num': '2022_104_3'}
+{'ders_adi': 'Türk Dili I', 'ders_instance': 1, 'donem_sinif_num': '2022_104_3'}
+{'ders_adi': 'Seçimlik Dersler', 'ders_instance': 1, 'donem_sinif_num': '2022_104_3'}
+{'ders_adi': 'Ceza Muhakemesi Hukuku I', 'ders_instance': 1, 'donem_sinif_num': '2021_104_4'}
+{'ders_adi': 'Devletler Özel Hukuku I', 'ders_instance': 1, 'donem_sinif_num': '2021_104_4'}

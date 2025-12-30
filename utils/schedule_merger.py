@@ -161,7 +161,7 @@ def merge_consecutive_blocks(schedule_data):
             
             # Add merged block
             merged_item = (day, start, end, display, extra, is_elec, course_name)
-            if code:
+            if code is not None:
                 merged_item = merged_item + (code, pools)
             merged.append(merged_item)
             
