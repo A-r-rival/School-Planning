@@ -559,8 +559,6 @@ class ScheduleModel(QObject):
         except Exception as e:
             print(f"Error fetching dept name: {e}")
             return None
-        else:
-            raise ValueError(f"{bolum_adi} adında ve {fakulte_num} fakülte numarasında bir bölüm bulunamadı.")
 
     def _format_ogrenci_num(self, girme_senesi, fakulte_num, bolum_num, program_tipi, sira):
         """Öğrenci numarası formatını oluştur: YY0FBBPSSS"""
@@ -585,7 +583,6 @@ class ScheduleModel(QObject):
     # Fakülte ekle
     def fakulte_ekle(self, fakulte_adi):
         self.c.execute("INSERT INTO Fakulteler (fakulte_adi) VALUES (?)", (fakulte_adi,))
-        self.conn.commit()
         self.conn.commit()
         return self.c.lastrowid
 
@@ -612,6 +609,11 @@ class ScheduleModel(QObject):
                 if key not in mapping:
                     mapping[key] = []
                 mapping[key].append(fakulte)
+            
+            # Deduplicate faculty lists
+            for key in mapping:
+                mapping[key] = list(set(mapping[key]))
+            
             return mapping
         except Exception as e:
             print(f"Error fetching course faculty map: {e}")

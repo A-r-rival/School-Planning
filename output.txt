@@ -1,0 +1,51 @@
+================================================================================
+MAKINE COURSES - POOL RELATIONSHIPS
+================================================================================
+Course: Elektrik Makineleri, Instance: 2, Pool: SD
+Course: Elektrik Makineleri I / Electrical Machines I, Instance: 1, Pool: SDUa
+Course: Elektrik Makineleri I / Electrical Machines I, Instance: 1, Pool: SDUb
+Course: Elektrik Makineleri I / Electrical Machines I, Instance: 1, Pool: SDUd
+Course: Elektrik Makineleri II, Instance: 1, Pool: SDV
+Course: Elektrik Makineleri II, Instance: 1, Pool: SDVI
+Course: Elektrik Makineleri II, Instance: 1, Pool: SDVII
+Course: Elektrik Makineleri II, Instance: 1, Pool: SDVIII
+Course: Human-Machine Interaction / Bilg.-Makine Etkile?imi, Instance: 1, Pool: ZSD
+Course: ME Selected Topics I / Makine M?h. Se?ilmi? K. I, Instance: 1, Pool: ZSD
+
+================================================================================
+MAKINE COURSES - SCHEDULE
+================================================================================
+ID: 16169, Course: Makine M?hendisli?ine Giri? / Intro to Mech. Engineering, Instance: 1
+  Time: Cuma 08:00-9:00
+ID: 16170, Course: Makine M?hendisli?ine Giri? / Intro to Mech. Engineering, Instance: 1
+  Time: Cuma 09:00-10:00
+ID: 16096, Course: Elektrik Makineleri I / Electrical Machines I, Instance: 1
+  Time: Cuma 12:00-13:00
+ID: 16187, Course: Titre?im ve Makine Dinami?i / Vibration & Machine Dynamics, Instance: 1
+  Time: Cuma 14:00-15:00
+ID: 16188, Course: Titre?im ve Makine Dinami?i / Vibration & Machine Dynamics, Instance: 1
+  Time: Cuma 15:00-16:00
+ID: 16189, Course: Titre?im ve Makine Dinami?i / Vibration & Machine Dynamics, Instance: 1
+  Time: Cuma 16:00-17:00
+ID: 16581, Course: Makine ??renmesi, Instance: 1
+  Time: Pazartesi 10:00-12:00
+ID: 16582, Course: Makine ??renmesi (Se?meli), Instance: 1
+  Time: Pazartesi 10:00-12:00
+ID: 16101, Course: Elektrik Makineleri II, Instance: 1
+  Time: Pazartesi 13:00-14:00
+ID: 16114, Course: Makine ??renmesiyle Biyomedikal Modelleme, Instance: 1
+  Time: Pazartesi 13:00-14:00
+
+================================================================================
+MAKINE COURSES - CODES
+================================================================================
+Code: CSE301, Course: Makine ??renmesi (Se?meli), Instance: 1
+Code: ETE331, Course: Elektrik Makineleri I / Electrical Machines I, Instance: 1
+Code: MAB091, Course: Makine M?hendisli?ine Giri? / Intro to Mech. Engineering, Instance: 1
+Code: MAB317, Course: Titre?im ve Makine Dinami?i / Vibration & Machine Dynamics, Instance: 1
+Code: SD, Course: Elektrik Makineleri, Instance: 2
+Code: SDIa, Course: Makine ??renmesi, Instance: 1
+Code: SDIa, Course: ?nsan-Makine ?leti?imi, Instance: 1
+Code: SDV, Course: Elektrik Makineleri II, Instance: 1
+Code: SDV, Course: Makine ??renmesiyle Biyomedikal Modelleme, Instance: 1
+Code: ZSD, Course: Makine ??renmesine Giri?, Instance: 2

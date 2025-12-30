@@ -1,0 +1,465 @@
+{
+  "pool_relationships": [
+    {
+      "ders": "Elektrik Makineleri",
+      "instance": 2,
+      "havuz": "SD"
+    },
+    {
+      "ders": "Elektrik Makineleri I / Electrical Machines I",
+      "instance": 1,
+      "havuz": "SDUa"
+    },
+    {
+      "ders": "Elektrik Makineleri I / Electrical Machines I",
+      "instance": 1,
+      "havuz": "SDUb"
+    },
+    {
+      "ders": "Elektrik Makineleri I / Electrical Machines I",
+      "instance": 1,
+      "havuz": "SDUd"
+    },
+    {
+      "ders": "Elektrik Makineleri II",
+      "instance": 1,
+      "havuz": "SDV"
+    },
+    {
+      "ders": "Elektrik Makineleri II",
+      "instance": 1,
+      "havuz": "SDVI"
+    },
+    {
+      "ders": "Elektrik Makineleri II",
+      "instance": 1,
+      "havuz": "SDVII"
+    },
+    {
+      "ders": "Elektrik Makineleri II",
+      "instance": 1,
+      "havuz": "SDVIII"
+    },
+    {
+      "ders": "Human-Machine Interaction / Bilg.-Makine Etkileşimi",
+      "instance": 1,
+      "havuz": "ZSD"
+    },
+    {
+      "ders": "ME Selected Topics I / Makine Müh. Seçilmiş K. I",
+      "instance": 1,
+      "havuz": "ZSD"
+    },
+    {
+      "ders": "ME Selected Topics II / Makine Müh. Seçilmiş K. II",
+      "instance": 1,
+      "havuz": "ZSD"
+    },
+    {
+      "ders": "Machine Learning / Makine Öğrenmesi",
+      "instance": 1,
+      "havuz": "ZSD"
+    },
+    {
+      "ders": "Makine Mühendisliğine Giriş",
+      "instance": 1,
+      "havuz": "ÜSD"
+    },
+    {
+      "ders": "Makine Mühendisliğine Giriş",
+      "instance": 1,
+      "havuz": "ÜSD"
+    },
+    {
+      "ders": "Makine Öğrenmesi",
+      "instance": 1,
+      "havuz": "SDIa"
+    },
+    {
+      "ders": "Makine Öğrenmesi",
+      "instance": 1,
+      "havuz": "SDV"
+    },
+    {
+      "ders": "Makine Öğrenmesi",
+      "instance": 1,
+      "havuz": "SDVI"
+    },
+    {
+      "ders": "Makine Öğrenmesi",
+      "instance": 1,
+      "havuz": "SDVII"
+    },
+    {
+      "ders": "Makine Öğrenmesi",
+      "instance": 1,
+      "havuz": "SDVIII"
+    },
+    {
+      "ders": "Makine Öğrenmesi",
+      "instance": 1,
+      "havuz": "VWLSD"
+    },
+    {
+      "ders": "Makine Öğrenmesi",
+      "instance": 1,
+      "havuz": "ZSDI"
+    },
+    {
+      "ders": "Makine Öğrenmesi",
+      "instance": 1,
+      "havuz": "ZSDII"
+    },
+    {
+      "ders": "Makine Öğrenmesine Giriş",
+      "instance": 2,
+      "havuz": "ZSD"
+    },
+    {
+      "ders": "Makine Öğrenmesiyle Biyomedikal Modelleme",
+      "instance": 1,
+      "havuz": "SDV"
+    },
+    {
+      "ders": "Makine Öğrenmesiyle Biyomedikal Modelleme",
+      "instance": 1,
+      "havuz": "SDVI"
+    },
+    {
+      "ders": "Makine Öğrenmesiyle Biyomedikal Modelleme",
+      "instance": 1,
+      "havuz": "SDVII"
+    },
+    {
+      "ders": "Makine Öğrenmesiyle Biyomedikal Modelleme",
+      "instance": 1,
+      "havuz": "SDVIII"
+    },
+    {
+      "ders": "İnsan-Makine Etkileşimi",
+      "instance": 1,
+      "havuz": "ZSDI"
+    },
+    {
+      "ders": "İnsan-Makine Etkileşimi",
+      "instance": 1,
+      "havuz": "ZSDII"
+    },
+    {
+      "ders": "İnsan-Makine İletişimi",
+      "instance": 1,
+      "havuz": "SDIa"
+    },
+    {
+      "ders": "İnsan-Makine İletişimi",
+      "instance": 1,
+      "havuz": "SDV"
+    },
+    {
+      "ders": "İnsan-Makine İletişimi",
+      "instance": 1,
+      "havuz": "SDVI"
+    },
+    {
+      "ders": "İnsan-Makine İletişimi",
+      "instance": 1,
+      "havuz": "SDVII"
+    },
+    {
+      "ders": "İnsan-Makine İletişimi",
+      "instance": 1,
+      "havuz": "SDVIII"
+    }
+  ],
+  "schedule_entries": [
+    {
+      "id": 16169,
+      "ders": "Makine Mühendisliğine Giriş / Intro to Mech. Engineering",
+      "instance": 1,
+      "gun": "Cuma",
+      "start": "08:00",
+      "end": "9:00",
+      "tip": "Teori"
+    },
+    {
+      "id": 16170,
+      "ders": "Makine Mühendisliğine Giriş / Intro to Mech. Engineering",
+      "instance": 1,
+      "gun": "Cuma",
+      "start": "09:00",
+      "end": "10:00",
+      "tip": "Teori"
+    },
+    {
+      "id": 16096,
+      "ders": "Elektrik Makineleri I / Electrical Machines I",
+      "instance": 1,
+      "gun": "Cuma",
+      "start": "12:00",
+      "end": "13:00",
+      "tip": "Lab"
+    },
+    {
+      "id": 16187,
+      "ders": "Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics",
+      "instance": 1,
+      "gun": "Cuma",
+      "start": "14:00",
+      "end": "15:00",
+      "tip": "Teori"
+    },
+    {
+      "id": 16188,
+      "ders": "Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics",
+      "instance": 1,
+      "gun": "Cuma",
+      "start": "15:00",
+      "end": "16:00",
+      "tip": "Teori"
+    },
+    {
+      "id": 16189,
+      "ders": "Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics",
+      "instance": 1,
+      "gun": "Cuma",
+      "start": "16:00",
+      "end": "17:00",
+      "tip": "Teori"
+    },
+    {
+      "id": 16581,
+      "ders": "Makine Öğrenmesi",
+      "instance": 1,
+      "gun": "Pazartesi",
+      "start": "10:00",
+      "end": "12:00",
+      "tip": null
+    },
+    {
+      "id": 16582,
+      "ders": "Makine Öğrenmesi (Seçmeli)",
+      "instance": 1,
+      "gun": "Pazartesi",
+      "start": "10:00",
+      "end": "12:00",
+      "tip": null
+    },
+    {
+      "id": 16101,
+      "ders": "Elektrik Makineleri II",
+      "instance": 1,
+      "gun": "Pazartesi",
+      "start": "13:00",
+      "end": "14:00",
+      "tip": "Uygulama"
+    },
+    {
+      "id": 16114,
+      "ders": "Makine Öğrenmesiyle Biyomedikal Modelleme",
+      "instance": 1,
+      "gun": "Pazartesi",
+      "start": "13:00",
+      "end": "14:00",
+      "tip": "Uygulama"
+    },
+    {
+      "id": 16095,
+      "ders": "Elektrik Makineleri I / Electrical Machines I",
+      "instance": 1,
+      "gun": "Pazartesi",
+      "start": "15:00",
+      "end": "16:00",
+      "tip": "Uygulama"
+    },
+    {
+      "id": 16190,
+      "ders": "Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics",
+      "instance": 1,
+      "gun": "Perşembe",
+      "start": "08:00",
+      "end": "9:00",
+      "tip": "Uygulama"
+    },
+    {
+      "id": 16191,
+      "ders": "Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics",
+      "instance": 1,
+      "gun": "Perşembe",
+      "start": "09:00",
+      "end": "10:00",
+      "tip": "Uygulama"
+    },
+    {
+      "id": 16292,
+      "ders": "Human-Machine Interaction / Bilg.-Makine Etkileşimi",
+      "instance": 1,
+      "gun": "Perşembe",
+      "start": "12:00",
+      "end": "13:00",
+      "tip": "Teori"
+    },
+    {
+      "id": 16305,
+      "ders": "Machine Learning / Makine Öğrenmesi",
+      "instance": 1,
+      "gun": "Perşembe",
+      "start": "12:00",
+      "end": "13:00",
+      "tip": "Teori"
+    },
+    {
+      "id": 16326,
+      "ders": "ME Selected Topics I / Makine Müh. Seçilmiş K. I",
+      "instance": 1,
+      "gun": "Perşembe",
+      "start": "12:00",
+      "end": "13:00",
+      "tip": "Teori"
+    },
+    {
+      "id": 16293,
+      "ders": "Human-Machine Interaction / Bilg.-Makine Etkileşimi",
+      "instance": 1,
+      "gun": "Perşembe",
+      "start": "13:00",
+      "end": "14:00",
+      "tip": "Teori"
+    },
+    {
+      "id": 16306,
+      "ders": "Machine Learning / Makine Öğrenmesi",
+      "instance": 1,
+      "gun": "Perşembe",
+      "start": "13:00",
+      "end": "14:00",
+      "tip": "Teori"
+    },
+    {
+      "id": 16327,
+      "ders": "ME Selected Topics I / Makine Müh. Seçilmiş K. I",
+      "instance": 1,
+      "gun": "Perşembe",
+      "start": "13:00",
+      "end": "14:00",
+      "tip": "Teori"
+    },
+    {
+      "id": 16092,
+      "ders": "Elektrik Makineleri I / Electrical Machines I",
+      "instance": 1,
+      "gun": "Perşembe",
+      "start": "14:00",
+      "end": "15:00",
+      "tip": "Teori"
+    },
+    {
+      "id": 16093,
+      "ders": "Elektrik Makineleri I / Electrical Machines I",
+      "instance": 1,
+      "gun": "Perşembe",
+      "start": "15:00",
+      "end": "16:00",
+      "tip": "Teori"
+    },
+    {
+      "id": 16094,
+      "ders": "Elektrik Makineleri I / Electrical Machines I",
+      "instance": 1,
+      "gun": "Perşembe",
+      "start": "16:00",
+      "end": "17:00",
+      "tip": "Teori"
+    },
+    {
+      "id": 16328,
+      "ders": "ME Selected Topics II / Makine Müh. Seçilmiş K. II",
+      "instance": 1,
+      "gun": "Salı",
+      "start": "10:00",
+      "end": "11:00",
+      "tip": "Teori"
+    }
+  ],
+  "course_codes": [
+    {
+      "kod": "CSE301",
+      "ders": "Makine Öğrenmesi (Seçmeli)",
+      "instance": 1
+    },
+    {
+      "kod": "ETE331",
+      "ders": "Elektrik Makineleri I / Electrical Machines I",
+      "instance": 1
+    },
+    {
+      "kod": "MAB091",
+      "ders": "Makine Mühendisliğine Giriş / Intro to Mech. Engineering",
+      "instance": 1
+    },
+    {
+      "kod": "MAB317",
+      "ders": "Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics",
+      "instance": 1
+    },
+    {
+      "kod": "SD",
+      "ders": "Elektrik Makineleri",
+      "instance": 2
+    },
+    {
+      "kod": "SDIa",
+      "ders": "Makine Öğrenmesi",
+      "instance": 1
+    },
+    {
+      "kod": "SDIa",
+      "ders": "İnsan-Makine İletişimi",
+      "instance": 1
+    },
+    {
+      "kod": "SDV",
+      "ders": "Elektrik Makineleri II",
+      "instance": 1
+    },
+    {
+      "kod": "SDV",
+      "ders": "Makine Öğrenmesiyle Biyomedikal Modelleme",
+      "instance": 1
+    },
+    {
+      "kod": "ZSD",
+      "ders": "Human-Machine Interaction / Bilg.-Makine Etkileşimi",
+      "instance": 1
+    },
+    {
+      "kod": "ZSD",
+      "ders": "Machine Learning / Makine Öğrenmesi",
+      "instance": 1
+    },
+    {
+      "kod": "ZSD",
+      "ders": "ME Selected Topics I / Makine Müh. Seçilmiş K. I",
+      "instance": 1
+    },
+    {
+      "kod": "ZSD",
+      "ders": "ME Selected Topics II / Makine Müh. Seçilmiş K. II",
+      "instance": 1
+    },
+    {
+      "kod": "ZSD",
+      "ders": "Makine Öğrenmesine Giriş",
+      "instance": 2
+    },
+    {
+      "kod": "ZSDI",
+      "ders": "İnsan-Makine Etkileşimi",
+      "instance": 1
+    },
+    {
+      "kod": "ÜSD",
+      "ders": "Makine Mühendisliğine Giriş",
+      "instance": 1
+    }
+  ]
+}

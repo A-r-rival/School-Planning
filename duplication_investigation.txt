@@ -1,0 +1,67 @@
+INVESTIGATION RESULTS
+================================================================================
+
+1. DERSLER TABLE - How many course entries?
+Found 16 entries:
+  ('CSE301', 'Makine Öğrenmesi (Seçmeli)', 1)
+  ('ETE331', 'Elektrik Makineleri I / Electrical Machines I', 1)
+  ('MAB091', 'Makine Mühendisliğine Giriş / Intro to Mech. Engineering', 1)
+  ('MAB317', 'Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics', 1)
+  ('SD', 'Elektrik Makineleri', 2)
+  ('SDIa', 'Makine Öğrenmesi', 1)
+  ('SDIa', 'İnsan-Makine İletişimi', 1)
+  ('SDV', 'Elektrik Makineleri II', 1)
+  ('SDV', 'Makine Öğrenmesiyle Biyomedikal Modelleme', 1)
+  ('ZSD', 'Makine Öğrenmesine Giriş', 2)
+  ('ZSD', 'Human-Machine Interaction / Bilg.-Makine Etkileşimi', 1)
+  ('ZSD', 'Machine Learning / Makine Öğrenmesi', 1)
+  ('ZSD', 'ME Selected Topics I / Makine Müh. Seçilmiş K. I', 1)
+  ('ZSD', 'ME Selected Topics II / Makine Müh. Seçilmiş K. II', 1)
+  ('ZSDI', 'İnsan-Makine Etkileşimi', 1)
+  ('ÜSD', 'Makine Mühendisliğine Giriş', 1)
+
+2. WHAT CS 3RD YEAR SEES:
+CS 3rd year sees 2 schedule entries:
+  ('SDIa', 'Makine Öğrenmesi', 1, 'Pazartesi', '10:00', '12:00')
+  ('CSE301', 'Makine Öğrenmesi (Seçmeli)', 1, 'Pazartesi', '10:00', '12:00')
+
+3. POOL RELATIONSHIPS:
+Found 34 pool relationships:
+  ('SD', 'Elektrik Makineleri', 2)
+  ('SDIa', 'Makine Öğrenmesi', 1)
+  ('SDIa', 'İnsan-Makine İletişimi', 1)
+  ('SDUa', 'Elektrik Makineleri I / Electrical Machines I', 1)
+  ('SDUb', 'Elektrik Makineleri I / Electrical Machines I', 1)
+  ('SDUd', 'Elektrik Makineleri I / Electrical Machines I', 1)
+  ('SDV', 'Elektrik Makineleri II', 1)
+  ('SDV', 'Makine Öğrenmesiyle Biyomedikal Modelleme', 1)
+  ('SDV', 'Makine Öğrenmesi', 1)
+  ('SDV', 'İnsan-Makine İletişimi', 1)
+  ('SDVI', 'Elektrik Makineleri II', 1)
+  ('SDVI', 'Makine Öğrenmesiyle Biyomedikal Modelleme', 1)
+  ('SDVI', 'Makine Öğrenmesi', 1)
+  ('SDVI', 'İnsan-Makine İletişimi', 1)
+  ('SDVII', 'Elektrik Makineleri II', 1)
+  ('SDVII', 'Makine Öğrenmesiyle Biyomedikal Modelleme', 1)
+  ('SDVII', 'Makine Öğrenmesi', 1)
+  ('SDVII', 'İnsan-Makine İletişimi', 1)
+  ('SDVIII', 'Elektrik Makineleri II', 1)
+  ('SDVIII', 'Makine Öğrenmesiyle Biyomedikal Modelleme', 1)
+  ('SDVIII', 'Makine Öğrenmesi', 1)
+  ('SDVIII', 'İnsan-Makine İletişimi', 1)
+  ('VWLSD', 'Makine Öğrenmesi', 1)
+  ('ZSD', 'Human-Machine Interaction / Bilg.-Makine Etkileşimi', 1)
+  ('ZSD', 'Machine Learning / Makine Öğrenmesi', 1)
+  ('ZSD', 'ME Selected Topics I / Makine Müh. Seçilmiş K. I', 1)
+  ('ZSD', 'ME Selected Topics II / Makine Müh. Seçilmiş K. II', 1)
+  ('ZSD', 'Makine Öğrenmesine Giriş', 2)
+  ('ZSDI', 'Makine Öğrenmesi', 1)
+  ('ZSDI', 'İnsan-Makine Etkileşimi', 1)
+  ('ZSDII', 'Makine Öğrenmesi', 1)
+  ('ZSDII', 'İnsan-Makine Etkileşimi', 1)
+  ('ÜSD', 'Makine Mühendisliğine Giriş', 1)
+  ('ÜSD', 'Makine Mühendisliğine Giriş', 1)
+
+================================================================================
+DIAGNOSIS:
+✅ No obvious duplication in Dersler table

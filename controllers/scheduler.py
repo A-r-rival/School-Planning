@@ -8,6 +8,9 @@ from typing import List, Dict, Tuple, Optional
 import collections
 from scripts import curriculum_data
 
+# Constants
+SLOTS_PER_DAY = 9  # Hours per day (08:00-17:00)
+
 def to_minutes(time_str: str) -> int:
     """Convert HH:MM string to minutes since midnight."""
     try:
@@ -60,7 +63,7 @@ class ORToolsScheduler:
             for h_idx, hour in enumerate(hours):
                 end_hour = f"{int(hour[:2])+1}:00"
                 self.time_slots.append({
-                    'id': d_idx * 9 + h_idx, # Updated multiplier to 9 (hours per day)
+                    'id': d_idx * SLOTS_PER_DAY + h_idx,
                     'day': day,
                     'start_str': hour,
                     'end_str': end_hour,
@@ -81,7 +84,7 @@ class ORToolsScheduler:
         self.course_faculties = {} # Map (name, instance) -> [faculties]
         
         # Merging Dictionary: (name, frozenset(teachers)) -> CourseDict
-        merged_courses = {}
+        # merged_courses removed - was unused
         
         # Allowed Faculties Filter (TEMP: Engineering only for testing)
         ALLOWED_KEYWORDS = ["mühendislik", "engineering"]
@@ -352,6 +355,8 @@ class ORToolsScheduler:
         self.vars = {} 
         self.room_vars = {}
         self.starts = {} # (c_idx, r_id, s_id) -> bool_var (Is this the START slot?)
+        
+        print(f"DEBUG: Creating variables for {len(self.courses)} courses...")
 
         for c_idx, course in enumerate(self.courses):
             # Optimization: Skip variable creation for courses not in active phase
@@ -403,8 +408,8 @@ class ORToolsScheduler:
                         
                     # Check 2: Must be on SAME DAY
                     # Slots 0-8 (Day 0), 9-17 (Day 1)...
-                    start_day = start_id // 9
-                    end_day = end_id // 9
+                    start_day = start_id // SLOTS_PER_DAY
+                    end_day = end_id // SLOTS_PER_DAY
                     
                     if start_day == end_day:
                         # This is a valid start slot
@@ -454,6 +459,8 @@ class ORToolsScheduler:
                      self.cp_model.Add(sum(possible_rooms) <= 1)
                 else:
                      self.cp_model.Add(sum(possible_rooms) == 1)
+        
+        print(f"DEBUG: Created {len(self.starts)} start variables, {len(self.vars)} occupancy variables")
 
     def add_hard_constraints(self, include_teacher_unavailability=True):
         """Add system-wide hard constraints."""
@@ -538,8 +545,8 @@ class ORToolsScheduler:
                 unavail = self.db_model.get_teacher_unavailability(t_id)
                 
                 for u in unavail:
-                    # u format: (day_str, start_str, end_str, reason)
-                    u_day, u_start_str, u_end_str, _ = u
+                    # u format: (day, start, end, id, desc, span) - unpacking first 3 safely
+                    u_day, u_start_str, u_end_str = u[0], u[1], u[2]
                     u_start_min = to_minutes(u_start_str)
                     u_end_min = to_minutes(u_end_str)
                     
@@ -612,74 +619,62 @@ class ORToolsScheduler:
                             # Day not covered by ANY valid window
                             self.cp_model.Add(day_active_vars[d_idx] == 0)
 
-        # 6. Soft Constraint: Spread parts of the same course (T, U, L) across DIFFERENT days
-        # NOTE: Disabled for performance/feasibility. Enabling this adds significant complexity 
-        # that can cause the solver to crash or find no solution on large datasets.
+        # 6. OPTIONAL: Soft Constraint to spread T/U/L across different days
+        # NOTE: Disabled by default for performance. Enable with caution on small datasets.
         ENABLE_DIFFERENT_DAYS_CONSTRAINT = False
-        
-        # Group items by parent_key (Initialize always to prevent UnboundLocalError)
-        course_parts = collections.defaultdict(list)
         
         if ENABLE_DIFFERENT_DAYS_CONSTRAINT:
             print("DEBUG: Adding Soft Constraints (Different Days)...")
-            # Only populate if enabled
-            courses_to_process = self.courses
-            for c_idx, course in enumerate(courses_to_process):
+            course_parts = collections.defaultdict(list)
+            
+            # Populate course parts
+            for c_idx, course in enumerate(self.courses):
                 if 'parent_key' in course:
                     course_parts[course['parent_key']].append(c_idx)
             
+            # Build penalty variables
+            penalties = []
             for p_key, indices in course_parts.items():
-                if len(indices) < 2: continue
-                # Logic skipped if disabled...
-        pass
-        # Correct Implementation of Minimize:
-        # We need a list of penalties.
-        penalties = []
-        for p_key, indices in course_parts.items():
-            if len(indices) < 2: continue
-            for i in range(len(indices)):
-                for j in range(i + 1, len(indices)):
-                    idx1, idx2 = indices[i], indices[j]
-                    for d_idx in range(5):
-                        # ... (re-logic for vars) ...
-                        days_slots = [s for s in self.time_slots if s['id'] // 8 == d_idx]
-                        
-                        # Gather all vars for item 1 on this day
-                        vars1 = []
-                        for s in days_slots:
-                            for r_id in [rm[0] for rm in self.rooms]:
-                                if (idx1, r_id, s['id']) in self.vars:
-                                    vars1.append(self.vars[(idx1, r_id, s['id'])])
-                        
-                        # Gather all vars for item 2 on this day
-                        vars2 = []
-                        for s in days_slots:
-                            for r_id in [rm[0] for rm in self.rooms]:
-                                if (idx2, r_id, s['id']) in self.vars:
-                                    vars2.append(self.vars[(idx2, r_id, s['id'])])
-                        
-                        if vars1 and vars2:
-                            # If sum(vars1) > 0 AND sum(vars2) > 0 -> Penalty
-                            # Since an item is only scheduled ONCE (one room, one start time), sum(vars1) is effectively bool (if we consider duration logic, it's duration, but >0 implies presence).
+                if len(indices) < 2:
+                    continue
+                    
+                for i in range(len(indices)):
+                    for j in range(i + 1, len(indices)):
+                        idx1, idx2 = indices[i], indices[j]
+                        for d_idx in range(5):
+                            days_slots = [s for s in self.time_slots if s['id'] // SLOTS_PER_DAY == d_idx]
                             
-                            # optimization: sum(vars1) is integer > 0 if present.
-                            # b1 <-> sum(vars1) > 0
-                            b1 = self.cp_model.NewBoolVar(f'p{idx1}_d{d_idx}')
-                            self.cp_model.Add(sum(vars1) > 0).OnlyEnforceIf(b1)
-                            self.cp_model.Add(sum(vars1) == 0).OnlyEnforceIf(b1.Not())
+                            # Gather vars for both courses on this day
+                            vars1 = [self.vars[(idx1, r_id, s['id'])] 
+                                    for s in days_slots 
+                                    for r_id in [rm[0] for rm in self.rooms] 
+                                    if (idx1, r_id, s['id']) in self.vars]
                             
-                            b2 = self.cp_model.NewBoolVar(f'p{idx2}_d{d_idx}')
-                            self.cp_model.Add(sum(vars2) > 0).OnlyEnforceIf(b2)
-                            self.cp_model.Add(sum(vars2) == 0).OnlyEnforceIf(b2.Not())
+                            vars2 = [self.vars[(idx2, r_id, s['id'])] 
+                                    for s in days_slots 
+                                    for r_id in [rm[0] for rm in self.rooms] 
+                                    if (idx2, r_id, s['id']) in self.vars]
                             
-                            conflict = self.cp_model.NewBoolVar(f'c_{idx1}_{idx2}_{d_idx}')
-                            self.cp_model.AddBoolAnd([b1, b2]).OnlyEnforceIf(conflict)
-                            self.cp_model.AddBoolOr([b1.Not(), b2.Not()]).OnlyEnforceIf(conflict.Not())
-                            
-                            penalties.append(conflict)
-
-        if penalties:
-            self.cp_model.Minimize(sum(penalties))
+                            if vars1 and vars2:
+                                # Create indicators for presence on this day
+                                b1 = self.cp_model.NewBoolVar(f'p{idx1}_d{d_idx}')
+                                self.cp_model.Add(sum(vars1) > 0).OnlyEnforceIf(b1)
+                                self.cp_model.Add(sum(vars1) == 0).OnlyEnforceIf(b1.Not())
+                                
+                                b2 = self.cp_model.NewBoolVar(f'p{idx2}_d{d_idx}')
+                                self.cp_model.Add(sum(vars2) > 0).OnlyEnforceIf(b2)
+                                self.cp_model.Add(sum(vars2) == 0).OnlyEnforceIf(b2.Not())
+                                
+                                # Conflict = both present on same day
+                                conflict = self.cp_model.NewBoolVar(f'c_{idx1}_{idx2}_{d_idx}')
+                                self.cp_model.AddBoolAnd([b1, b2]).OnlyEnforceIf(conflict)
+                                self.cp_model.AddBoolOr([b1.Not(), b2.Not()]).OnlyEnforceIf(conflict.Not())
+                                
+                                penalties.append(conflict)
+            
+            if penalties:
+                self.cp_model.Minimize(sum(penalties))
+                print(f"DEBUG: Added {len(penalties)} penalty terms for different-day soft constraint")
 
     def add_soft_constraints_consecutive(self):
         """
@@ -834,32 +829,32 @@ class ORToolsScheduler:
             if self.db_model.c.fetchone():
                 return
 
-            # Insert new course
-            # We need akts, t, u, l.
-            # 'real_code' might not be in course dict if it came from merge?
-            # In merge logic: 'code': item_data['code'], but where is 'real_code'?
-            # Wait, 'merge_key' logic dropped 'real_code'. 
-            # We should probably store 'real_code' in common_props if possible, or just use 'code'.
-            # For actualized electives, 'code' is the pool key (ZSD), which is fine for overlap, 
-            # but for DB we might want the real code.
-            # However, since we merged, we might have lost the specific code if we didn't save it.
-            # Let's check 'merged_map' logic. 
-            # common_props has 'code'. 
-            # Let's use 'code' as ders_kodu for now.
+            # Insert new course with correct type-based hour distribution
+            duration = course.get('duration', 0)
+            course_type = course.get('type', 'Teori')
+            
+            # Map duration to correct column based on type
+            if course_type == 'Teori':
+                t, u, l = duration, 0, 0
+            elif course_type == 'Uygulama':
+                t, u, l = 0, duration, 0
+            elif course_type == 'Lab':
+                t, u, l = 0, 0, duration
+            else:
+                # Fallback for unknown types
+                t, u, l = duration, 0, 0
             
             self.db_model.c.execute('''
                 INSERT INTO Dersler (ders_adi, ders_instance, ders_kodu, akts, teori_saati, uygulama_saati, lab_saati)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            ''', (course['name'], course['instance'], course['code'], 
-                  course.get('akts', 0), course.get('duration', 0), 0, 0)) # approx stats
-                  
-            # Note: The above stats are rough. Better would be to persist t/u/l from course dict.
-            # course dict has 't', 'u', 'l'? No, it has 'duration' and 'type'.
-            # We can't perfectly reconstruct the row without more data, but this satisfies the FK.
+            ''', (course['name'], course['instance'], course.get('code', ''), 
+                  course.get('akts', 0), t, u, l))
+            
+            print(f"DEBUG: Inserted new course: {course['name']} (inst {course['instance']}) - Type: {course_type}, Hours: T={t}, U={u}, L={l}")
             
         except Exception as e:
-            print(f"Error ensuring course in DB: {e}")
-            # Don't raise, try to proceed? No, likely will fail FK next.
+            print(f"ERROR ensuring course in DB: {e}")
+            print(f"  Course: {course.get('name', 'UNKNOWN')} (inst {course.get('instance', '?')}), Type: {course.get('type', '?')}")
             raise
 
     def _run_solver(self, mode_name: str, timeout: float = 120.0) -> bool:
@@ -909,14 +904,23 @@ class ORToolsScheduler:
         """
         try:
             self.clear_previous_schedule()
-            course_room_map = {} 
+            course_room_map = collections.defaultdict(dict)  # Fix: Use defaultdict(dict) like extract_schedule
             count = 0
             
             for c_idx, r_id, s_id in assignments:
                 course = self.courses[c_idx]
                 self._ensure_course_in_db(course)
                 
-                slot = next(s for s in self.time_slots if s['id'] == s_id)
+                # Fix: Calculate duration for correct end time
+                duration = course['duration']
+                start_slot = self.time_slots[s_id]
+                
+                # Defensive: Ensure end index is valid
+                end_idx = s_id + duration - 1
+                if end_idx >= len(self.time_slots):
+                    print(f"WARNING: Invalid end index {end_idx} for course {course['name']}, skipping")
+                    continue
+                end_slot = self.time_slots[end_idx]
                 
                 # Use FIRST teacher ID if available (schema limitation)
                 main_teacher_id = course['teacher_ids'][0] if course['teacher_ids'] else None
@@ -925,27 +929,32 @@ class ORToolsScheduler:
                     INSERT INTO Ders_Programi (ders_adi, ders_instance, ogretmen_id, derslik_id, gun, baslangic, bitis, ders_tipi)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (course['name'], course['instance'], main_teacher_id, r_id, 
-                      slot['day'], slot['start_str'], slot['end_str'], course['type']))
+                      start_slot['day'], start_slot['start_str'], end_slot['end_str'], course['type']))
                 
+                # Fix: Store room assignments separately for T and L
                 if course['type'] == 'Teori' or course['type'] == 'Uygulama':
-                    course_room_map[course['parent_key']] = {'type': 'T', 'room': r_id}
+                    course_room_map[course['parent_key']]['T'] = r_id
                 elif course['type'] == 'Lab':
-                    course_room_map[course['parent_key']] = {'type': 'L', 'room': r_id}
+                    course_room_map[course['parent_key']]['L'] = r_id
                 count += 1
             
             print(f"Fallback Schedule: {count} core items extracted.")
             
-            # Update Rooms (Borrowed logic)
+            # Fix: Update logic matching extract_schedule
             for key, val in course_room_map.items():
                 ders_adi, ders_instance = key
-                if val['type'] == 'L':
-                     self.db_model.c.execute('''
-                        UPDATE Dersler SET lab_odasi = ? WHERE ders_adi = ? AND ders_instance = ?
-                    ''', (val['room'], ders_adi, ders_instance))
-                else:
+                
+                # Update theory room if exists
+                if 'T' in val:
                      self.db_model.c.execute('''
                         UPDATE Dersler SET teori_odasi = ? WHERE ders_adi = ? AND ders_instance = ?
-                    ''', (val['room'], ders_adi, ders_instance))
+                    ''', (val['T'], ders_adi, ders_instance))
+                
+                # Update lab room if exists
+                if 'L' in val:
+                     self.db_model.c.execute('''
+                        UPDATE Dersler SET lab_odasi = ? WHERE ders_adi = ? AND ders_instance = ?
+                    ''', (val['L'], ders_adi, ders_instance))
             
             self.db_model.conn.commit()
             print("Fallback schedule saved successfully.")
@@ -956,41 +965,42 @@ class ORToolsScheduler:
     
     def extract_schedule(self):
         """Extract the schedule from the solved model and save to database"""
-        course_room_map = {} 
+        course_room_map = collections.defaultdict(dict)  # {parent_key: {'T': room_id, 'L': room_id}}
         count = 0
         
-        # Iterate over all variables to find assigned slots
-        for key, var in self.vars.items():
+        # Iterate over START variables only to prevent duplicate INSERTs
+        for key, start_var in self.starts.items():
             c_idx, r_id, s_id = key
             
-            if self.solver.Value(var) == 1:
+            if self.solver.Value(start_var) == 1:
                 course = self.courses[c_idx]
                 self._ensure_course_in_db(course)
                 
-                slot = next(s for s in self.time_slots if s['id'] == s_id)
+                duration = course['duration']
+                start_slot = self.time_slots[s_id]
+                
+                # Defensive: Ensure end index is valid
+                end_idx = s_id + duration - 1
+                if end_idx >= len(self.time_slots):
+                    print(f"WARNING: Invalid end index {end_idx} for course {course['name']}, skipping")
+                    continue
+                end_slot = self.time_slots[end_idx]
                 
                 # Use FIRST teacher ID if available (schema limitation)
                 main_teacher_id = course['teacher_ids'][0] if course['teacher_ids'] else None
                 
-                # Insert into DB
-                # Note: We treat each item (T/U/L) as a separate entry in Ders_Programi.
-                # If consecutiveness is enforced by duration block, this entry covers the whole duration.
-                # Insert into DB
-                # Note: We treat each item (T/U/L) as a separate entry in Ders_Programi.
-                # If consecutiveness is enforced by duration block, this entry covers the whole duration.
+                # Insert into DB with correct start and end times
                 self.db_model.c.execute('''
                     INSERT INTO Ders_Programi (ders_adi, ders_instance, ogretmen_id, derslik_id, gun, baslangic, bitis, ders_tipi)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (course['name'], course['instance'], main_teacher_id, r_id, 
-                      slot['day'], slot['start_str'], slot['end_str'], course['type']))
+                      start_slot['day'], start_slot['start_str'], end_slot['end_str'], course['type']))
                 
-                # Logic Update: If we split T/U/L, we might overwrite the room assignment in Dersler table multiple times.
-                # Ideally, T overwrites 'teori_odasi', L overwrites 'lab_odasi'.
-                
+                # Store room assignments separately for T and L to prevent overwrite
                 if course['type'] == 'Teori' or course['type'] == 'Uygulama':
-                    course_room_map[course['parent_key']] = {'type': 'T', 'room': r_id}
+                    course_room_map[course['parent_key']]['T'] = r_id
                 elif course['type'] == 'Lab':
-                    course_room_map[course['parent_key']] = {'type': 'L', 'room': r_id}
+                    course_room_map[course['parent_key']]['L'] = r_id
                 count += 1
         
         print(f"Schedule items extracted: {count}")
@@ -1007,14 +1017,17 @@ class ORToolsScheduler:
                 print(f"DEBUG: Processing key={key}, val={val}")  # Debug line
                 ders_adi, ders_instance = key
                 
-                if val['type'] == 'L':
-                     self.db_model.c.execute('''
-                        UPDATE Dersler SET lab_odasi = ? WHERE ders_adi = ? AND ders_instance = ?
-                    ''', (val['room'], ders_adi, ders_instance))
-                else:
+                # Update theory room if exists
+                if 'T' in val:
                      self.db_model.c.execute('''
                         UPDATE Dersler SET teori_odasi = ? WHERE ders_adi = ? AND ders_instance = ?
-                    ''', (val['room'], ders_adi, ders_instance))
+                    ''', (val['T'], ders_adi, ders_instance))
+                
+                # Update lab room if exists
+                if 'L' in val:
+                     self.db_model.c.execute('''
+                        UPDATE Dersler SET lab_odasi = ? WHERE ders_adi = ? AND ders_instance = ?
+                    ''', (val['L'], ders_adi, ders_instance))
                 
                 # Debug update
                 # if self.db_model.c.rowcount == 0:

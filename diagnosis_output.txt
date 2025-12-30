@@ -1,0 +1,33 @@
+﻿====================================================================================================
+ISSUE 1: Pool Information for Elective Courses
+====================================================================================================
+python : Traceback (most recent call
+ last):
+At line:1 char:1
++ python diagnose_issues.py 2>&1 | O
+ut-File -Encoding utf8 diagnosis_ou 
+...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSp 
+   ecified: (Traceback (most recen  
+  t call last)::String) [], Remot   
+ eException
+    + FullyQualifiedErrorId : Nativ 
+   eCommandError
+ 
+  File "D:\Git_Projects\School-Plann
+ing\diagnose_issues.py", line 14, in
+ <module>
+    print("\n\u2713 Ders_Havuz_Ilisk
+isi table exists")
+  File "C:\Users\taha_\AppData\Local
+\Programs\Python\Python311\Lib\encod
+ings\cp1254.py", line 19, in encode
+    return codecs.charmap_encode(inp
+ut,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec 
+can't encode character '\u2713' in p
+osition 2: character maps to <undefi
+ned>
