@@ -1,0 +1,24 @@
+////////Öğrenci Paneli
+interlink
++büyük gelsin pencere
++başlangıç yılı, ad vs. dropdown filter önceliklendirme
++açık gri kapalı gri çizgi okunurluk için
+parantez içinde yükseltmeye aldı
+
+
+////////Ders Listesi
+saat blokları birleşsin
+
+!!!!!!!
+alan seçmeliler
+
+dersi tekrar alma mantığı
+
+yandal ve çap mantıklarını gözden geçir
+
+
+
+
+\\\\\\\\Meh
+dil seçeneği
+aldığın hoca
