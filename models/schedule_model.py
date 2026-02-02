@@ -310,11 +310,11 @@ class ScheduleModel(QObject):
                        GROUP_CONCAT(DISTINCT d.ders_kodu), dp.ders_tipi
                 FROM Ders_Programi dp
                 JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
-                WHERE d.teori_odasi = ? OR d.lab_odasi = ?
+                WHERE dp.derslik_id = ?
                 GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, dp.ogretmen_id, dp.ders_tipi
             '''
 #SQL kuralı: GROUP BY kullanırken, SELECT'teki aggregate olmayan (örn: SUM, COUNT, GROUP_CONCAT gibi fonksiyon kullanmayan) tüm sütunlar GROUP BY'da da olmalı
-            self.c.execute(query, (classroom_id, classroom_id))
+            self.c.execute(query, (classroom_id,))
             return self.c.fetchall()
         except Exception as e:
             print(f"Error fetching classroom schedule: {e}")
