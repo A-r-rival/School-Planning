@@ -4,6 +4,11 @@ import random
 from typing import List, Dict, Optional, Tuple, Set
 
 class HeuristicScheduler:
+    """
+    NOTE: This heuristic scheduler currently IGNORES the 'preferred_day_span' (Compactness) 
+    constraint returned by the database. It only respects hard constraints (unavailability, conflicts).
+    It unpacks the new data structure but discards the extra fields.
+    """
     def __init__(self, model):
         self.db_model = model
         self.courses = []
@@ -50,7 +55,7 @@ class HeuristicScheduler:
             if unavail:
                 self.teacher_unavailability[t_id] = set()
                 for u in unavail:
-                    u_day, u_start, u_end, _ = u
+                    u_day, u_start, u_end, _, _, _ = u
                     # Find slots covering this range
                     for s in self.time_slots:
                         if s['day'] == u_day:
