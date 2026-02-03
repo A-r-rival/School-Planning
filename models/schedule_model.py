@@ -45,7 +45,7 @@ class ScheduleModel(QObject):
         # Initialize database path
         script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         if db_path is None:
-            db_path = os.path.join(script_dir, "okul_veritabani.db")
+            db_path = os.path.join(script_dir, "database", "okul_veritabani.db")
         
         # Initialize database connection
         self.conn = sqlite3.connect(db_path)

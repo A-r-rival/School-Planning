@@ -14,8 +14,8 @@ ders_programi/
 │   ├── __init__.py
 │   └── schedule_controller.py # Model-View iletişimi
 ├── main.py                    # Ana uygulama giriş noktası
-├── sql_to_py.py              # Veritabanı yöneticisi (DbManager) - DEPRECATED
-└── README_MVC.md             # Bu dosya
+├── sql_to_py.py               # Veritabanı yöneticisi (DbManager) - DEPRECATED
+└── README_MVC.md              # Bu dosya
 ```
 
 ## 🏗️ MVC Mimarisi Açıklaması
