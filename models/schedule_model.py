@@ -444,7 +444,85 @@ class ScheduleModel(QObject):
             print(f"Error fetching student schedule: {e}")
             return []
 
-    def get_all_curriculum_details(self, dept_id: Optional[int] = None, year: Optional[int] = None) -> List[tuple]:
+    def get_all_curriculum_details(self, dept_id: Optional[int] = None, year: Optional[int] = None, faculty_id: Optional[int] = None) -> List[tuple]:
+        """
+        Fetch detailed curriculum list, merging Class-Specific and Pool courses.
+        Returns list of tuples:
+        (Code, Name, T, U, L, AKTS, Type, Dept/Pool Info, SortKey_Year, IsPool, PoolCode)
+        """
+        results = []
+        try:
+            # 1. Fetch Class-Specific Courses
+            query_class = """
+                SELECT DISTINCT 
+                    d.ders_kodu, d.ders_adi, d.teori_saati, d.uygulama_saati, d.lab_saati, d.akts,
+                    'Bölüm Dersi' as tip,
+                    b.bolum_adi || ' - ' || od.sinif_duzeyi || '. Sınıf' as detay,
+                    od.sinif_duzeyi as sort_year,
+                    0 as is_pool,
+                    NULL as pool_code
+                FROM Dersler d
+                JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
+                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                JOIN Bolumler b ON od.bolum_num = b.bolum_num
+                WHERE 1=1
+            """
+            params_class = []
+            if dept_id:
+                 query_class += " AND od.bolum_num = ?"
+                 params_class.append(dept_id)
+            if faculty_id:
+                 query_class += " AND b.fakulte_num = ?"
+                 params_class.append(faculty_id)
+            if year:
+                 query_class += " AND od.sinif_duzeyi = ?"
+                 params_class.append(year)
+                 
+            self.c.execute(query_class, tuple(params_class))
+            results.extend(self.c.fetchall())
+            
+            # 2. Fetch Pool Courses
+            query_pool = """
+                SELECT DISTINCT
+                    d.ders_kodu, d.ders_adi, d.teori_saati, d.uygulama_saati, d.lab_saati, d.akts,
+                    'Havuz Dersi' as tip,
+                    'Havuz: ' || dhi.havuz_kodu,
+                    99 as sort_year,
+                    1 as is_pool,
+                    dhi.havuz_kodu as pool_code
+                FROM Dersler d
+                JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
+                LEFT JOIN Bolumler b ON dhi.bolum_num = b.bolum_num
+                WHERE 1=1
+            """
+            params_pool = []
+            if dept_id:
+                query_pool += " AND dhi.bolum_num = ?"
+                params_pool.append(dept_id)
+            if faculty_id:
+                query_pool += " AND b.fakulte_num = ?"
+                params_pool.append(faculty_id)
+            
+            if year is None or year == 99: # 99 for Havuz filter
+                 self.c.execute(query_pool, tuple(params_pool))
+                 results.extend(self.c.fetchall())
+            
+            # Sort by: 
+            # 1. Year (ASC)
+            # 2. IsPool (ASC)
+            # 3. Pool Code (ASC) - Ensure string & stripped
+            # 4. Name (ASC)
+            results.sort(key=lambda x: (
+                x[8], 
+                x[9], 
+                str(x[10]).strip().upper() if x[10] else "ZZZZZ", 
+                x[1]
+            ))
+            return results
+            
+        except Exception as e:
+            print(f"Error fetching curriculum details: {e}")
+            return []
         """
         Fetch detailed curriculum list, merging Class-Specific and Pool courses.
         Returns list of tuples:

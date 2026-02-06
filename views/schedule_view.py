@@ -172,7 +172,7 @@ class ScheduleView(QWidget):
         adhoc_layout = QHBoxLayout()
         
         # Button: Add Ad Hoc
-        self.ekle_button = QPushButton("➕ Programa Ekle (Manuel)")
+        self.ekle_button = QPushButton("➕ Sadece Bu Dönemki Programa Ekle")
         self.ekle_button.setToolTip("Mevcut programa manuel ders ekle (Müfredat dışı veya ekstra)")
         self.ekle_button.setStyleSheet("""
             QPushButton {
@@ -384,6 +384,24 @@ class ScheduleView(QWidget):
             widget.setEnabled(len(items) > 0)
             widget.blockSignals(False)
     
+    def _open_curriculum_view(self):
+        """Open dialog to view all curriculum courses"""
+        try:
+            from views.curriculum_view import CurriculumViewDialog
+            dialog = CurriculumViewDialog(self.controller, self)
+            
+            # Since this is a viewer, we just show it. 
+            # If we wanted to return data, we'd handle Accepted.
+            # But the user just wants to VIEW.
+            dialog.exec_() 
+            
+        except ImportError:
+            QMessageBox.warning(self, "Hata", "CurriculumViewDialog henüz oluşturulmadı/import edilemedi.")
+        except Exception as e:
+            QMessageBox.critical(self, "Hata", f"Müfredat görüntülenirken hata: {e}")
+
+    # ... (other methods)
+
     def _create_advanced_buttons(self, layout: QVBoxLayout):
         """Create advanced feature buttons"""
         # Advanced features label
@@ -391,45 +409,9 @@ class ScheduleView(QWidget):
         advanced_label.setStyleSheet("font-weight: bold; font-size: 16px; margin-top: 15px; margin-bottom: 5px;")
         layout.addWidget(advanced_label)
         
-        # --- Faculty & Dept Buttons (Side-by-Side) ---
-        fac_dept_layout = QHBoxLayout()
+        # Row 1: Calendar & Teacher
+        row1_layout = QHBoxLayout()
         
-        # Add faculty button
-        self.fakulte_ekle_button = QPushButton("Fakülte Ekle")
-        self.fakulte_ekle_button.setStyleSheet("""
-            QPushButton {
-                background-color: #2196F3;
-                color: white;
-                border: none;
-                padding: 12px;
-                font-size: 13px;
-                border-radius: 5px;
-            }
-            QPushButton:hover {
-                background-color: #1976D2;
-            }
-        """)
-        fac_dept_layout.addWidget(self.fakulte_ekle_button)
-        
-        # Add department button
-        self.bolum_ekle_button = QPushButton("Bölüm Ekle")
-        self.bolum_ekle_button.setStyleSheet("""
-            QPushButton {
-                background-color: #FF9800;
-                color: white;
-                border: none;
-                padding: 12px;
-                font-size: 13px;
-                border-radius: 5px;
-            }
-            QPushButton:hover {
-                background-color: #F57C00;
-            }
-        """)
-        fac_dept_layout.addWidget(self.bolum_ekle_button)
-        
-        layout.addLayout(fac_dept_layout)
-
         # Open Calendar button
         self.calendar_button = QPushButton("Takvimi Göster")
         self.calendar_button.setStyleSheet("""
@@ -440,13 +422,30 @@ class ScheduleView(QWidget):
                 padding: 12px;
                 font-size: 13px;
                 border-radius: 3px;
-                margin-top: 8px;
             }
-            QPushButton:hover {
-                background-color: #5E35B1;
-            }
+            QPushButton:hover { background-color: #5E35B1; }
         """)
-        layout.addWidget(self.calendar_button)
+        row1_layout.addWidget(self.calendar_button)
+        
+        # Teacher Availability button
+        self.teacher_availability_button = QPushButton("Öğretmen Müsaitlik ve Ders Atamaları")
+        self.teacher_availability_button.setStyleSheet("""
+            QPushButton {
+                background-color: #FF5722;
+                color: white;
+                border: none;
+                padding: 12px;
+                font-size: 13px;
+                border-radius: 3px;
+            }
+            QPushButton:hover { background-color: #E64A19; }
+        """)
+        row1_layout.addWidget(self.teacher_availability_button)
+        
+        layout.addLayout(row1_layout)
+
+        # Row 2: Student Panel & Structural Operations
+        row2_layout = QHBoxLayout()
 
         # Open Student Panel button
         self.student_button = QPushButton("Öğrenci Paneli")
@@ -458,31 +457,72 @@ class ScheduleView(QWidget):
                 padding: 12px;
                 font-size: 13px;
                 border-radius: 3px;
-                margin-top: 5px;
             }
-            QPushButton:hover {
-                background-color: #00796B;
-            }
+            QPushButton:hover { background-color: #00796B; }
         """)
-        layout.addWidget(self.student_button)
-
-        # Teacher Availability button
-        self.teacher_availability_button = QPushButton("Öğretmen Müsaitlik ve Ders Atamaları")
-        self.teacher_availability_button.setStyleSheet("""
+        row2_layout.addWidget(self.student_button)
+        
+        # Structural Operations Button (Fakülte, Bölüm vs.)
+        self.struct_ops_button = QPushButton("Fakülte, Bölüm vs. İşlemleri")
+        self.struct_ops_button.setStyleSheet("""
             QPushButton {
-                background-color: #FF5722;
+                background-color: #607D8B;  /* Blue Grey */
                 color: white;
                 border: none;
                 padding: 12px;
                 font-size: 13px;
                 border-radius: 3px;
-                margin-top: 5px;
             }
-            QPushButton:hover {
-                background-color: #E64A19;
-            }
+            QPushButton:hover { background-color: #455A64; }
         """)
-        layout.addWidget(self.teacher_availability_button)
+        
+        # Create Menu for Structural Ops
+        from PyQt5.QtWidgets import QMenu
+        self.struct_menu = QMenu(self)
+        
+        action_add_faculty = self.struct_menu.addAction("Fakülte Ekle")
+        # We need to connect these actions to the existing slots or signals, 
+        # but previously they were button clicks connected in controller.
+        # We can expose the actions or buttons. 
+        # To minimize refactoring risk, we can keep the buttons but hide them/repurpose them?
+        # Better: Allow controller to access these actions. 
+        # OR: Connect these actions to emit signals that the controller listens to?
+        # Currently controller likely does: view.fakulte_ekle_button.clicked.connect(...)
+        # So I should PROBABLY keep self.fakulte_ekle_button as a property, but maybe not visible?
+        # No, better to make valid QObjects that the controller can find.
+        
+        # Let's assign the action triggers to the same place the old buttons went.
+        # But wait, controller expects `view.fakulte_ekle_button`. 
+        # I can mock that behavior or update controller. 
+        # Safest: Update controller if possible. 
+        # Let's create dummy hidden buttons that triggered by menu? 
+        # Or just make `self.fakulte_ekle_button` match the Action? (QAction has triggered)
+        # Controller likely uses `.clicked.connect`. QAction uses `.triggered.connect`.
+        # I will keep `self.fakulte_ekle_button` as a QPushButton but NOT add it to layout, 
+        # and connect menu action to button.click()! Hacky but safe for existing controller connections.
+        
+        # Re-create the buttons (hidden) so controller doesn't likely crash
+        self.fakulte_ekle_button = QPushButton("Fakülte Ekle") 
+        self.bolum_ekle_button = QPushButton("Bölüm Ekle")
+        # Don't add to layout.
+        
+        action_add_faculty.triggered.connect(self.fakulte_ekle_button.click)
+        
+        action_add_dept = self.struct_menu.addAction("Bölüm Ekle")
+        action_add_dept.triggered.connect(self.bolum_ekle_button.click)
+        
+        self.struct_ops_button.setMenu(self.struct_menu)
+        row2_layout.addWidget(self.struct_ops_button)
+        
+        layout.addLayout(row2_layout)
+        # Teacher Availability button (Re-added to layout properly if missing or just clean up previous error)
+        # It seems the error was caused by a Previous Partial Replace leaving dangling code
+        # We need to remove the lines 518-522 which are orphaned css
+        
+        # The teacher availability button was already added to row1_layout in the previous successful edit.
+        # But looking at file content, there is garbage at 518.
+        
+        # I will just replace with empty string to delete the garbage.
 
         # Generate Schedule button
         self.generate_schedule_button = QPushButton("Otomatik Program Oluştur")
