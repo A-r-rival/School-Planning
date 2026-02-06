@@ -301,6 +301,110 @@ class ScheduleModel(QObject):
             print(f"Error fetching teacher schedule: {e}")
             return []
 
+    def assign_teacher_to_course(self, teacher_id: int, course_name: str, instance: int = 1) -> bool:
+        """
+        Assign a teacher to a specific course instance (section).
+        Persists to Ders_Ogretmen_Iliskisi.
+        """
+        try:
+            with self.conn:
+                self.c.execute("""
+                    INSERT OR REPLACE INTO Ders_Ogretmen_Iliskisi (ders_adi, ders_instance, ogretmen_id)
+                    VALUES (?, ?, ?)
+                """, (course_name, instance, teacher_id))
+            return True
+        except Exception as e:
+            self.error_occurred.emit(f"Hoca ataması başarısız: {str(e)}")
+            return False
+
+    def get_courses_assigned_to_teacher(self, teacher_id: int) -> List[tuple]:
+        """
+        Get courses assigned to a teacher in the CURRICULUM (not schedule).
+        Returns: List of (Course Name, Instance) tuples.
+        """
+        try:
+            self.c.execute("""
+                SELECT ders_adi, ders_instance
+                FROM Ders_Ogretmen_Iliskisi
+                WHERE ogretmen_id = ?
+                ORDER BY ders_adi, ders_instance
+            """, (teacher_id,))
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching assigned courses: {e}")
+            return []
+            
+    def add_curriculum_course_as_template(self, data: Dict) -> bool:
+        """
+        Add a course template to the curriculum (Dersler + Ders_Sinif_Iliskisi).
+        This is for the 'Template' button.
+        
+        Args:
+            data: {
+                'code': str, 'name': str, 'dept_id': int, 'year': int,
+                't': int, 'u': int, 'l': int, 'akts': int,
+                'type': str (Core/Elective) - currently ignored, logic is implicit
+            }
+        """
+        try:
+            # 1. Determine Instance ID (Auto-increment logic)
+            # Find max instance for this course name to separate sections if name exists
+            self.c.execute("SELECT MAX(ders_instance) FROM Dersler WHERE ders_adi = ?", (data['name'],))
+            row = self.c.fetchone()
+            instance = 1
+            if row and row[0]:
+                instance = row[0] + 1
+            
+            # 2. Add to Dersler
+            with self.conn:
+                self.c.execute("""
+                    INSERT INTO Dersler (ders_kodu, ders_instance, ders_adi, teori_saati, uygulama_saati, lab_saati, akts)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, (data['code'], instance, data['name'], data['t'], data['u'], data['l'], data['akts']))
+                
+                is_pool = data.get('is_pool', False)
+                
+                if is_pool:
+                    # 3a. Add to Ders_Havuz_Iliskisi (Pool Course)
+                    # Schema: (ders_instance, ders_adi, bolum_num, havuz_kodu)
+                    pool_code = data.get('pool_code', 'GENEL')
+                    self.c.execute("""
+                        INSERT INTO Ders_Havuz_Iliskisi (ders_instance, ders_adi, bolum_num, havuz_kodu)
+                        VALUES (?, ?, ?, ?)
+                    """, (instance, data['name'], data['dept_id'], pool_code))
+                    
+                    self.course_added.emit(f"[Havuz] {data['name']} (Şube {instance}, Havuz: {pool_code}) eklendi.")
+                    
+                else:
+                    # 3b. Add to Ders_Sinif_Iliskisi (Class Course)
+                    # Resolve donem_sinif_num from dept_id + year
+                    
+                    # First get department info to find donem_sinif_num
+                    self.c.execute("""
+                        SELECT donem_sinif_num FROM Ogrenci_Donemleri 
+                        WHERE bolum_num = ? AND sinif_duzeyi = ?
+                    """, (data['dept_id'], data['year']))
+                    
+                    rows = self.c.fetchall()
+                    if not rows:
+                         raise ValueError(f"Bu bölüm/sınıf için dönem kaydı bulunamadı (Bölüm: {data['dept_id']}, Sınıf: {data['year']})")
+                    
+                    # Add for ALL matching periods
+                    for r in rows:
+                        ds_num = r[0]
+                        self.c.execute("""
+                            INSERT INTO Ders_Sinif_Iliskisi (ders_adi, ders_instance, donem_sinif_num)
+                            VALUES (?, ?, ?)
+                        """, (data['name'], instance, ds_num))
+                        
+                    self.course_added.emit(f"[Template] {data['name']} (Şube {instance}) eklendi.")
+
+            return True
+            
+        except Exception as e:
+            self.error_occurred.emit(f"Şablon ders eklenirken hata: {str(e)}")
+            return False
+
     def get_schedule_by_classroom(self, classroom_id: int) -> List[tuple]:
         """Get schedule for a specific classroom"""
         try:
@@ -338,6 +442,90 @@ class ScheduleModel(QObject):
             return self.c.fetchall()
         except Exception as e:
             print(f"Error fetching student schedule: {e}")
+            return []
+
+    def get_all_curriculum_details(self, dept_id: Optional[int] = None, year: Optional[int] = None) -> List[tuple]:
+        """
+        Fetch detailed curriculum list, merging Class-Specific and Pool courses.
+        Returns list of tuples:
+        (Code, Name, T, U, L, AKTS, Type, Dept/Pool Info, SortKey_Year)
+        """
+        results = []
+        try:
+            # 1. Fetch Class-Specific Courses
+            query_class = """
+                SELECT DISTINCT 
+                    d.ders_kodu, d.ders_adi, d.teori_saati, d.uygulama_saati, d.lab_saati, d.akts,
+                    'Bölüm Dersi' as tip,
+                    b.bolum_adi || ' - ' || od.sinif_duzeyi || '. Sınıf' as detay,
+                    od.sinif_duzeyi as sort_year,
+                    0 as is_pool
+                FROM Dersler d
+                JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
+                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                JOIN Bolumler b ON od.bolum_num = b.bolum_num
+                WHERE 1=1
+            """
+            params_class = []
+            if dept_id:
+                 query_class += " AND od.bolum_num = ?"
+                 params_class.append(dept_id)
+            if year:
+                 query_class += " AND od.sinif_duzeyi = ?"
+                 params_class.append(year)
+                 
+            self.c.execute(query_class, tuple(params_class))
+            results.extend(self.c.fetchall())
+            
+            # 2. Fetch Pool Courses
+            # For header separation, we assign them a high sort_year key (e.g., 99)
+            query_pool = """
+                SELECT DISTINCT
+                    d.ders_kodu, d.ders_adi, d.teori_saati, d.uygulama_saati, d.lab_saati, d.akts,
+                    'Havuz Dersi' as tip,
+                    'Havuz: ' || dhi.havuz_kodu,
+                    99 as sort_year,
+                    1 as is_pool
+                FROM Dersler d
+                JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
+                LEFT JOIN Bolumler b ON dhi.bolum_num = b.bolum_num
+                WHERE 1=1
+            """
+            params_pool = []
+            if dept_id:
+                query_pool += " AND dhi.bolum_num = ?"
+                params_pool.append(dept_id)
+            
+            # If specific year filter is active and not Havuz (technically user view logic handles this, 
+            # but if user filters for "1. Class", should pools show? 
+            # Current requirement says "sonra havuzları göstersin", implying if showing "All"
+            # If filtering for Year 1, maybe only Year 1?
+            # User said "filtre olarak özellikleri aynı tut ama sınıf/havuz filtresi olarak değiş".
+            # So if they select "Havuz", we show only pools.
+            # If they select "1", we show only 1.
+            # If "All", we show 1..4 then Pool.
+            # So if year is provided (1..4), we probably shouldn't append pools unless explicitly handled.
+            # But the logic above appends pools if year is None.
+            
+            if year is None or year == 99: # 99 for Havuz filter
+                 self.c.execute(query_pool, tuple(params_pool))
+                 results.extend(self.c.fetchall())
+            
+            # Sort by: Year (ASC), Name (ASC)
+            results.sort(key=lambda x: (x[8], x[1]))
+            return results
+            
+        except Exception as e:
+            print(f"Error fetching curriculum details: {e}")
+            return []
+
+    def get_curriculum_courses(self) -> List[str]:
+        """Get unique course names from curriculum"""
+        try:
+            self.c.execute("SELECT DISTINCT ders_adi FROM Dersler ORDER BY ders_adi")
+            return [r[0] for r in self.c.fetchall()]
+        except Exception as e:
+            print(f"Error fetching curriculum courses: {e}")
             return []
 
     def get_all_teachers_with_ids(self) -> List[Tuple[int, str]]:

@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QComboBox, 
     QTableWidget, QTableWidgetItem, QPushButton, 
     QLabel, QTimeEdit, QMessageBox, QHeaderView,
-    QLineEdit, QTabWidget, QWidget, QCompleter # Added QCompleter
+    QLineEdit, QTabWidget, QWidget, QCompleter, QSpinBox # Added QCompleter
 )
 from PyQt5.QtCore import Qt, QTime
 
@@ -182,23 +182,82 @@ class TeacherAvailabilityView(QDialog):
         filter_group.addLayout(teacher_layout)
         layout.addLayout(filter_group)
         
+        # --- TABS ---
+        self.tabs = QTabWidget()
+        
+        # TAB 1: Unavailability (Existing functionality)
+        self.tab_availability = QWidget()
+        av_layout = QVBoxLayout()
+        
         # List of Unavailability
         self.table = QTableWidget()
         self.table.setColumnCount(5) 
         self.table.setHorizontalHeaderLabels(["Öğretmen", "Tip", "Detay", "Açıklama", "İşlem"])
         header = self.table.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.Stretch)
-        # Compact columns for Type and Action
         header.setSectionResizeMode(1, QHeaderView.Fixed)
-        self.table.setColumnWidth(1, 130) # Slightly wider as requested
+        self.table.setColumnWidth(1, 130)
         header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
-        layout.addWidget(self.table)
+        av_layout.addWidget(self.table)
         
         # Add Button
         self.add_button = QPushButton("Yeni Namüsaitlik Ekle")
         self.add_button.setStyleSheet("font-weight: bold; font-size: 14px; padding: 10px;")
         self.add_button.clicked.connect(self._on_add_clicked)
-        layout.addWidget(self.add_button)
+        av_layout.addWidget(self.add_button)
+        
+        self.tab_availability.setLayout(av_layout)
+        self.tabs.addTab(self.tab_availability, "Müsaitlik / Kısıtlar")
+        
+        # TAB 2: Course Assignments (New functionality from plan)
+        self.tab_assignments = QWidget()
+        as_layout = QVBoxLayout()
+        
+        # Add Assignment Form
+        form_layout = QHBoxLayout()
+        
+        # 1. Course Dropdown (Curriculum Courses)
+        self.course_combo = QComboBox()
+        self.course_combo.setEditable(True)
+        self.course_combo.addItem("Ders Seçiniz...", None)
+        self.course_combo.setMinimumWidth(250)
+        self.course_combo.completer().setCompletionMode(QCompleter.PopupCompletion)
+        self.course_combo.completer().setFilterMode(Qt.MatchContains)
+        form_layout.addWidget(QLabel("Ders:"))
+        form_layout.addWidget(self.course_combo)
+        
+        # Quick Add Template Button
+        self.btn_quick_template = QPushButton("📝 Yeni Tanımla")
+        self.btn_quick_template.setToolTip("Listede yoksa yeni bir ders şablonu oluştur")
+        self.btn_quick_template.clicked.connect(self._open_quick_template)
+        form_layout.addWidget(self.btn_quick_template)
+        
+        # 2. Section (Instance)
+        self.instance_spin = QSpinBox() 
+        self.instance_spin.setRange(1, 20)
+        self.instance_spin.setPrefix("Şube ")
+        form_layout.addWidget(QLabel("Şube:"))
+        form_layout.addWidget(self.instance_spin)
+        
+        # 3. Assign Button
+        self.btn_assign = QPushButton("Ata")
+        self.btn_assign.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
+        self.btn_assign.clicked.connect(self._on_assign_clicked)
+        form_layout.addWidget(self.btn_assign)
+        
+        as_layout.addLayout(form_layout)
+        
+        # Assignment List
+        self.assign_table = QTableWidget()
+        self.assign_table.setColumnCount(3)
+        self.assign_table.setHorizontalHeaderLabels(["Ders Adı", "Şube (Instance)", "Durum"])
+        self.assign_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        as_layout.addWidget(self.assign_table)
+        
+        self.tab_assignments.setLayout(as_layout)
+        self.tabs.addTab(self.tab_assignments, "Ders Atamaları")
+        
+        layout.addWidget(self.tabs)
         
         self.setLayout(layout)
         # Note: Do NOT call _on_teacher_changed(0) here because controller is not set yet.
@@ -208,32 +267,87 @@ class TeacherAvailabilityView(QDialog):
         # Trigger initial load now that we have the controller
         if self.teachers:
              self._on_teacher_changed(0)
+             
+        # Load curriculum courses
+        if hasattr(self.controller.model, 'get_curriculum_courses'):
+            courses = self.controller.model.get_curriculum_courses()
+            self._update_course_combo(courses)
         
     def _on_teacher_changed(self, index):
         """Handle filter change"""
         try:
             if hasattr(self, 'controller'):
                 teacher_id = self.teacher_combo.currentData()
-            if hasattr(self, 'controller'):
-                teacher_id = self.teacher_combo.currentData()
                 
                 # Check for validity
-                if teacher_id is None:
+                if teacher_id is None: # or not isinstance(teacher_id, int):
+                    # Clear views if no valid teacher selected
+                    self.table.setRowCount(0)
+                    self.assign_table.setRowCount(0)
+                    self.tab_assignments.setEnabled(False) 
                     return
-                    
-                if not isinstance(teacher_id, int):
-                    return
+                
+                # Enable assignment tab
+                self.tab_assignments.setEnabled(True)
 
                 if teacher_id == -1:
                     self.controller.load_all_teacher_availability()
                 else:
                     self.controller.load_teacher_availability(teacher_id)
+                    # Load Assignments
+                    self._load_assignments(teacher_id)
+                    
         except Exception as e:
             print(f"Error in _on_teacher_changed: {e}")
-            QMessageBox.critical(self, "Hata", f"Hata: {e}")
-            
-    def _on_add_clicked(self):
+            # QMessageBox.critical(self, "Hata", f"Hata: {e}")
         """Open Add Dialog"""
+    def _update_course_combo(self, courses):
+        self.course_combo.clear()
+        self.course_combo.addItem("Ders Seçiniz...", None)
+        self.course_combo.addItems(courses)
+
+    def _load_assignments(self, teacher_id):
+        """Load courses assigned to this teacher"""
+        try:
+            assigned = self.controller.model.get_courses_assigned_to_teacher(teacher_id)
+            self.assign_table.setRowCount(0)
+            for row, (course_name, instance) in enumerate(assigned):
+                self.assign_table.insertRow(row)
+                self.assign_table.setItem(row, 0, QTableWidgetItem(course_name))
+                self.assign_table.setItem(row, 1, QTableWidgetItem(f"Şube {instance}"))
+                self.assign_table.setItem(row, 2, QTableWidgetItem("Atandı"))
+        except Exception as e:
+            print(f"Error loading assignments: {e}")
+
+    def _on_assign_clicked(self):
+        """Assign selected course to selected teacher"""
+        teacher_id = self.teacher_combo.currentData()
+        course_name = self.course_combo.currentText()
+        instance = self.instance_spin.value()
+        
+        if teacher_id is None or teacher_id == -1:
+             QMessageBox.warning(self, "Hata", "Lütfen bir öğretmen seçiniz.")
+             return
+             
+        if not course_name or self.course_combo.currentIndex() == 0:
+             QMessageBox.warning(self, "Hata", "Lütfen bir ders seçiniz.")
+             return
+             
+        # Call model to assign
+        success = self.controller.model.assign_teacher_to_course(teacher_id, course_name, instance)
+        if success:
+            self._load_assignments(teacher_id)
+            QMessageBox.information(self, "Başarılı", f"{course_name} (Şube {instance}) atandı.")
+            
+    def _open_quick_template(self):
+        """Open template dialog from here"""
+        from views.add_curriculum_course_dialog import AddCurriculumCourseDialog # Lazy import
+        dialog = AddCurriculumCourseDialog(self.controller, self)
+        if dialog.exec_():
+             # Refresh course list
+             courses = self.controller.model.get_curriculum_courses()
+             self._update_course_combo(courses)
+
     def _on_add_clicked(self):
         """Open Add Dialog"""
         try:

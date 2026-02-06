@@ -34,6 +34,10 @@ class ScheduleController:
         self.model = model
         self.view = view
         
+        # Set controller reference in view for dialogs
+        if hasattr(self.view, 'set_controller'):
+            self.view.set_controller(self)
+        
         # Initialize calendar builder service
         self.calendar_builder = CalendarScheduleBuilder(model)
         
@@ -115,6 +119,10 @@ class ScheduleController:
             # Update teacher completer with new teacher if needed
             teachers = self.model.get_teachers()
             self.view.update_teacher_completer(teachers)
+
+    def add_curriculum_course_as_template(self, data: dict) -> bool:
+        """Add new course to curriculum via model (Template)"""
+        return self.model.add_curriculum_course_as_template(data)
     
     def handle_remove_course(self, course_info: str):
         """

@@ -6,10 +6,12 @@ Handles all UI components and user interactions
 from PyQt5.QtWidgets import (
     QWidget, QLineEdit, QPushButton, QTimeEdit, QVBoxLayout, 
     QListWidget, QComboBox, QLabel, QHBoxLayout, QCompleter, 
-    QMessageBox, QInputDialog, QDialog, QFormLayout, QDialogButtonBox
+    QMessageBox, QInputDialog, QDialog, QFormLayout, QDialogButtonBox,
+    QGroupBox
 )
 from PyQt5.QtCore import QTime, pyqtSignal, Qt
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict
+from views.add_curriculum_course_dialog import AddCurriculumCourseDialog
 
 
 class AddCourseDialog(QDialog):
@@ -122,91 +124,91 @@ class ScheduleView(QWidget):
     # Old input creation methods removed.
 
     def _create_action_buttons(self, layout: QVBoxLayout):
-        """Create action buttons"""
-        # Buttons layout
-        buttons_layout = QHBoxLayout()
+        """Create action buttons (Grouped)"""
         
-        # Add course button
-        self.ekle_button = QPushButton("➕ Yeni Ders Ekle")
+        # --- Group 1: Curriculum Operations ---
+        curr_group = QGroupBox("Müfredat İşlemleri")
+        curr_group.setStyleSheet("QGroupBox { font-weight: bold; border: 1px solid gray; border-radius: 5px; margin-top: 10px; } QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 3px 0 3px; }")
+        curr_layout = QHBoxLayout()
+        
+        # Button: Add Standard Template
+        self.btn_template = QPushButton("📝 Müfredata Ekle/Çıkar")
+        self.btn_template.setToolTip("Müfredata yeni ders ekle veya mevcut dersleri düzenle (Havuz/Sınıf)")
+        self.btn_template.setStyleSheet("""
+            QPushButton {
+                background-color: #2196F3; 
+                color: white; 
+                padding: 10px; 
+                font-weight: bold; 
+                border-radius: 5px;
+            }
+            QPushButton:hover { background-color: #1976D2; }
+        """)
+        self.btn_template.clicked.connect(self._open_template_dialog)
+        curr_layout.addWidget(self.btn_template)
+        
+        # Button: View Curriculum (NEW)
+        self.btn_view_curr = QPushButton("👀 Müfredatı Görüntüle")
+        self.btn_view_curr.setToolTip("Tüm müfredat derslerini liste halinde görüntüle")
+        self.btn_view_curr.setStyleSheet("""
+            QPushButton {
+                background-color: #009688; 
+                color: white; 
+                padding: 10px; 
+                font-weight: bold; 
+                border-radius: 5px;
+            }
+            QPushButton:hover { background-color: #00796B; }
+        """)
+        self.btn_view_curr.clicked.connect(self._open_curriculum_view)
+        curr_layout.addWidget(self.btn_view_curr)
+        
+        curr_group.setLayout(curr_layout)
+        layout.addWidget(curr_group)
+        
+        # --- Group 2: Schedule (Ad Hoc) Operations ---
+        adhoc_group = QGroupBox("Program (Ad Hoc) İşlemleri")
+        adhoc_group.setStyleSheet("QGroupBox { font-weight: bold; border: 1px solid gray; border-radius: 5px; margin-top: 10px; } QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 3px 0 3px; }")
+        adhoc_layout = QHBoxLayout()
+        
+        # Button: Add Ad Hoc
+        self.ekle_button = QPushButton("➕ Programa Ekle (Manuel)")
+        self.ekle_button.setToolTip("Mevcut programa manuel ders ekle (Müfredat dışı veya ekstra)")
         self.ekle_button.setStyleSheet("""
             QPushButton {
-                background-color: #4CAF50;
-                color: white;
-                border: none;
-                padding: 12px;
-                font-size: 14px;
-                font-weight: bold;
-                border-radius: 6px;
+                background-color: #4CAF50; 
+                color: white; 
+                padding: 10px; 
+                font-weight: bold; 
+                border-radius: 5px;
             }
-            QPushButton:hover {
-                background-color: #45a049;
-            }
+            QPushButton:hover { background-color: #388E3C; }
         """)
-        buttons_layout.addWidget(self.ekle_button)
+        # clicked signal connected in controller usually? No, likely in main or controller init.
+        # Check original code structure for connections. usually controller connects 'ekle_button.clicked'
+        adhoc_layout.addWidget(self.ekle_button)
         
-        # Remove course button
+        # Button: Remove Selected
         self.sil_button = QPushButton("➖ Seçili Dersi Sil")
+        self.sil_button.setToolTip("Takvimden seçili dersi sil")
         self.sil_button.setStyleSheet("""
             QPushButton {
-                background-color: #f44336;
-                color: white;
-                border: none;
-                padding: 12px;
-                font-size: 14px;
-                font-weight: bold;
-                border-radius: 6px;
+                background-color: #f44336; 
+                color: white; 
+                padding: 10px; 
+                font-weight: bold; 
+                border-radius: 5px;
             }
-            QPushButton:hover {
-                background-color: #da190b;
-            }
+            QPushButton:hover { background-color: #D32F2F; }
         """)
-        buttons_layout.addWidget(self.sil_button)
+        # Connection handling is external usually
+        adhoc_layout.addWidget(self.sil_button)
         
-        layout.addLayout(buttons_layout)
+        adhoc_group.setLayout(adhoc_layout)
+        layout.addWidget(adhoc_group)
     
     # _create_time_inputs removed.
-    def _create_action_buttons(self, layout: QVBoxLayout):
-        """Create action buttons"""
-        # Buttons layout
-        buttons_layout = QHBoxLayout()
-        
-        # Add course button
-        self.ekle_button = QPushButton("➕ Yeni Ders Ekle")
-        self.ekle_button.setStyleSheet("""
-            QPushButton {
-                background-color: #4CAF50;
-                color: white;
-                border: none;
-                padding: 12px;
-                font-size: 14px;
-                font-weight: bold;
-                border-radius: 6px;
-            }
-            QPushButton:hover {
-                background-color: #45a049;
-            }
-        """)
-        buttons_layout.addWidget(self.ekle_button)
-        
-        # Remove course button
-        self.sil_button = QPushButton("➖ Seçili Dersi Sil")
-        self.sil_button.setStyleSheet("""
-            QPushButton {
-                background-color: #f44336;
-                color: white;
-                border: none;
-                padding: 12px;
-                font-size: 14px;
-                font-weight: bold;
-                border-radius: 6px;
-            }
-            QPushButton:hover {
-                background-color: #da190b;
-            }
-        """)
-        buttons_layout.addWidget(self.sil_button)
-        
-        layout.addLayout(buttons_layout)
+
 
     def _create_course_list(self, layout: QVBoxLayout):
         """Create course list widget"""
@@ -465,7 +467,7 @@ class ScheduleView(QWidget):
         layout.addWidget(self.student_button)
 
         # Teacher Availability button
-        self.teacher_availability_button = QPushButton("Öğretmen Müsaitlik")
+        self.teacher_availability_button = QPushButton("Öğretmen Müsaitlik ve Ders Atamaları")
         self.teacher_availability_button.setStyleSheet("""
             QPushButton {
                 background-color: #FF5722;
@@ -512,8 +514,10 @@ class ScheduleView(QWidget):
         self.teacher_availability_button.clicked.connect(self.open_teacher_availability_requested.emit)
         self.generate_schedule_button.clicked.connect(self.generate_schedule_requested.emit)
 
-    # _auto_fill_end_time removed as inputs are gone.
-    
+    def set_controller(self, controller):
+        """Set controller reference for dialogs"""
+        self.controller = controller
+
     # Temporary store for teacher list (set by controller)
     _cached_teachers = []
 
@@ -522,6 +526,34 @@ class ScheduleView(QWidget):
         self._cached_teachers = teachers
         # Input widget is no longer here to update directly. 
 
+    def _open_template_dialog(self):
+        """Open dialog to add course to curriculum"""
+        try:
+             # Lazy import to avoid circular dependency if any?
+             # No, imported at top.
+             dialog = AddCurriculumCourseDialog(self.controller, self)
+             if dialog.exec_() == QDialog.Accepted:
+                 # Logic handled in dialog (controller calls)
+                 # Maybe refresh something?
+                 pass
+        except Exception as e:
+            QMessageBox.critical(self, "Hata", f"Diyalog açılırken hata: {e}")
+
+    def _open_curriculum_view(self):
+        """Open dialog to view all curriculum courses"""
+        try:
+            from views.curriculum_view import CurriculumViewDialog
+            dialog = CurriculumViewDialog(self.controller, self)
+            dialog.exec_()
+        except ImportError:
+            QMessageBox.warning(self, "Hata", "CurriculumViewDialog henüz oluşturulmadı/import edilemedi.")
+        except Exception as e:
+            QMessageBox.critical(self, "Hata", f"Müfredat görüntülenirken hata: {e}")
+        if dialog.exec_() == QDialog.Accepted:
+            course_data = dialog.get_data()
+            if course_data:
+                 self.course_add_requested.emit(course_data)
+    
     def _on_add_course_clicked(self):
         """Handle add course button click -> Open Dialog"""
         dialog = AddCourseDialog(self, self._cached_teachers)

@@ -90,16 +90,20 @@ class CourseRepository:
         """
         Fetches all course instances joined with student groups and teachers.
         """
-        # 1. Build Teacher Map (Course Name -> {Teacher IDs})
-        # Note: We rely on course name matching for teachers as per original logic.
+        # 1. Build Teacher Map ((Course Name, Instance) -> {Teacher IDs})
         teacher_map = collections.defaultdict(set)
+        # Fetch instance as well
         self.db_model.c.execute("""
-            SELECT ogretmen_id, ders_adi 
+            SELECT ogretmen_id, ders_adi, ders_instance
             FROM Ders_Ogretmen_Iliskisi
         """)
-        for t_id, d_name in self.db_model.c.fetchall():
+        for t_id, d_name, d_inst in self.db_model.c.fetchall():
             if d_name:
-                teacher_map[d_name.strip()].add(t_id)
+                # Key is now (Name, Instance)
+                # If d_inst is None (legacy), we might need fallback? 
+                # But schema enforces PK, so it shouldn't be None.
+                key = (d_name.strip(), d_inst)
+                teacher_map[key].add(t_id)
 
         # 2. Fetch Raw Course Rows
         query = '''
@@ -129,8 +133,10 @@ class CourseRepository:
             fac_name = fac_name.strip() if fac_name else ""
             code = code.strip() if code else ""
             
-            # Resolve teachers
-            t_ids = teacher_map.get(name, set())
+            # Resolve teachers using specific instance
+            # If no specific assignment found, we could potentially fall back to "global" assignment for that course name?
+            # But "Strict" is better for the user's requirement.
+            t_ids = teacher_map.get((name, instance), set())
             
             result_rows.append(RawCourseRow(
                 name=name,
