@@ -175,6 +175,117 @@ class ScheduleModel(QObject):
             self.error_occurred.emit(f"Ders silinirken hata: {str(e)}")
             return False
     
+    def get_all_schedule_items(self) -> List[Dict]:
+        """
+        Get all scheduled items with structured data for Table View.
+        Returns:
+            List[Dict]: List of course data objects with fields:
+            id (list of ints for merged), pool, code, name, teacher, day, start, end, classes,
+            metadata: faculty_ids, dept_ids, years (lists of ints)
+        """
+        try:
+            query = '''
+                SELECT dp.program_id, dp.ders_adi, o.ad || ' ' || o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu,
+                       GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf'),
+                       GROUP_CONCAT(DISTINCT dhi.havuz_kodu),
+                       GROUP_CONCAT(DISTINCT b.fakulte_num),
+                       GROUP_CONCAT(DISTINCT od.bolum_num),
+                       GROUP_CONCAT(DISTINCT od.sinif_duzeyi)
+                FROM Ders_Programi dp
+                JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
+                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
+                LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                LEFT JOIN Bolumler b ON od.bolum_num = b.bolum_id
+                LEFT JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
+                GROUP BY dp.program_id, dp.ders_adi, o.ad, o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu
+            '''
+            self.c.execute(query)
+            rows = self.c.fetchall()
+            
+            items = []
+            for pid, ders, hoca, gun, start, end, kodu, siniflar, havuzlar, fac_ids, dept_ids, years in rows:
+                
+                # Format pool codes
+                pool_str = ""
+                if havuzlar:
+                     pool_codes = sorted(set(p.strip() for p in havuzlar.split(',') if p.strip()))
+                     pool_str = ", ".join(pool_codes)
+                
+                # Parse metadata
+                f_ids = [int(x) for x in fac_ids.split(',')] if fac_ids else []
+                d_ids = [int(x) for x in dept_ids.split(',')] if dept_ids else []
+                y_ids = [int(x) for x in years.split(',')] if years else []
+
+                items.append({
+                    'id': pid,
+                    'pool': pool_str,
+                    'code': kodu if kodu else "",
+                    'name': ders,
+                    'teacher': hoca,
+                    'day': gun,
+                    'start': start,
+                    'end': end,
+                    'classes': siniflar if siniflar else "",
+                    'faculty_ids': f_ids,
+                    'dept_ids': d_ids,
+                    'years': y_ids
+                })
+            return items
+        except Exception as e:
+            self.error_occurred.emit(f"Dersler yüklenirken hata: {str(e)}")
+            return []
+
+    def get_all_courses(self) -> List[str]:
+        """
+        Get all scheduled items with structured data for Table View.
+        Returns:
+            List[Dict]: List of course data objects with fields:
+            id (list of ints for merged, but here single int), 
+            pool, code, name, teacher, day, start, end, classes
+        """
+        try:
+            query = '''
+                SELECT dp.program_id, dp.ders_adi, o.ad || ' ' || o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu,
+                       GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf'),
+                       GROUP_CONCAT(DISTINCT dhi.havuz_kodu)
+                FROM Ders_Programi dp
+                JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
+                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
+                LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                LEFT JOIN Bolumler b ON od.bolum_num = b.bolum_id
+                LEFT JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
+                GROUP BY dp.program_id, dp.ders_adi, o.ad, o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu
+            '''
+            self.c.execute(query)
+            rows = self.c.fetchall()
+            
+            items = []
+            for pid, ders, hoca, gun, start, end, kodu, siniflar, havuzlar in rows:
+                
+                # Format pool codes
+                pool_str = ""
+                if havuzlar:
+                     pool_codes = sorted(set(p.strip() for p in havuzlar.split(',') if p.strip()))
+                     pool_str = ", ".join(pool_codes)
+                
+                items.append({
+                    'id': pid,
+                    'pool': pool_str,
+                    'code': kodu if kodu else "",
+                    'name': ders,
+                    'teacher': hoca,
+                    'day': gun,
+                    'start': start,
+                    'end': end,
+                    'classes': siniflar if siniflar else ""
+                })
+            return items
+        except Exception as e:
+            self.error_occurred.emit(f"Dersler yüklenirken hata: {str(e)}")
+            return []
+
     def get_all_courses(self) -> List[str]:
         """
         Get all courses from database
@@ -798,6 +909,88 @@ class ScheduleModel(QObject):
             print(f"Veritabanı bağlantısı kapatılırken hata: {str(e)}")
     
     # Database management methods from DbManager
+
+    def add_teacher_course_preference(self, teacher_id: int, course_name: str, note: str, preference_type: str) -> bool:
+        """
+        Add a teacher's preference (WANTED/BLOCKED) for a course.
+        """
+        try:
+            with self.conn:
+                self.conn.execute("""
+                    INSERT OR REPLACE INTO Ogretmen_Ders_Tercihleri 
+                    (ogretmen_id, ders_adi, ders_secim_notu, tercih_tipi)
+                    VALUES (?, ?, ?, ?)
+                """, (teacher_id, course_name, note, preference_type))
+            return True
+        except Exception as e:
+            self.error_occurred.emit(f"Tercih eklenirken hata: {e}")
+            return False
+
+    def remove_teacher_course_preference(self, teacher_id: int, course_name: str) -> bool:
+        """
+        Remove a teacher's preference for a course.
+        """
+        try:
+            with self.conn:
+                self.conn.execute("""
+                    DELETE FROM Ogretmen_Ders_Tercihleri 
+                    WHERE ogretmen_id = ? AND ders_adi = ?
+                """, (teacher_id, course_name))
+            return True
+        except Exception as e:
+            self.error_occurred.emit(f"Tercih silinirken hata: {e}")
+            return False
+
+    def get_teacher_course_preferences(self, teacher_id: int) -> List[Tuple]:
+        """
+        Get all preferences for a teacher.
+        Returns list of (ders_adi, ders_secim_notu, tercih_tipi)
+        """
+        try:
+            self.c.execute("""
+                SELECT ders_adi, ders_secim_notu, tercih_tipi
+                FROM Ogretmen_Ders_Tercihleri
+                WHERE ogretmen_id = ?
+                ORDER BY tercih_tipi DESC, ders_adi
+            """, (teacher_id,))
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching preferences: {e}")
+            return []
+
+    def get_all_teacher_course_preferences(self) -> List[Tuple]:
+        """
+        Get preferences for ALL teachers.
+        Returns list of (ders_adi, ders_secim_notu, tercih_tipi, ogretmen_adi_soyadi)
+        """
+        try:
+            self.c.execute("""
+                SELECT p.ders_adi, p.ders_secim_notu, p.tercih_tipi, (o.ad || ' ' || o.soyad) as hoca
+                FROM Ogretmen_Ders_Tercihleri p
+                JOIN Ogretmenler o ON p.ogretmen_id = o.ogretmen_num
+                ORDER BY hoca, p.tercih_tipi DESC, p.ders_adi
+            """)
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching all preferences: {e}")
+            return []
+
+    def get_all_courses_assigned_to_teachers(self) -> List[Tuple]:
+        """
+        Get assigned courses for ALL teachers.
+        Returns list of (ders_adi, ders_instance, ogretmen_adi_soyadi)
+        """
+        try:
+            self.c.execute("""
+                SELECT i.ders_adi, i.ders_instance, (o.ad || ' ' || o.soyad) as hoca
+                FROM Ders_Ogretmen_Iliskisi i
+                JOIN Ogretmenler o ON i.ogretmen_id = o.ogretmen_num
+                ORDER BY hoca, i.ders_adi
+            """)
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching all assignments: {e}")
+            return []
     def fakulte_numarasini_al(self, ogrenci_num2: int) -> int:
         numara_str = str(ogrenci_num2).zfill(10)  # 10 haneye tamamla, güvenlik için
         return int(numara_str[2:4])

@@ -6,7 +6,7 @@ Pure functions for combining consecutive course blocks.
 These were extracted from ScheduleController to separate
 pure algorithms from controller logic.
 """
-from typing import List
+from typing import List, Dict
 import re
 
 
@@ -64,7 +64,6 @@ def merge_course_strings(course_list: List[str]) -> List[str]:
     def sort_key(x):
         return (
             x['name'],
-            x['code'],
             x['teacher'],
             day_map.get(x['day'], 99),
             x['start']
@@ -82,7 +81,6 @@ def merge_course_strings(course_list: List[str]) -> List[str]:
             
             # Check if mergeable: same course, teacher, day, and consecutive time
             if (current['name'] == next_item['name'] and
-                current['code'] == next_item['code'] and
                 current['teacher'] == next_item['teacher'] and
                 current['day'] == next_item['day'] and
                 current['end'] == next_item['start']):  # Consecutive
@@ -167,4 +165,52 @@ def merge_consecutive_blocks(schedule_data):
             
             i += span
     
+    return merged
+
+def merge_schedule_items_dicts(items: List[Dict]) -> List[Dict]:
+    """
+    Merge consecutive schedule items (dicts).
+    Used for the Table View.
+    """
+    if not items:
+        return []
+    
+    # Sort by Name, Teacher, Day, Start
+    day_map = {"Pazartesi": 0, "Salı": 1, "Çarşamba": 2, "Perşembe": 3, "Cuma": 4}
+    
+    def sort_key(x):
+        return (
+            x['name'],
+            x['teacher'],
+            day_map.get(x['day'], 99),
+            x['start']
+        )
+            
+    items.sort(key=sort_key)
+    
+    merged = []
+    if items:
+        current = items[0].copy() # Copy to avoid mutating original
+        # Track IDs for deletion. Note: 'id' in current is int. 
+        # structure: { ..., 'ids': [id1, id2] }
+        current['ids'] = [current['id']]
+        
+        for i in range(1, len(items)):
+            next_item = items[i]
+            
+            if (current['name'] == next_item['name'] and
+                current['teacher'] == next_item['teacher'] and
+                current['day'] == next_item['day'] and
+                current['end'] == next_item['start']):
+                
+                # Merge
+                current['end'] = next_item['end']
+                current['ids'].append(next_item['id'])
+            else:
+                merged.append(current)
+                current = next_item.copy()
+                current['ids'] = [current['id']]
+        
+        merged.append(current)
+        
     return merged

@@ -36,6 +36,7 @@ class DatabaseMigration:
         return [
             self._001_initial_schema,
             self._002_add_preferred_day_span_to_teachers,
+            self._003_add_teacher_course_preferences,
         ]
 
     # ---------- helpers ----------
@@ -87,3 +88,15 @@ class DatabaseMigration:
             )
 
         self._log("✅ Ogretmenler migrated successfully")
+
+    def _003_add_teacher_course_preferences(self) -> None:
+        """
+        Creates Ogretmen_Ders_Tercihleri table.
+        """
+        if self._table_exists("Ogretmen_Ders_Tercihleri"):
+            return
+
+        self._log("Creating Ogretmen_Ders_Tercihleri table")
+        from .migrations.teacher_course_preferences_003 import up
+        up(self._conn)
+        self._log("✅ Ogretmen_Ders_Tercihleri table created")

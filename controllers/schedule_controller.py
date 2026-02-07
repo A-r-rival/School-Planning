@@ -13,7 +13,7 @@ from views.student_view import StudentView
 from views.teacher_availability_view import TeacherAvailabilityView
 from controllers.scheduler import ORToolsScheduler
 from PyQt5.QtWidgets import QMessageBox
-from utils.schedule_merger import merge_course_strings
+from utils.schedule_merger import merge_course_strings, merge_schedule_items_dicts
 from services.calendar_schedule_builder import CalendarScheduleBuilder
 
 
@@ -54,8 +54,9 @@ class ScheduleController:
     def _connect_model_signals(self):
         """Connect model signals to view methods"""
         # Connect model signals to view updates
-        self.model.course_added.connect(self.view.add_course_to_list)
-        self.model.course_removed.connect(self.view.remove_course_from_list)
+        # For legacy add_course_to_list, we now prefer full refresh to handle merging correctly
+        self.model.course_added.connect(lambda x: self.refresh_data())
+        self.model.course_removed.connect(lambda x: self.refresh_data())
         self.model.error_occurred.connect(self.view.show_error_message)
     
     def _connect_view_signals(self):
@@ -63,6 +64,7 @@ class ScheduleController:
         # Connect view signals to controller methods
         self.view.course_add_requested.connect(self.handle_add_course)
         self.view.course_remove_requested.connect(self.handle_remove_course)
+        self.view.course_remove_by_ids_requested.connect(self.handle_remove_course_by_ids)
         self.view.faculty_add_requested.connect(self.handle_add_faculty)
         self.view.department_add_requested.connect(self.handle_add_department)
         self.view.open_calendar_requested.connect(self.open_calendar_view)
@@ -73,9 +75,7 @@ class ScheduleController:
     
     def _initialize_view(self):
         """Initialize view with existing data from model"""
-        # Load existing courses
-        courses = self.model.get_all_courses()
-        self.view.display_courses(courses)
+        self.refresh_data()
         
         # Load teachers for autocomplete
         teachers = self.model.get_teachers()
@@ -125,19 +125,23 @@ class ScheduleController:
         return self.model.add_curriculum_course_as_template(data)
     
     def handle_remove_course(self, course_info: str):
-        """
-        Handle remove course request from view
-        
-        Args:
-            course_info: Course information string
-        """
-        # Model will handle database operations
+        """Handle remove course request from view (Legacy)"""
         success = self.model.remove_course(course_info)
-        
         if success:
-            # Update teacher completer after removal
             teachers = self.model.get_teachers()
             self.view.update_teacher_completer(teachers)
+
+    def handle_remove_course_by_ids(self, ids: List[int]):
+        """Handle remove course by list of IDs"""
+        success_count = 0
+        for pid in ids:
+             if self.model.remove_course_by_id(pid):
+                 success_count += 1
+        
+        if success_count > 0:
+             self.refresh_data()
+             teachers = self.model.get_teachers()
+             self.view.update_teacher_completer(teachers)
     
     def handle_add_faculty(self, faculty_name: str):
         """
@@ -150,6 +154,9 @@ class ScheduleController:
         
         if faculty_id:
             self.view.show_success_message(f"Fakülte başarıyla eklendi! ID: {faculty_id}")
+            # Refresh filters
+            facs = self.model.get_faculties()
+            self.view.update_filter_combo("faculty", facs)
         # Error message will be shown by model signal if failed
     
     def handle_add_department(self, faculty_id: int, department_name: str):
@@ -182,10 +189,14 @@ class ScheduleController:
     
     def refresh_data(self):
         """Refresh all data from model to view"""
-        # Reload courses
-        courses = self.model.get_all_courses()
-        courses = merge_course_strings(courses) # Merge blocks
-        self.view.display_courses(courses)
+        # Reload courses using NEW structured method
+        items = self.model.get_all_schedule_items()
+        
+        # Merge consecutive blocks
+        merged_items = merge_schedule_items_dicts(items)
+        
+        # Display in table
+        self.view.display_courses(merged_items)
         
         # Reload teachers
         teachers = self.model.get_teachers()
@@ -274,92 +285,97 @@ class ScheduleController:
         
     def handle_schedule_view_filter(self, filters):
         """
-        LEGACY LIST-VIEW FILTERING LOGIC
-        
-        NOTE:
-        This logic predates CalendarScheduleBuilder.
-        Do NOT refactor until ScheduleModel refactor is complete.
-        Eventually replace with a ListScheduleBuilder service.
-        
-        Contains:
-        - Query model
-        - Faculty/dept/year logic
-        - Day/teacher filtering
-        - Elective detection (string matching)
-        - Merge blocks (merge_course_strings)
-        - Format output
+        Filter handling for the MAIN TABLE VIEW
         """
         faculty_id = filters.get("faculty_id")
         dept_id = filters.get("dept_id")
         year = filters.get("year")
         day = filters.get("day")
-        
-        # 1. Update Departments if Faculty changed (and Dept is None)
-        if faculty_id and not dept_id:
-             # Fetch depts
-             items = self.model.get_departments_by_faculty(faculty_id)
-             # Add "Ortak Dersler" option
-             items.append((-1, "Ortak Dersler"))
-             self.view.update_filter_combo("dept", items)
-             # Do NOT return, proceed to filter list with faculty_id
-
-        # 2. Filter List
-        courses = []
-        if faculty_id:
-             if dept_id:
-                 if dept_id == -1:
-                     # "Ortak Dersler": Fetch all for now (simulated)
-                     courses = self.model.get_courses_by_faculty(faculty_id, year, day)
-                 else:
-                     # Specific Dept
-                     courses = self.model.get_courses_by_department(dept_id, year, day)
-             else:
-                 # Faculty Selected, Dept = "Tüm Bölümler"
-                 courses = self.model.get_courses_by_faculty(faculty_id, year, day)
-        else:
-             # No Faculty Selected -> Show All Courses (Ders_Programi)
-             all_courses = self.model.get_all_courses()
-             
-             # Apply Day Filter (Client-side for 'All Courses' view)
-             if day:
-                 print(f"DEBUG: Filtering for day: {day}")
-                 courses = [c for c in all_courses if f"({day}" in c]
-             else:
-                 courses = all_courses
-             
-        # 3. Apply Text Filters (Client-side)
         search_text = filters.get("search_text", "").lower()
         teacher_text = filters.get("teacher_text", "").lower()
-        
-        if search_text or teacher_text:
-            filtered_courses = []
-            for course_str in courses:
-                if search_text and search_text not in course_str.lower():
-                    continue
-                    
-                if teacher_text and teacher_text not in course_str.lower():
-                     continue
-                
-                filtered_courses.append(course_str)
-            courses = filtered_courses
-        
-        # 4. Apply Elective/Core Filters
         only_elective = filters.get("only_elective", False)
         only_core = filters.get("only_core", False)
         
-        # If both checked or neither checked, show all
-        if only_elective and not only_core:
-            # Show only electives - check for "Seçmeli" in course string
-            courses = [c for c in courses if "seçmeli" in c.lower()]
-        elif only_core and not only_elective:
-            # Show only cores (not seçmeli)
-            courses = [c for c in courses if "seçmeli" not in c.lower()]
-        # else: show all (both checked or neither checked)
-
-        # Merge consecutive blocks
-        courses = merge_course_strings(courses)
+        # 1. Update Departments if Faculty changed (and Dept is None)
+        if faculty_id and not dept_id:
+             # Fetch depts for combo box update
+             # NOTE: View logic handles clearing, we just ensure data is available if needed
+             # But View expects us to push updates? 
+             # View calls update_filter_combo manually or we push it?
+             # View code: `self.filter_dept.addItem("Tüm Bölümler", None)` then trigger filter.
+             # We should update the combo box items here.
+             items = self.model.get_departments_by_faculty(faculty_id)
+             # Add "Ortak Dersler" option? Not strictly necessary for table filter but okay
+             # items.append((-1, "Ortak Dersler")) 
+             self.view.update_filter_combo("dept", items)
         
-        self.view.display_courses(courses)
+        # 2. Fetch ALL structured items
+        items = self.model.get_all_schedule_items()
+        
+        # 3. Apply Filters in Python
+        filtered_items = []
+        
+        for item in items:
+            # Faculty Filter
+            if faculty_id:
+                # Item has list of faculty_ids. Match if ANY match? 
+                # Or for strict filtering?
+                # Usually: if course belongs to dept in this faculty.
+                # Common courses might have multiple faculties?
+                if faculty_id not in item.get('faculty_ids', []):
+                     continue
+            
+            # Department Filter
+            if dept_id:
+                if dept_id not in item.get('dept_ids', []):
+                    continue
+            
+            # Year Filter
+            if year:
+                # year is str "1", "2", etc.
+                try:
+                    y_int = int(year)
+                    if y_int not in item.get('years', []):
+                        continue
+                except:
+                    pass
+            
+            # Day Filter
+            if day:
+                if item.get('day') != day:
+                    continue
+            
+            # Search Text (Name or Code)
+            if search_text:
+                if (search_text not in item.get('name', '').lower() and 
+                    search_text not in item.get('code', '').lower()):
+                    continue
+
+            # Teacher Text
+            if teacher_text:
+                if teacher_text not in item.get('teacher', '').lower():
+                    continue
+            
+            # Elective/Core Filter
+            # Check pool existence or name logic?
+            is_elective = False
+            if item.get('pool') or "seçmeli" in item.get('name', '').lower():
+                is_elective = True
+                
+            if only_elective and not only_core:
+                # Show ONLY electives
+                if not is_elective: continue
+            elif only_core and not only_elective:
+                # Show ONLY core
+                if is_elective: continue
+                
+            filtered_items.append(item)
+            
+        # 4. Merge
+        merged = merge_schedule_items_dicts(filtered_items)
+        
+        # 5. Display
+        self.view.display_courses(merged)
 
     def handle_calendar_filter(self, event_type, data):
         """Handle filter changes from calendar view"""

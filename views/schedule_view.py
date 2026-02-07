@@ -1,16 +1,11 @@
-# -*- coding: utf-8 -*-
-"""
-Schedule View - MVC Pattern
-Handles all UI components and user interactions
-"""
 from PyQt5.QtWidgets import (
     QWidget, QLineEdit, QPushButton, QTimeEdit, QVBoxLayout, 
     QListWidget, QComboBox, QLabel, QHBoxLayout, QCompleter, 
     QMessageBox, QInputDialog, QDialog, QFormLayout, QDialogButtonBox,
-    QGroupBox
+    QGroupBox, QTableWidget, QTableWidgetItem, QAbstractItemView, QHeaderView
 )
 from PyQt5.QtCore import QTime, pyqtSignal, Qt
-from typing import List, Tuple, Optional, Dict
+from typing import List, Tuple, Optional, Dict, Union
 from views.add_curriculum_course_dialog import AddCurriculumCourseDialog
 
 
@@ -90,7 +85,8 @@ class ScheduleView(QWidget):
     
     # Signals for controller communication
     course_add_requested = pyqtSignal(dict)  # Emits course data when add button clicked
-    course_remove_requested = pyqtSignal(str)  # Emits course info when remove button clicked
+    course_remove_requested = pyqtSignal(str)  # Emits course info when remove button clicked (Legacy for single ID string)
+    course_remove_by_ids_requested = pyqtSignal(list) # NEW: Emits list of IDs to remove
     faculty_add_requested = pyqtSignal(str)  # Emits faculty name when add faculty requested
     department_add_requested = pyqtSignal(int, str)  # Emits faculty_id, department_name when add department requested
     open_calendar_requested = pyqtSignal() # Emits when calendar button clicked
@@ -101,7 +97,7 @@ class ScheduleView(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Ders Programı Oluşturucu - MVC")
-        self.setGeometry(100, 100, 1000, 800)  # Larger window for better UI
+        self.setGeometry(100, 100, 1200, 870)  # Larger window for table
         
         self._setup_ui()
         self._connect_signals()
@@ -188,9 +184,9 @@ class ScheduleView(QWidget):
         # Check original code structure for connections. usually controller connects 'ekle_button.clicked'
         adhoc_layout.addWidget(self.ekle_button)
         
-        # Button: Remove Selected
-        self.sil_button = QPushButton("➖ Seçili Dersi Sil")
-        self.sil_button.setToolTip("Takvimden seçili dersi sil")
+        # Button: Remove Selected (RENAMED)
+        self.sil_button = QPushButton("➖ Seçili Dersi Bu Dönemlik Sil")
+        self.sil_button.setToolTip("Takvimden seçili dersi bu dönem için siler (Müfredattan silmez)")
         self.sil_button.setStyleSheet("""
             QPushButton {
                 background-color: #f44336; 
@@ -211,7 +207,7 @@ class ScheduleView(QWidget):
 
 
     def _create_course_list(self, layout: QVBoxLayout):
-        """Create course list widget"""
+        """Create course list widget (Table)"""
         # Course list label
         list_label = QLabel("Ders Listesi:")
         list_label.setStyleSheet("font-weight: bold; font-size: 14px; margin-top: 10px;")
@@ -262,10 +258,11 @@ class ScheduleView(QWidget):
         
         layout.addLayout(filter_layout)
         
+
         # Course type filter - Radio buttons
         type_filter_layout = QHBoxLayout()
         
-        from PyQt5.QtWidgets import QRadioButton, QButtonGroup
+        from PyQt5.QtWidgets import QRadioButton, QButtonGroup, QCheckBox
         
         # Create button group to make them mutually exclusive
         self.course_type_group = QButtonGroup()
@@ -285,35 +282,64 @@ class ScheduleView(QWidget):
         self.course_type_group.addButton(self.filter_only_core)
         self.course_type_group.addButton(self.filter_only_elective)
         
+        # Checkbox for Pool Code
+        self.show_pool_code_cb = QCheckBox("Havuz Kodu Göster")
+        self.show_pool_code_cb.setChecked(True) # Default to shown as per previous behavior
+        self.show_pool_code_cb.toggled.connect(self.toggle_pool_column)
+        
         type_filter_layout.addWidget(self.filter_all_courses)
         type_filter_layout.addWidget(self.filter_only_core)
         type_filter_layout.addWidget(self.filter_only_elective)
+        type_filter_layout.addSpacing(20)
+        type_filter_layout.addWidget(self.show_pool_code_cb)
         type_filter_layout.addStretch()
         
         layout.addLayout(type_filter_layout)
         # ----------------------
         
-        # Course list widget
-        self.ders_listesi = QListWidget()
+        # Course TABLE widget
+        self.ders_listesi = QTableWidget()
+        self.ders_listesi.setColumnCount(6)
+        self.ders_listesi.setHorizontalHeaderLabels([
+            "Havuz Kodu", "Ders Kodu", "Ders Adı", "Hocası", "Saatleri", "Alan Sınıflar"
+        ])
+        
+        # Config Table
+        self.ders_listesi.setSelectionBehavior(QAbstractItemView.SelectRows)
+
+        self.ders_listesi.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.ders_listesi.setAlternatingRowColors(True)
+        self.ders_listesi.setEditTriggers(QAbstractItemView.NoEditTriggers) # Read only
+        
+        # Headers
+        header = self.ders_listesi.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.Stretch) # Name stretches
+        
+        # Styling
         self.ders_listesi.setStyleSheet("""
-            QListWidget {
+            QTableWidget {
                 border: 2px solid #ddd;
                 border-radius: 5px;
+                background-color: #ffffff;
+                alternate-background-color: #f5f5f5;
+                gridline-color: #e0e0e0;
+            }
+            QHeaderView::section {
+                background-color: #e0e0e0;
+                padding: 4px;
+                border: 1px solid #d0d0d0;
+                font-weight: bold;
+            }
+            QTableWidget::item {
                 padding: 5px;
-                background-color: #f9f9f9;
             }
-            QListWidget::item {
-                padding: 8px;
-                border-bottom: 1px solid #eee;
-            }
-            QListWidget::item:selected {
+            QTableWidget::item:selected {
                 background-color: #e3f2fd;
-                color: #1976d2;
-            }
-            QListWidget::item:hover {
-                background-color: #f5f5f5;
+                color: #000000;
             }
         """)
+
         layout.addWidget(self.ders_listesi)
 
     # Signal for filters
@@ -357,6 +383,11 @@ class ScheduleView(QWidget):
              filters["day"] = self.filter_day.currentText()
 
         self.filter_changed.emit(filters)
+
+    def toggle_pool_column(self, checked: bool):
+        """Toggle visibility of Pool Code column"""
+        # Pool Code is column 0
+        self.ders_listesi.setColumnHidden(0, not checked)
 
     def update_filter_combo(self, combo_name: str, items: List[Tuple]):
         """
@@ -515,15 +546,7 @@ class ScheduleView(QWidget):
         row2_layout.addWidget(self.struct_ops_button)
         
         layout.addLayout(row2_layout)
-        # Teacher Availability button (Re-added to layout properly if missing or just clean up previous error)
-        # It seems the error was caused by a Previous Partial Replace leaving dangling code
-        # We need to remove the lines 518-522 which are orphaned css
         
-        # The teacher availability button was already added to row1_layout in the previous successful edit.
-        # But looking at file content, there is garbage at 518.
-        
-        # I will just replace with empty string to delete the garbage.
-
         # Generate Schedule button
         self.generate_schedule_button = QPushButton("Otomatik Program Oluştur")
         self.generate_schedule_button.setStyleSheet("""
@@ -574,25 +597,9 @@ class ScheduleView(QWidget):
              dialog = AddCurriculumCourseDialog(self.controller, self)
              if dialog.exec_() == QDialog.Accepted:
                  # Logic handled in dialog (controller calls)
-                 # Maybe refresh something?
                  pass
         except Exception as e:
             QMessageBox.critical(self, "Hata", f"Diyalog açılırken hata: {e}")
-
-    def _open_curriculum_view(self):
-        """Open dialog to view all curriculum courses"""
-        try:
-            from views.curriculum_view import CurriculumViewDialog
-            dialog = CurriculumViewDialog(self.controller, self)
-            dialog.exec_()
-        except ImportError:
-            QMessageBox.warning(self, "Hata", "CurriculumViewDialog henüz oluşturulmadı/import edilemedi.")
-        except Exception as e:
-            QMessageBox.critical(self, "Hata", f"Müfredat görüntülenirken hata: {e}")
-        if dialog.exec_() == QDialog.Accepted:
-            course_data = dialog.get_data()
-            if course_data:
-                 self.course_add_requested.emit(course_data)
     
     def _on_add_course_clicked(self):
         """Handle add course button click -> Open Dialog"""
@@ -604,14 +611,28 @@ class ScheduleView(QWidget):
     
     def _on_remove_course_clicked(self):
         """Handle remove course button click"""
-        selected_item = self.ders_listesi.currentItem()
-        if selected_item:
-            reply = QMessageBox.question(self, 'Silme Onayı', 
-                                         f"'{selected_item.text()}' dersini silmek istediğinize emin misiniz?",
-                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            
-            if reply == QMessageBox.Yes:
-                self.course_remove_requested.emit(selected_item.text())
+        # With table, we can have multi selection, but we restricted to SingleSelection
+        selected_row = self.ders_listesi.currentRow()
+        
+        if selected_row >= 0:
+            # We stored ID/IDs in the first item's UserRole
+            item = self.ders_listesi.item(selected_row, 0)
+            if item:
+                course_name = self.ders_listesi.item(selected_row, 2).text() # Name column
+                ids = item.data(Qt.UserRole) # Should be list of IDs
+                
+                reply = QMessageBox.question(self, 'Silme Onayı', 
+                                             f"'{course_name}' dersini (ve birleştirilmiş bloklarını) bu dönemlik programdan silmek istediğinize emin misiniz?",
+                                             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                
+                if reply == QMessageBox.Yes:
+                    if isinstance(ids, list):
+                         self.course_remove_by_ids_requested.emit(ids)
+                    else:
+                         # Fallback if just ID
+                         self.course_remove_by_ids_requested.emit([ids])
+        else:
+            QMessageBox.warning(self, "Uyarı", "Silinecek bir ders seçmediniz.")
     
     def _on_add_faculty_clicked(self):
         """Handle add faculty button click"""
@@ -628,31 +649,68 @@ class ScheduleView(QWidget):
     ########## Public methods for controller to call
     ###
 
-    def display_courses(self, courses: List[str]):
-        """Display courses in the list widget"""
-        self.ders_listesi.clear()
-        for course in courses:
-            self.ders_listesi.addItem(course)
+    def display_courses(self, courses: Union[List[str], List[Dict]]):
+        """
+        Display courses in the table widget.
+        Supports both legacy formatted strings (list of str) and new structured data (list of dictionaries).
+        """
+        self.ders_listesi.setRowCount(0)
+        
+        if not courses:
+            return
+
+        # Check if structured
+        is_structured = isinstance(courses[0], dict) if len(courses) > 0 else False
+        
+        if is_structured:
+            self.ders_listesi.setRowCount(len(courses))
+            for i, data in enumerate(courses):
+                # Columns: ["Havuz Kodu", "Ders Kodu", "Ders Adı", "Hocası", "Saatleri", "Alan Sınıflar"]
+                
+                # Pool
+                self.ders_listesi.setItem(i, 0, QTableWidgetItem(data.get('pool', '')))
+                
+                # Code
+                self.ders_listesi.setItem(i, 1, QTableWidgetItem(data.get('code', '')))
+                
+                # Name
+                self.ders_listesi.setItem(i, 2, QTableWidgetItem(data.get('name', '')))
+                
+                # Teacher
+                self.ders_listesi.setItem(i, 3, QTableWidgetItem(data.get('teacher', '')))
+                
+                # Time: Day xx:xx-xx:xx
+                time_str = f"{data.get('day', '')} {data.get('start', '')}-{data.get('end', '')}"
+                self.ders_listesi.setItem(i, 4, QTableWidgetItem(time_str))
+                
+                # Classes
+                self.ders_listesi.setItem(i, 5, QTableWidgetItem(data.get('classes', '')))
+                
+                # Store IDs in the first column item for deletion
+                # 'ids' should be in the data dict if merged, or 'id' if not
+                ids = data.get('ids', [data.get('id')])
+                self.ders_listesi.item(i, 0).setData(Qt.UserRole, ids)
+                
+        else:
+            # Fallback for strings (if ever needed, or transitional)
+            # We can parse them or just put in Name col
+            # But the plan is to switch controller.
+            # Assuming controller will send dicts
+            pass
     
     def add_course_to_list(self, course_info: str):
-        """Add a single course to the list"""
-        self.ders_listesi.addItem(course_info)
+        """Add a single course to the list - Legacy"""
+        # For now, simplistic appendix or ideally trigger refresh
+        # The controller should handle full refresh
+        pass 
     
     def remove_course_from_list(self, course_info: str):
-        """Remove a course from the list"""
-        items = self.ders_listesi.findItems(course_info, Qt.MatchExactly)
-        for item in items:
-            row = self.ders_listesi.row(item)
-            self.ders_listesi.takeItem(row)
+        """Remove a course from the list - Legacy"""
+        pass
     
     def clear_inputs(self):
         """Clear all input fields - Not needed with Dialog"""
         pass
-    
-    def update_teacher_completer(self, teachers: List[str]):
-        """Update teacher list for the dialog"""
-        self._cached_teachers = teachers
-        # Input widget is no longer here to update directly.
     
     def show_error_message(self, message: str):
         """Show error message to user"""
@@ -663,15 +721,7 @@ class ScheduleView(QWidget):
         QMessageBox.information(self, "Başarılı", message)
     
     def show_faculty_selection_dialog(self, faculties: List[Tuple[int, str]]) -> Tuple[bool, int]:
-        """
-        Show faculty selection dialog
-        
-        Args:
-            faculties: List of (faculty_id, faculty_name) tuples
-        
-        Returns:
-            Tuple[bool, int]: (ok, faculty_id)
-        """
+        """Show faculty selection dialog"""
         if not faculties:
             self.show_error_message("Önce bir fakülte eklemeniz gerekiyor!")
             return False, 0
@@ -682,23 +732,18 @@ class ScheduleView(QWidget):
         )
         
         if ok and faculty_choice:
-            # Extract faculty ID from selection
             faculty_id = int(faculty_choice.split('ID: ')[1].split(')')[0])
             return True, faculty_id
         
         return False, 0
     
     def show_department_input_dialog(self) -> Tuple[bool, str]:
-        """
-        Show department name input dialog
-        
-        Returns:
-            Tuple[bool, str]: (ok, department_name)
-        """
+        """Show department name input dialog"""
         department_name, ok = QInputDialog.getText(self, 'Bölüm Ekle', 'Bölüm Adı:')
         return ok, department_name.strip() if ok else ""
     
     def get_current_selected_course(self) -> Optional[str]:
-        """Get currently selected course from list"""
-        selected_item = self.ders_listesi.currentItem()
-        return selected_item.text() if selected_item else None
+        """Get currently selected course - Legacy"""
+        # Should now return ID, but signal signature mismatch if we change it blindly
+        # Used by remove? Remove now uses internal ID.
+        return None
