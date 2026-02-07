@@ -97,7 +97,7 @@ class ScheduleView(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Ders Programı Oluşturucu - MVC")
-        self.setGeometry(100, 100, 1200, 870)  # Larger window for table
+        self.setGeometry(100, 100, 1340, 870)  # Larger window for table
         
         self._setup_ui()
         self._connect_signals()
@@ -301,7 +301,7 @@ class ScheduleView(QWidget):
         self.ders_listesi = QTableWidget()
         self.ders_listesi.setColumnCount(6)
         self.ders_listesi.setHorizontalHeaderLabels([
-            "Havuz Kodu", "Ders Kodu", "Ders Adı", "Hocası", "Saatleri", "Alan Sınıflar"
+            "Havuz Kodu", "Ders Kodu", "Ders Adı", "Hocası", "Saatleri", "Zorunlu Olduğu Sınıflar"
         ])
         
         # Config Table
@@ -311,10 +311,24 @@ class ScheduleView(QWidget):
         self.ders_listesi.setAlternatingRowColors(True)
         self.ders_listesi.setEditTriggers(QAbstractItemView.NoEditTriggers) # Read only
         
-        # Headers
+        # Column Widths
         header = self.ders_listesi.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QHeaderView.Stretch) # Name stretches
+        header.setSectionResizeMode(QHeaderView.Interactive) # Allow user resizing
+        
+        # 0: Havuz (Small)
+        self.ders_listesi.setColumnWidth(0, 95)
+        # 1: Code (Small)
+        self.ders_listesi.setColumnWidth(1, 85)
+        # 2: Name (Wider + 30px) -> Let's give it substantial space
+        self.ders_listesi.setColumnWidth(2, 280) 
+        # 3: Teacher (Medium)
+        self.ders_listesi.setColumnWidth(3, 180)
+        # 4: Time (Medium)
+        self.ders_listesi.setColumnWidth(4, 160)
+        # 5: Classes (Stretch remaining)
+        header.setSectionResizeMode(5, QHeaderView.Stretch)
+        
+
         
         # Styling
         self.ders_listesi.setStyleSheet("""
@@ -435,10 +449,10 @@ class ScheduleView(QWidget):
 
     def _create_advanced_buttons(self, layout: QVBoxLayout):
         """Create advanced feature buttons"""
-        # Advanced features label
-        advanced_label = QLabel("Gelişmiş Özellikler:")
-        advanced_label.setStyleSheet("font-weight: bold; font-size: 16px; margin-top: 15px; margin-bottom: 5px;")
-        layout.addWidget(advanced_label)
+        # Advanced features label - REMOVED per user request
+        # advanced_label = QLabel("Gelişmiş Özellikler:")
+        # advanced_label.setStyleSheet("font-weight: bold; font-size: 16px; margin-top: 15px; margin-bottom: 5px;")
+        # layout.addWidget(advanced_label)
         
         # Row 1: Calendar & Teacher
         row1_layout = QHBoxLayout()

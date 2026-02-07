@@ -90,8 +90,8 @@ class AddUnavailabilityDialog(QDialog):
         self.tab_slot.setLayout(slot_layout)
         
         # Add tabs
-        self.tabs.addTab(self.tab_span, "Çalışma Bloğu (Genel Kısıt)")
-        self.tabs.addTab(self.tab_slot, "Saat/Gün Kısıtı (Özel)")
+        self.tabs.addTab(self.tab_span, "Çalışma Bloğu Kısıtı")
+        self.tabs.addTab(self.tab_slot, "Saat/Gün Kısıtı")
         
         main_layout.addWidget(self.tabs)
         
@@ -192,11 +192,13 @@ class TeacherAvailabilityView(QDialog):
         # List of Unavailability
         self.table = QTableWidget()
         self.table.setColumnCount(5) 
-        self.table.setHorizontalHeaderLabels(["Öğretmen", "Tip", "Detay", "Açıklama", "İşlem"])
+        self.table.setHorizontalHeaderLabels(["Öğretmen", "Tip", "Kısıt", "Açıklama", "İşlem"])
         header = self.table.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.Fixed)
-        self.table.setColumnWidth(1, 130)
+        self.table.setColumnWidth(1, 110)
+        header.setSectionResizeMode(2, QHeaderView.Fixed) # Kısıt fixed
+        self.table.setColumnWidth(2, 160) # Set to 160px
         header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
         self.table.setAlternatingRowColors(True) # Enable zebra striping
         av_layout.addWidget(self.table)
@@ -638,7 +640,7 @@ class TeacherAvailabilityView(QDialog):
             del_id = -1
             
             if item_type == 'span':
-                type_text = "Haftalık Kısıt"
+                type_text = "Blok Kısıtı"
                 val = item.get('span_value')
                 detail_text = f"{val} Günlük Blok"
                 desc_text = "-"
