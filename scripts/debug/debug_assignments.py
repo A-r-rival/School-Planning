@@ -1,7 +1,9 @@
 import sqlite3
 import pandas as pd
 
-DB_PATH = "okul_veritabani.db"
+import os
+
+DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "database", "okul_veritabani.db")
 
 def check_assignments():
     conn = sqlite3.connect(DB_PATH)

@@ -3,7 +3,7 @@ import sqlite3
 import os
 
 def populate_rooms():
-    db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "okul_veritabani.db")
+    db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database", "okul_veritabani.db")
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
 

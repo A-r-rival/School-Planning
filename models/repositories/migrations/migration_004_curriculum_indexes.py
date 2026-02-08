@@ -17,7 +17,7 @@ def up(conn: sqlite3.Connection) -> None:
         "CREATE INDEX IF NOT EXISTS idx_dersler_kodu ON Dersler(ders_kodu)",
         
         # Filtering pools by department
-        "CREATE INDEX IF NOT EXISTS idx_dhi_bolum ON Ders_Havuz_Iliskisi(bolum_num)",
+        "CREATE INDEX IF NOT EXISTS idx_dhi_bolum ON Ders_Havuz_Iliskisi(bolum_id)",
         
         # Grouping/Filtering by pool code
         "CREATE INDEX IF NOT EXISTS idx_dhi_havuz ON Ders_Havuz_Iliskisi(havuz_kodu)"

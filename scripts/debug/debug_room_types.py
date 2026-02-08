@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-DB_PATH = "okul_veritabani.db"
+DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "database", "okul_veritabani.db")
 
 def inspect_rooms():
     if not os.path.exists(DB_PATH):

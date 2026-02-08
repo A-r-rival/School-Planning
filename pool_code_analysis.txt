@@ -1,0 +1,38 @@
+=== Checking ALL pool courses with potentially incorrect codes ===
+
+
+Found 6 mikroişlemci course entries:
+
+Code: ETE104     | Name: Mikroişlemciler / Microprocessors        | Pool: SDII       | Instance: 2 | Count: 1
+Code: ETE104     | Name: Mikroişlemciler / Microprocessors        | Pool: SDV        | Instance: 2 | Count: 1
+Code: ETE104     | Name: Mikroişlemciler / Microprocessors        | Pool: SDVI       | Instance: 2 | Count: 1
+Code: ETE104     | Name: Mikroişlemciler / Microprocessors        | Pool: SDVII      | Instance: 2 | Count: 1
+Code: ETE104     | Name: Mikroişlemciler / Microprocessors        | Pool: SDVIII     | Instance: 2 | Count: 1
+Code: ETE104     | Name: Microprocessors / Mikroişlemciler        | Pool: ZSD        | Instance: 2 | Count: 1
+
+
+=== Checking courses with pool-like codes (SDI, SDII, SDV, etc.) ===
+
+
+Found 50 courses with SD* codes:
+
+Code: SDIII      | Name: Girişimcilik                             | Pool: POLSDI     | Instance: 2
+Code: SDIII      | Name: Dijital Pazarlama                        | Pool: POLSDI     | Instance: 2
+Code: SDIII      | Name: Örgütsel Davranış                        | Pool: POLSDI     | Instance: 2
+Code: SDIII      | Name: Personel Yönetimi                        | Pool: POLSDI     | Instance: 2
+Code: SDIII      | Name: Girişimcilik                             | Pool: POLSDV     | Instance: 2
+Code: SDIII      | Name: Dijital Pazarlama                        | Pool: POLSDV     | Instance: 2
+Code: SDIII      | Name: Örgütsel Davranış                        | Pool: POLSDV     | Instance: 2
+Code: SDIII      | Name: Personel Yönetimi                        | Pool: POLSDV     | Instance: 2
+Code: SD         | Name: Fiziksel Kimya 2                         | Pool: SD         | Instance: 2
+Code: SD         | Name: Akıllı Şebekeler                         | Pool: SD         | Instance: 2
+Code: SD         | Name: İklim Sistemine Giriş                    | Pool: SD         | Instance: 2
+Code: SD         | Name: Elektrik Makineleri                      | Pool: SD         | Instance: 2
+Code: SD         | Name: Fonksiyonel Malzemeler                   | Pool: SD         | Instance: 2
+Code: SD         | Name: Polimerik Malzemeler                     | Pool: SD         | Instance: 2
+Code: SDIII      | Name: Karar Teorisi                            | Pool: SD         | Instance: 2
+Code: SDIII      | Name: İşletmesel Veri Analizi                  | Pool: SD         | Instance: 2
+Code: SDIII      | Name: Dijital Pazarlama                        | Pool: SD         | Instance: 2
+Code: SDIII      | Name: Örgütsel Davranış                        | Pool: SD         | Instance: 2
+Code: SDIII      | Name: Girişimcilik                             | Pool: SD         | Instance: 2
+Code: SDIII      | Name: Personel Yönetimi                        | Pool: SD         | Instance: 2

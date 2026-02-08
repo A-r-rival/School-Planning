@@ -8,7 +8,11 @@ from typing import List, Optional, Set, FrozenSet, Tuple, Dict, Any
 from enum import Enum, auto
 import collections
 import re
-from scripts import curriculum_data
+import sys
+import os
+# curriculum_data is in database/
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database"))
+import curriculum_data
 
 # ==========================================
 # Enums & Dataclasses

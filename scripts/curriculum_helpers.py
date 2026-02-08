@@ -1,4 +1,8 @@
-from scripts import curriculum_data
+import sys
+import os
+# curriculum_data is in database/
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database"))
+import curriculum_data
 from scripts.parse_curriculum import Regexes
 
 def is_elective_course(course_code: str, course_name: str, dept_name: str = None) -> bool:

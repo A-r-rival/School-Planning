@@ -55,6 +55,11 @@ class ScheduleModel(QObject):
         migration = DatabaseMigration(self.conn)
         migration.run_all()
         
+        # Initialize ID Seeding Service (Auto-seed faculties/departments)
+        from models.services.seeder import IDSeedingService
+        seeder = IDSeedingService(self.conn)
+        seeder.seed()
+        
         # Initialize repositories
         from models.repositories import TeacherRepository, ScheduleRepository, CourseRepository
         self.teacher_repo = TeacherRepository(self.c, self.conn)
@@ -501,7 +506,7 @@ class ScheduleModel(QObject):
                     bolum_num = row_bn[0]
                     
                     self.c.execute("""
-                        INSERT INTO Ders_Havuz_Iliskisi (ders_instance, ders_adi, bolum_num, havuz_kodu)
+                        INSERT INTO Ders_Havuz_Iliskisi (ders_instance, ders_adi, bolum_id, havuz_kodu)
                         VALUES (?, ?, ?, ?)
                     """, (instance, data['name'], bolum_num, pool_code))
                     
@@ -638,7 +643,7 @@ class ScheduleModel(QObject):
             if year is None or year == 99: # 99 for Havuz filter
                  self.c.execute(query_pool, tuple(params_pool))
                  results.extend(self.c.fetchall())
-            
+                 
             # Sort by: 
             # 1. Year (ASC)
             # 2. IsPool (ASC)
@@ -673,7 +678,7 @@ class ScheduleModel(QObject):
                 FROM Dersler d
                 JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
                 JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
-                JOIN Bolumler b ON od.bolum_num = b.bolum_num
+                JOIN Bolumler b ON od.bolum_num = b.bolum_id
                 WHERE 1=1
             """
             params_class = []
@@ -698,12 +703,12 @@ class ScheduleModel(QObject):
                     1 as is_pool
                 FROM Dersler d
                 JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
-                LEFT JOIN Bolumler b ON dhi.bolum_num = b.bolum_num
+                LEFT JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
                 WHERE 1=1
             """
             params_pool = []
             if dept_id:
-                query_pool += " AND dhi.bolum_num = ?"
+                query_pool += " AND dhi.bolum_id = ?"
                 params_pool.append(dept_id)
             
             # If specific year filter is active and not Havuz (technically user view logic handles this, 

@@ -1,0 +1,36 @@
+# Faculty and Department ID Mapping
+# Format:
+# F:<ID>:<Faculty Name>
+# D:<ID>:<Department Name>
+# User Request: Faculty IDs 01, 02... (stored as 1, 2...)
+# Dept IDs: 2 digits for faculty + 2 digits for dept (e.g. 0101 -> 101)
+
+# --- Mühendislik Fakültesi (01) ---
+F:1:Mühendislik Fakültesi
+D:101:Bilgisayar Müh
+D:102:Elektrik-Elektronik Müh
+D:103:Endüstri Müh
+D:104:Makine Müh
+D:105:Mekatronik Müh
+D:106:İnşaat Müh
+
+# --- Fen Fakültesi (02) ---
+F:2:Fen Fakültesi
+D:201:Enerji Bilimi ve Teknolojileri
+D:202:Malzeme Bilimi ve Teknolojileri
+D:203:Moleküler Biyoteknoloji
+
+# --- Hukuk Fakültesi (03) ---
+F:3:Hukuk Fakültesi
+D:301:Hukuk Fakültesi
+
+# --- İktisadi ve İdari Bilimler Fakültesi (04) ---
+F:4:İktisadi ve İdari Bilimler Fakültesi
+D:401:İktisat
+D:402:İşletme
+D:403:Siyaset Bilimi ve Uluslararası İlişkiler
+
+# --- Kültür ve Sosyal Bilimler Fakültesi (05) ---
+F:5:Kültür ve Sosyal Bilimler Fakültesi
+D:501:Kültür ve İletişim Bölümü
+D:502:Sosyoloji

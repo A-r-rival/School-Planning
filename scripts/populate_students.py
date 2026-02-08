@@ -7,7 +7,15 @@ import sqlite3
 sys.path.append(os.getcwd())
 
 from models.schedule_model import ScheduleModel
-from scripts.curriculum_data import DEPARTMENTS_DATA, COMMON_USD_POOL
+# curriculum_data is now in database/ but we need to import it.
+# Since database is not a python package by default (no __init__.py usually), we might need to add it to path or treat it as package.
+# Or better: "scripts.curriculum_data" -> "database.curriculum_data"
+# Checking if 'database' has __init__.py... likely not. 
+# Plan: Add database/ to sys.path temporarily or use importlib?
+# Easier: Just use absolute import after adding database to sys.path
+sys.path.append(os.path.join(os.getcwd(), "database"))
+import curriculum_data as curriculum_data_module
+from curriculum_data import DEPARTMENTS_DATA, COMMON_USD_POOL
 
 GRADES = ["AA", "BA", "BB", "CB", "CC", "DC", "DD", "FD", "FF"]
 PASSING_GRADES = ["AA", "BA", "BB", "CB", "CC", "DC", "DD"]
@@ -116,28 +124,26 @@ def populate():
         # Prevent FK deadlocks
         model.c.execute("PRAGMA foreign_keys = OFF;")
 
-        # Drop everything
-        tables = [
-            "Dersler",
+        # Clear all data (but keep schema)
+        tables_to_clear = [
             "Ogrenci_Notlari",
             "Verilen_Dersler",
             "Alinan_Dersler",
+            "Ders_Ogretmen_Iliskisi",
+            "Ders_Havuz_Iliskisi",
             "Ders_Sinif_Iliskisi",
+            "Ders_Programi",
+            "Dersler",
             "Ogrenci_Donemleri",
             "Ogrenciler",
-            "Bolumler",
-            "Fakulteler"
         ]
 
-        for t in tables:
-            model.c.execute(f"DROP TABLE IF EXISTS {t}")
+        for t in tables_to_clear:
+            model.c.execute(f"DELETE FROM {t}")
 
         model.conn.commit()
-        print("All tables dropped. Creating new tables...")
-
-        model._create_tables()
-
-        print("All tables recreated successfully. Finished!")
+        model.c.execute("PRAGMA foreign_keys = ON;")
+        print("All data cleared successfully!")
 
     except Exception as e:
         print(f"Error clearing/recreating data: {e}")
@@ -150,53 +156,48 @@ def populate():
     
     dept_counter = 1
     
-    # Removed incorrect initial insertion of DEPARTMENTS_DATA keys as Faculties.
-    # We will ONLY insert the mapped canonical faculties.
-    pass
-
-    # Re-mapping logic because DEPARTMENTS_DATA keys are Dept Names (mostly)
-    # But I need to insert them into Bolumler and link to Fakulteler.
+    # 1. Seed Faculties and Departments using Seeder Service
+    print("Seeding Faculties and Departments from file...")
+    from models.services.seeder import IDSeedingService
+    seeder = IDSeedingService(model.conn, "faculty_department_codes.txt")
+    seeder.seed()
     
-    # Let's define the mapping explicitly based on known keys
-    dept_to_faculty = {}
-    for key in DEPARTMENTS_DATA.keys():
-        if "Müh" in key or "Mühendisliği" in key:
-            dept_to_faculty[key] = "Mühendislik Fakültesi"
-        elif "Hukuk" in key:
-            dept_to_faculty[key] = "Hukuk Fakültesi"
-        elif key in ["İşletme", "İktisat", "Siyaset Bilimi ve Uluslararası İlişkiler"]:
-            dept_to_faculty[key] = "İktisadi ve İdari Bilimler Fakültesi"
-        elif key in ["Kültür ve İletişim Bölümü", "Sosyoloji"]:
-            dept_to_faculty[key] = "Kültür ve Sosyal Bilimler Fakültesi"
-        else:
-            dept_to_faculty[key] = "Fen Fakültesi" # Fallback for Enerji, Malzeme, Moleküler
-
-    # Insert Faculties
-    unique_faculties = set(dept_to_faculty.values())
-    for f in unique_faculties:
-        model.c.execute("INSERT OR IGNORE INTO Fakulteler (fakulte_adi) VALUES (?)", (f,))
-    model.conn.commit()
-    
-    # Get Faculty IDs
-    fac_map = {}
-    for f in unique_faculties:
-        model.c.execute("SELECT fakulte_num FROM Fakulteler WHERE fakulte_adi = ?", (f,))
-        fac_map[f] = model.c.fetchone()[0]
-
-    # Insert Departments
+    # Re-fetch dept info for student generation logic
+    # We still need the mapping to know which department belongs to which faculty for logic
     dept_info_map = {} # key -> (bolum_id, bolum_num, fac_id)
+    dept_to_faculty = {} # key -> faculty_name
     
-    for i, (dept_name, fac_name) in enumerate(dept_to_faculty.items(), 1):
-        bolum_id = 100 + i
-        bolum_num = 100 + i # Changed to 3 digits as requested
-        fac_id = fac_map[fac_name]
-        
-        # Clean dept name for DB (remove "Öğretim Planı" if exists, though parser handled it)
-        clean_name = dept_name
-        
-        model.c.execute("INSERT OR IGNORE INTO Bolumler (bolum_id, bolum_num, bolum_adi, fakulte_num) VALUES (?, ?, ?, ?)",
-                       (bolum_id, bolum_num, clean_name, fac_id))
-        dept_info_map[dept_name] = (bolum_id, bolum_num, fac_id)
+    # We can reconstruct this by querying the database or re-reading file.
+    # Re-reading file is safer to match DEPARTMENTS_DATA keys if logic is tricky.
+    # But let's just use the database since seeder populated it.
+    
+    # Actually, the original logic had some fuzzy matching for DEPARTMENTS_DATA keys.
+    # Let's keep it simple: Read the file again just to build the map for *this script's* internal logic.
+    # OR, better: Query the DB for all departments and match them to DEPARTMENTS_DATA keys.
+    
+    print("Building internal maps...")
+    model.c.execute("SELECT bolum_id, bolum_adi, fakulte_num FROM Bolumler")
+    db_depts = model.c.fetchall()
+    
+    # Fetch Faculty Names
+    model.c.execute("SELECT fakulte_num, fakulte_adi FROM Fakulteler")
+    fac_rows = model.c.fetchall()
+    faculty_map = {r[0]: r[1] for r in fac_rows}
+    
+    for d_id, d_name, f_id in db_depts:
+        # Match with DEPARTMENTS_DATA key
+        for k in DEPARTMENTS_DATA.keys():
+            if k == d_name:
+                dept_info_map[k] = (d_id, d_id, f_id)
+                dept_to_faculty[k] = faculty_map.get(f_id, "Unknown Faculty")
+                break
+            # Handle potential whitespace diffs?
+            if k.strip() == d_name.strip():
+                 dept_info_map[k] = (d_id, d_id, f_id)
+                 dept_to_faculty[k] = faculty_map.get(f_id, "Unknown Faculty")
+                 break
+
+    # Commit not needed as seeding did it (or auto-commit)
     model.conn.commit()
 
     student_count = 0
@@ -267,6 +268,32 @@ def populate():
                 
                 create_student(model, s_num, dept_name, year, irr_entry_year, current_semester, bolum_id, fac_id, curriculum, dept_to_faculty[dept_name], is_irregular=True)
                 student_count += 1
+
+
+    # 3. Populate Pool Relationships (Ders_Havuz_Iliskisi)
+    print("\nPopulating pool relationships...")
+    pool_count = 0
+    for dept_name, dept_data in DEPARTMENTS_DATA.items():
+        bolum_id, bolum_num, fac_id = dept_info_map[dept_name]
+        pools = dept_data.get("pools", {})
+        
+        for pool_code, courses in pools.items():
+            for course_data in courses:
+                if len(course_data) >= 3:
+                    code, name, ects = course_data[0], course_data[1], course_data[2]
+                    t, u, l = course_data[3:6] if len(course_data) >= 6 else (0, 0, 0)
+                    
+                    # Ensure course exists
+                    instance = ensure_course_exists(model, code, name, ects, t, u, l)
+                    
+                    # Add pool relationship
+                    model.c.execute("""
+                        INSERT OR IGNORE INTO Ders_Havuz_Iliskisi (ders_instance, ders_adi, bolum_id, havuz_kodu)
+                        VALUES (?, ?, ?, ?)
+                    """, (instance, name, bolum_id, pool_code))
+                    pool_count += 1
+    
+    print(f"✅ Successfully created {pool_count} pool relationships.")
 
     model.conn.commit()
     print(f"✅ Successfully created {student_count} students.")

@@ -82,11 +82,11 @@ def create_initial_schema(conn: sqlite3.Connection) -> None:
             iliski_id INTEGER PRIMARY KEY AUTOINCREMENT,
             ders_instance INTEGER NOT NULL,
             ders_adi TEXT NOT NULL,
-            bolum_num INTEGER NOT NULL,
+            bolum_id INTEGER NOT NULL,
             havuz_kodu TEXT NOT NULL,
             FOREIGN KEY (ders_instance, ders_adi) REFERENCES Dersler(ders_instance, ders_adi) ON DELETE CASCADE,
-            FOREIGN KEY (bolum_num) REFERENCES Bolumler(bolum_num) ON DELETE CASCADE,
-            UNIQUE(ders_instance, ders_adi, bolum_num, havuz_kodu)
+            FOREIGN KEY (bolum_id) REFERENCES Bolumler(bolum_id) ON DELETE CASCADE,
+            UNIQUE(ders_instance, ders_adi, bolum_id, havuz_kodu)
         )''',
 
         '''CREATE TABLE IF NOT EXISTS Ogrenciler (

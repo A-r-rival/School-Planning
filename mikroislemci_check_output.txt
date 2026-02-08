@@ -1,0 +1,14 @@
+=== Checking Mikroişlemciler courses ===
+
+Code: SDV | Name: Mikroişlemciler / Microprocessors | Pool: SDII | Instance: 1
+Code: SDV | Name: Mikroişlemciler / Microprocessors | Pool: SDV | Instance: 1
+Code: SDV | Name: Mikroişlemciler / Microprocessors | Pool: SDVI | Instance: 1
+Code: SDV | Name: Mikroişlemciler / Microprocessors | Pool: SDVII | Instance: 1
+Code: SDV | Name: Mikroişlemciler / Microprocessors | Pool: SDVIII | Instance: 1
+Code: ZSD | Name: Microprocessors / Mikroişlemciler | Pool: ZSD | Instance: 1
+Code: ETE104 | Name: Mikroişlemciler / Microprocessors | Pool: SDII | Instance: 2
+Code: ETE104 | Name: Mikroişlemciler / Microprocessors | Pool: SDV | Instance: 2
+Code: ETE104 | Name: Mikroişlemciler / Microprocessors | Pool: SDVI | Instance: 2
+Code: ETE104 | Name: Mikroişlemciler / Microprocessors | Pool: SDVII | Instance: 2
+Code: ETE104 | Name: Mikroişlemciler / Microprocessors | Pool: SDVIII | Instance: 2
+Code: ETE104 | Name: Microprocessors / Mikroişlemciler | Pool: ZSD | Instance: 2
