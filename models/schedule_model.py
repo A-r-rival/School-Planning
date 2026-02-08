@@ -236,59 +236,11 @@ class ScheduleModel(QObject):
             self.error_occurred.emit(f"Dersler yüklenirken hata: {str(e)}")
             return []
 
-    def get_all_courses(self) -> List[str]:
-        """
-        Get all scheduled items with structured data for Table View.
-        Returns:
-            List[Dict]: List of course data objects with fields:
-            id (list of ints for merged, but here single int), 
-            pool, code, name, teacher, day, start, end, classes
-        """
-        try:
-            query = '''
-                SELECT dp.program_id, dp.ders_adi, o.ad || ' ' || o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu,
-                       GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf'),
-                       GROUP_CONCAT(DISTINCT dhi.havuz_kodu)
-                FROM Ders_Programi dp
-                JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
-                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
-                LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
-                LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
-                LEFT JOIN Bolumler b ON od.bolum_num = b.bolum_id
-                LEFT JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
-                GROUP BY dp.program_id, dp.ders_adi, o.ad, o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu
-            '''
-            self.c.execute(query)
-            rows = self.c.fetchall()
-            
-            items = []
-            for pid, ders, hoca, gun, start, end, kodu, siniflar, havuzlar in rows:
-                
-                # Format pool codes
-                pool_str = ""
-                if havuzlar:
-                     pool_codes = sorted(set(p.strip() for p in havuzlar.split(',') if p.strip()))
-                     pool_str = ", ".join(pool_codes)
-                
-                items.append({
-                    'id': pid,
-                    'pool': pool_str,
-                    'code': kodu if kodu else "",
-                    'name': ders,
-                    'teacher': hoca,
-                    'day': gun,
-                    'start': start,
-                    'end': end,
-                    'classes': siniflar if siniflar else ""
-                })
-            return items
-        except Exception as e:
-            self.error_occurred.emit(f"Dersler yüklenirken hata: {str(e)}")
-            return []
 
-    def get_all_courses(self) -> List[str]:
+
+    def get_all_courses_as_string(self) -> List[str]:
         """
-        Get all courses from database
+        Get all courses from database as formatted strings
         
         Returns:
             List[str]: List of course information strings
@@ -444,6 +396,42 @@ class ScheduleModel(QObject):
         except Exception as e:
             print(f"Error fetching assigned courses: {e}")
             return []
+
+    def get_all_courses_assigned_to_teachers(self) -> List[tuple]:
+        """
+        Get all courses assigned to any teacher
+        Returns: List of (ders_adi, ders_instance, ogretmen_adi_soyadi, ogretmen_id)
+        """
+        try:
+            query = """
+                SELECT i.ders_adi, i.ders_instance, (o.ad || ' ' || o.soyad) as hoca, o.ogretmen_num
+                FROM Ders_Ogretmen_Iliskisi i
+                JOIN Ogretmenler o ON i.ogretmen_id = o.ogretmen_num
+                ORDER BY i.ders_adi, i.ders_instance
+            """
+            self.c.execute(query)
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching all assigned: {e}")
+            return []
+
+    def get_all_teacher_course_preferences(self) -> List[tuple]:
+        """
+        Get all teacher preferences
+        Returns: List of (ders_adi, note, preference_type, ogretmen_adi_soyadi, ogretmen_id)
+        """
+        try:
+            query = """
+                SELECT p.ders_adi, p.preference_note, p.preference_type, (o.ad || ' ' || o.soyad) as hoca, o.ogretmen_num
+                FROM Ogretmen_Ders_Tercihleri p
+                JOIN Ogretmenler o ON p.ogretmen_id = o.ogretmen_num
+                ORDER BY p.ders_adi
+            """
+            self.c.execute(query)
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching preferences: {e}")
+            return []
             
     def add_curriculum_course_as_template(self, data: Dict) -> bool:
         """
@@ -479,10 +467,18 @@ class ScheduleModel(QObject):
                     # 3a. Add to Ders_Havuz_Iliskisi (Pool Course)
                     # Schema: (ders_instance, ders_adi, bolum_num, havuz_kodu)
                     pool_code = data.get('pool_code', 'GENEL')
+                    
+                    # Resolve bolum_num from dept_id
+                    self.c.execute("SELECT bolum_num FROM Bolumler WHERE bolum_id = ?", (data['dept_id'],))
+                    row_bn = self.c.fetchone()
+                    if not row_bn:
+                        raise ValueError(f"Bölüm bulunamadı (ID: {data['dept_id']})")
+                    bolum_num = row_bn[0]
+                    
                     self.c.execute("""
                         INSERT INTO Ders_Havuz_Iliskisi (ders_instance, ders_adi, bolum_num, havuz_kodu)
                         VALUES (?, ?, ?, ?)
-                    """, (instance, data['name'], data['dept_id'], pool_code))
+                    """, (instance, data['name'], bolum_num, pool_code))
                     
                     self.course_added.emit(f"[Havuz] {data['name']} (Şube {instance}, Havuz: {pool_code}) eklendi.")
                     
@@ -575,7 +571,7 @@ class ScheduleModel(QObject):
                 FROM Dersler d
                 JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
                 JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
-                JOIN Bolumler b ON od.bolum_num = b.bolum_num
+                JOIN Bolumler b ON od.bolum_num = b.bolum_id
                 WHERE 1=1
             """
             params_class = []
@@ -608,7 +604,7 @@ class ScheduleModel(QObject):
             """
             params_pool = []
             if dept_id:
-                query_pool += " AND dhi.bolum_num = ?"
+                query_pool += " AND b.bolum_id = ?"
                 params_pool.append(dept_id)
             if faculty_id:
                 query_pool += " AND b.fakulte_num = ?"
@@ -1598,6 +1594,21 @@ class ScheduleModel(QObject):
         except Exception as e:
             print(f"Error getting teacher span: {e}")
             return 0
+
+    def get_pool_codes_by_department(self, dept_id: int) -> List[str]:
+        """Get unique pool codes used by a department"""
+        try:
+            self.c.execute("""
+                SELECT DISTINCT dhi.havuz_kodu 
+                FROM Ders_Havuz_Iliskisi dhi
+                JOIN Bolumler b ON dhi.bolum_num = b.bolum_num
+                WHERE b.bolum_id = ? 
+                ORDER BY dhi.havuz_kodu
+            """, (dept_id,))
+            return [row[0] for row in self.c.fetchall() if row[0]]
+        except Exception as e:
+            print(f"Error fetching pool codes: {e}")
+            return []
 
     def update_teacher_span(self, teacher_id: int, span: int) -> bool:
         """Update preferred day span for a teacher"""

@@ -363,17 +363,8 @@ class TeacherAvailabilityView(QDialog):
             # If not in "All" mode, we know the teacher_id from argument.
             
             if is_all:
-                assigned = self.controller.model.get_all_courses_assigned_to_teachers() # (ders, instance, hoca, teacher_id_from_db??)
-                # OOPS: get_all_courses_assigned_to_teachers currently returns (ders, instance, hoca_name). NO ID.
-                # I need to fetch ID too.
-                # Let's assume for now I can't easily get ID without updating model again.
-                # BUT, I can map name to ID using self.teachers list! 
-                # self.teachers is [(id, name), ...]
-                # This is a bit fragile if names are not unique, but "ad || ' ' || soyad" is usually what we have.
-                # Better: Update model? Or use lookup?
-                # Let's use lookup from self.teachers for now.
-                
-                preferences = self.controller.model.get_all_teacher_course_preferences() # (ders, note, type, hoca)
+                assigned = self.controller.model.get_all_courses_assigned_to_teachers() # (ders, instance, hoca, teacher_id)
+                preferences = self.controller.model.get_all_teacher_course_preferences() # (ders, note, type, hoca, teacher_id)
             else:
                 assigned = self.controller.model.get_courses_assigned_to_teacher(teacher_id) # (ders, instance)
                 preferences = self.controller.model.get_teacher_course_preferences(teacher_id) # (ders, note, type)
@@ -381,16 +372,6 @@ class TeacherAvailabilityView(QDialog):
             # Split preferences
             wanted = [p for p in preferences if p[2] == 'WANTED']
             blocked = [p for p in preferences if p[2] == 'BLOCKED']
-            
-            # Helper: Name to ID map
-            name_to_id = {name: t_id for t_id, name in self.teachers}
-            # Current teacher name for single view
-            current_teacher_name = "-"
-            if not is_all and teacher_id:
-                 for tid, tname in self.teachers:
-                      if tid == teacher_id:
-                           current_teacher_name = tname
-                           break
             
             # Helper to add banner
             def add_banner(text, color_hex):
@@ -411,14 +392,10 @@ class TeacherAvailabilityView(QDialog):
                 
                 final_teacher_name = teacher_name if teacher_name else current_teacher_name
                 
-                if is_all and teacher_name:
-                    if row_teacher_id is None:
-                         # Try lookup
-                         row_teacher_id = name_to_id.get(teacher_name)
-                
-                # If not is_all, we use the main teacher_id
-                if not is_all:
-                    row_teacher_id = teacher_id
+                # Use provided row_teacher_id if available (from new All query)
+                # Otherwise use the main teacher_id (if single view)
+                if row_teacher_id is None and not is_all:
+                     row_teacher_id = teacher_id
                     
                 self.assign_table.setItem(row, 0, QTableWidgetItem(name))
                 self.assign_table.setItem(row, 1, QTableWidgetItem(detail))
@@ -442,8 +419,12 @@ class TeacherAvailabilityView(QDialog):
                 add_banner("Atanan Dersler (Kesin)", "#B3E5FC") # Light Blue
                 for item in assigned:
                     if is_all:
-                        course_name, instance, hoca = item
-                        add_row(course_name, f"Şube {instance}", "Atandı", "ASSIGNMENT", teacher_name=hoca)
+                        # item: (ders, instance, hoca, teacher_id)
+                        course_name = item[0]
+                        instance = item[1]
+                        hoca = item[2]
+                        t_id = item[3]
+                        add_row(course_name, f"Şube {instance}", "Atandı", "ASSIGNMENT", teacher_name=hoca, row_teacher_id=t_id)
                     else:
                         course_name, instance = item
                         add_row(course_name, f"Şube {instance}", "Atandı", "ASSIGNMENT")
@@ -453,9 +434,13 @@ class TeacherAvailabilityView(QDialog):
                 add_banner("Talep Edilen Dersler (İstek)", "#A5D6A7") # Green
                 for item in wanted:
                     if is_all:
-                        course_name, note, _, hoca = item
+                        # item: (ders, note, type, hoca, teacher_id)
+                        course_name = item[0]
+                        note = item[1]
+                        hoca = item[3]
+                        t_id = item[4]
                         note_display = note if note else "-"
-                        add_row(course_name, note_display, "İsteniyor", "WANTED", teacher_name=hoca)
+                        add_row(course_name, note_display, "İsteniyor", "WANTED", teacher_name=hoca, row_teacher_id=t_id)
                     else:
                         course_name, note, _ = item
                         note_display = note if note else "-"

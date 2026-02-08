@@ -217,7 +217,7 @@ class ScheduleController:
             format_type: Export format ('text', 'csv', 'json')
         """
         # This can be implemented later for export functionality
-        courses = self.model.get_all_courses()
+        courses = self.model.get_all_courses_as_string()
         # Implementation would depend on format_type
         pass
     

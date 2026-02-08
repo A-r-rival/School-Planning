@@ -57,10 +57,15 @@ class AddCurriculumCourseDialog(QDialog):
         form_layout.addRow("Bölüm:", self.dept_combo)
         
         # Pool Code (Hidden by default)
-        self.pool_code_input = QLineEdit()
-        self.pool_code_input.setPlaceholderText("Örn: MÜH (Mühendislik Seçmeli)")
+        # Pool Code (Hidden by default)
+        self.pool_code_combo = QComboBox()
+        self.pool_code_combo.setEditable(True)
+        self.pool_code_combo.lineEdit().setPlaceholderText("Örn: MÜH (Mühendislik Seçmeli)")
         self.lbl_pool = QLabel("Havuz Kodu:")
-        form_layout.addRow(self.lbl_pool, self.pool_code_input)
+        form_layout.addRow(self.lbl_pool, self.pool_code_combo)
+        
+        # Connect department change to update pool codes
+        self.dept_combo.currentIndexChanged.connect(self._update_pool_suggestions)
         
         # Class Year
         self.year_spin = QSpinBox()
@@ -125,7 +130,7 @@ class AddCurriculumCourseDialog(QDialog):
         is_pool = self.radio_pool.isChecked()
         
         # Toggle Pool Input
-        self.pool_code_input.setVisible(is_pool)
+        self.pool_code_combo.setVisible(is_pool)
         self.lbl_pool.setVisible(is_pool)
         
         # Toggle Year (Optional: Pools might not strictly need year, but technically schema might link them?)
@@ -145,6 +150,10 @@ class AddCurriculumCourseDialog(QDialog):
 
     def _load_departments(self):
         try:
+            self.dept_combo.blockSignals(True) # Determine if we want signal to fire? 
+            # Actually we want it to update pool codes for the first item.
+            self.dept_combo.clear()
+            
             # We need to access model to get departments.
             # Assuming controller has access to model
             faculties = self.controller.model.get_faculties()
@@ -152,14 +161,48 @@ class AddCurriculumCourseDialog(QDialog):
                 depts = self.controller.model.get_departments_by_faculty(fac_id)
                 for dept_id, dept_name in depts:
                      self.dept_combo.addItem(f"{dept_name} ({fac_name})", dept_id)
+            
+            self.dept_combo.blockSignals(False)
+            
+            # Initial update if items exist
+            if self.dept_combo.count() > 0:
+                self._update_pool_suggestions(0)
+                
         except Exception as e:
             print(f"Error loading depts: {e}")
+
+    def _update_pool_suggestions(self, index):
+        """Update pool code suggestions based on selected department"""
+        dept_id = self.dept_combo.itemData(index)
+        if dept_id is None:
+            return
+            
+        try:
+            # We need to fetch pool codes used by this department
+            # This requires a method in the model? Or controller?
+            # Model is safer.
+            pool_codes = self.controller.model.get_pool_codes_by_department(dept_id)
+            
+            # Preserve current text if any
+            current_text = self.pool_code_combo.currentText()
+            
+            self.pool_code_combo.clear()
+            self.pool_code_combo.addItems(pool_codes)
+            
+            # If current text is not empty and not in list, set it back (because editable)
+            if current_text:
+                self.pool_code_combo.setEditText(current_text)
+            else:
+                self.pool_code_combo.setEditText("") # Clear if new selection
+                
+        except Exception as e:
+            print(f"Error updating pool suggestions: {e}")
 
     def _save(self):
         name = self.name_input.text().strip()
         code = self.code_input.text().strip()
         is_pool = self.radio_pool.isChecked()
-        pool_code = self.pool_code_input.text().strip()
+        pool_code = self.pool_code_combo.currentText().strip()
         
         if not name:
             QMessageBox.warning(self, "Hata", "Ders adı boş olamaz!")
