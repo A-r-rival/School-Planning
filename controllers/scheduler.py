@@ -7,7 +7,11 @@ from ortools.sat.python import cp_model
 from typing import List, Dict, Tuple, Optional
 import collections
 import re
-from scripts import curriculum_data
+import sys
+import os
+# curriculum_data is in database/
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database"))
+import curriculum_data
 from controllers.scheduler_services import (
     CourseRepository, CurriculumResolver, CourseMerger, 
     SchedulableCourseBuilder, CourseRole
@@ -105,12 +109,21 @@ class ORToolsScheduler:
         
         # 4. Merge & Build
         physical_courses = merger.merge(raw_rows, resolver)
+        print(f"DEBUG: Merged into {len(physical_courses)} physical courses.")
+        
         self.courses = builder.build_blocks(physical_courses)
         
         # FIX: Sort courses deterministically for index stability
         self.courses.sort(key=lambda x: (x['name'], x['instance'], x['type']))
         
         print(f"DEBUG: Pipeline generated {len(self.courses)} schedulable blocks.")
+        
+        if not self.courses:
+            print("CRITICAL DEBUG: No courses found! Checking repositories...")
+            print(f"Raw Rows: {len(raw_rows)}")
+            if raw_rows:
+                print(f"Sample Row: {raw_rows[0]}")
+            
         return self.courses
 
     def create_variables(self, ignore_fixed_rooms=False, optional_indices=None, active_indices=None):

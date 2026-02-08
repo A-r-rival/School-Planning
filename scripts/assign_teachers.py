@@ -6,11 +6,9 @@ import random
 
 # Add project root to path
 current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.dirname(os.path.dirname(current_dir)) # Up one level from 'Schedule Creation v1', then one more? No, check path.
-# d:\D.P. Projesi\Schedule Creation v1\populate_classrooms.py
-# project root is d:\D.P. Projesi
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
+sys.path.append(os.path.join(project_root, "database"))
 
 from models.schedule_model import ScheduleModel
 

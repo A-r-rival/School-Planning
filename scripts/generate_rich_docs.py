@@ -3,9 +3,11 @@ import glob
 import html
 
 # Configuration
-SOURCE_DIR = r"d:\D.P. Projesi\Walkthrough_Archives"
-GUIDE_FILE = r"d:\D.P. Projesi\Resources_and_Constraints_Location_Guide.md"
-OUTPUT_FILE = r"d:\D.P. Projesi\Project_Documentation.html"
+# Configuration
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SOURCE_DIR = os.path.join(BASE_DIR, "Walkthrough_Archives")
+GUIDE_FILE = os.path.join(BASE_DIR, "Resources_and_Constraints_Location_Guide.md")
+OUTPUT_FILE = os.path.join(BASE_DIR, "Project_Documentation.html")
 
 CSS = """
 <style>
@@ -105,12 +107,12 @@ def generate():
         })
         
     # 2. Walkthroughs
-    archives = glob.glob(os.path.join(SOURCE_DIR, "*.txt"))
+    archives = glob.glob(os.path.join(SOURCE_DIR, "*.txt")) + glob.glob(os.path.join(SOURCE_DIR, "*.md"))
     archives.sort(reverse=True) # Newest first
     
     for i, fpath in enumerate(archives):
         fname = os.path.basename(fpath)
-        title = fname.replace('.txt', '').replace('_', ' ')
+        title = fname.replace('.txt', '').replace('.md', '').replace('_', ' ')
         files.append({
             'id': f'walkthrough_{i}',
             'title': f'🛠️ {title}',

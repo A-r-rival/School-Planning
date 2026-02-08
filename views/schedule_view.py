@@ -93,6 +93,7 @@ class ScheduleView(QWidget):
     open_student_view_requested = pyqtSignal() # Emits when student panel button clicked
     open_teacher_availability_requested = pyqtSignal() # Emits when availability button clicked
     generate_schedule_requested = pyqtSignal() # Emits when generate button clicked
+    run_setup_requested = pyqtSignal() # Emits when setup/load data requested
     
     def __init__(self):
         super().__init__()
@@ -101,6 +102,38 @@ class ScheduleView(QWidget):
         
         self._setup_ui()
         self._connect_signals()
+
+    # ... (skipping unchanged parts)
+
+    def _create_advanced_buttons(self, layout: QVBoxLayout):
+        """Create advanced feature buttons"""
+        # ... (skipping unchanged parts)
+        
+        # ...
+        
+        # Create Menu for Structural Ops
+        from PyQt5.QtWidgets import QMenu, QAction
+        self.struct_menu = QMenu(self)
+        
+        action_add_faculty = self.struct_menu.addAction("Fakülte Ekle")
+        
+        # Re-create the buttons (hidden)
+        self.fakulte_ekle_button = QPushButton("Fakülte Ekle") 
+        self.bolum_ekle_button = QPushButton("Bölüm Ekle")
+        
+        action_add_faculty.triggered.connect(self.fakulte_ekle_button.click)
+        
+        action_add_dept = self.struct_menu.addAction("Bölüm Ekle")
+        action_add_dept.triggered.connect(self.bolum_ekle_button.click)
+        
+        self.struct_menu.addSeparator()
+        
+        # New Setup Action
+        action_run_setup = self.struct_menu.addAction("⚙️ Otomatik Kurulum / Veri Yükle")
+        action_run_setup.triggered.connect(self.run_setup_requested.emit)
+        
+        self.struct_ops_button.setMenu(self.struct_menu)
+        row2_layout.addWidget(self.struct_ops_button)
     
     def _setup_ui(self):
         """Setup the user interface"""
@@ -526,25 +559,6 @@ class ScheduleView(QWidget):
         self.struct_menu = QMenu(self)
         
         action_add_faculty = self.struct_menu.addAction("Fakülte Ekle")
-        # We need to connect these actions to the existing slots or signals, 
-        # but previously they were button clicks connected in controller.
-        # We can expose the actions or buttons. 
-        # To minimize refactoring risk, we can keep the buttons but hide them/repurpose them?
-        # Better: Allow controller to access these actions. 
-        # OR: Connect these actions to emit signals that the controller listens to?
-        # Currently controller likely does: view.fakulte_ekle_button.clicked.connect(...)
-        # So I should PROBABLY keep self.fakulte_ekle_button as a property, but maybe not visible?
-        # No, better to make valid QObjects that the controller can find.
-        
-        # Let's assign the action triggers to the same place the old buttons went.
-        # But wait, controller expects `view.fakulte_ekle_button`. 
-        # I can mock that behavior or update controller. 
-        # Safest: Update controller if possible. 
-        # Let's create dummy hidden buttons that triggered by menu? 
-        # Or just make `self.fakulte_ekle_button` match the Action? (QAction has triggered)
-        # Controller likely uses `.clicked.connect`. QAction uses `.triggered.connect`.
-        # I will keep `self.fakulte_ekle_button` as a QPushButton but NOT add it to layout, 
-        # and connect menu action to button.click()! Hacky but safe for existing controller connections.
         
         # Re-create the buttons (hidden) so controller doesn't likely crash
         self.fakulte_ekle_button = QPushButton("Fakülte Ekle") 
@@ -555,6 +569,12 @@ class ScheduleView(QWidget):
         
         action_add_dept = self.struct_menu.addAction("Bölüm Ekle")
         action_add_dept.triggered.connect(self.bolum_ekle_button.click)
+        
+        self.struct_menu.addSeparator()
+        
+        # New Setup Action
+        action_run_setup = self.struct_menu.addAction("⚙️ Otomatik Kurulum / Veri Yükle")
+        action_run_setup.triggered.connect(self.run_setup_requested.emit)
         
         self.struct_ops_button.setMenu(self.struct_menu)
         row2_layout.addWidget(self.struct_ops_button)

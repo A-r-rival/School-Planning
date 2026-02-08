@@ -38,6 +38,8 @@ class DatabaseMigration:
             self._002_add_preferred_day_span_to_teachers,
             self._003_add_teacher_course_preferences,
             self._004_add_curriculum_indexes,
+            self._005_add_unavailability_description,
+            self._006_add_schedule_columns,
         ]
 
     # ---------- helpers ----------
@@ -98,8 +100,8 @@ class DatabaseMigration:
             return
 
         self._log("Creating Ogretmen_Ders_Tercihleri table")
-        from .migrations.teacher_course_preferences_003 import up
-        up(self._conn)
+        from .migrations.teacher_course_preferences_003 import create_teacher_course_preferences_table
+        create_teacher_course_preferences_table(self._conn)
         self._log("✅ Ogretmen_Ders_Tercihleri table created")
 
     def _004_add_curriculum_indexes(self) -> None:
@@ -107,12 +109,21 @@ class DatabaseMigration:
         Adds indexes for Curriculum View performance.
         idx_dersler_kodu, idx_dhi_bolum, idx_dhi_havuz
         """
-        # Simple check: if one exists, assume all exist (idempotent creation anyway)
-        # But we can just run it, as 'IF NOT EXISTS' handles it.
-        # We'll use a flag or just run it. 
-        # Since we don't have a migrations table, we trust 'IF NOT EXISTS'.
-        
         self._log("Adding curriculum view indexes...")
-        from .migrations.migration_004_curriculum_indexes import up
-        up(self._conn)
+        from .migrations.migration_004_curriculum_indexes import up as add_curriculum_indexes
+        add_curriculum_indexes(self._conn)
         self._log("✅ Curriculum indexes created")
+
+    def _005_add_unavailability_description(self) -> None:
+        """
+        Adds description column to Ogretmen_Musaitlik table.
+        """
+        from .migrations.migration_005_add_unavailability_description import add_description_to_unavailability
+        add_description_to_unavailability(self._conn)
+
+    def _006_add_schedule_columns(self) -> None:
+        """
+        Adds derslik_id and ders_tipi to Ders_Programi.
+        """
+        from .migrations.migration_006_add_schedule_columns import up as add_schedule_columns
+        add_schedule_columns(self._conn)

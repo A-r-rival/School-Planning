@@ -9,9 +9,11 @@ import sqlite3
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
+sys.path.append(os.path.join(project_root, "database"))
 
 from models.schedule_model import ScheduleModel
-from scripts.curriculum_data import DEPARTMENTS_DATA
+import curriculum_data
+from curriculum_data import DEPARTMENTS_DATA
 
 # Turkish Names and Surnames
 NAMES = [

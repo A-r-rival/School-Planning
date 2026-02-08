@@ -11,7 +11,11 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, pyqtSignal, QSignalBlocker
 from PyQt5.QtGui import QColor, QBrush
 import hashlib
-from scripts import curriculum_data
+import sys
+import os
+# curriculum_data is in database/
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database"))
+import curriculum_data
 from scripts.curriculum_helpers import identify_pools
 
 class LegendWidget(QWidget):

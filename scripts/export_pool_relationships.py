@@ -1,6 +1,8 @@
 import sqlite3
 
-conn = sqlite3.connect('okul_veritabani.db')
+import os
+db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'database', 'okul_veritabani.db')
+conn = sqlite3.connect(db_path)
 c = conn.cursor()
 
 output_file = 'pool_course_relationships.txt'
@@ -9,7 +11,7 @@ output_file = 'pool_course_relationships.txt'
 c.execute("""
     SELECT B.bolum_adi, D.havuz_kodu, D.ders_adi
     FROM Ders_Havuz_Iliskisi D
-    JOIN Bolumler B ON D.bolum_num = B.bolum_num
+    JOIN Bolumler B ON D.bolum_id = B.bolum_id
     ORDER BY B.bolum_adi, D.havuz_kodu, D.ders_adi
 """)
 
@@ -25,7 +27,7 @@ with open(output_file, 'w', encoding='utf-8') as f:
     c.execute("SELECT COUNT(*) FROM Ders_Havuz_Iliskisi")
     total = c.fetchone()[0]
     
-    c.execute("SELECT COUNT(DISTINCT bolum_num) FROM Ders_Havuz_Iliskisi")
+    c.execute("SELECT COUNT(DISTINCT bolum_id) FROM Ders_Havuz_Iliskisi")
     dept_count = c.fetchone()[0]
     
     c.execute("SELECT COUNT(DISTINCT havuz_kodu) FROM Ders_Havuz_Iliskisi")
@@ -56,7 +58,7 @@ with open(output_file, 'w', encoding='utf-8') as f:
             c.execute("""
                 SELECT COUNT(*) 
                 FROM Ders_Havuz_Iliskisi D
-                JOIN Bolumler B ON D.bolum_num = B.bolum_num
+                JOIN Bolumler B ON D.bolum_id = B.bolum_id
                 WHERE B.bolum_adi = ? AND D.havuz_kodu = ?
             """, (dept_name, pool_code))
             pool_course_count = c.fetchone()[0]

@@ -72,6 +72,7 @@ class ScheduleController:
         self.view.open_teacher_availability_requested.connect(self.open_teacher_availability_view)
         self.view.generate_schedule_requested.connect(self.generate_automatic_schedule)
         self.view.filter_changed.connect(self.handle_schedule_view_filter)
+        self.view.run_setup_requested.connect(self._on_run_setup_requested)
     
     def _initialize_view(self):
         """Initialize view with existing data from model"""
@@ -540,3 +541,73 @@ class ScheduleController:
                 QMessageBox.critical(self.view, "Hata", f"Program oluşturulurken hata: {str(e)}")
 
     # Merging utilities moved to utils/schedule_merger.py
+
+    def _on_run_setup_requested(self):
+        """Run initial setup scripts (Reset DB, Seed, Populate, Assign)"""
+        reply = QMessageBox.question(
+            self.view,
+            "Otomatik Kurulum / Veri Sıfırlama",
+            "⚠️ DİKKAT: Bu işlem mevcut veritabanını SİLECEK ve sıfırdan kuracaktır.\n\n"
+            "Yapılacak işlemler:\n"
+            "1. Veritabanının temizlenmesi\n"
+            "2. Fakülte ve Bölümlerin yüklenmesi\n"
+            "3. Müfredatın (Dersler, Dönemler) yüklenmesi\n"
+            "4. Öğrencilerin oluşturulması\n"
+            "5. Odaların oluşturulması\n"
+            "6. Öğretmenlerin eklenmesi\n"
+            "7. Ders atamalarının yapılması\n\n"
+            "Bu işlem biraz zaman alabilir. Devam etmek istiyor musunuz?",
+            QMessageBox.Yes | QMessageBox.No
+        )
+
+        if reply != QMessageBox.Yes:
+            return
+
+        # Show wait cursor
+        from PyQt5.QtWidgets import QApplication
+        from PyQt5.QtCore import Qt
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self.view.setEnabled(False) # Disable UI
+
+        try:
+            # 1. Populate Students (This Clears DB, Seeds F/D, Courses, Semesters, Students)
+            from scripts.populate_students import populate as populate_students_and_courses
+            print("Running populate_students...")
+            populate_students_and_courses()
+
+            # 2. Populate Rooms
+            from scripts.populate_rooms import populate_rooms
+            print("Running populate_rooms...")
+            populate_rooms()
+
+            # 3. Populate Teachers
+            from scripts.populate_teachers import populate_teachers
+            print("Running populate_teachers...")
+            populate_teachers()
+
+            # 4. Assign Teachers to Courses
+            from scripts.assign_teachers import assign_teachers
+            print("Running assign_teachers...")
+            assign_teachers()
+
+            # 4. Refresh View
+            self.refresh_data()
+            
+            # Refresh Filters (Faculties might have changed)
+            facs = self.model.get_faculties()
+            self.view.update_filter_combo("faculty", facs)
+            
+            self.view.show_success_message(
+                "Kurulum tamamlandı!\n"
+                "- Veritabanı sıfırlandı ve yeniden oluşturuldu.\n"
+                "- Fakülteler, Bölümler, Dersler ve Öğrenciler yüklendi.\n"
+                "- Öğretmenler atandı."
+            )
+
+        except Exception as e:
+            QMessageBox.critical(self.view, "Hata", f"Kurulum sırasında hata oluştu: {str(e)}")
+            import traceback
+            traceback.print_exc()
+        finally:
+            QApplication.restoreOverrideCursor()
+            self.view.setEnabled(True)

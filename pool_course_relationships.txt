@@ -1,0 +1,1486 @@
+================================================================================
+HAVUZ - DERS İLİŞKİLERİ
+================================================================================
+
+Toplam: 1227 ilişki
+Bölüm Sayısı: 15
+Havuz Sayısı: 53
+
+================================================================================
+
+
+================================================================================
+Bilgisayar Müh
+================================================================================
+
+  [SDIII] - 52 ders
+  ----------------------------------------------------------------------------
+    • Bilgisayar Mühendisliği Semineri I
+    • Bilgisayar Mühendisliği Semineri II
+    • Biyokimya I
+    • Biyoloji
+    • Dijital Dönüşüm Yönetimi
+    • Dijital Pazarlama
+    • Doğa Bilimlerine Giriş
+    • E-İş
+    • Fizik I
+    • Fizik II
+    • Fiziksel Kimya I
+    • Girişimcilik
+    • Kalite Yönetimi
+    • Karar Teorisi
+    • Kimya I
+    • Kimya II
+    • Lojistik Yönetimi ve Teknolojileri
+    • Mekaniğin Temelleri
+    • Mikrobiyoloji I
+    • Modern Fizik
+    • Moleküler Biyoteknoloji I
+    • Muhasebe ve Bilanço
+    • Mühendisler İçin Hukuk
+    • Operasyon Yönetimi
+    • Oyun Teorisi
+    • Pazarlama
+    • Pazarlamanın Temelleri
+    • Personel Yönetimi
+    • Sosyal Beceriler I
+    • Sosyal Beceriler II
+    • Sosyal Beceriler III
+    • Sosyal Beceriler IV
+    • Sosyal Beceriler IX
+    • Sosyal Beceriler V
+    • Sosyal Beceriler VI
+    • Sosyal Beceriler VII
+    • Sosyal Beceriler VIII
+    • Sosyal Beceriler X
+    • Uluslararası İktisat 1
+    • Yöneylem Araştırması
+    • Örgütsel Davranış
+    • Üretim ve Lojistik için Enformasyon Sistemleri
+    • İktisada Giriş
+    • İşletme Enformatiği: Seçilmiş Konular I
+    • İşletme Enformatiği: Seçilmiş Konular II
+    • İşletme Enformatiği: Seçilmiş Konular III
+    • İşletme Enformatiği: Seçilmiş Konular IV
+    • İşletme Enformatiği: Seçilmiş Konular V
+    • İşletme Enformatiği: Seçilmiş Konular VI
+    • İşletme Enformatiğinin Temelleri
+    • İşletmesel Veri Analizi
+    • İşletmeye Giriş
+
+  [SDIa] - 34 ders
+  ----------------------------------------------------------------------------
+    • Akıllı Sistemler
+    • Bilgi Getirimi ve Çıkarımı
+    • Bilgi Görselleme
+    • Bilgisayar Grafiği I
+    • Bilgisayar Grafiği II
+    • Bilgisayar Görmesinin Temelleri
+    • Bilişim Sistemleri Güvenliği
+    • Biyoinfomartiğe Giriş
+    • Dağıtık Sistemler
+    • Derin Jeneratif Modeller
+    • Derin Öğrenme
+    • Doğal Dil İşleme
+    • Makine Öğrenmesi
+    • Oyun Motoru Mimarisi
+    • Oyun Tasarımı
+    • Pekiştirmeli Öğrenme
+    • Tıbbi Görüntü İşleme
+    • Tıp Alanında Yapay Zeka
+    • Uyg. Bilg. Müh. Seç. Kon. II - Multimedya İçerik Arama
+    • Uygulamalı Bilg. Müh: Seçilmiş Konular I
+    • Uygulamalı Bilg. Müh: Seçilmiş Konular III
+    • Uygulamalı Bilg. Müh: Seçilmiş Konular IV
+    • Uygulamalı Bilg. Müh: Seçilmiş Konular V
+    • Uygulamalı Bilg. Müh: Seçilmiş Konular VI
+    • Veri Analizi Yöntemleri
+    • Veri Madenciliği
+    • Web Mühendisliği
+    • Yapay Sinir Ağları
+    • Yazılım Bağlamında Validasyon ve Verifikasyon
+    • Yazılım Projesi I
+    • Yazılım Projesi II
+    • Yazılım Projesi III
+    • Önerici Sistemler
+    • İnsan-Makine İletişimi
+
+  [SDIb] - 35 ders
+  ----------------------------------------------------------------------------
+    • Derleyici Tasarımı
+    • Dijital Görüntü İşleme
+    • Dijital Sinyal İşleme
+    • Donanım Projesi I
+    • Donanım Projesi II
+    • Donanım Projesi III
+    • Donanımsal Bilg. Müh: Seçilmiş Konular I
+    • Donanımsal Bilg. Müh: Seçilmiş Konular II
+    • Donanımsal Bilg. Müh: Seçilmiş Konular III
+    • Donanımsal Bilg. Müh: Seçilmiş Konular IV
+    • Donanımsal Bilg. Müh: Seçilmiş Konular V
+    • Donanımsal Bilg. Müh: Seçilmiş Konular VI
+    • Elektrik Devreleri I
+    • Elektrik Devreleri II
+    • Elektrik ve Manyetizma
+    • Elektronik I: Yarı İletken Elemanlar
+    • Endüstriyel Otomasyon Teknolojisi
+    • Endüstriyel Robotik I
+    • GPU Programlama
+    • Gerçek Zamanlı Sistemler
+    • Gömülü Sistemler
+    • Görüntü Tabanlı Otomasyon I
+    • Görüntü Tabanlı Otomasyon II
+    • Görüntü İşlemenin Temelleri
+    • Haberleşme Ağları
+    • Malzeme Teknolojisi I
+    • Malzeme Teknolojisi II
+    • Mobil Komünikasyon
+    • Sayısal Tasarım
+    • Sinyaller ve Sistemler
+    • Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım
+    • Teknik Çizim ve Bilgisayar Destekli Tasarım
+    • Telekomünikasyon
+    • VLSI Tasarımına Giriş
+    • Ölçüm Teknikleri
+
+  [SDIc] - 21 ders
+  ----------------------------------------------------------------------------
+    • Algoritma Mühendisliği
+    • Algoritmalar ve Karmaşıklık Teorisi
+    • Algoritmik Geometrinin Temelleri
+    • Analiz II
+    • Bilg. Müh. Teorik Temelleri: II
+    • Bilg. Müh. Teorik Temelleri: Seçilmiş Konular I
+    • Bilg. Müh. Teorik Temelleri: Seçilmiş Konular III
+    • Bilg. Müh. Teorik Temelleri: Seçilmiş Konular IV
+    • Bilg. Müh. Teorik Temelleri: Seçilmiş Konular V
+    • Bilg. Müh. Teorik Temelleri: Seçilmiş Konular VI
+    • Bilgi Gösterimi ve Akıl Yürütme
+    • Bilgisayar Destekli İstatistik
+    • Bilgisayar Mühendisleri için İleri Matematik
+    • Diferansiyel Denklemler
+    • Diferansiyel Denklemler ve Nümerik
+    • Kodlama Teorisi ve Kriptoloji
+    • Numerik Matematik
+    • Programlama Paradigmaları
+    • Yapay Zeka
+    • Yöneylem Araştırması I - Doğrusal Modeller
+    • Yöneylem Araştırması II - Rassal Modeller
+
+  [SDP] - 4 ders
+  ----------------------------------------------------------------------------
+    • Elektrik ve Elektronik Mühendisliği Projesi
+    • Mekatronik Projesi
+    • Proje I: Yenilik ve Teknoloji Yönetimi Projesi
+    • Yazılım Mühendisliği Projesi
+
+================================================================================
+Elektrik-Elektronik Müh
+================================================================================
+
+  [SDII] - 2 ders
+  ----------------------------------------------------------------------------
+    • Mikroişlemciler / Microprocessors
+    • Nesnel Programlama / Object Oriented Programming
+
+  [SDM] - 2 ders
+  ----------------------------------------------------------------------------
+    • Kompleks Analiz / Complex Analysis
+    • Numerik Matematik / Numerical Mathematics
+
+  [SDP] - 3 ders
+  ----------------------------------------------------------------------------
+    • Elektrik-Elektronik Müh. Projesi / EEE Project
+    • Mekatronik Projesi / Mechatronics Project
+    • Yazılım Mühendisliği Projesi / Software Eng. Project
+
+  [SDT] - 2 ders
+  ----------------------------------------------------------------------------
+    • Elektronik II: Devre Teknolojisi / Circuit Technology
+    • Sayısal Sinyal İşlemenin Temelleri / Fund. of DSP
+
+  [SDV] - 63 ders
+  ----------------------------------------------------------------------------
+    • Akıllı Sistemler
+    • Akıllı Şebekeler
+    • Analog Tümdevreler
+    • Anten Teorisine Giriş
+    • Aydınlatma Teknolojisi
+    • Ayrık Olaylı Sistemler
+    • Ayrık Zamanlı Kontrol Sistemleri
+    • Bilgi Kuramı
+    • Bilgisayar Görmesinin Temelleri
+    • Bilişim Sistemleri Güvenliği
+    • Derin Öğrenme
+    • Donanım Betimleme Dili ile Tasarım
+    • Doğrusal Olmayan Dinamik Sistemler
+    • Doğrusal Olmayan Kontrol Sistemleri
+    • Elektrik Enerjisi Kaynakları
+    • Elektrik Makineleri II
+    • Elektroakustik
+    • Elektromanyetik Dalgaların Temelleri
+    • Elektronik II: Devre Teknolojisi
+    • Elektronik Laboratuvarı
+    • Elektroteknik: Seçilmiş Konular I
+    • Elektroteknik: Seçilmiş Konular II
+    • Elektroteknik: Seçilmiş Konular III
+    • Elektroteknik: Seçilmiş Konular IV
+    • Endüstriyel Otomasyon Teknolojisi
+    • Endüstriyel Robotik I
+    • Endüstriyel Robotik II
+    • FPGA Programlama
+    • Gömülü Sistemler
+    • Görüntü Tabanlı Otomasyon I
+    • Görüntü Tabanlı Otomasyon II
+    • Güvenilir Yapay Zeka
+    • Güç Dağıtım Sistemleri
+    • Güç Elektroniği
+    • Haberleşme Ağları
+    • Hibrit Sistemler
+    • Klinik Veri Yönetimi
+    • Kompleks Analiz
+    • Makine Öğrenmesi
+    • Makine Öğrenmesiyle Biyomedikal Modelleme
+    • Mikroişlemciler / Microprocessors
+    • Nesnel Programlama
+    • Numerik Matematik
+    • Optik Haberleşme Tekniği
+    • RF Ön Uç Bileşenleri ve Devreler
+    • Sayısal Görüntü İşleme
+    • Sayısal Haberleşme Sistemleri
+    • Sayısal Sinyal İşleme
+    • Sayısal Sinyal İşlemenin Temelleri
+    • Sistem Tanımlama ve Akıllı Kontrol
+    • Tıbbi Cihazlarda Kalite Yönetim Sisteminin Kurulması
+    • Tıbbi Cihazlarda Test, Kontrol ve Kalibrasyon
+    • Uygulamalı Kontrol Mühendisliği
+    • VLSI Tasarımına Giriş
+    • Yapay Sinir Ağları
+    • Yapay Zekâ
+    • Yenilenebilir Enerji Teknolojisi
+    • Yüksek Frekans Tekniği
+    • Yüksek Gerilim Tekniği
+    • Çok Girdili Çok Çıktılı Sistemler
+    • İnsan-Makine İletişimi
+    • İşlemsel Yükselteçler ile Devre Tasarımı
+    • İşletmede Mesleki Eğitim
+
+  [SDVI] - 63 ders
+  ----------------------------------------------------------------------------
+    • Akıllı Sistemler
+    • Akıllı Şebekeler
+    • Analog Tümdevreler
+    • Anten Teorisine Giriş
+    • Aydınlatma Teknolojisi
+    • Ayrık Olaylı Sistemler
+    • Ayrık Zamanlı Kontrol Sistemleri
+    • Bilgi Kuramı
+    • Bilgisayar Görmesinin Temelleri
+    • Bilişim Sistemleri Güvenliği
+    • Derin Öğrenme
+    • Donanım Betimleme Dili ile Tasarım
+    • Doğrusal Olmayan Dinamik Sistemler
+    • Doğrusal Olmayan Kontrol Sistemleri
+    • Elektrik Enerjisi Kaynakları
+    • Elektrik Makineleri II
+    • Elektroakustik
+    • Elektromanyetik Dalgaların Temelleri
+    • Elektronik II: Devre Teknolojisi
+    • Elektronik Laboratuvarı
+    • Elektroteknik: Seçilmiş Konular I
+    • Elektroteknik: Seçilmiş Konular II
+    • Elektroteknik: Seçilmiş Konular III
+    • Elektroteknik: Seçilmiş Konular IV
+    • Endüstriyel Otomasyon Teknolojisi
+    • Endüstriyel Robotik I
+    • Endüstriyel Robotik II
+    • FPGA Programlama
+    • Gömülü Sistemler
+    • Görüntü Tabanlı Otomasyon I
+    • Görüntü Tabanlı Otomasyon II
+    • Güvenilir Yapay Zeka
+    • Güç Dağıtım Sistemleri
+    • Güç Elektroniği
+    • Haberleşme Ağları
+    • Hibrit Sistemler
+    • Klinik Veri Yönetimi
+    • Kompleks Analiz
+    • Makine Öğrenmesi
+    • Makine Öğrenmesiyle Biyomedikal Modelleme
+    • Mikroişlemciler / Microprocessors
+    • Nesnel Programlama
+    • Numerik Matematik
+    • Optik Haberleşme Tekniği
+    • RF Ön Uç Bileşenleri ve Devreler
+    • Sayısal Görüntü İşleme
+    • Sayısal Haberleşme Sistemleri
+    • Sayısal Sinyal İşleme
+    • Sayısal Sinyal İşlemenin Temelleri
+    • Sistem Tanımlama ve Akıllı Kontrol
+    • Tıbbi Cihazlarda Kalite Yönetim Sisteminin Kurulması
+    • Tıbbi Cihazlarda Test, Kontrol ve Kalibrasyon
+    • Uygulamalı Kontrol Mühendisliği
+    • VLSI Tasarımına Giriş
+    • Yapay Sinir Ağları
+    • Yapay Zekâ
+    • Yenilenebilir Enerji Teknolojisi
+    • Yüksek Frekans Tekniği
+    • Yüksek Gerilim Tekniği
+    • Çok Girdili Çok Çıktılı Sistemler
+    • İnsan-Makine İletişimi
+    • İşlemsel Yükselteçler ile Devre Tasarımı
+    • İşletmede Mesleki Eğitim
+
+  [SDVII] - 63 ders
+  ----------------------------------------------------------------------------
+    • Akıllı Sistemler
+    • Akıllı Şebekeler
+    • Analog Tümdevreler
+    • Anten Teorisine Giriş
+    • Aydınlatma Teknolojisi
+    • Ayrık Olaylı Sistemler
+    • Ayrık Zamanlı Kontrol Sistemleri
+    • Bilgi Kuramı
+    • Bilgisayar Görmesinin Temelleri
+    • Bilişim Sistemleri Güvenliği
+    • Derin Öğrenme
+    • Donanım Betimleme Dili ile Tasarım
+    • Doğrusal Olmayan Dinamik Sistemler
+    • Doğrusal Olmayan Kontrol Sistemleri
+    • Elektrik Enerjisi Kaynakları
+    • Elektrik Makineleri II
+    • Elektroakustik
+    • Elektromanyetik Dalgaların Temelleri
+    • Elektronik II: Devre Teknolojisi
+    • Elektronik Laboratuvarı
+    • Elektroteknik: Seçilmiş Konular I
+    • Elektroteknik: Seçilmiş Konular II
+    • Elektroteknik: Seçilmiş Konular III
+    • Elektroteknik: Seçilmiş Konular IV
+    • Endüstriyel Otomasyon Teknolojisi
+    • Endüstriyel Robotik I
+    • Endüstriyel Robotik II
+    • FPGA Programlama
+    • Gömülü Sistemler
+    • Görüntü Tabanlı Otomasyon I
+    • Görüntü Tabanlı Otomasyon II
+    • Güvenilir Yapay Zeka
+    • Güç Dağıtım Sistemleri
+    • Güç Elektroniği
+    • Haberleşme Ağları
+    • Hibrit Sistemler
+    • Klinik Veri Yönetimi
+    • Kompleks Analiz
+    • Makine Öğrenmesi
+    • Makine Öğrenmesiyle Biyomedikal Modelleme
+    • Mikroişlemciler / Microprocessors
+    • Nesnel Programlama
+    • Numerik Matematik
+    • Optik Haberleşme Tekniği
+    • RF Ön Uç Bileşenleri ve Devreler
+    • Sayısal Görüntü İşleme
+    • Sayısal Haberleşme Sistemleri
+    • Sayısal Sinyal İşleme
+    • Sayısal Sinyal İşlemenin Temelleri
+    • Sistem Tanımlama ve Akıllı Kontrol
+    • Tıbbi Cihazlarda Kalite Yönetim Sisteminin Kurulması
+    • Tıbbi Cihazlarda Test, Kontrol ve Kalibrasyon
+    • Uygulamalı Kontrol Mühendisliği
+    • VLSI Tasarımına Giriş
+    • Yapay Sinir Ağları
+    • Yapay Zekâ
+    • Yenilenebilir Enerji Teknolojisi
+    • Yüksek Frekans Tekniği
+    • Yüksek Gerilim Tekniği
+    • Çok Girdili Çok Çıktılı Sistemler
+    • İnsan-Makine İletişimi
+    • İşlemsel Yükselteçler ile Devre Tasarımı
+    • İşletmede Mesleki Eğitim
+
+  [SDVIII] - 63 ders
+  ----------------------------------------------------------------------------
+    • Akıllı Sistemler
+    • Akıllı Şebekeler
+    • Analog Tümdevreler
+    • Anten Teorisine Giriş
+    • Aydınlatma Teknolojisi
+    • Ayrık Olaylı Sistemler
+    • Ayrık Zamanlı Kontrol Sistemleri
+    • Bilgi Kuramı
+    • Bilgisayar Görmesinin Temelleri
+    • Bilişim Sistemleri Güvenliği
+    • Derin Öğrenme
+    • Donanım Betimleme Dili ile Tasarım
+    • Doğrusal Olmayan Dinamik Sistemler
+    • Doğrusal Olmayan Kontrol Sistemleri
+    • Elektrik Enerjisi Kaynakları
+    • Elektrik Makineleri II
+    • Elektroakustik
+    • Elektromanyetik Dalgaların Temelleri
+    • Elektronik II: Devre Teknolojisi
+    • Elektronik Laboratuvarı
+    • Elektroteknik: Seçilmiş Konular I
+    • Elektroteknik: Seçilmiş Konular II
+    • Elektroteknik: Seçilmiş Konular III
+    • Elektroteknik: Seçilmiş Konular IV
+    • Endüstriyel Otomasyon Teknolojisi
+    • Endüstriyel Robotik I
+    • Endüstriyel Robotik II
+    • FPGA Programlama
+    • Gömülü Sistemler
+    • Görüntü Tabanlı Otomasyon I
+    • Görüntü Tabanlı Otomasyon II
+    • Güvenilir Yapay Zeka
+    • Güç Dağıtım Sistemleri
+    • Güç Elektroniği
+    • Haberleşme Ağları
+    • Hibrit Sistemler
+    • Klinik Veri Yönetimi
+    • Kompleks Analiz
+    • Makine Öğrenmesi
+    • Makine Öğrenmesiyle Biyomedikal Modelleme
+    • Mikroişlemciler / Microprocessors
+    • Nesnel Programlama
+    • Numerik Matematik
+    • Optik Haberleşme Tekniği
+    • RF Ön Uç Bileşenleri ve Devreler
+    • Sayısal Görüntü İşleme
+    • Sayısal Haberleşme Sistemleri
+    • Sayısal Sinyal İşleme
+    • Sayısal Sinyal İşlemenin Temelleri
+    • Sistem Tanımlama ve Akıllı Kontrol
+    • Tıbbi Cihazlarda Kalite Yönetim Sisteminin Kurulması
+    • Tıbbi Cihazlarda Test, Kontrol ve Kalibrasyon
+    • Uygulamalı Kontrol Mühendisliği
+    • VLSI Tasarımına Giriş
+    • Yapay Sinir Ağları
+    • Yapay Zekâ
+    • Yenilenebilir Enerji Teknolojisi
+    • Yüksek Frekans Tekniği
+    • Yüksek Gerilim Tekniği
+    • Çok Girdili Çok Çıktılı Sistemler
+    • İnsan-Makine İletişimi
+    • İşlemsel Yükselteçler ile Devre Tasarımı
+    • İşletmede Mesleki Eğitim
+
+================================================================================
+Endüstri Müh
+================================================================================
+
+  [SDI] - 4 ders
+  ----------------------------------------------------------------------------
+    • Mühendisler için Yöneticilik
+    • Pazarlama ve Üretim Yönetimi
+    • İktisadi Tarih
+    • İşletmesel Veri Analizi
+
+  [SDII] - 3 ders
+  ----------------------------------------------------------------------------
+    • Mühendisler İçin Hukuk
+    • Para, Banka ve Finans Piyasaları
+    • Yöneylem Araştırması II - Rassal Modeller
+
+  [SDP] - 3 ders
+  ----------------------------------------------------------------------------
+    • Mekatronik Projesi
+    • Proje I: Yenilik ve Teknoloji Yönetimi Projesi
+    • Yazılım Mühendisliği Projesi
+
+  [ZSDI] - 22 ders
+  ----------------------------------------------------------------------------
+    • Algoritmalar ve Veri Yapıları I
+    • Altı Sigma ve Problem Çözme
+    • Bilişim Sistemleri Güvenliği
+    • Elektrik Devreleri I
+    • Elektromobilite için Pil Üretim Teknolojisi
+    • Endüstri Mühendisliği: Seçilmiş Konular I
+    • Endüstriyel Enformasyon Tek. ve Sanal Ürün Geliştirme
+    • Endüstriyel Otomasyon Teknolojisi
+    • Havayolu Yönetimi
+    • Makine Öğrenmesi
+    • Malzeme Teknolojisi I
+    • Sayısal Tasarım
+    • Sürdürülebilir Üretim için Ürün Yaşam Döngüsü
+    • Takım Tezgahları
+    • Tasarım Teknikleri II: Mekanik Parça Tasarımı
+    • Termodinamik
+    • Veri Madenciliği
+    • Web Mühendisliği
+    • Yapay Sinir Ağları
+    • Üretim Planlama ve Yönetimi
+    • İmalat Teknolojisi I
+    • İnsan-Makine Etkileşimi
+
+  [ZSDII] - 24 ders
+  ----------------------------------------------------------------------------
+    • Araç Teknolojisinin Temelleri
+    • Bilişim Sistemleri Güvenliği
+    • Elektromobilite için Pil Üretim Teknolojisi
+    • Endüstri Mühendisliği: Seçilmiş Konular II
+    • Endüstriyel Enformasyon Tek. ve Sanal Ürün Geliştirme
+    • Endüstriyel Robotik I
+    • Ergonomi: Metod-Zaman Ölçümü ve İş Bilimi
+    • Girişimcilik
+    • Havaalanı Yönetimi
+    • Makine Öğrenmesi
+    • Makine Öğrenmesi
+    • Malzeme Teknolojisi I
+    • Montaj Teknolojisi Temelleri
+    • Mühendisler için Python
+    • Numerik Matematik
+    • Veri Madenciliği
+    • Web Mühendisliği
+    • Yapay Sinir Ağları
+    • Yazılım Mühendisliği
+    • Ölçüm Teknikleri
+    • Üretim ve Lojistik için Enformasyon Sistemleri
+    • İmalat Teknolojisinin Temelleri
+    • İnsan-Makine Etkileşimi
+    • İşletmede Mesleki Eğitim
+
+================================================================================
+Enerji Bilimi ve Teknolojileri
+================================================================================
+
+  [SD] - 9 ders
+  ----------------------------------------------------------------------------
+    • Akıllı Şebekeler
+    • Bilimsel Çalışma Yöntemleri
+    • Elektrik Makineleri
+    • Fiziksel Kimya 2
+    • Fonksiyonel Malzemeler
+    • Malzeme Üretim ve İşleme Teknolojileri
+    • Polimerik Malzemeler
+    • Veri Analizinin İstatistiksel Yöntemleri
+    • İklim Sistemine Giriş
+
+  [ZSD] - 23 ders
+  ----------------------------------------------------------------------------
+    • Enerji Depolama Sistemleri
+    • Enerji Ekonomisi ve Politikaları
+    • Enerji Sistem Modellemesi ve Simülasyonu
+    • Enerji Sistemlerinde Optimizasyon
+    • Güneş Enerjisi Sistemleri
+    • Güneş Hücreleri Fiziği
+    • Hammadde ve Enerjiye Giriş
+    • Heterojen Kataliz
+    • Hidrojen Enerjisi ve Yakıt Hücreleri
+    • Kuantum Enerji Sistemlerine Giriş
+    • Kömür İşleme ve Teknolojisi
+    • Makine Öğrenmesine Giriş
+    • Malzemelerin İleri Karakterizasyon Teknikleri
+    • Nükleer Enerji
+    • Rüzgar Enerjisi
+    • Soğutma Teknolojisi
+    • Sürdürülebilir Biyoyakıt Teknolojileri
+    • Sürdürülebilir Enerji
+    • Temiz Yanma Teknolojileri
+    • Yenilenebilir Enerji – Malzeme, Yapı, İşlev
+    • İleri Kuantum Enerji Sistemleri
+    • İleri Nükleer Enerji
+    • İnce Film Kaplama Teknolojileri
+
+  [ÜSD] - 8 ders
+  ----------------------------------------------------------------------------
+    • Bilgisayar Bilimine ve Programlamaya Giriş
+    • Doğa Bilimlerine Giriş
+    • Felsefe Tarihi
+    • Fikri Mülkiyet Hukuku
+    • Girişimcilik
+    • Muhasebe ve Bilanço
+    • Statik
+    • İktisadi Tarihi
+
+================================================================================
+Hukuk Fakültesi
+================================================================================
+
+  [HUKSD5] - 4 ders
+  ----------------------------------------------------------------------------
+    • Avrupa Hukuku ve Uluslararası Hukuk I
+    • DERSİN ADI
+    • Ekonomi Hukuku I
+    • İleri Alman Hukuku I
+
+  [HUKSD6] - 4 ders
+  ----------------------------------------------------------------------------
+    • Avrupa Hukuku ve Uluslararası Hukuk II
+    • DERSİN ADI
+    • Ekonomi Hukuku II
+    • İleri Alman Hukuku II
+
+  [HUKSD7] - 8 ders
+  ----------------------------------------------------------------------------
+    • DERSİN ADI
+    • Etik
+    • Milletlerarası Mal Satım Sözleşmeleri Hukuku
+    • Rekabet Hukuku
+    • Staj Eğitimi
+    • Türkiye-AB Ortaklık Hukuku
+    • İdarenin Sözleşmelerine ve Kamu İhale Hukukuna Giriş
+    • İnfaz Hukuku
+
+  [HUKSD8] - 4 ders
+  ----------------------------------------------------------------------------
+    • Avrupa Hukuku ve Uluslararası Hukuk IV
+    • DERSİN ADI
+    • Ekonomi Hukuku IV
+    • İleri Alman Hukuku IV
+
+================================================================================
+Kültür ve İletişim Bölümü
+================================================================================
+
+  [KKWSDI] - 18 ders
+  ----------------------------------------------------------------------------
+    • Almanya'da Göçmen Edebiyatı
+    • Alımlama ve Medya Etkileri Araştırmaları
+    • Dil Felsefesi
+    • Dil ve İletişim
+    • Edebiyat ve Metinlerarasılık
+    • Estetik
+    • Görsel Kültür ve İletişim Araştırmaları
+    • Karşılaştırmalı Edebiyat
+    • Kurumsal İletişim
+    • Kültür Politikası
+    • Kültürlerarası İletişim
+    • Medya Okuryazarlığı
+    • Medya Tarihi
+    • Medya ve Etik
+    • Medya ve Kültür Bilimleri
+    • Siyasal İletişim ve Medya
+    • Sosyal Medya Yönetimi
+    • Teori ve Uygulamada Çeviri
+
+  [KKWSDV] - 18 ders
+  ----------------------------------------------------------------------------
+    • Almanya'da Göçmen Edebiyatı
+    • Alımlama ve Medya Etkileri Araştırmaları
+    • Dil Felsefesi
+    • Dil ve İletişim
+    • Edebiyat ve Metinlerarasılık
+    • Estetik
+    • Görsel Kültür ve İletişim Araştırmaları
+    • Karşılaştırmalı Edebiyat
+    • Kurumsal İletişim
+    • Kültür Politikası
+    • Kültürlerarası İletişim
+    • Medya Okuryazarlığı
+    • Medya Tarihi
+    • Medya ve Etik
+    • Medya ve Kültür Bilimleri
+    • Siyasal İletişim ve Medya
+    • Sosyal Medya Yönetimi
+    • Teori ve Uygulamada Çeviri
+
+  [ÜSD] - 14 ders
+  ----------------------------------------------------------------------------
+    • Afet Yönetimi
+    • Bilgisayar Bilimine ve Programlamaya Giriş
+    • Dijital İnovasyon Yönetimi
+    • Elektrik-Elektronik Mühendisliğine Giriş
+    • Etik
+    • Girişimcilik
+    • Kültürel Miras Yönetimi
+    • Organizasyon
+    • Pazarlamanın Temelleri
+    • Sosyoloji ve Yapay Zeka
+    • Statik
+    • Stratejik Pazarlama
+    • Uluslararası İşletme
+    • İnşaat Mühendisliğine Giriş
+
+================================================================================
+Makine Müh
+================================================================================
+
+  [SDK] - 2 ders
+  ----------------------------------------------------------------------------
+    • Kontrol Mühendisliğinin Temelleri / Fund. of Control Eng.
+    • Kontrol Mühendisliğinin Temelleri / Fund. of Control Eng.
+
+  [SDP] - 6 ders
+  ----------------------------------------------------------------------------
+    • Endüstri Projesi / Industry Project
+    • Proje: Tasarım / Project: Design
+    • Proje: Taşıt Sistemleri / Project: Transport Systems
+    • Proje: Uzay Havacılık / Project: Aerospace Tech.
+    • Proje: Üretim Teknikleri / Project: Production Tech.
+    • İnterdisipliner Proje / Interdisciplinary Project
+
+  [SDUa] - 18 ders
+  ----------------------------------------------------------------------------
+    • Elektrik Makineleri I / Electrical Machines I
+    • Endüstriyel Otomasyon Tek. / Industrial Automation Tech.
+    • Endüstriyel Robotik I / Industrial Robotics I
+    • Endüstriyel Robotik II / Industrial Robotics II
+    • Fabrika Yönetimine Giriş / Intro to Factory Management
+    • Kalite İçin Veri İşleme / Data Processing for Quality
+    • Kaynak Teknolojisi / Welding Technology
+    • Malzeme Teknolojisi II / Material Technology II
+    • Mikroprodüksiyon Teknolojileri / Microproduction Tech.
+    • Proje: Üretim Teknikleri / Project: Production Tech.
+    • Takım Tezgahları II / Machine Tools II
+    • Yüzey Teknolojisi / Surface Technology
+    • Üretim: Seçilmiş Konular I / Selected Topics in Prod. I
+    • Üretim: Seçilmiş Konular III / Selected Topics in Prod III
+    • İmalat Teknolojisi I / Manufacturing Technology I
+    • İmalat Teknolojisi II / Manufacturing Technology II
+    • İmalat Tesisleri / Manufacturing Facilities
+    • İmalatta Sonlu Elemanlar / FEM Apps in Production
+
+  [SDUb] - 15 ders
+  ----------------------------------------------------------------------------
+    • Dişli Teorisi ve Mekanizmalar / Gear Theory & Mechanisms
+    • Elektrik Makineleri I / Electrical Machines I
+    • Katı Cisim Simulasyonu / Rigid Body Simulation
+    • Makine Müh. Bilişim Tek. / IT in Mech. Engineering
+    • Mekanikte Enerji Yöntemleri / Methods of Energy in Mech.
+    • Metodik Tasarım / Methodical Design
+    • Proje: Tasarım / Project: Design
+    • Sonlu Elemanlar Yöntemi / Finite-Element-Methods
+    • Sürekli Ortamlar Mekaniği / Continuum Mechanics
+    • Tasarım Tek. III / Design Methods III
+    • Tasarım: Seçilmiş Konular I / Selected Topics in Design I
+    • Tasarım: Seçilmiş Konular II / Selected Topics Design II
+    • Tasarım: Seçilmiş Konular III / Selected Topics Design III
+    • Yapısal Mekanik / Structural Mechanics
+    • Yorulma Dayanımı / Fatigue Strength
+
+  [SDUc] - 17 ders
+  ----------------------------------------------------------------------------
+    • Aerodinamik / Aerodynamics
+    • Akıllı Sistemler / Intelligent Systems
+    • Akışkan Makineleri / Fluid Machines
+    • Havacılık Endüstrisine Giriş / Intro to Aerospace Tech.
+    • Hesaplamalı Akışkanlar Dinamiği I / CFD I
+    • Hesaplamalı Akışkanlar Dinamiği II / CFD II
+    • Hesaplamalı Akışkanlar Dinamiği III / CFD III
+    • Makine Öğrenmesi / Machine Learning
+    • Proje: Uzay Havacılık / Project: Aerospace Technology
+    • Sonlu Elemanlar Yöntemi / Finite-Element-Methods
+    • Sürekli Ortamlar Mekaniği / Continuum Mechanics
+    • Tasarım Tek. III / Design Methods III
+    • Uzay Havacılık: Seç. Konular I / Sel. Topics Aerospace I
+    • Uzay Havacılık: Seç. Konular II / Sel. Topics Aerospace II
+    • Uzay Havacılık: Seç. Konular III / Sel. Topics Aerospace III
+    • Uzay Teknolojisinin Temelleri / Basics of Aerospace Tech.
+    • Yapısal Mekanik / Structural Mechanics
+
+  [SDUd] - 16 ders
+  ----------------------------------------------------------------------------
+    • Araç Tasarımının Temelleri / Fund. of Vehicle Construction
+    • Araç Teknolojisinin Temelleri / Basics of Automotive Eng.
+    • Dişli Teorisi ve Mekanizmalar / Gear Theory & Mechanisms
+    • Elektrik Makineleri I / Electrical Machines I
+    • Katı Cisim Simulasyonu / Rigid Body Simulation
+    • Malzeme Teknolojisi II / Material Technology II
+    • Motor Teknolojilerinin Temelleri / Basics of Power Engines
+    • Proje: Taşıt Sistemleri / Project: Transport Systems
+    • Raylı Sistemlerin Temelleri / Basics of Railway Systems
+    • Raylı Taşıt Teknolojisi / Railed Vehicles Systems
+    • Sonlu Elemanlar Yöntemi / Finite-Element-Methods
+    • Tasarım Tek. III / Design Methods III
+    • Taşıt Sist.: Seç. Konular I / Sel. Topics Transport Sys I
+    • Taşıt Sist.: Seç. Konular II / Sel. Topics Transport Sys II
+    • Taşıt Sist.: Seç. Konular III / Sel. Topics Transport III
+    • Ticari Araç Mühendisliği / Commercial Vehicle Engineering
+
+  [SDUe] - 1 ders
+  ----------------------------------------------------------------------------
+    • İşletmede Mesleki Eğitim / Co-operative Education
+
+================================================================================
+Malzeme Bilimi ve Teknolojileri
+================================================================================
+
+  [ZSD I] - 5 ders
+  ----------------------------------------------------------------------------
+    • Malzeme Kimyası
+    • Malzeme Yapısı
+    • Sayısal Tasarım
+    • Statik
+    • Tasarım Teknikleri I: Teknik Çizim ve CAD
+
+  [ZSD II] - 2 ders
+  ----------------------------------------------------------------------------
+    • Elektrotekniğe Giriş
+    • Yoğun Maddenin Fonksiyonel Özellikleri
+
+  [ZSD III] - 2 ders
+  ----------------------------------------------------------------------------
+    • Malzeme Muayenesi
+    • Malzeme Teknolojisi
+
+  [ZSD IV] - 5 ders
+  ----------------------------------------------------------------------------
+    • Biyomalzemeler
+    • Kompozit Malzemeler
+    • Malzemelerin İleri Karakterizasyon Teknikleri
+    • Toz Metalurjisi
+    • Yapı Malzemeleri
+
+  [ZSD V] - 7 ders
+  ----------------------------------------------------------------------------
+    • Fonksiyonel Malzemeler
+    • Malzeme Muayenesi
+    • Metalik Malzemeler
+    • Polimerik Malzemeler
+    • Reel Kristallerde Difüzyon ve Taşınım
+    • Yenilenebilir Enerji Teknolojileri
+    • Yoğun Madde Fiziği
+
+  [ZSD VI] - 1 ders
+  ----------------------------------------------------------------------------
+    • Temel Hukuk
+
+================================================================================
+Mekatronik Müh
+================================================================================
+
+  [SDP I] - 3 ders
+  ----------------------------------------------------------------------------
+    • Intelligent Sys. Project I / Akıllı Sis. Proj. I
+    • Production Auto. Project I / Üretim Projesi I
+    • Robotics Project I / Robotik Projesi I
+
+  [SDP II] - 3 ders
+  ----------------------------------------------------------------------------
+    • Intelligent Sys. Project II / Akıllı Sis. Proj. II
+    • Production Auto. Project II / Üretim Projesi II
+    • Robotics Project II / Robotik Projesi II
+
+  [ZSD] - 39 ders
+  ----------------------------------------------------------------------------
+    • Applied Control Tech. / Uygulamalı Kontrol Müh.
+    • Artificial Intelligence / Yapay Zeka
+    • Assembly Tech / Montaj Teknolojisi Temelleri
+    • CS Selected Topics I / Bilg. Müh. Seçilmiş K. I
+    • CS Selected Topics II / Bilg. Müh. Seçilmiş K. II
+    • Database Systems / Veritabanı Sistemleri
+    • Deep Learning / Derin Öğrenme
+    • Digital Design / Sayısal Tasarım
+    • EE Selected Topics I / Elektrotek. Seçilmiş K. I
+    • EE Selected Topics II / Elektrotek. Seçilmiş K. II
+    • Electrical Machines I / Elektrik Makinaları I
+    • Electronic Components / Elektrik Devre Elemanlari
+    • Electronics I / Elektronik I : Yarı İletken El.
+    • Embedded Systems / Gömülü Sistemler
+    • FPGA Programming / FPGA Programlama
+    • Fluid Mechanics / Akışkanlar Mekaniği
+    • Heat Transfer / Isı Transferi
+    • Human-Machine Interaction / Bilg.-Makine Etkileşimi
+    • Image-Based Auto. I / Görüntü Tabanlı Oto. I
+    • Image-Based Auto. II / Görüntü Tabanlı Oto. II
+    • Ind. Info Tech / End. Enf. Tek. ve Sanal Ürün Gel.
+    • Industrial Robotics II / Endüstriyel Robotik II
+    • Intelligent Systems / Akıllı Sistemler
+    • Intro to Factory Ops / Fabrika Yönetimine Giriş
+    • Intro to VLSI Design / VLSI Tasarımına Giriş
+    • ME Selected Topics I / Makine Müh. Seçilmiş K. I
+    • ME Selected Topics II / Makine Müh. Seçilmiş K. II
+    • Machine Learning / Makine Öğrenmesi
+    • Machine Tools / Takım Tezgahları
+    • Manufacturing Tech. I / İmalat Teknolojileri I
+    • Materials Technology II / Malzeme Teknolojisi II
+    • Mechatronics Topics II / Mekatronik Seçilmiş K. II
+    • Microprocessors / Mikroişlemciler
+    • Neural Networks / Yapay Sinir Ağları
+    • Power Electronics / Güç Elektroniği
+    • Quality Management / Kalite Yönetimi
+    • Software Engineering / Yazılım Mühendisliği
+    • Sys. ID & Intelligent Ctrl / Sis. Tnm. ve Akıllı K.
+    • Thermodynamics I / Termodinamik I
+
+================================================================================
+Moleküler Biyoteknoloji
+================================================================================
+
+  [SDBIOII] - 4 ders
+  ----------------------------------------------------------------------------
+    • Biyoelektrokimya
+    • Biyofiziksel Kimya
+    • Biyokataliz
+    • Fiziksel Kimya II
+
+  [SDBIOIII] - 6 ders
+  ----------------------------------------------------------------------------
+    • Biyosensörler
+    • Biyoteknoloji İşletmeleri için Sistem Teknikleri II
+    • Doku Mühendisliği
+    • Hedeflendirilmiş İlaç Taşıma
+    • Hücre-Malzeme Etkileşimleri
+    • Nanobiyoteknoloji
+
+  [SDBIOIV] - 5 ders
+  ----------------------------------------------------------------------------
+    • Biyomalzemeler
+    • Doğal Madde Üretimi
+    • Egzersizin Moleküler Biyolojisi
+    • Etken Madde Araştırmaları
+    • Popülasyon Genetiği
+
+  [SDMATI] - 2 ders
+  ----------------------------------------------------------------------------
+    • Biyofizik
+    • Biyomatematik
+
+  [SDMATII] - 6 ders
+  ----------------------------------------------------------------------------
+    • Biyobilimler için MATLAB
+    • Biyoistatistik
+    • Biyomedikal İşaret işleme ve Yapay Zeka Uygulamaları
+    • Duyu Organlarının Biyofiziği
+    • Nicel Biyoloji
+    • İstatistiksel ve Sayısal Yöntemler
+
+  [ÜSD] - 17 ders
+  ----------------------------------------------------------------------------
+    • Biyobilimler için Organik Kimya
+    • Ekoloji
+    • Elektrik-Elektronik Mühendisliğine Giriş
+    • Endüstri Mühendisliğine Giriş
+    • Evrim Biyolojisi
+    • Makine Mühendisliğine Giriş
+    • Malzeme Teknolojisi I
+    • Mikrobiyoloji II
+    • Muhasebe ve Bilanço
+    • Nesnel Programlama
+    • Pazarlamanın Temelleri
+    • Sayısal Tasarım
+    • Statik
+    • Stratejik Pazarlama
+    • İktisadi Tarih
+    • İmmünoloji
+    • İnşaat Mühendisliğine Giriş
+
+================================================================================
+Siyaset Bilimi ve Uluslararası İlişkiler
+================================================================================
+
+  [POLSDI] - 81 ders
+  ----------------------------------------------------------------------------
+    • 20. Yüzyıl Avrupa Siyasi Düşüncesi
+    • AB Dış ve Güvenlik Siyaseti
+    • ABD Dış Politikası
+    • Alman İdare Hukuku - Temel Kavramlar
+    • Almanya ve Türkiye Karşılaştırmalı Siyasal Sistemler
+    • Almanya, Türkiye ve AB için Güncel Politik Sorunlar
+    • Anayasa Hukuku I
+    • Anayasa Hukuku II
+    • Anayasa Hukukunun Temel Prensipleri
+    • Avrupa Bütünleşmesinin İktisadı
+    • Avrupa Hukuku
+    • Avrupa'da Federalizm - Avrupa Federalizmi
+    • Borçlar Hukuku
+    • Demografi ve Göç İktisadı
+    • Devletler Özel Hukuku I
+    • Değişen Küresel Sistemde Bölgesel Güçler
+    • Dijital Pazarlama
+    • Dünya Ekonomisinin Güncel Sorunları
+    • Dünya Siyaseti ve Sinema
+    • Dünya Siyasetinde Afrika
+    • Dünya Siyasetinde Doğu Asya
+    • E-İş
+    • Girişimcilik
+    • Göç ve Kültür
+    • Göç, Diaspora ve Mülteciler
+    • Güncel Avrupa Siyaseti
+    • Güncel Ortadoğu ve Kuzey Afrika Siyaseti
+    • Güneydoğu Avrupa Siyaseti
+    • Halkla İlişkiler
+    • Irkçılık, Antisemitizm ve İslamofobi
+    • Kamu Yönetiminde Güncel Meseleler
+    • Kamu Yönetimine Giriş
+    • Karşılaştırmalı Avrupa Siyaseti
+    • Karşılaştırmalı Parti ve Seçim Sistemleri
+    • Kentleşme ve Çevre Sorunları
+    • Kültür Bilimlerine Giriş
+    • Kültür Kuramları
+    • Kültür ve Küreselleşme
+    • Kültürel Bellek
+    • Kültürlerarası Yetkinlik Geliştirme
+    • Kültürlerarası İletişim
+    • Küresel İklim Siyaseti
+    • Küreselleşme
+    • Latin Amerika Siyaseti
+    • Milliyetçilik Teorileri
+    • Orta Asya ve Kafkasya Bölgesel Siyaseti
+    • Osmanlı Siyasi Tarihi II
+    • Pazarlamanın Temelleri
+    • Personel Yönetimi
+    • Proje Yönetimi
+    • Rus Siyaseti
+    • Sekülerleşme Teorileri
+    • Siyaset Bilimi Stajı
+    • Siyaset Psikolojisi
+    • Siyaset Sosyolojisi
+    • Siyaset Teorisinde Meseleler
+    • Stratejik Pazarlama
+    • Ticaret Hukuku
+    • Toplumsal Cinsiyet ve Siyaset
+    • Türk Devletleri Teşkilatı ve Türk Devletleri Bütünleşmesi
+    • Türk Dış Politikasında Güncel Meseleler
+    • Türk Tarihi
+    • Türk-Alman Diplomatik İlişkiler Tarihi
+    • Türk-Alman İlişkileri: Ekonomi, Siyaset ve Toplum
+    • Türkiye Ekonomisinin Gelişimi
+    • Uluslararası Enerji Siyaseti
+    • Uluslararası Hukuk I
+    • Uluslararası Hukuk II
+    • Uluslararası İktisat I
+    • Uluslararası İktisat II
+    • Uluslararası İşletme
+    • Yerel Yönetimler
+    • Çok Düzlemli Sistemlerde Politik Saha Analizi
+    • Örgütsel Davranış
+    • İdare Hukuku I
+    • İdare Hukuku II
+    • İktisadi Düşünceler Tarihi
+    • İletişim Bilimlerine Giriş
+    • İş Etiği
+    • İş Hukuku
+    • İşletmeye Giriş
+
+  [POLSDV] - 81 ders
+  ----------------------------------------------------------------------------
+    • 20. Yüzyıl Avrupa Siyasi Düşüncesi
+    • AB Dış ve Güvenlik Siyaseti
+    • ABD Dış Politikası
+    • Alman İdare Hukuku - Temel Kavramlar
+    • Almanya ve Türkiye Karşılaştırmalı Siyasal Sistemler
+    • Almanya, Türkiye ve AB için Güncel Politik Sorunlar
+    • Anayasa Hukuku I
+    • Anayasa Hukuku II
+    • Anayasa Hukukunun Temel Prensipleri
+    • Avrupa Bütünleşmesinin İktisadı
+    • Avrupa Hukuku
+    • Avrupa'da Federalizm - Avrupa Federalizmi
+    • Borçlar Hukuku
+    • Demografi ve Göç İktisadı
+    • Devletler Özel Hukuku I
+    • Değişen Küresel Sistemde Bölgesel Güçler
+    • Dijital Pazarlama
+    • Dünya Ekonomisinin Güncel Sorunları
+    • Dünya Siyaseti ve Sinema
+    • Dünya Siyasetinde Afrika
+    • Dünya Siyasetinde Doğu Asya
+    • E-İş
+    • Girişimcilik
+    • Göç ve Kültür
+    • Göç, Diaspora ve Mülteciler
+    • Güncel Avrupa Siyaseti
+    • Güncel Ortadoğu ve Kuzey Afrika Siyaseti
+    • Güneydoğu Avrupa Siyaseti
+    • Halkla İlişkiler
+    • Irkçılık, Antisemitizm ve İslamofobi
+    • Kamu Yönetiminde Güncel Meseleler
+    • Kamu Yönetimine Giriş
+    • Karşılaştırmalı Avrupa Siyaseti
+    • Karşılaştırmalı Parti ve Seçim Sistemleri
+    • Kentleşme ve Çevre Sorunları
+    • Kültür Bilimlerine Giriş
+    • Kültür Kuramları
+    • Kültür ve Küreselleşme
+    • Kültürel Bellek
+    • Kültürlerarası Yetkinlik Geliştirme
+    • Kültürlerarası İletişim
+    • Küresel İklim Siyaseti
+    • Küreselleşme
+    • Latin Amerika Siyaseti
+    • Milliyetçilik Teorileri
+    • Orta Asya ve Kafkasya Bölgesel Siyaseti
+    • Osmanlı Siyasi Tarihi II
+    • Pazarlamanın Temelleri
+    • Personel Yönetimi
+    • Proje Yönetimi
+    • Rus Siyaseti
+    • Sekülerleşme Teorileri
+    • Siyaset Bilimi Stajı
+    • Siyaset Psikolojisi
+    • Siyaset Sosyolojisi
+    • Siyaset Teorisinde Meseleler
+    • Stratejik Pazarlama
+    • Ticaret Hukuku
+    • Toplumsal Cinsiyet ve Siyaset
+    • Türk Devletleri Teşkilatı ve Türk Devletleri Bütünleşmesi
+    • Türk Dış Politikasında Güncel Meseleler
+    • Türk Tarihi
+    • Türk-Alman Diplomatik İlişkiler Tarihi
+    • Türk-Alman İlişkileri: Ekonomi, Siyaset ve Toplum
+    • Türkiye Ekonomisinin Gelişimi
+    • Uluslararası Enerji Siyaseti
+    • Uluslararası Hukuk I
+    • Uluslararası Hukuk II
+    • Uluslararası İktisat I
+    • Uluslararası İktisat II
+    • Uluslararası İşletme
+    • Yerel Yönetimler
+    • Çok Düzlemli Sistemlerde Politik Saha Analizi
+    • Örgütsel Davranış
+    • İdare Hukuku I
+    • İdare Hukuku II
+    • İktisadi Düşünceler Tarihi
+    • İletişim Bilimlerine Giriş
+    • İş Etiği
+    • İş Hukuku
+    • İşletmeye Giriş
+
+================================================================================
+Sosyoloji
+================================================================================
+
+  [SOZSDI] - 22 ders
+  ----------------------------------------------------------------------------
+    • Almanya'da Güncel Azınlık Tartışmaları
+    • Avrupa’da Kapitalizmin Doğuşu
+    • Avrupa’da Sosyal Politika
+    • Avrupa’da Toplumsal Dönüşümler
+    • Ayrımcılık Sosyolojisi
+    • Beden Sosyolojisi
+    • Eleştirel Kuram ve Toplum
+    • Gelecek Sosyolojisi
+    • Kurumlar Sosyolojisi
+    • Kültür Sosyolojisi
+    • Küreselleşme
+    • Mekan Sosyolojisi
+    • Organizasyon Sosyolojisi
+    • Sanat Sosyolojisi
+    • Sağlık Sosyolojisi
+    • Sosyolojide Güncel Tartışmalar
+    • Tarihsel Sosyoloji
+    • Teknoloji Bağımlılığı
+    • Toplumsal Ekoloji
+    • Toplumsal Hareketler
+    • Tüketim Toplumu
+    • Çalışma Sosyolojisi
+
+  [SOZSDII] - 21 ders
+  ----------------------------------------------------------------------------
+    • Afet Sosyolojisi
+    • Bir Metropolün Sosyolojisi: İstanbul
+    • Din Sosyolojisi
+    • Duygular Sosyolojisi
+    • Ekonomi Sosyolojisi
+    • Engellilik Sosyolojisi
+    • Eğitim Sosyolojisi
+    • Gençlik Sosyolojisi
+    • Görsel Sosyoloji
+    • Güncel Etnografi Okumaları
+    • Gündelik Hayat Sosyolojisi
+    • Hayvanlar ve Toplum
+    • Kolektif ve Toplumsal Hafıza
+    • Proje Tasarımı
+    • Siyaset Sosyolojisi
+    • Sosyoloji ve Yapay Zeka
+    • Sosyolojik Kuramların Dilleri
+    • Türkiye'de Kapitalizmin Gelişimi
+    • Türkiye’de Göç Çalışmaları
+    • Türkiye’de Toplumsal Dönüşümler
+    • Öznellikler ve Özneleşme
+
+  [SOZSDIII] - 22 ders
+  ----------------------------------------------------------------------------
+    • Almanya'da Güncel Azınlık Tartışmaları
+    • Avrupa’da Kapitalizmin Doğuşu
+    • Avrupa’da Sosyal Politika
+    • Avrupa’da Toplumsal Dönüşümler
+    • Ayrımcılık Sosyolojisi
+    • Beden Sosyolojisi
+    • Eleştirel Kuram ve Toplum
+    • Gelecek Sosyolojisi
+    • Kurumlar Sosyolojisi
+    • Kültür Sosyolojisi
+    • Küreselleşme
+    • Mekan Sosyolojisi
+    • Organizasyon Sosyolojisi
+    • Sanat Sosyolojisi
+    • Sağlık Sosyolojisi
+    • Sosyolojide Güncel Tartışmalar
+    • Tarihsel Sosyoloji
+    • Teknoloji Bağımlılığı
+    • Toplumsal Ekoloji
+    • Toplumsal Hareketler
+    • Tüketim Toplumu
+    • Çalışma Sosyolojisi
+
+  [SOZSDIV] - 21 ders
+  ----------------------------------------------------------------------------
+    • Afet Sosyolojisi
+    • Bir Metropolün Sosyolojisi: İstanbul
+    • Din Sosyolojisi
+    • Duygular Sosyolojisi
+    • Ekonomi Sosyolojisi
+    • Engellilik Sosyolojisi
+    • Eğitim Sosyolojisi
+    • Gençlik Sosyolojisi
+    • Görsel Sosyoloji
+    • Güncel Etnografi Okumaları
+    • Gündelik Hayat Sosyolojisi
+    • Hayvanlar ve Toplum
+    • Kolektif ve Toplumsal Hafıza
+    • Proje Tasarımı
+    • Siyaset Sosyolojisi
+    • Sosyoloji ve Yapay Zeka
+    • Sosyolojik Kuramların Dilleri
+    • Türkiye'de Kapitalizmin Gelişimi
+    • Türkiye’de Göç Çalışmaları
+    • Türkiye’de Toplumsal Dönüşümler
+    • Öznellikler ve Özneleşme
+
+  [SOZSDV] - 22 ders
+  ----------------------------------------------------------------------------
+    • Almanya'da Güncel Azınlık Tartışmaları
+    • Avrupa’da Kapitalizmin Doğuşu
+    • Avrupa’da Sosyal Politika
+    • Avrupa’da Toplumsal Dönüşümler
+    • Ayrımcılık Sosyolojisi
+    • Beden Sosyolojisi
+    • Eleştirel Kuram ve Toplum
+    • Gelecek Sosyolojisi
+    • Kurumlar Sosyolojisi
+    • Kültür Sosyolojisi
+    • Küreselleşme
+    • Mekan Sosyolojisi
+    • Organizasyon Sosyolojisi
+    • Sanat Sosyolojisi
+    • Sağlık Sosyolojisi
+    • Sosyolojide Güncel Tartışmalar
+    • Tarihsel Sosyoloji
+    • Teknoloji Bağımlılığı
+    • Toplumsal Ekoloji
+    • Toplumsal Hareketler
+    • Tüketim Toplumu
+    • Çalışma Sosyolojisi
+
+================================================================================
+İktisat
+================================================================================
+
+  [VWLSD] - 81 ders
+  ----------------------------------------------------------------------------
+    • Akademik Yazma Becerileri
+    • Akıllı Sistemler
+    • Almanya, Türkiye ve AB için Güncel Siyasal Sorunlar
+    • Ampirik Ekonomi Politikası
+    • Ampirik İktisat ve İktisat Tarihinde Güncel Konular
+    • Avrupa Bütünleşmesinin İktisadı
+    • Bilimde Sözlü ve Yazılı İletişim
+    • Bölgesel İktisat
+    • Cinsiyet İktisadı
+    • Coğrafya ve Ulaştırma İktisadı
+    • Davranışsal İktisat
+    • Demografi ve Göç İktisadı
+    • Derin Öğrenme
+    • Dijital Ekonomi
+    • Dijital Pazarlama
+    • Dijital Tedarik Zinciri Yönetimi
+    • Dünya Ekonomisinin Güncel Sorunları
+    • E-iş
+    • Ekonometri ve İktisadi Tarih
+    • Ekonomistler İçin İngilizce
+    • Enerji İktisadı
+    • Eğitim İktisadı
+    • Finansal Aracılık ve Finans Mühendisliği
+    • Karar Teorisi
+    • Kentleşme Sorunları
+    • Kurumsal 2.0
+    • Kurumsal İktisat
+    • Kültür Endüstrisinde Etkinlik Yönetimi
+    • Kültür ve Sanat İktisadı
+    • Kültürel ve Yaratıcı Sanayiler/Kurumlar
+    • Kültürlerarası Yeterlilik Gelişimi
+    • Kültürlerarası İletişim
+    • Küresel İklim Politikası
+    • Küreselleşme
+    • Makine Öğrenmesi
+    • Marka Yönetimi
+    • Medeni Hukuka Giriş ve Başlangıç Hükümleri
+    • Metin Madenciliği
+    • Organizasyon
+    • Oyun Tasarımı
+    • Para Teorisi ve Politikası
+    • Pazar Araştırması
+    • Pazarlamanın Temelleri
+    • R ile Ampirik İktisat
+    • SAP Uygulamaları
+    • Sağlık İktisadı
+    • Spor İktisadı
+    • Staj
+    • Stratejik Pazarlama
+    • Sunum ve Görselleştirme
+    • Tarım İktisadı
+    • Turizm İktisadı
+    • Türk Ekonomisinin Kurumları
+    • Türk-Alman İlişkileri: Ekonomi, Politika ve Toplum
+    • Türkiye Ekonomisinin Gelişimi
+    • Türkiye-Avrupa İlişkilerinde Güncel Meseleler
+    • Uluslararası Ekonomi Politik
+    • Uluslararası Enerji Siyaseti
+    • Uluslararası Finans
+    • Uluslararası Örgütler
+    • Uluslararası İktisat II
+    • Veri Analizi Yöntemleri
+    • Veri Madenciliği
+    • Veritabanı Sistemleri
+    • Yapay Sinir Ağları
+    • Yatırım ve Finansman
+    • Yöneylem Araştırması
+    • Çalışma İktisadı
+    • Çok Değişkenli İstatistik Yöntemler
+    • İktisatta Güncel Meseleler 1
+    • İktisatta Güncel Meseleler 2
+    • İktisatta Güncel Meseleler 3
+    • İktisatta Güncel Meseleler 4
+    • İktisatta Güncel Meseleler 5
+    • İktisatta Güncel Meseleler 6
+    • İslam İktisadı
+    • İslami Finans
+    • İş Etiği
+    • İş Oyunu
+    • İşletme Finansı
+    • İşletmesel Veri Analizi
+
+  [ÜSD] - 25 ders
+  ----------------------------------------------------------------------------
+    • Akademik İngilizce
+    • Bilgisayar Bilimine ve Programlamaya Giriş
+    • Doğa Bilimlerinde Girişimcilik
+    • Doğa Bilimlerinde Yapay Zeka
+    • Doğal Afetler
+    • Elektrik Elektronik Mühendisliğine Giriş
+    • Endüstri Mühendisliğine Giriş
+    • Etik
+    • Felsefe Tarihi
+    • Fikri Mülkiyet Hukuku
+    • Kariyer Planlama
+    • Kuantum Enerjisi Sistemlerine Giriş
+    • Makine Mühendisliğine Giriş
+    • Malzeme Teknolojisi I
+    • Osmanlıca I
+    • Pazarlamanın Temelleri
+    • Sayısal Tasarım
+    • Statik
+    • Stratejik Yönetim
+    • Türkiye'de Gündelik Hayatın Tarihi
+    • Yabancılar İçin Akademik Türkçe I
+    • Yabancılar İçin Türkçe I
+    • İktisadi Tarih
+    • İngilizce Etkili İletişim Becerileri
+    • İnşaat Mühendisliğine Giriş
+
+================================================================================
+İnşaat Müh
+================================================================================
+
+  [ZSD] - 34 ders
+  ----------------------------------------------------------------------------
+    • Beton ve Kalıp İnşaatı / Concrete and Formwork Const.
+    • Bilg. Bil. ve Prog. Giriş / Intro to CS and Programming
+    • Demiryolu Ulaşımının Temelleri / Rail Transport
+    • Deneysel Zemin Mekaniği / Experimental Soil Mechanics
+    • Geodezi ve Geoinformatik / Geodasy and Geoinformatics
+    • Girişimcilik / Entrepreneurship
+    • Kaya Mekaniği / Rock Mechanics
+    • Kentsel Su Yönetiminin Temelleri
+    • Kıyı Mühendisliğine Giriş / Intro to Coastal Engineering
+    • Liman Tasarımı / Port Design
+    • Mühendisler İçin Hukuk / Law for Engineering
+    • Nesnel Programlama / OOP
+    • Sistem Tekniği / System Technics
+    • Stokastik Sistemler / Stochastic Systems
+    • Su Kaynakları / Water Resources
+    • Taşkın Koruma ve Yönetimi / Flood Protection & Mgmt
+    • Veri Analizinin İstatistiksel Yöntemleri
+    • Yapı Bilgi Modellemesi / Building Information Modeling
+    • Yapı Dinamiği I / Building Dynamics I
+    • Yapı Fiziği / Building Physics
+    • Yapı Kimyası ve Malzeme Testi
+    • Yapı Statiği III / Structural Analysis III
+    • Yapı İnşaatı III / Structural Engineering III
+    • Yapı İşletmesi I / Construction Management I
+    • Yapı İşletmesi II / Construction Management II
+    • Yığma Yapı İnşaatı / Masonry Construction
+    • İnş. Müh. 3D Hesaplamalar / 3D Calculations in CE
+    • İnş. Müh. için Jeoloji / Geology for Civil Engineers
+    • İnşaat Bilişimi / Computer Applications in Civil Eng.
+    • İnşaat Hukuku / Construction Law
+    • İnşaat Müh. Nümerik Metotlar / Numerical Methods
+    • İnşaat Mühendisliği Projesi I / Civil Eng. Projects I
+    • İnşaat Mühendisliği Projesi II / Civil Eng. Project II
+    • İşletmede Mesleki Eğitim / Cooperative Education
+
+================================================================================
+İşletme
+================================================================================
+
+  [BSD] - 10 ders
+  ----------------------------------------------------------------------------
+    • Avrupa Ticaret Hukuku
+    • Borçlar Hukuku (Schuldrecht)**
+    • Muhasebe ve Finansta Güncel Konular
+    • Pazarlamada Güncel Konular
+    • Sayısal Yöntemlerde Güncel Konular
+    • Ticaret Hukuku (Commercial Law)*****
+    • Uluslararası Öğrenci Projesi
+    • Vergi Hukuku (Steuerrecht)***
+    • Örgütsel Davranışta Güncel Konular
+    • İş Hukuku (Labour Law)****
+
+  [SD] - 38 ders
+  ----------------------------------------------------------------------------
+    • Algoritma ve Programlamaya Giriş
+    • Bilgisayar Destekli İstatistik
+    • Blockchain ve Kripto Piyasaları
+    • Davranışsal Finans
+    • Denetim
+    • Dijital Pazarlama
+    • Ekonometri
+    • Girişimcilik
+    • Hizmet Pazarlama
+    • Karar Teorisi
+    • Kurumsal Kaynak Planlaması
+    • Kültürlerarası Liderlik
+    • Kültürlerarası Yetkinlik Geliştirme
+    • Lineer Cebir
+    • Lojistik
+    • Mali Tablolar Analizi
+    • Marka Yönetimi
+    • Para ve Banka
+    • Personel Yönetimi
+    • Proje Yönetimi
+    • SAP Uygulamaları
+    • Sermaye Piyasaları
+    • Süreç Yönetimi
+    • Tedarik Zinciri Yönetimi
+    • Tüketici Davranışı
+    • Uluslararası Muhasebe Standartları
+    • Uluslararası İşletme
+    • Çok Değişkenli İstatistik Yöntemler
+    • Örgütsel Davranış
+    • Örgütsel Dönüşüm Yönetimi
+    • İnovasyon ve Yeni Ürün Geliştirme
+    • İş Oyunu Semineri
+    • İşletme Semineri
+    • İşletme Vergiciliği
+    • İşletmede Mesleki Eğitim (Vocational Education) ***
+    • İşletmelerde Simülasyon Teknikleri
+    • İşletmesel Veri Analizi
+    • Şirket 2.0
+
+  [ÜSD000] - 14 ders
+  ----------------------------------------------------------------------------
+    • Akademik İngilizce
+    • Bilgisayar Bilimine ve Programlamaya Giriş
+    • Doğa Bilimlerinde Girişimcilik
+    • Elektrik Elektronik Mühendisliğine Giriş
+    • Endüstri Mühendisliğine Giriş
+    • Felsefe Tarihi
+    • Fikrî Mülkiyet Hukuku
+    • Kamu Maliyesi ve Kamu İktisadı
+    • Kariyer Planlama
+    • Kuantum Enerjisi Sistemlerine Giriş
+    • Statik
+    • Türkiye'de Gündelik Hayatın Tarihi
+    • İktisadi Tarih
+    • İnşaat Mühendisliğine Giriş

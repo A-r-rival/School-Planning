@@ -629,7 +629,7 @@ class ScheduleModel(QObject):
                     dhi.havuz_kodu as pool_code
                 FROM Dersler d
                 JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
-                LEFT JOIN Bolumler b ON dhi.bolum_num = b.bolum_num
+                LEFT JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
                 WHERE 1=1
             """
             params_pool = []

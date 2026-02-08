@@ -14,7 +14,11 @@ This prevents tuple-shape explosion and makes future dataclass migration trivial
 """
 from typing import Dict, List, Optional, Tuple, Any
 from scripts.parse_curriculum import Regexes
-from scripts import curriculum_data
+import sys
+import os
+# curriculum_data is in database/
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database"))
+import curriculum_data
 from utils.schedule_merger import merge_consecutive_blocks
 import collections
 
