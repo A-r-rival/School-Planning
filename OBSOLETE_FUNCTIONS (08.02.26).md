@@ -25,9 +25,7 @@ This document lists functions and methods identified as obsolete, deprecated, or
 
 | Function Name | Status | Reason |
 | :--- | :--- | :--- |
-| `add_course_to_list` | **Dead Code** | Empty method (`pass`) marked as "Legacy". The view now refreshes the entire table via `display_courses`. |
-| `remove_course_from_list` | **Dead Code** | Empty method (`pass`) marked as "Legacy". |
-| `get_current_selected_course` | **Dead Code** | Returns `None` and is marked "Legacy". Selection handling is now done directly within specific action handlers using item data. |
+
 | `course_remove_requested` (Signal) | **Unused** | This signal is defined and connected, but never emitted. The view emits `course_remove_by_ids_requested` instead. |
 
 ## 4. Utilities (`utils/`)

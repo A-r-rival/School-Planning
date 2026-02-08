@@ -1,13 +1,7 @@
-////////Öğrenci Paneli
-interlink
-+büyük gelsin pencere
-+başlangıç yılı, ad vs. dropdown filter önceliklendirme
-+açık gri kapalı gri çizgi okunurluk için
+////////Öğrenci Paneli interlink
 parantez içinde yükseltmeye aldı
 
 
-////////Ders Listesi
-saat blokları birleşsin
 
 !!!!!!!
 alan seçmeliler

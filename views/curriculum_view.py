@@ -9,9 +9,10 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 
 class CurriculumViewDialog(QDialog):
-    def __init__(self, controller, parent=None):
+    def __init__(self, controller, parent=None, enable_delete_mode=False):
         super().__init__(parent)
         self.controller = controller
+        self.enable_delete_mode = enable_delete_mode # Store initial state
         self.setWindowTitle("Müfredat Görüntüleme")
         self.setGeometry(200, 200, 1150, 750) # Increased Size (+150px)
         
@@ -68,7 +69,7 @@ class CurriculumViewDialog(QDialog):
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Ders Adı/Kodu...") # Updated text
         self.search_input.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed) # Responsive
-        self.search_input.textChanged.connect(self._on_filter_changed)
+        self.search_input.textChanged.connect(self._refresh_table_display_only)
         row2_layout.addWidget(QLabel("Ara:"))
         row2_layout.addWidget(self.search_input, 1) # Stretch factor 1 (Takes available space)
         
@@ -86,6 +87,7 @@ class CurriculumViewDialog(QDialog):
         self.type_group.addButton(self.rb_all)
         self.type_group.addButton(self.rb_core)
         self.type_group.addButton(self.rb_elective)
+
         
         self.rb_all.toggled.connect(self._on_filter_changed)
         self.rb_core.toggled.connect(self._on_filter_changed)
@@ -95,6 +97,14 @@ class CurriculumViewDialog(QDialog):
         row2_layout.addWidget(self.rb_all)
         row2_layout.addWidget(self.rb_core)
         row2_layout.addWidget(self.rb_elective)
+        
+        # Delete Mode Checkbox
+        row2_layout.addSpacing(20)
+        self.chk_delete_mode = QCheckBox("Ders Silme Modu")
+        self.chk_delete_mode.setStyleSheet("color: red; font-weight: bold;")
+        self.chk_delete_mode.setChecked(self.enable_delete_mode) # Set initial state
+        self.chk_delete_mode.stateChanged.connect(self._toggle_delete_mode) 
+        row2_layout.addWidget(self.chk_delete_mode)
         
         # row2_layout.addStretch() # REMOVED: Search input expands instead
         layout.addLayout(row2_layout)
@@ -129,10 +139,11 @@ class CurriculumViewDialog(QDialog):
 
         # --- Table ---
         self.table = QTableWidget()
-        self.table.setColumnCount(8)
+        self.table.setColumnCount(9) # Increased to 9 for Action column
         self.table.setHorizontalHeaderLabels([
-            "Ders Kodu", "Ders Adı", "T", "U", "L", "AKTS", "Tip", "Bölüm/Havuz"
+            "Ders Kodu", "Ders Adı", "T", "U", "L", "AKTS", "Tip", "Bölüm/Havuz", "İşlem"
         ])
+        self.table.cellClicked.connect(self._on_cell_clicked)
         header = self.table.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.Stretch)
         header.setSectionResizeMode(0, QHeaderView.ResizeToContents) 
@@ -140,6 +151,8 @@ class CurriculumViewDialog(QDialog):
         header.setSectionResizeMode(3, QHeaderView.ResizeToContents) 
         header.setSectionResizeMode(4, QHeaderView.ResizeToContents) 
         header.setSectionResizeMode(5, QHeaderView.ResizeToContents) 
+        header.setSectionResizeMode(8, QHeaderView.Fixed) 
+        self.table.setColumnWidth(8, 80) 
         
         layout.addWidget(self.table)
         
@@ -240,6 +253,31 @@ class CurriculumViewDialog(QDialog):
         if hasattr(self, 'cached_courses'):
             self._filter_and_populate()
 
+    def _toggle_delete_mode(self, state):
+        """
+        Optimized: Only toggle column visibility, do NOT repopulate table.
+        This prevents freezing when toggling the checkbox.
+        """
+        is_delete_mode = (state == Qt.Checked)
+        # Column 8 is the Action column
+        self.table.setColumnHidden(8, not is_delete_mode)
+        
+        # We also need to loop through rows to instantiate buttons IF they don't exist yet?
+        # Actually, _populate_table creates them but hides column. 
+        # Wait, previous logic in _populate_table was:
+        # if is_delete_mode: create button
+        # This means if we toggled ON, we need buttons. 
+        # If we didn't create them initially, we need to create them now.
+        # BUT, to be truly fast, we should probably create them ALWAYS but hide the column.
+        # OR, we lazily create them here.
+        
+        if is_delete_mode:
+            # Check if first row has button. If not, we might need to populate.
+            # But repopulating causes freeze. 
+            # Better approach: update _populate_table to ALWAYS create buttons, 
+            # and just hide the column.
+            pass
+
     def _filter_and_populate(self):
         filtered = []
         search = self.search_input.text().lower()
@@ -288,7 +326,12 @@ class CurriculumViewDialog(QDialog):
     # ... (Rest of methods) ...
 
     def _populate_table(self, data):
+        self.table.setUpdatesEnabled(False) # Optimize performance
+        from PyQt5.QtGui import QColor
         self.table.setRowCount(0)
+        # Ensure column visibility matches checkbox
+        self.table.setColumnHidden(8, not self.chk_delete_mode.isChecked())
+        
         current_header = None
         
         # Predefined colors for Core
@@ -338,13 +381,51 @@ class CurriculumViewDialog(QDialog):
                 item = QTableWidgetItem(str(val))
                 item.setFlags(item.flags() ^ Qt.ItemIsEditable) 
                 self.table.setItem(row_idx, col_idx, item)
+            
+            # Action Column (Lightweight text item)
+            # Store course name in UserRole for easy access
+            btn_item = QTableWidgetItem("Sil")
+            btn_item.setTextAlignment(Qt.AlignCenter)
+            btn_item.setForeground(Qt.red)
+            btn_item.setBackground(QColor("#ffebee"))
+            btn_item.setFont(self.table.font()) # Default font
+            # Make it non-editable but selectable/enabled
+            btn_item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+            btn_item.setData(Qt.UserRole, row_data[1]) # Store Name
+            
+            self.table.setItem(row_idx, 8, btn_item)
+            
+        self.table.setUpdatesEnabled(True) # Re-enable updates
+
+    def _on_cell_clicked(self, row, col):
+        """Handle cell clicks for custom actions"""
+        if col == 8: # Delete Action Column
+            item = self.table.item(row, col)
+            if item:
+                course_name = item.data(Qt.UserRole)
+                if course_name:
+                    self._on_delete_click(course_name)
+
+    def _on_delete_click(self, course_name):
+        """Handle delete action with confirmation"""
+        msg = f"'{course_name}' dersini ve ilgili TÜM kayıtlarını (program, tercihler vs.) silmek istediğinize emin misiniz?\n\nBu işlem GERİ ALINAMAZ."
+        reply = QMessageBox.question(self, "Ders Silme Onayı", msg, QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        
+        if reply == QMessageBox.Yes:
+            if hasattr(self.controller, 'delete_curriculum_course'):
+                success = self.controller.delete_curriculum_course(course_name)
+                if success:
+                    QMessageBox.information(self, "Başarılı", f"'{course_name}' başarıyla silindi.")
+                    self._load_data() # Refresh all
+            else:
+                QMessageBox.warning(self, "Hata", "Controller delete_curriculum_course metodunu desteklemiyor.")
 
     def _add_header_row(self, title, color_hex_or_obj=None):
         row_idx = self.table.rowCount()
         self.table.insertRow(row_idx)
         
         # Merge all columns
-        self.table.setSpan(row_idx, 0, 1, 8)
+        self.table.setSpan(row_idx, 0, 1, 9)
         
         header_item = QTableWidgetItem(title)
         header_item.setFlags(Qt.ItemIsEnabled)

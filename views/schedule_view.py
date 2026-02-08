@@ -712,16 +712,6 @@ class ScheduleView(QWidget):
             # Assuming controller will send dicts
             pass
     
-    def add_course_to_list(self, course_info: str):
-        """Add a single course to the list - Legacy"""
-        # For now, simplistic appendix or ideally trigger refresh
-        # The controller should handle full refresh
-        pass 
-    
-    def remove_course_from_list(self, course_info: str):
-        """Remove a course from the list - Legacy"""
-        pass
-    
     def clear_inputs(self):
         """Clear all input fields - Not needed with Dialog"""
         pass
@@ -755,9 +745,3 @@ class ScheduleView(QWidget):
         """Show department name input dialog"""
         department_name, ok = QInputDialog.getText(self, 'Bölüm Ekle', 'Bölüm Adı:')
         return ok, department_name.strip() if ok else ""
-    
-    def get_current_selected_course(self) -> Optional[str]:
-        """Get currently selected course - Legacy"""
-        # Should now return ID, but signal signature mismatch if we change it blindly
-        # Used by remove? Remove now uses internal ID.
-        return None

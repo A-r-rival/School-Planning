@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QComboBox, 
     QTableWidget, QTableWidgetItem, QPushButton, 
     QLabel, QTimeEdit, QMessageBox, QHeaderView,
-    QLineEdit, QTabWidget, QWidget, QCompleter, QSpinBox # Added QCompleter
+    QLineEdit, QCheckBox, QTabWidget, QWidget, QCompleter, QSpinBox # Added QCompleter
 )
 from PyQt5.QtCore import Qt, QTime
 
@@ -179,6 +179,8 @@ class TeacherAvailabilityView(QDialog):
         self.teacher_combo.currentIndexChanged.connect(self._on_teacher_changed)
         teacher_layout.addWidget(self.teacher_combo)
         
+
+        
         filter_group.addLayout(teacher_layout)
         layout.addLayout(filter_group)
         
@@ -230,9 +232,9 @@ class TeacherAvailabilityView(QDialog):
         form_layout.addWidget(self.course_combo)
         
         # Quick Add Template Button
-        self.btn_quick_template = QPushButton("Müfredatı Değiştir")
-        self.btn_quick_template.setToolTip("Müfredata yeni ders ekle veya düzenle")
-        self.btn_quick_template.clicked.connect(self._open_quick_template)
+        self.btn_quick_template = QPushButton("Müfredata Bak")
+        self.btn_quick_template.setToolTip("Müfredat listesini görüntüle ve düzenle")
+        self.btn_quick_template.clicked.connect(self._open_curriculum_view)
         form_layout.addWidget(self.btn_quick_template)
         
         # 2. Section (Instance) & Note
@@ -283,6 +285,21 @@ class TeacherAvailabilityView(QDialog):
         as_layout.addLayout(action_layout)
         
         # Assignment List
+        # Filters specific to this tab
+        filter_layout = QHBoxLayout()
+        self.chk_show_assigned = QCheckBox("Atanan Dersler")
+        self.chk_show_assigned.setChecked(True)
+        self.chk_show_assigned.stateChanged.connect(lambda: self._load_assignments(self.teacher_combo.currentData()))
+        filter_layout.addWidget(self.chk_show_assigned)
+        
+        self.chk_show_preferences = QCheckBox("İstenen ve İstenmeyen Dersler")
+        self.chk_show_preferences.setChecked(True)
+        self.chk_show_preferences.stateChanged.connect(lambda: self._load_assignments(self.teacher_combo.currentData()))
+        filter_layout.addWidget(self.chk_show_preferences)
+        filter_layout.addStretch()
+        
+        as_layout.addLayout(filter_layout)
+
         self.assign_table = QTableWidget()
         self.assign_table.setColumnCount(5)
         self.assign_table.setHorizontalHeaderLabels(["Ders Adı", "Şube / Not", "Öğretmen", "Durum", "İşlem"])
@@ -290,7 +307,7 @@ class TeacherAvailabilityView(QDialog):
         header.setSectionResizeMode(QHeaderView.Stretch)
         # header.setSectionResizeMode(1, QHeaderView.ResizeToContents) # Changed to Stretch (default)
         header.setSectionResizeMode(3, QHeaderView.Fixed) # Status -> Fixed 70px
-        self.assign_table.setColumnWidth(3, 70)
+        self.assign_table.setColumnWidth(3, 80)
         header.setSectionResizeMode(4, QHeaderView.Fixed) # Action
         self.assign_table.setColumnWidth(4, 60)
         self.assign_table.setAlternatingRowColors(True) # Enable zebra striping
@@ -365,13 +382,16 @@ class TeacherAvailabilityView(QDialog):
             if is_all:
                 assigned = self.controller.model.get_all_courses_assigned_to_teachers() # (ders, instance, hoca, teacher_id)
                 preferences = self.controller.model.get_all_teacher_course_preferences() # (ders, note, type, hoca, teacher_id)
+                current_teacher_name = None 
             else:
                 assigned = self.controller.model.get_courses_assigned_to_teacher(teacher_id) # (ders, instance)
                 preferences = self.controller.model.get_teacher_course_preferences(teacher_id) # (ders, note, type)
-
+                current_teacher_name = self.teacher_combo.currentText()
+            
             # Split preferences
-            wanted = [p for p in preferences if p[2] == 'WANTED']
-            blocked = [p for p in preferences if p[2] == 'BLOCKED']
+            # Safe comparison in case of whitespace or case issues
+            wanted = [p for p in preferences if str(p[2]).strip().upper() == 'WANTED']
+            blocked = [p for p in preferences if str(p[2]).strip().upper() == 'BLOCKED']
             
             # Helper to add banner
             def add_banner(text, color_hex):
@@ -415,45 +435,105 @@ class TeacherAvailabilityView(QDialog):
             from PyQt5.QtGui import QColor
 
             # --- Section 1: Assigned ---
-            if assigned:
+            if self.chk_show_assigned.isChecked() and assigned:
                 add_banner("Atanan Dersler (Kesin)", "#B3E5FC") # Light Blue
                 for item in assigned:
                     if is_all:
                         # item: (ders, instance, hoca, teacher_id)
-                        course_name = item[0]
-                        instance = item[1]
-                        hoca = item[2]
-                        t_id = item[3]
-                        add_row(course_name, f"Şube {instance}", "Atandı", "ASSIGNMENT", teacher_name=hoca, row_teacher_id=t_id)
+                        try:
+                            # Safe unpacking with debug
+                            if len(item) == 4:
+                                course_name = item[0]
+                                instance = item[1]
+                                hoca = item[2]
+                                t_id = item[3]
+                            elif len(item) == 3:
+                                # Legacy/Fallback: Missing teacher ID
+                                course_name = item[0]
+                                instance = item[1]
+                                hoca = item[2]
+                                t_id = None # No delete button for these
+                            else:
+                                print(f"ERROR: Invalid item shape in assigned list: {item}")
+                                continue
+                                
+                            add_row(course_name, f"Şube {instance}", "Atandı", "ASSIGNMENT", teacher_name=hoca, row_teacher_id=t_id)
+                        except IndexError as e:
+                            print(f"IndexError unpacking item: {item}. Error: {e}")
+                            continue
                     else:
                         course_name, instance = item
                         add_row(course_name, f"Şube {instance}", "Atandı", "ASSIGNMENT")
 
             # --- Section 2: Wanted ---
-            if wanted:
+            if self.chk_show_preferences.isChecked() and wanted:
                 add_banner("Talep Edilen Dersler (İstek)", "#A5D6A7") # Green
                 for item in wanted:
                     if is_all:
                         # item: (ders, note, type, hoca, teacher_id)
-                        course_name = item[0]
-                        note = item[1]
-                        hoca = item[3]
-                        t_id = item[4]
-                        note_display = note if note else "-"
-                        add_row(course_name, note_display, "İsteniyor", "WANTED", teacher_name=hoca, row_teacher_id=t_id)
+                        if len(item) >= 5:
+                            course_name = item[0]
+                            note = item[1]
+                            p_type = item[2]
+                            hoca = item[3]
+                            t_id = item[4]
+                        elif len(item) == 4:
+                            # Fallback: Missing teacher ID
+                            course_name = item[0]
+                            note = item[1]
+                            p_type = item[2]
+                            hoca = item[3]
+                            t_id = None
+                        elif len(item) == 3:
+                             # Fallback
+                            course_name = item[0]
+                            note = item[1]
+                            p_type = item[2]
+                            hoca = "Bilinmiyor"
+                            t_id = None
+                        else:
+                            print(f"ERROR: Invalid preference shape: {item}")
+                            continue
+                        
+                        detail = f"{note} ({p_type})" if note else p_type
+                        add_row(course_name, detail, "Talep", "PREFERENCE", teacher_name=hoca, row_teacher_id=t_id)
                     else:
                         course_name, note, _ = item
                         note_display = note if note else "-"
-                        add_row(course_name, note_display, "İsteniyor", "WANTED")
+                        add_row(course_name, note_display, "İsteniyor", "WANTED") 
 
             # --- Section 3: Blocked ---
-            if blocked:
+            if self.chk_show_preferences.isChecked() and blocked:
                 add_banner("İstenmeyen Dersler (Bloke)", "#EF9A9A") # Red
                 for item in blocked:
                     if is_all:
-                        course_name, note, _, hoca = item
-                        note_display = note if note else "-"
-                        add_row(course_name, note_display, "Engellendi", "BLOCKED", teacher_name=hoca)
+                        # item: (ders, note, type, hoca, teacher_id)
+                        if len(item) >= 5:
+                            course_name = item[0]
+                            note = item[1]
+                            p_type = item[2]
+                            hoca = item[3]
+                            t_id = item[4]
+                        elif len(item) == 4:
+                            # Fallback: Missing teacher ID
+                            course_name = item[0]
+                            note = item[1]
+                            p_type = item[2]
+                            hoca = item[3]
+                            t_id = None
+                        elif len(item) == 3:
+                             # Fallback
+                            course_name = item[0]
+                            note = item[1]
+                            p_type = item[2]
+                            hoca = "Bilinmiyor"
+                            t_id = None
+                        else:
+                            print(f"ERROR: Invalid preference shape: {item}")
+                            continue
+
+                        detail = f"{note} ({p_type})" if note else p_type
+                        add_row(course_name, detail, "Engellendi", "BLOCKED", teacher_name=hoca, row_teacher_id=t_id)
                     else:
                         course_name, note, _ = item
                         note_display = note if note else "-"
@@ -573,12 +653,14 @@ class TeacherAvailabilityView(QDialog):
         except Exception as e:
             QMessageBox.critical(self, "Hata", f"İşlem başarısız: {e}")
             
-    def _open_quick_template(self):
-        """Open template dialog from here"""
-        from views.add_curriculum_course_dialog import AddCurriculumCourseDialog # Lazy import
-        dialog = AddCurriculumCourseDialog(self.controller, self)
-        if dialog.exec_():
-             # Refresh course list
+    def _open_curriculum_view(self):
+        """Open Curriculum View"""
+        from views.curriculum_view import CurriculumViewDialog # Lazy import
+        dialog = CurriculumViewDialog(self.controller, self)
+        # We don't necessarily wait for exec result to refresh unless we want to
+        dialog.exec_()
+        # Refresh course list in case changes happened
+        if hasattr(self.controller.model, 'get_curriculum_courses'):
              courses = self.controller.model.get_curriculum_courses()
              self._update_course_combo(courses)
 

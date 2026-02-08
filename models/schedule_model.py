@@ -415,6 +415,31 @@ class ScheduleModel(QObject):
             print(f"Error fetching all assigned: {e}")
             return []
 
+    def delete_curriculum_course(self, course_name: str) -> bool:
+        """
+        Delete a course from the curriculum + all related tables.
+        """
+        try:
+            with self.conn:
+                # 1. Delete from Curriculum (Dersler)
+                self.c.execute("DELETE FROM Dersler WHERE ders_adi = ?", (course_name,))
+                
+                # 2. Delete Relations
+                self.c.execute("DELETE FROM Ders_Sinif_Iliskisi WHERE ders_adi = ?", (course_name,))
+                self.c.execute("DELETE FROM Ders_Havuz_Iliskisi WHERE ders_adi = ?", (course_name,))
+                
+                # 3. Delete from Scheule & Preferences (Cascade logically)
+                self.c.execute("DELETE FROM Ders_Programi WHERE ders_adi = ?", (course_name,))
+                self.c.execute("DELETE FROM Ders_Ogretmen_Iliskisi WHERE ders_adi = ?", (course_name,))
+                self.c.execute("DELETE FROM Ogretmen_Ders_Tercihleri WHERE ders_adi = ?", (course_name,))
+                
+            self.course_removed.emit(course_name)
+            return True
+        except Exception as e:
+            print(f"Error deleting curriculum course: {e}")
+            self.error_occurred.emit(f"Ders silinirken hata: {e}")
+            return False
+
     def get_all_teacher_course_preferences(self) -> List[tuple]:
         """
         Get all teacher preferences

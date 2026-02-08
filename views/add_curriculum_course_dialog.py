@@ -117,8 +117,14 @@ class AddCurriculumCourseDialog(QDialog):
         cancel_btn = QPushButton("İptal")
         cancel_btn.clicked.connect(self.reject)
         
+        # New Redirect Button
+        delete_redirect_btn = QPushButton("Düzeltme/Silme Moduna Geç")
+        delete_redirect_btn.setStyleSheet("color: red;")
+        delete_redirect_btn.clicked.connect(self._redirect_to_delete)
+        
         btn_layout.addWidget(save_btn)
         btn_layout.addWidget(cancel_btn)
+        btn_layout.addWidget(delete_redirect_btn)
         layout.addLayout(btn_layout)
         
         self.setLayout(layout)
@@ -229,3 +235,14 @@ class AddCurriculumCourseDialog(QDialog):
         if success:
             QMessageBox.information(self, "Başarılı", "Ders müfredata eklendi.\nOtomatik programlamaya hazırdır.")
             self.accept()
+
+    def _redirect_to_delete(self):
+        """Redirect to CurriculumView with Delete Mode enabled"""
+        from views.curriculum_view import CurriculumViewDialog
+        self.reject() # Close this dialog
+        
+        # Open Curriculum View in Delete Mode
+        dialog = CurriculumViewDialog(self.controller, self.parent(), enable_delete_mode=True)
+        dialog.exec_()
+        
+        # No need to return anything, as we are just redirecting navigation.

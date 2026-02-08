@@ -142,6 +142,14 @@ class ScheduleController:
              self.refresh_data()
              teachers = self.model.get_teachers()
              self.view.update_teacher_completer(teachers)
+
+    def delete_curriculum_course(self, course_name: str):
+        """Delete a course from curriculum completely"""
+        if self.model.delete_curriculum_course(course_name):
+             # Refresh views
+             self.refresh_data()
+             return True
+        return False
     
     def handle_add_faculty(self, faculty_name: str):
         """
