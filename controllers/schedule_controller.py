@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 from views.calendar_view import CalendarView
 from views.student_view import StudentView
 from views.teacher_availability_view import TeacherAvailabilityView
+from views.master_schedule_view import MasterScheduleView # NEW import
 from controllers.scheduler import ORToolsScheduler
 from PyQt5.QtWidgets import QMessageBox
 from utils.schedule_merger import merge_course_strings, merge_schedule_items_dicts
@@ -48,8 +49,9 @@ class ScheduleController:
         # Initialize view with existing data
         self._initialize_view()
         
-        # Calendar View (Lazy initialization)
+        # View Cache
         self.calendar_view = None
+        self.master_view = None # Cache for Master View
     
     def _connect_model_signals(self):
         """Connect model signals to view methods"""
@@ -73,6 +75,7 @@ class ScheduleController:
         self.view.generate_schedule_requested.connect(self.generate_automatic_schedule)
         self.view.filter_changed.connect(self.handle_schedule_view_filter)
         self.view.run_setup_requested.connect(self._on_run_setup_requested)
+        self.view.open_master_view_requested.connect(self.open_master_view) # NEW connection
     
     def _initialize_view(self):
         """Initialize view with existing data from model"""
@@ -252,6 +255,12 @@ class ScheduleController:
         # Implementation would check for various conflicts and issues
         return issues
     
+    def open_master_view(self, mode: str):
+        """Open the Master Schedule View"""
+        # Always create new instance to ensure clean state and correct mode
+        self.master_view = MasterScheduleView(self, mode=mode)
+        self.master_view.showMaximized()
+
     def get_statistics(self) -> dict:
         """
         Get schedule statistics

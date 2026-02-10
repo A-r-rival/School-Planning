@@ -94,6 +94,7 @@ class ScheduleView(QWidget):
     open_teacher_availability_requested = pyqtSignal() # Emits when availability button clicked
     generate_schedule_requested = pyqtSignal() # Emits when generate button clicked
     run_setup_requested = pyqtSignal() # Emits when setup/load data requested
+    open_master_view_requested = pyqtSignal(str) # NEW: Emits mode ('teacher' or 'classroom')
     
     def __init__(self):
         super().__init__()
@@ -505,6 +506,31 @@ class ScheduleView(QWidget):
         """)
         row1_layout.addWidget(self.calendar_button)
         
+        # MASTER VIEW BUTTON (NEW)
+        self.btn_master_view = QPushButton("Genel Takvim")
+        self.btn_master_view.setStyleSheet("""
+            QPushButton {
+                background-color: #3F51B5;
+                color: white;
+                border: none;
+                padding: 12px;
+                font-size: 13px;
+                border-radius: 3px;
+            }
+            QPushButton:hover { background-color: #303F9F; }
+        """)
+        # Menu for Master View
+        from PyQt5.QtWidgets import QMenu
+        self.master_menu = QMenu(self)
+        action_master_teacher = self.master_menu.addAction("Öğretmenler Genel Takvimi")
+        action_master_room = self.master_menu.addAction("Derslikler Genel Takvimi")
+        
+        action_master_teacher.triggered.connect(lambda: self.open_master_view_requested.emit('teacher'))
+        action_master_room.triggered.connect(lambda: self.open_master_view_requested.emit('classroom'))
+        
+        self.btn_master_view.setMenu(self.master_menu)
+        row1_layout.addWidget(self.btn_master_view)
+
         # Teacher Availability button
         self.teacher_availability_button = QPushButton("Öğretmen Müsaitlik ve Ders Atamaları")
         self.teacher_availability_button.setStyleSheet("""

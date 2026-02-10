@@ -237,49 +237,30 @@ class TeacherAvailabilityView(QDialog):
         self.btn_quick_template.clicked.connect(self._open_curriculum_view)
         form_layout.addWidget(self.btn_quick_template)
         
-        # 2. Section (Instance) & Note
-        # Instance is less relevant for preferences now, but still used for assignments? 
-        # Assignment table uses (ders_adi, ders_instance). 
-        # But User said "ders_instance olmasın text ders_secim_notu ile değiş". 
-        # For ASSIGNMENT, instance is crucial for the schedule. 
-        # For PREFERENCE, we use Note.
-        
-        # We will keep Instance Spin for "Assign" action.
-        # And add Note Input for "Want/Block" action.
+        # 2. Section (Instance)
+        # Instance is crucial for assignments.
         
         self.instance_spin = QSpinBox() 
         self.instance_spin.setRange(1, 20)
         self.instance_spin.setPrefix("Şube ")
-        self.instance_spin.setToolTip("Sadece 'Dersi Öğretmene Ata' işlemi için geçerlidir")
-        form_layout.addWidget(QLabel("Şube (Atama):"))
+        self.instance_spin.setToolTip("Dersi Öğretmene Ata işlemi için geçerlidir")
+        form_layout.addWidget(QLabel("Şube:"))
         form_layout.addWidget(self.instance_spin)
-
-        self.note_input = QLineEdit()
-        self.note_input.setPlaceholderText("Not (Örn: İste/Engelle için)")
-        self.note_input.setToolTip("Opsiyonel: İste/Engelle durumunda not düşebilirsiniz (Örn: Sadece İnşaat)")
-        form_layout.addWidget(QLabel("Not:"))
-        form_layout.addWidget(self.note_input)
         
         # 3. Action Buttons Layout
         action_layout = QHBoxLayout()
         
-        # Want Button
-        self.btn_want = QPushButton("İste")
-        self.btn_want.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;") # Green
-        self.btn_want.clicked.connect(self._on_want_clicked)
-        action_layout.addWidget(self.btn_want)
-
         # Assign Button
         self.btn_assign = QPushButton("Dersi Öğretmene Ata")
         self.btn_assign.setStyleSheet("background-color: #2196F3; color: white; font-weight: bold;") # Blue
         self.btn_assign.clicked.connect(self._on_assign_clicked)
         action_layout.addWidget(self.btn_assign)
 
-        # Block Button
-        self.btn_block = QPushButton("Engelle")
-        self.btn_block.setStyleSheet("background-color: #F44336; color: white; font-weight: bold;") # Red
-        self.btn_block.clicked.connect(self._on_block_clicked)
-        action_layout.addWidget(self.btn_block)
+        # Unassign Button
+        self.btn_unassign = QPushButton("Atamayı Kaldır")
+        self.btn_unassign.setStyleSheet("background-color: #E0E0E0; color: black; font-weight: bold;") # Gray
+        self.btn_unassign.clicked.connect(self._on_unassign_clicked)
+        action_layout.addWidget(self.btn_unassign)
         
         as_layout.addLayout(form_layout) # Added missing form layout
         as_layout.addLayout(action_layout)
@@ -292,10 +273,6 @@ class TeacherAvailabilityView(QDialog):
         self.chk_show_assigned.stateChanged.connect(lambda: self._load_assignments(self.teacher_combo.currentData()))
         filter_layout.addWidget(self.chk_show_assigned)
         
-        self.chk_show_preferences = QCheckBox("İstenen ve İstenmeyen Dersler")
-        self.chk_show_preferences.setChecked(True)
-        self.chk_show_preferences.stateChanged.connect(lambda: self._load_assignments(self.teacher_combo.currentData()))
-        filter_layout.addWidget(self.chk_show_preferences)
         filter_layout.addStretch()
         
         as_layout.addLayout(filter_layout)
@@ -367,31 +344,20 @@ class TeacherAvailabilityView(QDialog):
         self.course_combo.addItems(courses)
 
     def _load_assignments(self, teacher_id):
-        """Load courses assigned/preferred/blocked for this teacher (or ALL) with banners"""
+        """Load courses assigned for this teacher (or ALL)"""
         try:
             self.assign_table.setRowCount(0)
             
             assigned = []
-            preferences = []
             
             is_all = (teacher_id == -1)
             
-            # Need to get teacher ID for each row if in "All" mode
-            # If not in "All" mode, we know the teacher_id from argument.
-            
             if is_all:
                 assigned = self.controller.model.get_all_courses_assigned_to_teachers() # (ders, instance, hoca, teacher_id)
-                preferences = self.controller.model.get_all_teacher_course_preferences() # (ders, note, type, hoca, teacher_id)
                 current_teacher_name = None 
             else:
                 assigned = self.controller.model.get_courses_assigned_to_teacher(teacher_id) # (ders, instance)
-                preferences = self.controller.model.get_teacher_course_preferences(teacher_id) # (ders, note, type)
                 current_teacher_name = self.teacher_combo.currentText()
-            
-            # Split preferences
-            # Safe comparison in case of whitespace or case issues
-            wanted = [p for p in preferences if str(p[2]).strip().upper() == 'WANTED']
-            blocked = [p for p in preferences if str(p[2]).strip().upper() == 'BLOCKED']
             
             # Helper to add banner
             def add_banner(text, color_hex):
@@ -436,7 +402,10 @@ class TeacherAvailabilityView(QDialog):
 
             # --- Section 1: Assigned ---
             if self.chk_show_assigned.isChecked() and assigned:
-                add_banner("Atanan Dersler (Kesin)", "#B3E5FC") # Light Blue
+                # Only show banner if there are assignments
+                if is_all:
+                     add_banner("Tüm Atamalar", "#B3E5FC")
+                
                 for item in assigned:
                     if is_all:
                         # item: (ders, instance, hoca, teacher_id)
@@ -464,80 +433,6 @@ class TeacherAvailabilityView(QDialog):
                     else:
                         course_name, instance = item
                         add_row(course_name, f"Şube {instance}", "Atandı", "ASSIGNMENT")
-
-            # --- Section 2: Wanted ---
-            if self.chk_show_preferences.isChecked() and wanted:
-                add_banner("Talep Edilen Dersler (İstek)", "#A5D6A7") # Green
-                for item in wanted:
-                    if is_all:
-                        # item: (ders, note, type, hoca, teacher_id)
-                        if len(item) >= 5:
-                            course_name = item[0]
-                            note = item[1]
-                            p_type = item[2]
-                            hoca = item[3]
-                            t_id = item[4]
-                        elif len(item) == 4:
-                            # Fallback: Missing teacher ID
-                            course_name = item[0]
-                            note = item[1]
-                            p_type = item[2]
-                            hoca = item[3]
-                            t_id = None
-                        elif len(item) == 3:
-                             # Fallback
-                            course_name = item[0]
-                            note = item[1]
-                            p_type = item[2]
-                            hoca = "Bilinmiyor"
-                            t_id = None
-                        else:
-                            print(f"ERROR: Invalid preference shape: {item}")
-                            continue
-                        
-                        detail = f"{note} ({p_type})" if note else p_type
-                        add_row(course_name, detail, "Talep", "PREFERENCE", teacher_name=hoca, row_teacher_id=t_id)
-                    else:
-                        course_name, note, _ = item
-                        note_display = note if note else "-"
-                        add_row(course_name, note_display, "İsteniyor", "WANTED") 
-
-            # --- Section 3: Blocked ---
-            if self.chk_show_preferences.isChecked() and blocked:
-                add_banner("İstenmeyen Dersler (Bloke)", "#EF9A9A") # Red
-                for item in blocked:
-                    if is_all:
-                        # item: (ders, note, type, hoca, teacher_id)
-                        if len(item) >= 5:
-                            course_name = item[0]
-                            note = item[1]
-                            p_type = item[2]
-                            hoca = item[3]
-                            t_id = item[4]
-                        elif len(item) == 4:
-                            # Fallback: Missing teacher ID
-                            course_name = item[0]
-                            note = item[1]
-                            p_type = item[2]
-                            hoca = item[3]
-                            t_id = None
-                        elif len(item) == 3:
-                             # Fallback
-                            course_name = item[0]
-                            note = item[1]
-                            p_type = item[2]
-                            hoca = "Bilinmiyor"
-                            t_id = None
-                        else:
-                            print(f"ERROR: Invalid preference shape: {item}")
-                            continue
-
-                        detail = f"{note} ({p_type})" if note else p_type
-                        add_row(course_name, detail, "Engellendi", "BLOCKED", teacher_name=hoca, row_teacher_id=t_id)
-                    else:
-                        course_name, note, _ = item
-                        note_display = note if note else "-"
-                        add_row(course_name, note_display, "Engellendi", "BLOCKED")
             
         except Exception as e:
             print(f"Error loading assignments: {e}")
@@ -559,8 +454,6 @@ class TeacherAvailabilityView(QDialog):
                              "DELETE FROM Ders_Ogretmen_Iliskisi WHERE ogretmen_id=? AND ders_adi=? AND ders_instance=?",
                              (teacher_id, name, instance)
                          )
-                else: # WANTED or BLOCKED
-                    self.controller.model.remove_teacher_course_preference(teacher_id, name)
                 
                 # Reload current view
                 current_filter = self.teacher_combo.currentData()
@@ -596,8 +489,6 @@ class TeacherAvailabilityView(QDialog):
                              "DELETE FROM Ders_Ogretmen_Iliskisi WHERE ogretmen_id=? AND ders_adi=? AND ders_instance=?",
                              (teacher_id, name, instance)
                          )
-                else: # WANTED or BLOCKED
-                    self.controller.model.remove_teacher_course_preference(teacher_id, name)
                     
                 self._load_assignments(teacher_id)
                 
@@ -613,33 +504,45 @@ class TeacherAvailabilityView(QDialog):
         self._validate_and_execute(teacher_id, course_name, lambda: 
             self.controller.model.assign_teacher_to_course(teacher_id, course_name, instance)
         )
-            
-    def _on_want_clicked(self):
-        """Add Want preference"""
-        teacher_id = self.teacher_combo.currentData()
-        course_name = self.course_combo.currentText()
-        note = self.note_input.text().strip()
-        
-        self._validate_and_execute(teacher_id, course_name, lambda:
-            self.controller.model.add_teacher_course_preference(teacher_id, course_name, note, 'WANTED')
-        )
 
-    def _on_block_clicked(self):
-        """Add Block preference"""
+    def _on_unassign_clicked(self):
+        """Remove assignment for selected course/teacher"""
         teacher_id = self.teacher_combo.currentData()
         course_name = self.course_combo.currentText()
-        note = self.note_input.text().strip()
-        
-        self._validate_and_execute(teacher_id, course_name, lambda:
-            self.controller.model.add_teacher_course_preference(teacher_id, course_name, note, 'BLOCKED')
-        )
+        instance = self.instance_spin.value()
+
+        if teacher_id is None or teacher_id == -1:
+             QMessageBox.warning(self, "Hata", "Lütfen bir öğretmen seçiniz.")
+             return
+             
+        if not course_name or self.course_combo.currentIndex() <= 0:
+             QMessageBox.warning(self, "Hata", "Lütfen bir ders seçiniz.")
+             return
+
+        # Confirm
+        msg = f"'{course_name}' (Şube {instance}) dersinin bu öğretmenden atamasını kaldırmak istediğinize emin misiniz?"
+        if QMessageBox.question(self, "Kaldırma Onayı", msg, QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+            
+            try:
+                # Direct delete (consistent with existing pattern here)
+                with self.controller.model.conn:
+                     self.controller.model.conn.execute(
+                         "DELETE FROM Ders_Ogretmen_Iliskisi WHERE ogretmen_id=? AND ders_adi=? AND ders_instance=?",
+                         (teacher_id, course_name, instance)
+                     )
+                self._load_assignments(teacher_id)
+                QMessageBox.information(self, "Bilgi", "Atama kaldırıldı.")
+            except Exception as e:
+                QMessageBox.critical(self, "Hata", f"Kaldırma işlemi başarısız: {e}")
+            
+    # Removed _on_want_clicked and _on_block_clicked
         
     def _validate_and_execute(self, teacher_id, course_name, action_callback):
         if teacher_id is None or teacher_id == -1:
              QMessageBox.warning(self, "Hata", "Lütfen bir öğretmen seçiniz.")
              return
              
-        if not course_name or self.course_combo.currentIndex() == 0:
+        if not course_name or self.course_combo.currentIndex() <= 0:
              QMessageBox.warning(self, "Hata", "Lütfen bir ders seçiniz.")
              return
              
@@ -648,8 +551,6 @@ class TeacherAvailabilityView(QDialog):
             success = action_callback()
             if success:
                 self._load_assignments(teacher_id)
-                # clear inputs?
-                self.note_input.clear()
         except Exception as e:
             QMessageBox.critical(self, "Hata", f"İşlem başarısız: {e}")
             

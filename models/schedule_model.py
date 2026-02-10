@@ -1651,3 +1651,51 @@ class ScheduleModel(QObject):
         except Exception as e:
             self.error_occurred.emit(f"Çalışma bloğu güncellenirken hata: {str(e)}")
             return False
+
+    def get_master_schedule_data(self) -> List[Dict]:
+        """
+        Fetch ALL schedule data for Master View (Teachers & Classrooms).
+        Includes IDs and Names for both resources.
+        """
+        try:
+            query = '''
+                SELECT dp.program_id, 
+                       dp.ders_adi, 
+                       dp.gun, dp.baslangic, dp.bitis,
+                       dp.ogretmen_id, (o.ad || ' ' || o.soyad) as ogretmen_adi,
+                       dp.derslik_id, dlk.derslik_adi,
+                       d.ders_kodu,
+                       GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf') as siniflar
+                FROM Ders_Programi dp
+                LEFT JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
+                LEFT JOIN Derslikler dlk ON dp.derslik_id = dlk.derslik_num
+                LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
+                LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                LEFT JOIN Bolumler b ON od.bolum_num = b.bolum_id
+                GROUP BY dp.program_id, dp.ders_adi, dp.gun, dp.baslangic, dp.bitis, 
+                         dp.ogretmen_id, o.ad, o.soyad, dp.derslik_id, dlk.derslik_adi
+            '''
+            self.c.execute(query)
+            rows = self.c.fetchall()
+            
+            data = []
+            for r in rows:
+                data.append({
+                    'id': r[0],
+                    'course_name': r[1],
+                    'day': r[2],
+                    'start': r[3],
+                    'end': r[4],
+                    'teacher_id': r[5],
+                    'teacher_name': r[6],
+                    'classroom_id': r[7],
+                    'classroom_name': r[8],
+                    'code': r[9],
+                    'groups': r[10]
+                })
+            return data
+        except Exception as e:
+            print(f"Error fetching master schedule: {e}")
+            self.error_occurred.emit(f"Genel takvim verisi çekilirken hata: {e}")
+            return []
