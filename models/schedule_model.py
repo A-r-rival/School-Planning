@@ -290,7 +290,7 @@ class ScheduleModel(QObject):
             self.error_occurred.emit(f"Dersler yüklenirken hata: {str(e)}")
             return []
     
-    def get_teachers(self) -> List[str]:
+    def get_teachers(self):
         """
         Get all unique teacher names
         
@@ -298,10 +298,80 @@ class ScheduleModel(QObject):
             List[str]: List of teacher names
         """
         try:
-            teachers = self.teacher_repo.get_all()
-            return [name for _, name in teachers]
+            cursor = self.conn.cursor()
+            cursor.execute("SELECT ad || ' ' || soyad FROM Ogretmenler ORDER BY ad, soyad")
+            return [row[0] for row in cursor.fetchall()]
         except Exception as e:
-            self.error_occurred.emit(f"Öğretmenler yüklenirken hata oluştu: {str(e)}")
+            self.error_occurred.emit(f"Error fetching teachers: {str(e)}")
+            return []
+
+    def get_all_teachers_with_ids(self) -> List[Tuple[int, str]]:
+        """
+        Get all teachers with their IDs.
+        
+        Returns:
+            List of (id, name) tuples
+        """
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute("SELECT ogretmen_num, ad || ' ' || soyad FROM Ogretmenler ORDER BY ad || ' ' || soyad")
+            data = cursor.fetchall()
+            print(f"DEBUG: get_all_teachers_with_ids fetched {len(data)} rows")
+            if data and len(data) > 0:
+                print(f"DEBUG: First row: {data[0]} (Len: {len(data[0])})")
+            return data
+        except Exception as e:
+            self.error_occurred.emit(f"Error fetching teachers with IDs: {str(e)}")
+            return []
+
+    def get_all_classrooms_with_ids(self) -> List[Tuple[int, str]]:
+        """
+        Get all classrooms with their IDs.
+        
+        Returns:
+            List of (id, name) tuples
+        """
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute("SELECT derslik_num, derslik_adi FROM Derslikler ORDER BY derslik_adi")
+            data = cursor.fetchall()
+            print(f"DEBUG: get_all_classrooms_with_ids fetched {len(data)} rows")
+            return data
+        except Exception as e:
+            self.error_occurred.emit(f"Error fetching classrooms with IDs: {str(e)}")
+            return []
+
+    def get_faculties(self) -> List[Tuple[int, str]]:
+        """
+        Get all faculties.
+        
+        Returns:
+            List of (id, name) tuples
+        """
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute("SELECT fakulte_num, fakulte_adi FROM Fakulteler ORDER BY fakulte_adi")
+            return cursor.fetchall()
+        except Exception as e:
+            self.error_occurred.emit(f"Error fetching faculties: {str(e)}")
+            return []
+
+    def get_departments_by_faculty(self, faculty_id: int) -> List[Tuple[int, str]]:
+        """
+        Get departments belonging to a faculty.
+        
+        Args:
+            faculty_id: Faculty ID
+            
+        Returns:
+            List of (id, name) tuples
+        """
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute("SELECT bolum_id, bolum_adi FROM Bolumler WHERE fakulte_num = ? ORDER BY bolum_adi", (faculty_id,))
+            return cursor.fetchall()
+        except Exception as e:
+            self.error_occurred.emit(f"Error fetching departments: {str(e)}")
             return []
     
     def _validate_course_data(self, course_data: Dict[str, str]) -> bool:
@@ -743,24 +813,34 @@ class ScheduleModel(QObject):
             print(f"Error fetching curriculum courses: {e}")
             return []
 
-    def get_all_teachers_with_ids(self) -> List[Tuple[int, str]]:
-        """Get all teachers with their IDs"""
+    def get_all_teachers_with_ids(self) -> List[Tuple[int, str, Optional[str]]]:
+        """Get all teachers with their IDs and room preferences"""
         try:
-            self.c.execute("SELECT ogretmen_num, ad || ' ' || soyad FROM Ogretmenler ORDER BY ad")
+            # Check if column exists first to be safe (migration should have added it)
+            self.c.execute("SELECT ogretmen_num, ad || ' ' || soyad, room_request FROM Ogretmenler ORDER BY ad")
             return self.c.fetchall()
         except Exception as e:
             print(f"Error fetching teachers: {e}")
             return []
             
-    def get_all_classrooms_with_ids(self) -> List[Tuple[int, str]]:
-        """Get all classrooms with their IDs sorted naturally"""
+    def get_all_classrooms_with_ids(self) -> List[Tuple[int, str, int]]:
+        """
+        Get all classrooms with their IDs and Floor info sorted naturally.
+        Returns: List of (id, name, floor)
+        """
         try:
-            self.c.execute("SELECT derslik_num, derslik_adi FROM Derslikler WHERE silindi = 0")
+            # Try to fetch floor, if column doesn't exist yet (before migration runs), handle gracefully
+            try:
+                self.c.execute("SELECT derslik_num, derslik_adi, floor FROM Derslikler WHERE silindi = 0")
+            except Exception:
+                # Fallback
+                self.c.execute("SELECT derslik_num, derslik_adi, 0 as floor FROM Derslikler WHERE silindi = 0")
+                
             rows = self.c.fetchall()
             
             # Natural sort helper - sorts "Derslik 2" before "Derslik 10"
             def natural_keys(classroom_tuple):
-                classroom_name = classroom_tuple[1]  # Get name from (id, name) tuple
+                classroom_name = classroom_tuple[1]  # Get name from (id, name, floor) tuple
                 parts = re.split(r'(\d+)', classroom_name)  # Split into text and numbers
                 
                 # Convert number strings to integers, keep text as lowercase
@@ -1301,8 +1381,18 @@ class ScheduleModel(QObject):
 
     def aktif_derslikleri_getir(self):
         """Sadece aktif (silinmemiş) derslikleri getir"""
-        self.c.execute('SELECT derslik_num, derslik_adi, derslik_tipi, kapasite FROM Derslikler WHERE silindi = 0')
-        return self.c.fetchall()
+        # Ensure column 'floor' exists or handle it gracefully? 
+        # Assuming migration ran.
+        try:
+            self.c.execute('SELECT derslik_num, derslik_adi, derslik_tipi, kapasite, floor FROM Derslikler WHERE silindi = 0')
+            return self.c.fetchall()
+        except sqlite3.OperationalError:
+            # Fallback for old schema if migration failed silently (shouldn't happen)
+            print("WARNING: 'floor' column missing in Derslikler. Returning default.")
+            self.c.execute('SELECT derslik_num, derslik_adi, derslik_tipi, kapasite FROM Derslikler WHERE silindi = 0')
+            rows = self.c.fetchall()
+            # Append default floor 0
+            return [r + (0,) for r in rows]
 
     def tum_derslikleri_getir(self):
         """Tüm derslikleri getir (silinmiş olanlar dahil)"""
@@ -1650,6 +1740,27 @@ class ScheduleModel(QObject):
             return True
         except Exception as e:
             self.error_occurred.emit(f"Çalışma bloğu güncellenirken hata: {str(e)}")
+            return False
+
+    def get_teacher_room_request(self, teacher_id: int) -> str:
+        """Get room request note for a teacher"""
+        try:
+            self.c.execute("SELECT room_request FROM Ogretmenler WHERE ogretmen_num = ?", (teacher_id,))
+            row = self.c.fetchone()
+            return row[0] if row and row[0] else ""
+        except Exception as e:
+            print(f"Error getting room request: {e}")
+            return ""
+
+    def update_teacher_room_request(self, teacher_id: int, request: str) -> bool:
+        """Update room request note for a teacher"""
+        try:
+            val = request if request.strip() else None
+            self.c.execute("UPDATE Ogretmenler SET room_request = ? WHERE ogretmen_num = ?", (val, teacher_id))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            self.error_occurred.emit(f"Oda tercihi güncellenirken hata: {str(e)}")
             return False
 
     def get_master_schedule_data(self) -> List[Dict]:

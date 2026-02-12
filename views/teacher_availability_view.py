@@ -111,31 +111,49 @@ class AddUnavailabilityDialog(QDialog):
         if self.teachers:
             self._on_teacher_changed(0)
 
-    def _on_teacher_changed(self, index):
-        if not hasattr(self, 'span_combo') or not hasattr(self, 'controller'):
-            return
-
-        t_id = self.teacher_combo.currentData()
-        t_id = self.teacher_combo.currentData()
-        
-        # Ensure t_id is a valid integer
-        if t_id is None:
-            return
+    def _on_span_changed(self, value: int):
+        """Handle span preference change"""
+        teacher_id = self.teacher_combo.currentData()
+        if teacher_id != -1 and self.controller:
+            self.controller.handle_teacher_span_change(teacher_id, value)
             
-        if not isinstance(t_id, int):
-            return
+    def _on_room_pref_changed(self, text: str):
+        """Handle room preference change"""
+        teacher_id = self.teacher_combo.currentData()
+        if teacher_id != -1 and self.controller:
+            # We might want to debounce this or save on lose focus, but simple update is fine for local DB
+            self.controller.handle_teacher_room_pref_change(teacher_id, text)
 
-        if t_id != -1:
-            try:
-                # Load current span preference onto UI
-                span = self.controller.model.get_teacher_span(t_id)
-                idx = self.span_combo.findData(span)
-                if idx >= 0:
-                    self.span_combo.setCurrentIndex(idx)
-                else:
-                    self.span_combo.setCurrentIndex(0)
-            except Exception as e:
-                print(f"Error loading span for teacher {t_id}: {e}")
+    def _on_teacher_changed(self, index):
+        """Handle teacher selection change"""
+        teacher_id = self.teacher_combo.itemData(index)
+        if teacher_id != -1 and self.controller:
+            self.controller.load_teacher_availability(teacher_id)
+            
+            # Load preferences
+            span = self.controller.model.get_teacher_span(teacher_id)
+            self.span_combo.blockSignals(True)
+            idx = self.span_combo.findData(span)
+            if idx >= 0:
+                self.span_combo.setCurrentIndex(idx)
+            else:
+                self.span_combo.setCurrentIndex(0)
+            self.span_combo.blockSignals(False)
+            
+            # Load Room Preference
+            room_pref = self.controller.model.get_teacher_room_request(teacher_id)
+            self.room_pref_input.blockSignals(True)
+            self.room_pref_input.setText(room_pref)
+            self.room_pref_input.blockSignals(False)
+            
+            # Enable inputs
+            self.span_combo.setEnabled(True)
+            self.room_pref_input.setEnabled(True)
+        else:
+            # self.table.setRowCount(0) # This dialog doesn't have a table
+            self.span_combo.setEnabled(False)
+            self.room_pref_input.setEnabled(False)
+            self.room_pref_input.clear()
 
     def get_data(self):
         is_span_tab = (self.tabs.currentIndex() == 0)
@@ -210,6 +228,32 @@ class TeacherAvailabilityView(QDialog):
         self.add_button.setStyleSheet("font-weight: bold; font-size: 14px; padding: 10px;")
         self.add_button.clicked.connect(self._on_add_clicked)
         av_layout.addWidget(self.add_button)
+
+        # SPAN and Room Preferences Group
+        pref_group = QFrame()
+        pref_group.setFrameShape(QFrame.StyledPanel)
+        pref_layout = QHBoxLayout(pref_group)
+
+        # Span
+        pref_layout.addWidget(QLabel("Haftalık Max Gün:"))
+        self.span_combo = QComboBox()
+        self.span_combo.addItem("Serbest", 0)
+        self.span_combo.addItem("2 Gün", 2)
+        self.span_combo.addItem("3 Gün", 3)
+        self.span_combo.addItem("4 Gün", 4)
+        self.span_combo.currentIndexChanged.connect(lambda idx: self._on_span_changed(self.span_combo.currentData()))
+        pref_layout.addWidget(self.span_combo)
+        
+        pref_layout.addSpacing(20)
+
+        # Room Preference
+        pref_layout.addWidget(QLabel("Oda/Kat Tercihi:"))
+        self.room_pref_input = QLineEdit()
+        self.room_pref_input.setPlaceholderText("Örn: Zemin, Lab, A101")
+        self.room_pref_input.textChanged.connect(self._on_room_pref_changed)
+        pref_layout.addWidget(self.room_pref_input)
+
+        av_layout.addWidget(pref_group)
         
         self.tab_availability.setLayout(av_layout)
         self.tabs.addTab(self.tab_availability, "Zamanlama ve Ders Blokları")

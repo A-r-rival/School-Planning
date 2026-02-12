@@ -378,13 +378,30 @@ class CalendarView(QWidget):
                 widget.blockSignals(True)
                 widget.clear()
                 widget.addItem("Seçiniz...", None)
-                for item_id, name in items:
-                    widget.addItem(str(name), item_id)
+                for item in items:
+                    try:
+                        if len(item) == 2:
+                            item_id, name = item
+                            widget.addItem(str(name), item_id)
+                        elif len(item) >= 3:
+                            # Fallback: assume first is ID, concat rest? Or second is name?
+                            # Let's assume (id, first, last) -> (id, first + last)
+                            item_id = item[0]
+                            name = " ".join(str(x) for x in item[1:])
+                            widget.addItem(name, item_id)
+                            print(f"DEBUG warning: Item {item} has length {len(item)}, auto-joined name.")
+                        else:
+                            print(f"DEBUG error: Skipping malformed item: {item}")
+                    except Exception as loop_e:
+                        print(f"DEBUG loop error handling item {item}: {loop_e}")
                 widget.setCurrentIndex(0)
                 widget.blockSignals(False)
                 widget.show()
-        except Exception:
-            pass
+                print(f"DEBUG: update_filter_options populated {len(items)} items")
+        except Exception as e:
+            print(f"ERROR in update_filter_options: {e}")
+            import traceback
+            traceback.print_exc()
 
     def display_schedule(self, schedule_data):
         """

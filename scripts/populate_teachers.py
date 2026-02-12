@@ -134,6 +134,29 @@ def populate_teachers():
                 constraint_count += 1
     
     print(f"Total constraints added: {constraint_count}")
+    # 3. Add Room Preferences (NEW)
+    print("Adding room preferences...")
+    # Get all teachers again
+    model.c.execute("SELECT ogretmen_num, ad, soyad FROM Ogretmenler")
+    all_teachers = model.c.fetchall()
+
+    pref_count = 0
+    for t_id, t_name, t_surname in all_teachers:
+        # 40% chance to have a room preference
+        if random.random() < 0.40:
+            prefs = [
+                "Zemin Kat", "Giriş Kat", "Kat 1", "1. Kat", "Kat 2", "2. Kat", 
+                "Lab", "Laboratuvar", "D101", "D205", "Amfi"
+            ]
+            chosen_pref = random.choice(prefs)
+            
+            success = model.update_teacher_room_request(t_id, chosen_pref)
+            if success:
+                print(f"Added room preference for {t_name} {t_surname}: {chosen_pref}")
+                pref_count += 1
+                
+    print(f"Total room preferences added: {pref_count}")
+    
     model.close_connections()
 
 if __name__ == "__main__":

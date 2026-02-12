@@ -1,0 +1,847 @@
+=== ROOM PREFERENCE DEBUG LOG ===
+
+Teacher ID=60, Request="Kat 2"
+  Courses: 2
+    Course 20 (Bilg. Bil. ve Prog. Giriş / Intro to CS & Programming):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-4 (Cap=40, Floor=1)
+    Course 21 (Bilg. Bil. ve Prog. Giriş / Intro to CS & Programming):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-13 (Cap=40, Floor=0)
+  Detected Floor Request: 2
+  Rooms on Floor 2: 26
+  Total room-course combinations banned: 2
+    *** CRITICAL: Course 20 (Bilg. Bil. ve Prog. Giriş / Intro to CS & Programming) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 21 (Bilg. Bil. ve Prog. Giriş / Intro to CS & Programming) has ZERO viable rooms after constraint! ***
+
+Teacher ID=78, Request="D101"
+  Courses: 2
+    Course 154 (Statik):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-35 (Cap=40, Floor=1)
+    Course 155 (Statik):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-35 (Cap=40, Floor=1)
+  Total room-course combinations banned: 0
+    Course 154 (Statik): 1 viable rooms AFTER constraint
+    Course 155 (Statik): 1 viable rooms AFTER constraint
+
+Teacher ID=41, Request="Zemin Kat"
+  Courses: 4
+    Course 168 (Tasarım Teknikleri / Design Techniques):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-4 (Cap=40, Floor=1)
+    Course 169 (Tasarım Teknikleri / Design Techniques):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-51 (Cap=40, Floor=2)
+    Course 170 (Tasarım Teknikleri / Design Techniques):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-51 (Cap=40, Floor=2)
+    Course 173 (Teknik Almanca I / Technical German I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-14 (Cap=40, Floor=0)
+  Detected Floor Request: 0
+  Rooms on Floor 0: 26
+  Total room-course combinations banned: 3
+    *** CRITICAL: Course 168 (Tasarım Teknikleri / Design Techniques) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 169 (Tasarım Teknikleri / Design Techniques) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 170 (Tasarım Teknikleri / Design Techniques) has ZERO viable rooms after constraint! ***
+    Course 173 (Teknik Almanca I / Technical German I): 1 viable rooms AFTER constraint
+
+Teacher ID=82, Request="1. Kat"
+  Courses: 3
+    Course 92 (Intro to Engineering / Mühendisliğe Giris):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-9 (Cap=40, Floor=0)
+    Course 134 (Proje I):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-8 (Cap=40, Floor=2)
+    Course 135 (Proje I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Amfi-2 (Cap=70, Floor=0)
+  Detected Floor Request: 1
+  Rooms on Floor 1: 26
+  Total room-course combinations banned: 3
+    *** CRITICAL: Course 92 (Intro to Engineering / Mühendisliğe Giris) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 134 (Proje I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 135 (Proje I) has ZERO viable rooms after constraint! ***
+
+Teacher ID=98, Request="Amfi"
+  Courses: 4
+    Course 16 (Atatürks Principles I / Atatürk İlkeleri I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-17 (Cap=40, Floor=0)
+    Course 151 (Sinyaller ve Sistemler / Signals and Systems):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-10 (Cap=40, Floor=2)
+    Course 152 (Sinyaller ve Sistemler / Signals and Systems):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-51 (Cap=40, Floor=2)
+    Course 153 (Sinyaller ve Sistemler / Signals and Systems):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-51 (Cap=40, Floor=2)
+  Total room-course combinations banned: 0
+    Course 16 (Atatürks Principles I / Atatürk İlkeleri I): 1 viable rooms AFTER constraint
+    Course 151 (Sinyaller ve Sistemler / Signals and Systems): 1 viable rooms AFTER constraint
+    Course 152 (Sinyaller ve Sistemler / Signals and Systems): 1 viable rooms AFTER constraint
+    Course 153 (Sinyaller ve Sistemler / Signals and Systems): 1 viable rooms AFTER constraint
+
+Teacher ID=103, Request="Kat 2"
+  Courses: 3
+    Course 40 (Diferansiyel Denklemler):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-9 (Cap=40, Floor=2)
+    Course 41 (Diferansiyel Denklemler):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-36 (Cap=40, Floor=1)
+    Course 42 (Diferansiyel Denklemler):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-36 (Cap=40, Floor=1)
+  Detected Floor Request: 2
+  Rooms on Floor 2: 26
+  Total room-course combinations banned: 2
+    Course 40 (Diferansiyel Denklemler): 1 viable rooms AFTER constraint
+    *** CRITICAL: Course 41 (Diferansiyel Denklemler) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 42 (Diferansiyel Denklemler) has ZERO viable rooms after constraint! ***
+
+Teacher ID=62, Request="Lab"
+  Courses: 3
+    Course 11 (Analiz I / Calculus I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-28 (Cap=40, Floor=1)
+    Course 12 (Analiz I / Calculus I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-28 (Cap=40, Floor=1)
+    Course 227 (İngilizce I / Englisch I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-38 (Cap=40, Floor=1)
+  Detected Lab Request
+  Lab Rooms: 10
+    Skipping Course 11 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 12 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 227 (theory course, teacher lab pref doesn't apply)
+  Total room-course combinations banned: 0
+    *** CRITICAL: Course 11 (Analiz I / Calculus I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 12 (Analiz I / Calculus I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 227 (İngilizce I / Englisch I) has ZERO viable rooms after constraint! ***
+
+Teacher ID=95, Request="D101"
+  Courses: 6
+    Course 76 (English I / İngilizce I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-59 (Cap=40, Floor=2)
+    Course 175 (Teknik Mekanik):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-2 (Cap=40, Floor=0)
+    Course 176 (Teknik Mekanik):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-28 (Cap=40, Floor=1)
+    Course 177 (Teknik Mekanik):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-28 (Cap=40, Floor=1)
+    Course 212 (Zorunlu Seçmeli Ders):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-3 (Cap=40, Floor=0)
+    Course 213 (Zorunlu Seçmeli Ders):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-3 (Cap=40, Floor=0)
+  Total room-course combinations banned: 0
+    Course 76 (English I / İngilizce I): 1 viable rooms AFTER constraint
+    Course 175 (Teknik Mekanik): 1 viable rooms AFTER constraint
+    Course 176 (Teknik Mekanik): 1 viable rooms AFTER constraint
+    Course 177 (Teknik Mekanik): 1 viable rooms AFTER constraint
+    Course 212 (Zorunlu Seçmeli Ders): 1 viable rooms AFTER constraint
+    Course 213 (Zorunlu Seçmeli Ders): 1 viable rooms AFTER constraint
+
+Teacher ID=48, Request="2. Kat"
+  Courses: 5
+    Course 7 (Analiz I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Amfi-4 (Cap=70, Floor=2)
+    Course 8 (Analiz I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Amfi-4 (Cap=70, Floor=2)
+    Course 107 (Lojistik Yönetimi ve Teknolojileri):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-3 (Cap=40, Floor=0)
+    Course 108 (Lojistik Yönetimi ve Teknolojileri):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-36 (Cap=40, Floor=1)
+    Course 109 (Lojistik Yönetimi ve Teknolojileri):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-36 (Cap=40, Floor=1)
+  Detected Floor Request: 2
+  Rooms on Floor 2: 26
+  Total room-course combinations banned: 3
+    Course 7 (Analiz I): 1 viable rooms AFTER constraint
+    Course 8 (Analiz I): 1 viable rooms AFTER constraint
+    *** CRITICAL: Course 107 (Lojistik Yönetimi ve Teknolojileri) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 108 (Lojistik Yönetimi ve Teknolojileri) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 109 (Lojistik Yönetimi ve Teknolojileri) has ZERO viable rooms after constraint! ***
+
+Teacher ID=4, Request="Laboratuvar"
+  Courses: 8
+    Course 9 (Analiz I / Analysis I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-49 (Cap=40, Floor=2)
+    Course 10 (Analiz I / Analysis I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-49 (Cap=40, Floor=2)
+    Course 13 (Analysis I / Calculus I / Analiz I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-47 (Cap=40, Floor=2)
+    Course 14 (Analysis I / Calculus I / Analiz I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-47 (Cap=40, Floor=2)
+    Course 112 (Malzeme Biliminde Karakterizasyon Metotları):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-10 (Cap=40, Floor=0)
+    Course 113 (Malzeme Biliminde Karakterizasyon Metotları):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-10 (Cap=40, Floor=0)
+    Course 160 (Statik / Statics / Statik):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-37 (Cap=40, Floor=1)
+    Course 161 (Statik / Statics / Statik):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-37 (Cap=40, Floor=1)
+  Detected Lab Request
+  Lab Rooms: 10
+    Skipping Course 9 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 10 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 13 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 14 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 112 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 113 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 160 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 161 (theory course, teacher lab pref doesn't apply)
+  Total room-course combinations banned: 0
+    *** CRITICAL: Course 9 (Analiz I / Analysis I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 10 (Analiz I / Analysis I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 13 (Analysis I / Calculus I / Analiz I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 14 (Analysis I / Calculus I / Analiz I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 112 (Malzeme Biliminde Karakterizasyon Metotları) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 113 (Malzeme Biliminde Karakterizasyon Metotları) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 160 (Statik / Statics / Statik) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 161 (Statik / Statics / Statik) has ZERO viable rooms after constraint! ***
+
+Teacher ID=76, Request="1. Kat"
+  Courses: 2
+    Course 233 (İstatistik / Statistik):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-11 (Cap=40, Floor=0)
+    Course 234 (İstatistik / Statistik):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-11 (Cap=40, Floor=0)
+  Detected Floor Request: 1
+  Rooms on Floor 1: 26
+  Total room-course combinations banned: 2
+    *** CRITICAL: Course 233 (İstatistik / Statistik) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 234 (İstatistik / Statistik) has ZERO viable rooms after constraint! ***
+
+Teacher ID=39, Request="Kat 2"
+  Courses: 2
+    Course 125 (Mechatronics Project / Mekatronik Projesi):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-6 (Cap=40, Floor=1)
+    Course 126 (Mechatronics Project / Mekatronik Projesi):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-46 (Cap=40, Floor=2)
+  Detected Floor Request: 2
+  Rooms on Floor 2: 26
+  Total room-course combinations banned: 1
+    *** CRITICAL: Course 125 (Mechatronics Project / Mekatronik Projesi) has ZERO viable rooms after constraint! ***
+    Course 126 (Mechatronics Project / Mekatronik Projesi): 1 viable rooms AFTER constraint
+
+Teacher ID=96, Request="Kat 2"
+  Courses: 1
+    Course 224 (İleri İngilizce I / Advanced English I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-53 (Cap=40, Floor=2)
+  Detected Floor Request: 2
+  Rooms on Floor 2: 26
+  Total room-course combinations banned: 0
+    Course 224 (İleri İngilizce I / Advanced English I): 1 viable rooms AFTER constraint
+
+Teacher ID=8, Request="Lab"
+  Courses: 4
+    Course 198 (Yapı Statiği I / Structural Analysis I):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-4 (Cap=40, Floor=1)
+    Course 199 (Yapı Statiği I / Structural Analysis I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-37 (Cap=40, Floor=1)
+    Course 200 (Yapı Statiği I / Structural Analysis I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-37 (Cap=40, Floor=1)
+    Course 237 (İş Sağlığı ve Güvenliği I / OHS I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-53 (Cap=40, Floor=2)
+  Detected Lab Request
+  Lab Rooms: 10
+    Skipping Course 199 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 200 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 237 (theory course, teacher lab pref doesn't apply)
+  Total room-course combinations banned: 0
+    Course 198 (Yapı Statiği I / Structural Analysis I): 1 viable rooms AFTER constraint
+    *** CRITICAL: Course 199 (Yapı Statiği I / Structural Analysis I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 200 (Yapı Statiği I / Structural Analysis I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 237 (İş Sağlığı ve Güvenliği I / OHS I) has ZERO viable rooms after constraint! ***
+
+Teacher ID=32, Request="Amfi"
+  Courses: 1
+    Course 186 (Türkçe I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-44 (Cap=40, Floor=2)
+  Total room-course combinations banned: 0
+    Course 186 (Türkçe I): 1 viable rooms AFTER constraint
+
+Teacher ID=83, Request="1. Kat"
+  Courses: 3
+    Course 130 (Modern Fizik / Modern Physics):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-1 (Cap=40, Floor=0)
+    Course 131 (Modern Fizik / Modern Physics):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-53 (Cap=40, Floor=2)
+    Course 132 (Modern Fizik / Modern Physics):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-53 (Cap=40, Floor=2)
+  Detected Floor Request: 1
+  Rooms on Floor 1: 26
+  Total room-course combinations banned: 3
+    *** CRITICAL: Course 130 (Modern Fizik / Modern Physics) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 131 (Modern Fizik / Modern Physics) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 132 (Modern Fizik / Modern Physics) has ZERO viable rooms after constraint! ***
+
+Teacher ID=19, Request="D205"
+  Courses: 2
+    Course 24 (Bilgisayar Ağları):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-2 (Cap=40, Floor=0)
+    Course 25 (Bilgisayar Ağları):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-2 (Cap=40, Floor=0)
+  Total room-course combinations banned: 0
+    Course 24 (Bilgisayar Ağları): 1 viable rooms AFTER constraint
+    Course 25 (Bilgisayar Ağları): 1 viable rooms AFTER constraint
+
+Teacher ID=45, Request="Giriş Kat"
+  Courses: 9
+    Course 15 (Atatürk İlkeleri ve İnkılap Tarihi I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-62 (Cap=40, Floor=2)
+    Course 52 (Electrical Circuits I / Elektrik Devreleri I):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-5 (Cap=40, Floor=1)
+    Course 53 (Electrical Circuits I / Elektrik Devreleri I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-35 (Cap=40, Floor=1)
+    Course 54 (Electrical Circuits I / Elektrik Devreleri I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-35 (Cap=40, Floor=1)
+    Course 148 (Signals and Systems / Sinyaller ve Sistemler):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-10 (Cap=40, Floor=2)
+    Course 149 (Signals and Systems / Sinyaller ve Sistemler):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-47 (Cap=40, Floor=2)
+    Course 150 (Signals and Systems / Sinyaller ve Sistemler):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-47 (Cap=40, Floor=2)
+    Course 189 (Ulaştırma / Transportation):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-59 (Cap=40, Floor=2)
+    Course 190 (Ulaştırma / Transportation):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-59 (Cap=40, Floor=2)
+  Detected Floor Request: 0
+  Rooms on Floor 0: 26
+  Total room-course combinations banned: 9
+    *** CRITICAL: Course 15 (Atatürk İlkeleri ve İnkılap Tarihi I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 52 (Electrical Circuits I / Elektrik Devreleri I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 53 (Electrical Circuits I / Elektrik Devreleri I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 54 (Electrical Circuits I / Elektrik Devreleri I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 148 (Signals and Systems / Sinyaller ve Sistemler) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 149 (Signals and Systems / Sinyaller ve Sistemler) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 150 (Signals and Systems / Sinyaller ve Sistemler) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 189 (Ulaştırma / Transportation) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 190 (Ulaştırma / Transportation) has ZERO viable rooms after constraint! ***
+
+Teacher ID=51, Request="D205"
+  Courses: 1
+    Course 225 (İleri İngilizce I / Fortgeschrittenes Englisch I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-33 (Cap=40, Floor=1)
+  Total room-course combinations banned: 0
+    Course 225 (İleri İngilizce I / Fortgeschrittenes Englisch I): 1 viable rooms AFTER constraint
+
+Teacher ID=36, Request="Kat 2"
+  Courses: 2
+    Course 164 (Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-3 (Cap=40, Floor=0)
+    Course 165 (Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-13 (Cap=40, Floor=0)
+  Detected Floor Request: 2
+  Rooms on Floor 2: 26
+  Total room-course combinations banned: 2
+    *** CRITICAL: Course 164 (Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 165 (Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım) has ZERO viable rooms after constraint! ***
+
+Teacher ID=42, Request="D101"
+  Courses: 1
+    Course 34 (Bilimsel Çalışma Yöntemleri):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-26 (Cap=40, Floor=1)
+  Total room-course combinations banned: 0
+    Course 34 (Bilimsel Çalışma Yöntemleri): 1 viable rooms AFTER constraint
+
+Teacher ID=50, Request="Kat 2"
+  Courses: 7
+    Course 17 (Ayrık Yapılar):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-8 (Cap=40, Floor=2)
+    Course 18 (Ayrık Yapılar):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-40 (Cap=40, Floor=1)
+    Course 19 (Ayrık Yapılar):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-40 (Cap=40, Floor=1)
+    Course 46 (Diferansiyel Denklemler / Differential Equations):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-9 (Cap=40, Floor=2)
+    Course 47 (Diferansiyel Denklemler / Differential Equations):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-50 (Cap=40, Floor=2)
+    Course 48 (Diferansiyel Denklemler / Differential Equations):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-50 (Cap=40, Floor=2)
+    Course 230 (İngilizce III / Englisch III):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-18 (Cap=40, Floor=0)
+  Detected Floor Request: 2
+  Rooms on Floor 2: 26
+  Total room-course combinations banned: 3
+    Course 17 (Ayrık Yapılar): 1 viable rooms AFTER constraint
+    *** CRITICAL: Course 18 (Ayrık Yapılar) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 19 (Ayrık Yapılar) has ZERO viable rooms after constraint! ***
+    Course 46 (Diferansiyel Denklemler / Differential Equations): 1 viable rooms AFTER constraint
+    Course 47 (Diferansiyel Denklemler / Differential Equations): 1 viable rooms AFTER constraint
+    Course 48 (Diferansiyel Denklemler / Differential Equations): 1 viable rooms AFTER constraint
+    *** CRITICAL: Course 230 (İngilizce III / Englisch III) has ZERO viable rooms after constraint! ***
+
+Teacher ID=38, Request="Giriş Kat"
+  Courses: 7
+    Course 81 (Fizik I / Physik I):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-6 (Cap=40, Floor=1)
+    Course 82 (Fizik I / Physik I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-62 (Cap=40, Floor=2)
+    Course 83 (Fizik I / Physik I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-62 (Cap=40, Floor=2)
+    Course 104 (Kinematik ve Dinamik / Kinematics and Dynamics):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-8 (Cap=40, Floor=2)
+    Course 105 (Kinematik ve Dinamik / Kinematics and Dynamics):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-42 (Cap=40, Floor=1)
+    Course 106 (Kinematik ve Dinamik / Kinematics and Dynamics):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-42 (Cap=40, Floor=1)
+    Course 188 (Türkçe I / Türkisch I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-23 (Cap=40, Floor=1)
+  Detected Floor Request: 0
+  Rooms on Floor 0: 26
+  Total room-course combinations banned: 7
+    *** CRITICAL: Course 81 (Fizik I / Physik I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 82 (Fizik I / Physik I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 83 (Fizik I / Physik I) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 104 (Kinematik ve Dinamik / Kinematics and Dynamics) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 105 (Kinematik ve Dinamik / Kinematics and Dynamics) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 106 (Kinematik ve Dinamik / Kinematics and Dynamics) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 188 (Türkçe I / Türkisch I) has ZERO viable rooms after constraint! ***
+
+Teacher ID=10, Request="Kat 2"
+  Courses: 6
+    Course 32 (Bilgisayar ve Toplum Semineri):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-21 (Cap=40, Floor=0)
+    Course 84 (Fiziksel Kimya I):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-7 (Cap=40, Floor=1)
+    Course 85 (Fiziksel Kimya I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-46 (Cap=40, Floor=2)
+    Course 86 (Fiziksel Kimya I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-46 (Cap=40, Floor=2)
+    Course 207 (Yöneylem Araştırması I - Doğrusal Modeller):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-11 (Cap=40, Floor=0)
+    Course 208 (Yöneylem Araştırması I - Doğrusal Modeller):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-11 (Cap=40, Floor=0)
+  Detected Floor Request: 2
+  Rooms on Floor 2: 26
+  Total room-course combinations banned: 4
+    *** CRITICAL: Course 32 (Bilgisayar ve Toplum Semineri) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 84 (Fiziksel Kimya I) has ZERO viable rooms after constraint! ***
+    Course 85 (Fiziksel Kimya I): 1 viable rooms AFTER constraint
+    Course 86 (Fiziksel Kimya I): 1 viable rooms AFTER constraint
+    *** CRITICAL: Course 207 (Yöneylem Araştırması I - Doğrusal Modeller) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 208 (Yöneylem Araştırması I - Doğrusal Modeller) has ZERO viable rooms after constraint! ***
+
+Teacher ID=81, Request="Kat 2"
+  Courses: 4
+    Course 55 (Elektrik Devreleri I / Electrical Circuits I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-48 (Cap=40, Floor=2)
+    Course 56 (Elektrik Devreleri I / Electrical Circuits I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-48 (Cap=40, Floor=2)
+    Course 146 (Seçmeli Ders):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-26 (Cap=40, Floor=1)
+    Course 147 (Seçmeli Ders):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-26 (Cap=40, Floor=1)
+  Detected Floor Request: 2
+  Rooms on Floor 2: 26
+  Total room-course combinations banned: 2
+    Course 55 (Elektrik Devreleri I / Electrical Circuits I): 1 viable rooms AFTER constraint
+    Course 56 (Elektrik Devreleri I / Electrical Circuits I): 1 viable rooms AFTER constraint
+    *** CRITICAL: Course 146 (Seçmeli Ders) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 147 (Seçmeli Ders) has ZERO viable rooms after constraint! ***
+
+Teacher ID=7, Request="1. Kat"
+  Courses: 2
+    Course 214 (Zorunlu Seçmeli Ders):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-3 (Cap=40, Floor=0)
+    Course 215 (Zorunlu Seçmeli Ders):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-3 (Cap=40, Floor=0)
+  Detected Floor Request: 1
+  Rooms on Floor 1: 26
+  Total room-course combinations banned: 2
+    *** CRITICAL: Course 214 (Zorunlu Seçmeli Ders) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 215 (Zorunlu Seçmeli Ders) has ZERO viable rooms after constraint! ***
+
+Teacher ID=12, Request="Giriş Kat"
+  Courses: 2
+    Course 191 (Veritabanı Sistemleri):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-9 (Cap=40, Floor=2)
+    Course 192 (Veritabanı Sistemleri):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-19 (Cap=40, Floor=0)
+  Detected Floor Request: 0
+  Rooms on Floor 0: 26
+  Total room-course combinations banned: 1
+    *** CRITICAL: Course 191 (Veritabanı Sistemleri) has ZERO viable rooms after constraint! ***
+    Course 192 (Veritabanı Sistemleri): 1 viable rooms AFTER constraint
+
+Teacher ID=6, Request="Zemin Kat"
+  Courses: 2
+    Course 193 (Veritabanı Sistemleri):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Lab-8 (Cap=40, Floor=2)
+    Course 194 (Veritabanı Sistemleri):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-56 (Cap=40, Floor=2)
+  Detected Floor Request: 0
+  Rooms on Floor 0: 26
+  Total room-course combinations banned: 2
+    *** CRITICAL: Course 193 (Veritabanı Sistemleri) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 194 (Veritabanı Sistemleri) has ZERO viable rooms after constraint! ***
+
+Teacher ID=21, Request="Zemin Kat"
+  Courses: 2
+    Course 220 (Zorunlu Seçmeli Ders):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-60 (Cap=40, Floor=2)
+    Course 221 (Zorunlu Seçmeli Ders):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-60 (Cap=40, Floor=2)
+  Detected Floor Request: 0
+  Rooms on Floor 0: 26
+  Total room-course combinations banned: 2
+    *** CRITICAL: Course 220 (Zorunlu Seçmeli Ders) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 221 (Zorunlu Seçmeli Ders) has ZERO viable rooms after constraint! ***
+
+Teacher ID=46, Request="Zemin Kat"
+  Courses: 3
+    Course 133 (Occupational Safety I / İş Sağlığı ve Güvenliği I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-19 (Cap=40, Floor=0)
+    Course 156 (Statik / Statics):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-35 (Cap=40, Floor=1)
+    Course 157 (Statik / Statics):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-35 (Cap=40, Floor=1)
+  Detected Floor Request: 0
+  Rooms on Floor 0: 26
+  Total room-course combinations banned: 2
+    Course 133 (Occupational Safety I / İş Sağlığı ve Güvenliği I): 1 viable rooms AFTER constraint
+    *** CRITICAL: Course 156 (Statik / Statics) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 157 (Statik / Statics) has ZERO viable rooms after constraint! ***
+
+Teacher ID=59, Request="Laboratuvar"
+  Courses: 2
+    Course 162 (Takım Tezgâhları / Machine Tools):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-28 (Cap=40, Floor=1)
+    Course 163 (Takım Tezgâhları / Machine Tools):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-28 (Cap=40, Floor=1)
+  Detected Lab Request
+  Lab Rooms: 10
+    Skipping Course 162 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 163 (theory course, teacher lab pref doesn't apply)
+  Total room-course combinations banned: 0
+    *** CRITICAL: Course 162 (Takım Tezgâhları / Machine Tools) has ZERO viable rooms after constraint! ***
+    *** CRITICAL: Course 163 (Takım Tezgâhları / Machine Tools) has ZERO viable rooms after constraint! ***
+
+Teacher ID=63, Request="D205"
+  Courses: 2
+    Course 136 (Proje I (Tez Hazırlık ve Seminer) / Projekt I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-42 (Cap=40, Floor=1)
+    Course 137 (Proje I (Tez Hazırlık ve Seminer) / Projekt I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-42 (Cap=40, Floor=1)
+  Total room-course combinations banned: 0
+    Course 136 (Proje I (Tez Hazırlık ve Seminer) / Projekt I): 1 viable rooms AFTER constraint
+    Course 137 (Proje I (Tez Hazırlık ve Seminer) / Projekt I): 1 viable rooms AFTER constraint
+
+Teacher ID=91, Request="Kat 2"
+  Courses: 1
+    Course 0 (Advanced English I / İleri İngilizce I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 1
+      Viable room details:
+        - Derslik-63 (Cap=40, Floor=2)
+  Detected Floor Request: 2
+  Rooms on Floor 2: 26
+  Total room-course combinations banned: 0
+    Course 0 (Advanced English I / İleri İngilizce I): 1 viable rooms AFTER constraint

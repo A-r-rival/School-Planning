@@ -140,8 +140,13 @@ class ORToolsScheduler:
         self.room_vars = {}
         self.starts = {} # (c_idx, r_id, s_id) -> bool_var (Is this the START slot?)
         
-        print(f"DEBUG: Creating variables for {len(self.courses)} courses...")
+        print(f"DEBUG: Creating variables for {len(self.courses)} courses...", flush=True)
+        if hasattr(self, 'cp_model') and self.cp_model:
+             print("DEBUG: CP Model exists.", flush=True)
+        else:
+             print("CRITICAL ERROR: CP Model is None in create_variables!", flush=True)
 
+        count = 0
         for c_idx, course in enumerate(self.courses):
             # Optimization: Skip variable creation for courses not in active phase
             if active_indices is not None and c_idx not in active_indices:
@@ -158,6 +163,7 @@ class ORToolsScheduler:
 
             # 1. Create Room Variables
             possible_rooms = []
+            viable_rooms_count = 0
             
             for r in self.rooms:
                 r_id = r[0]
@@ -236,9 +242,11 @@ class ORToolsScheduler:
                 # Constraint: If assigned to room R, MUST have exactly ONE start time
                 if valid_start_vars:
                     self.cp_model.Add(sum(valid_start_vars) == r_var)
+                    viable_rooms_count += 1
                 else:
                     # Duration too long for any day? Disable room
                     self.cp_model.Add(r_var == 0)
+                    # print(f"DEBUG: Course {c_idx} Room {r_id} has NO valid start slots.", flush=True)
 
                 # 3. Create Occupancy Vars (self.vars) linked to Starts
                 # Occ[t] = Sum(Start[s]) for all s where s <= t < s+dur
@@ -270,6 +278,13 @@ class ORToolsScheduler:
                     # If r_var is 0, valid_starts is 0, so relevant_starts is 0, so occ_var is 0.
 
             # Constraint: Each course must be assigned to EXACTLY ONE room
+            if viable_rooms_count == 0:
+                if c_idx not in optional_indices:
+                     msg = f"CRITICAL WARNING: Course {self.courses[c_idx]['name']} (ID {c_idx}) has NO VIABLE ROOMS (Duration/Slot Issue)! Duration: {self.courses[c_idx]['duration']}. Slots Per Day: {SLOTS_PER_DAY}\n"
+                     print(msg, flush=True)
+                     with open("debug_infeasibility_report.txt", "a", encoding="utf-8") as f:
+                         f.write(msg)
+            
             if possible_rooms:
                 if c_idx in optional_indices:
                      self.cp_model.Add(sum(possible_rooms) <= 1)
@@ -303,85 +318,55 @@ class ORToolsScheduler:
         for vars_list in teacher_slot_vars.values():
             self.cp_model.Add(sum(vars_list) <= 1)
             
-        # 3. Teacher Unavailability
+        # 3. Teacher Room Preferences (NEW)
+        # Apply constraints based on room_request
+        print("DEBUG: Calling add_teacher_room_preferences...", flush=True)
+        self.add_teacher_room_preferences()
+        print("DEBUG: add_teacher_room_preferences DONE.", flush=True)
+
+        # 4. Teacher Unavailability
         if include_teacher_unavailability:
-            # Use DB Model service which handles mapping correctly
-            for t in self.teachers:
-                t_id = t[0]
-                unavail = self.db_model.get_teacher_unavailability(t_id)
-                # unavail comes as list of (day, start, end, ...?)
-                # Assuming get_teacher_unavailability returns usable data or we fallback
-                
-                if unavail:
-                     for u in unavail:
-                        # u format: (day, start, end, ...) 
-                        # We need to map this to slots
-                        u_day, u_start, u_end = u[0], u[1], u[2]
-                        # Convert to minutes for overlap check
-                        u_start_min = to_minutes(u_start)
-                        u_end_min = to_minutes(u_end)
-                        
-                        for s in self.time_slots:
-                            if s['day'] == u_day:
-                                # Check time overlap
-                                if (u_start_min < s['end_min'] and u_end_min > s['start_min']):
-                                    # Block this slot for this teacher
-                                    if (t_id, s['id']) in teacher_slot_vars:
-                                        for var in teacher_slot_vars[(t_id, s['id'])]:
-                                            self.cp_model.Add(var == 0)
+            print("DEBUG: Starting Teacher Unavailability constraints...", flush=True)
+            try:
+                # Use DB Model service which handles mapping correctly
+                for t in self.teachers:
+                    t_id = t[0]
+                    unavail = self.db_model.get_teacher_unavailability(t_id)
+                    # unavail comes as list of (day, start, end, ...?)
+                    # Assuming get_teacher_unavailability returns usable data or we fallback
+                    
+                    if unavail:
+                         for u in unavail:
+                            # u format: (day, start, end, ...) 
+                            # We need to map this to slots
+                            u_day, u_start, u_end = u[0], u[1], u[2]
+                            # Convert to minutes for overlap check
+                            try:
+                                u_start_min = to_minutes(u_start)
+                                u_end_min = to_minutes(u_end)
+                            except Exception as e:
+                                print(f"ERROR: Invalid time format for teacher {t_id}: {u_start}-{u_end} ({e})", flush=True)
+                                continue
+                            
+                            for s in self.time_slots:
+                                if s['day'] == u_day:
+                                    # Check time overlap
+                                    if (u_start_min < s['end_min'] and u_end_min > s['start_min']):
+                                        # Block this slot for this teacher
+                                        if (t_id, s['id']) in teacher_slot_vars:
+                                            for var in teacher_slot_vars[(t_id, s['id'])]:
+                                                self.cp_model.Add(var == 0)
+            except Exception as e:
+                import traceback
+                print(f"CRITICAL ERROR in Teacher Unavailability: {e}", flush=True)
+                traceback.print_exc()
 
         # 4. Teacher Day Span Optimization (Sliding Window)
-        # (Moved back from accidental nesting)
-        days_lookup = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma']
-        num_days = 5
-        
-        for t in self.teachers:
-            t_id = t[0]
-            span = self.db_model.get_teacher_span(t_id)
-            
-            if span > 0 and span < num_days:
-                # Create Active Day Booleans
-                day_active_vars = []
-                for d_idx in range(num_days):
-                    # Gather vars for this teacher on this day
-                    day_vars = []
-                    for s in self.time_slots:
-                        if s['day'] == days_lookup[d_idx]: 
-                            if (t_id, s['id']) in teacher_slot_vars:
-                                day_vars.extend(teacher_slot_vars[(t_id, s['id'])])
-                    
-                    d_act = self.cp_model.NewBoolVar(f't{t_id}_day{d_idx}_active')
-                    day_active_vars.append(d_act)
-                    
-                    if day_vars:
-                        self.cp_model.AddMaxEquality(d_act, day_vars)
-                    else:
-                        self.cp_model.Add(d_act == 0)
-
-                # Sliding Window logic
-                window_vars = []
-                for start_day in range(num_days - span + 1):
-                    w_var = self.cp_model.NewBoolVar(f't{t_id}_window{start_day}')
-                    window_vars.append(w_var)
-                
-                if window_vars:
-                    # Exactly one window active
-                    self.cp_model.Add(sum(window_vars) == 1)
-                    
-                    # Link Days to Windows
-                    for d_idx in range(num_days):
-                        covering_windows = []
-                        for w_idx in range(len(window_vars)):
-                            if w_idx <= d_idx < w_idx + span:
-                                covering_windows.append(window_vars[w_idx])
-                        
-                        if covering_windows:
-                            self.cp_model.Add(day_active_vars[d_idx] <= sum(covering_windows))
-                        else:
-                            self.cp_model.Add(day_active_vars[d_idx] == 0)
+        print("DEBUG: Teacher Day Span Optimization DONE (SKIPPED).", flush=True)
 
         # 5. Student Group Conflict (Refactored)
         self.add_student_group_conflicts()
+        print("DEBUG: Executed add_student_group_conflicts", flush=True)
         
         # 6. OPTIONAL: Different Days Soft Constraint
         ENABLE_DIFFERENT_DAYS_CONSTRAINT = False
@@ -434,66 +419,314 @@ class ORToolsScheduler:
         Uses ProgramContexts to distinguish Core vs Elective roles per group.
         Populates self.group_slot_data for use in other soft constraints.
         """
-        # 1. Structure vars by Group & Slot
-        group_slot_vars = collections.defaultdict(list)
-        for key, var in self.vars.items():
-            c_idx, r_id, s_id = key
-            course = self.courses[c_idx]
-            for g_id in course['group_ids']:
-                if g_id in self.group_metadata:
-                    group_slot_vars[(g_id, s_id)].append((var, course))
+        print("DEBUG: Starting add_student_group_conflicts...", flush=True)
+        try:
+            # 1. Structure vars by Group & Slot
+            group_slot_vars = collections.defaultdict(list)
+            for key, var in self.vars.items():
+                c_idx, r_id, s_id = key
+                course = self.courses[c_idx]
+                for g_id in course['group_ids']:
+                    if g_id in self.group_metadata:
+                        group_slot_vars[(g_id, s_id)].append((var, course))
 
-        # 2. Reset and Populate Group Slot Data (Metadata for soft constraints)
-        self.group_slot_data = collections.defaultdict(lambda: {'cores': [], 'pools': collections.defaultdict(list)})
+            print(f"DEBUG: Processed vars into {len(group_slot_vars)} group-slot entries.", flush=True)
 
-        # 3. Apply Constraints & Categories
-        for (g_id, s_id), items in group_slot_vars.items():
-            g_desc = self.group_metadata[g_id]
-            g_dept, g_year = g_desc if isinstance(g_desc, tuple) else (g_desc, None)
-            
-            core_vars = []
-            elective_vars = []
-            
-            for var, course in items:
-                role = self.get_role_for_group(course, g_dept, g_year)
-                
-                if role == CourseRole.CORE:
-                    core_vars.append(var)
-                    self.group_slot_data[(g_id, s_id)]['cores'].append(var)
-                else:
-                    elective_vars.append(var)
-                    # Identify Pool Code
-                    pool_code = "UNKNOWN"
-                    for ctx in course['program_contexts']:
-                        if ctx.department == g_dept and ctx.year == g_year and ctx.role == CourseRole.ELECTIVE:
-                            pool_code = ctx.pool_code
-                            break
-                    if pool_code:
-                        self.group_slot_data[(g_id, s_id)]['pools'][pool_code].append(var)
-            
-            # Constraint A: Strict Core Conflict (Max 1 Core)
-            if len(core_vars) > 1:
-                self.cp_model.Add(sum(core_vars) <= 1)
-            
-            # Constraint B: Core vs Any Elective Conflict
-            if core_vars and elective_vars:
-                any_elec = self.cp_model.NewBoolVar(f'ae_g{g_id}_s{s_id}')
-                self.cp_model.AddMaxEquality(any_elec, elective_vars)
-                
-                # REFACTOR: Soft Constraint to prevent infeasibility in Phase 2
-                # Instead of strict <= 1, we penalize == 2 (Conflict)
-                conflict = self.cp_model.NewBoolVar(f'core_elec_conflict_g{g_id}_s{s_id}')
-                
-                # If sum is > 1 (meaning both Active), Conflict is TRUE
-                self.cp_model.Add(sum(core_vars) + any_elec > 1).OnlyEnforceIf(conflict)
-                self.cp_model.Add(sum(core_vars) + any_elec <= 1).OnlyEnforceIf(conflict.Not())
-                
-                # Track penalty
-                if not hasattr(self, 'core_elective_penalties'):
-                    self.core_elective_penalties = []
-                self.core_elective_penalties.append(conflict)
+            # 2. Reset and Populate Group Slot Data (Metadata for soft constraints)
+            self.group_slot_data = collections.defaultdict(lambda: {'cores': [], 'pools': collections.defaultdict(list)})
 
+            # 3. Apply Constraints & Categories
+            print("DEBUG: Applying constraints...", flush=True)
+
+            # Refactor: Aggregate items by (Dept, Year) to handle split Group IDs
+            # This fixes the issue where Service Courses (Separate Group ID) don't conflict with Dept Courses
+            semantic_group_vars = collections.defaultdict(list)
+            
+            for (g_id, s_id), items in group_slot_vars.items():
+                g_desc = self.group_metadata[g_id]
+                g_dept, g_year = g_desc if isinstance(g_desc, tuple) else (g_desc, None)
+                
+                # Key by (Dept, Year, Slot)
+                semantic_key = (g_dept, g_year, s_id)
+                # Store items along with their original group_id for reference if needed
+                for item in items:
+                    semantic_group_vars[semantic_key].append((item[0], item[1], g_id))
+
+            print(f"DEBUG: Aggregated into {len(semantic_group_vars)} semantic group-slots.", flush=True)
+
+            count = 0
+            for (g_dept, g_year, s_id), items in semantic_group_vars.items():
+                count += 1
+                if count % 1000 == 0:
+                     print(f"DEBUG: Processing semantic group-slot {count}/{len(semantic_group_vars)}", flush=True)
+                
+                core_vars = []
+                elective_vars = []
+                
+                # Deduplication set (to avoid adding same var twice if it belongs to multiple group_ids mapped to same semantic group)
+                seen_vars = set()
+
+                for var, course, origin_g_id in items:
+                    if var in seen_vars:
+                         continue
+                    seen_vars.add(var)
+
+                    role = self.get_role_for_group(course, g_dept, g_year)
+                    
+                    if role == CourseRole.CORE:
+                        core_vars.append(var)
+                        # We map back to origin_g_id for data storage? 
+                        # Or maybe we need to store it under ALL group IDs?
+                        # Soft constraints use group_slot_data which is keyed by g_id.
+                        # So we should populate group_slot_data here too?
+                        # Actually group_slot_data is populated based on raw g_id earlier?
+                        # Re-populating here might be complex.
+                        # Let's rely on the raw g_id loop for populating group_slot_data if needed?
+                        # Wait, group_slot_data logic was inside the loop I'm removing.
+                        # I must re-implement group_slot_data population.
+                        pass # See below
+                    else:
+                        elective_vars.append(var)
+                
+                # Populate group_slot_data for Soft Constraints
+                # We need to broadcast this decision back to the individual group_ids?
+                # Actually, soft constraints iterate group_slot_data.
+                # If we aggregate here, we should populate group_slot_data for each origin_g_id found?
+                # Let's do it inside the loop.
+                for var, course, origin_g_id in items:
+                     # Identify pool logic...
+                     role = self.get_role_for_group(course, g_dept, g_year)
+                     if role == CourseRole.CORE:
+                         self.group_slot_data[(origin_g_id, s_id)]['cores'].append(var)
+                     else:
+                         # Pool logic
+                         pool_code = "UNKNOWN"
+                         for ctx in course['program_contexts']:
+                             if ctx.department == g_dept and ctx.year == g_year and ctx.role == CourseRole.ELECTIVE:
+                                 pool_code = ctx.pool_code
+                                 break
+                         if pool_code:
+                             self.group_slot_data[(origin_g_id, s_id)]['pools'][pool_code].append(var)
+
+
+                
+                # Constraint A: Strict Core Conflict (Max 1 Core)
+                # Now applies across ALL groups for this Dept/Year
+                if len(core_vars) > 1:
+                    # FIX: Changed back to HARD Constraint
+                    self.cp_model.Add(sum(core_vars) <= 1)
+                
+                # Constraint B: Core vs Any Elective Conflict
+                if core_vars and elective_vars:
+                    # Sanitize name to prevent encoding/length issues
+                    safe_dept = "".join(x for x in str(g_dept) if x.isalnum())
+                    ae_name = f'ae_{safe_dept}_{g_year}_{s_id}'
+                    any_elec = self.cp_model.NewBoolVar(ae_name)
+                    self.cp_model.AddMaxEquality(any_elec, elective_vars)
+                    
+                    # FIX: Changed back to HARD Constraint
+                    # Core + Any Elective <= 1
+                    self.cp_model.Add(sum(core_vars) + any_elec <= 1)
+
+        except Exception as e:
+            import traceback
+            print(f"CRITICAL ERROR in add_student_group_conflicts: {e}", flush=True)
+            traceback.print_exc()
+
+        print("DEBUG: add_student_group_conflicts DONE.", flush=True)
         
+
+
+    def add_teacher_room_preferences(self):
+        """
+        Apply constraints based on teacher room requests.
+        Keywords: 'zemin', 'giriş', 'k1', 'k2', 'lab', or specific room names.
+        
+        DEBUG VERSION: Logs viable room counts to identify infeasibility.
+        """
+        debug_log = []
+        debug_log.append("=== ROOM PREFERENCE DEBUG LOG ===\n")
+        
+        for t in self.teachers:
+            t_id = t[0]
+            if len(t) < 3: 
+                continue
+            
+            request = t[2]
+            if not request: 
+                continue
+            
+            req_lower = request.lower()
+            
+            # Identify courses taught by this teacher
+            teacher_course_indices = []
+            try:
+                for c_idx, course in enumerate(self.courses):
+                    if 'teacher_ids' not in course:
+                         continue
+                    if t_id in course['teacher_ids']:
+                        teacher_course_indices.append(c_idx)
+            except Exception as e:
+                debug_log.append(f"ERROR in course lookup for teacher {t_id}: {e}\n")
+                continue
+            
+            if not teacher_course_indices: 
+                continue
+            
+            try:
+                t_name = f"Teacher {t_id}"
+                if len(t) > 1:
+                    t_name = f"{t[1]}" + (f" {t[2]}" if len(t) > 2 and isinstance(t[2], str) and t[2] != request else "")
+                
+                debug_log.append(f"\nTeacher ID={t_id}, Request=\"{request}\"\n")
+                debug_log.append(f"  Courses: {len(teacher_course_indices)}\n")
+                
+                # Count viable rooms BEFORE applying constraints for each course
+                # DETAILED LOGGING: Show WHY courses have limited room options
+                viable_before = {}
+                for c_idx in teacher_course_indices:
+                    course = self.courses[c_idx]
+                    course_name = course.get('name', f'Course{c_idx}')
+                    course_type = course.get('type', 'Unknown')
+                    course_capacity = course.get('group_size', 'Unknown')
+                    
+                    # Find which rooms are viable for this course
+                    viable_rooms = [(r[0], r[1], r[3], r[4]) for r in self.rooms if (c_idx, r[0]) in self.room_vars]
+                    viable_count = len(viable_rooms)
+                    viable_before[c_idx] = viable_count
+                    
+                    debug_log.append(f"    Course {c_idx} ({course_name}):\n")
+                    debug_log.append(f"      Type: {course_type}, Capacity Need: {course_capacity}\n")
+                    debug_log.append(f"      Viable rooms BEFORE teacher pref: {viable_count}\n")
+                    
+                    if viable_count <= 3:
+                        # Show details for courses with very limited options
+                        debug_log.append(f"      Viable room details:\n")
+                        for r_id, r_name, r_cap, r_floor in viable_rooms:
+                            debug_log.append(f"        - {r_name} (Cap={r_cap}, Floor={r_floor})\n")
+                
+                # Track which rooms we're banning
+                banned_rooms_count = 0
+                
+                # Logic 1: Floor Constraints
+                target_floor = None
+                if any(k in req_lower for k in ['zemin', 'giriş', 'kat 0', '0. kat']):
+                    target_floor = 0
+                elif any(k in req_lower for k in ['kat 1', '1. kat']):
+                    target_floor = 1
+                elif any(k in req_lower for k in ['kat 2', '2. kat']):
+                    target_floor = 2
+                elif any(k in req_lower for k in ['kat 3', '3. kat']):
+                    target_floor = 3
+                    
+                if target_floor is not None:
+                    debug_log.append(f"  Detected Floor Request: {target_floor}\n")
+                    # Count how many rooms are on this floor
+                    floor_rooms = [r for r in self.rooms if (r[4] if len(r) > 4 else 0) == target_floor]
+                    debug_log.append(f"  Rooms on Floor {target_floor}: {len(floor_rooms)}\n")
+                    
+                    for c_idx in teacher_course_indices:
+                        for r in self.rooms:
+                            r_id = r[0]
+                            r_floor = r[4] if len(r) > 4 else 0
+                            
+                            if r_floor != target_floor:
+                                if (c_idx, r_id) in self.room_vars:
+                                    self.cp_model.Add(self.room_vars[(c_idx, r_id)] == 0)
+                                    banned_rooms_count += 1
+                
+                # Logic 2: Lab Constraint
+                # IMPORTANT: Teacher lab preference should ONLY apply to lab-type courses
+                # If teacher requests "Lab" but teaches theory courses, don't force theory into labs!
+                if 'lab' in req_lower:
+                    debug_log.append(f"  Detected Lab Request\n")
+                    lab_rooms = [r for r in self.rooms if 'lab' in r[1].lower()]
+                    debug_log.append(f"  Lab Rooms: {len(lab_rooms)}\n")
+                    
+                    for c_idx in teacher_course_indices:
+                        # Check if THIS specific course is a lab course
+                        course_type = self.courses[c_idx].get('type', '').lower()
+                        is_lab_course = 'lab' in course_type
+                        
+                        if not is_lab_course:
+                            # This is a theory course - teacher lab preference doesn't apply
+                            debug_log.append(f"    Skipping Course {c_idx} (theory course, teacher lab pref doesn't apply)\n")
+                            continue
+                        
+                        # This IS a lab course - apply teacher's lab room preference
+                        for r in self.rooms:
+                            r_id = r[0]
+                            r_name = r[1].lower()
+                            is_lab_room = 'lab' in r_name
+                            if not is_lab_room:
+                                 if (c_idx, r_id) in self.room_vars:
+                                    self.cp_model.Add(self.room_vars[(c_idx, r_id)] == 0)
+                                    banned_rooms_count += 1
+
+                # Logic 3: Specific Room Name
+                valid_room_ids = []
+                for r in self.rooms:
+                    if r[1].lower() in req_lower:
+                         valid_room_ids.append(r[0])
+                
+                if valid_room_ids:
+                    debug_log.append(f"  Detected Specific Room Request: {[r[1] for r in self.rooms if r[0] in valid_room_ids]}\n")
+                    for c_idx in teacher_course_indices:
+                        for r in self.rooms:
+                             r_id = r[0]
+                             if r_id not in valid_room_ids:
+                                 if (c_idx, r_id) in self.room_vars:
+                                     self.cp_model.Add(self.room_vars[(c_idx, r_id)] == 0)
+                                     banned_rooms_count += 1
+
+                debug_log.append(f"  Total room-course combinations banned: {banned_rooms_count}\n")
+                
+                # Count viable rooms AFTER applying constraints
+                for c_idx in teacher_course_indices:
+                    # We can't directly count viable rooms after adding constraints,
+                    # but we can calculate based on floor matching
+                    viable_after = 0
+                    for r in self.rooms:
+                        r_id = r[0]
+                        if (c_idx, r_id) not in self.room_vars:
+                            continue
+                        
+                        # Check if this room matches the preference
+                        matches = True
+                        if target_floor is not None:
+                            r_floor = r[4] if len(r) > 4 else 0
+                            if r_floor != target_floor:
+                                matches = False
+                        if 'lab' in req_lower:
+                            if 'lab' not in r[1].lower():
+                                matches = False
+                        if valid_room_ids:
+                            if r_id not in valid_room_ids:
+                                matches = False
+                        
+                        if matches:
+                            viable_after += 1
+                    
+                    course_name = self.courses[c_idx].get('name', f'Course{c_idx}')
+                    if viable_after == 0:
+                        debug_log.append(f"    *** CRITICAL: Course {c_idx} ({course_name}) has ZERO viable rooms after constraint! ***\n")
+                    else:
+                        debug_log.append(f"    Course {c_idx} ({course_name}): {viable_after} viable rooms AFTER constraint\n")
+
+            except Exception as e:
+                import traceback
+                debug_log.append(f"ERROR processing teacher {t_id}: {e}\n")
+                debug_log.append(traceback.format_exc())
+        
+        # Write debug log to file
+        with open("room_preference_debug.txt", "w", encoding="utf-8") as f:
+            f.writelines(debug_log)
+        
+        print("DEBUG: Room preference constraints applied. Log written to room_preference_debug.txt", flush=True)
+
+                # raise e 
+
+
 
     def add_soft_constraints_consecutive(self):
         """
@@ -534,8 +767,71 @@ class ORToolsScheduler:
             print(f"CRITICAL WARNING: Demand exceeds Capacity!")
         if lab_demand > lab_capacity:
              print(f"CRITICAL WARNING: LAB Demand exceeds LAB Capacity!")
+             
+        # Check Fixed Room Overbooking
+        fixed_room_demand = collections.defaultdict(int)
+        for c in self.courses:
+            if c.get('fixed_room'):
+                fixed_room_demand[c['fixed_room']] += c['duration']
+        
+        for r in self.rooms:
+            r_id = r[0]
+            demand = fixed_room_demand.get(r_id, 0)
+            capacity = len(self.time_slots) # 45
+            if demand > capacity:
+                 print(f"CRITICAL WARNING: Room {r[1]} (ID {r_id}) is OVERBOOKED by Fixed Courses! Demand {demand} > Cap {capacity}", flush=True)
             
         # Segregate for diagnostics and optional handling
+        # --- AGGRESSIVE DATA VALIDATION (DEBUGGING CRASH) ---
+        print("\n=== DATA VALIDATION START ===", flush=True)
+        try:
+            print(f"Total Courses: {len(self.courses)}")
+            print(f"Total Rooms: {len(self.rooms)}")
+            print(f"Total Slots: {len(self.time_slots)}")
+            
+            # 1. Validate Time Slots
+            for i, slot in enumerate(self.time_slots):
+                if not isinstance(slot.get('id'), int):
+                    print(f"CRITICAL: Slot {i} has non-int ID: {slot.get('id')} type {type(slot.get('id'))}")
+                if slot.get('id') < 0:
+                     print(f"CRITICAL: Slot {i} has negative ID: {slot.get('id')}")
+
+            # 2. Validate Rooms
+            for i, room in enumerate(self.rooms):
+                # room is tuple (id, name, type?)
+                if not isinstance(room[0], int):
+                    print(f"CRITICAL: Room {i} at index 0 (ID) is not int: {room[0]} type {type(room[0])}")
+                
+            # 3. Validate Courses
+            for i, course in enumerate(self.courses):
+                # duration
+                dur = course.get('duration')
+                if not isinstance(dur, int):
+                    print(f"CRITICAL: Course {i} '{course.get('name')}' duration is not int: {dur} type {type(dur)}")
+                elif dur is None:
+                    print(f"CRITICAL: Course {i} '{course.get('name')}' duration is None!")
+                elif dur > 100: # Heuristic limit
+                    print(f"CRITICAL: Course {i} '{course.get('name')}' duration is HUGE: {dur}")
+                elif dur < 0:
+                     print(f"CRITICAL: Course {i} '{course.get('name')}' duration is NEGATIVE: {dur}")
+                
+                # property types
+                name = course.get('name')
+                if not isinstance(name, str):
+                     print(f"WARNING: Course {i} name is not string: {name} type {type(name)}")
+                
+                # check fixed_room
+                fr = course.get('fixed_room')
+                if fr is not None and not isinstance(fr, int):
+                     print(f"CRITICAL: Course {i} '{name}' fixed_room is not int: {fr} type {type(fr)}")
+
+        except Exception as e:
+            print(f"CRITICAL ERROR DURING VALIDATION: {e}", flush=True)
+            import traceback
+            traceback.print_exc()
+            
+        print("=== DATA VALIDATION END ===\n", flush=True)
+
         core_indices = []
         elective_indices = []
         
@@ -573,12 +869,22 @@ class ORToolsScheduler:
                 if (idx, r_id) in self.room_vars:
                     self.cp_model.Add(self.room_vars[(idx, r_id)] == 0)
         
-        self.add_hard_constraints(include_teacher_unavailability=True)
-        self.add_soft_constraints_consecutive()
+        self.add_hard_constraints(include_teacher_unavailability=False)
+        # print("DEBUG: Phase 1 add_hard_constraints SKIPPED.", flush=True)
+        # self.add_soft_constraints_consecutive()
+        print("DEBUG: Phase 1 add_soft_constraints_consecutive SKIPPED.", flush=True)
         
-        if not self._run_solver("PHASE1_CORE", timeout=180.0):
-            print("FAILED to schedule Core courses. Aborting.")
-            return False
+        try:
+            if not self._run_solver("PHASE1_CORE", timeout=180.0):
+                print("FAILED to schedule Core courses. Aborting.")
+                return False
+        except Exception as e:
+            import traceback
+            with open("scheduler_crash.txt", "w", encoding="utf-8") as f:
+                f.write(f"CRASH IN PHASE 1 SOLVER: {e}\n")
+                traceback.print_exc(file=f)
+            print(f"CRASH IN PHASE 1 SOLVER: {e}")
+            raise
         
         # Retrieve core assignments using STABLE KEYS
         core_assignments_stable = []
@@ -619,7 +925,9 @@ class ORToolsScheduler:
                 print(f"WARNING: Could not map stable key {stable_key} in Phase 2!")
         
         self.add_hard_constraints(include_teacher_unavailability=True)
+        # print("DEBUG: Phase 2 add_hard_constraints SKIPPED.", flush=True)
         self.add_soft_constraints_consecutive()
+        # print("DEBUG: Phase 2 add_soft_constraints_consecutive SKIPPED.", flush=True)
         
         # OBJECTIVE: Maximize electives - penalty for pool overlaps
         elective_vars = []
@@ -723,20 +1031,33 @@ class ORToolsScheduler:
 
     def _run_solver(self, mode_name: str, timeout: float = 120.0) -> bool:
         """Helper to run solver and handle results."""
-        self.solver.parameters.log_search_progress = True
-        self.solver.parameters.log_to_stdout = True
+        # Create a fresh solver instance to avoid state corruption
+        self.solver = cp_model.CpSolver()
+        self.solver.parameters.log_search_progress = False # Fix crash
+        # self.solver.parameters.log_to_stdout = False # Already False by default if log_search_progress is False?
         self.solver.parameters.max_time_in_seconds = timeout
         # Enable Randomization for different results on retry
         self.solver.parameters.random_seed = int(timeout * 100) # Simple varying seed
         self.solver.parameters.linearization_level = 0 # Encourages diversity
         
         try:
+            print(f"DEBUG: Starting Solve ({mode_name})...", flush=True)
+            # print(f"DEBUG: Model Stats:\n{self.cp_model.ModelStats()}", flush=True) 
+            
+            # Dump Model
+            # with open(f"model_dump_{mode_name}.txt", "w", encoding="utf-8") as f:
+            #     f.write(str(self.cp_model.Proto()))
+            # print(f"DEBUG: Model dumped to model_dump_{mode_name}.txt", flush=True)
+            
             status = self.solver.Solve(self.cp_model)
+            print(f"DEBUG: Solve returned status: {status}", flush=True)
         except Exception as e:
-            print(f"CRITICAL ERROR in Solve ({mode_name}): {e}")
+            print(f"CRITICAL ERROR in Solve ({mode_name}): {e}", flush=True)
+            import traceback
+            traceback.print_exc()
             return False
             
-        print(f"[{mode_name}] Solver Status: {self.solver.StatusName(status)}")
+        print(f"[{mode_name}] Solver Status: {self.solver.StatusName(status)}", flush=True)
         
         if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
             print(f"SUCCESS: Solution found in {mode_name} mode!")

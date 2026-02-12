@@ -40,6 +40,7 @@ class DatabaseMigration:
             self._004_add_curriculum_indexes,
             self._005_add_unavailability_description,
             self._006_add_schedule_columns,
+            self._007_add_teacher_room_preferences,
         ]
 
     # ---------- helpers ----------
@@ -127,3 +128,10 @@ class DatabaseMigration:
         """
         from .migrations.migration_006_add_schedule_columns import up as add_schedule_columns
         add_schedule_columns(self._conn)
+
+    def _007_add_teacher_room_preferences(self) -> None:
+        """
+        Adds room_request to Ogretmenler and floor to Derslikler.
+        """
+        from .migrations.migration_007_add_teacher_room_preferences import up as add_teacher_room_preferences
+        add_teacher_room_preferences(self._conn)

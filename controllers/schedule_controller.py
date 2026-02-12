@@ -402,7 +402,10 @@ class ScheduleController:
             result = self.calendar_builder.build_for_type_change(data["type"])
             if result:
                 filter_level, items = result
+                print(f"DEBUG: handle_calendar_filter type_changed to {data['type']}, items count: {len(items)}")
                 self.calendar_view.update_filter_options(filter_level, items)
+            else:
+                 print(f"DEBUG: handle_calendar_filter type_changed to {data['type']} returned NO RESULT")
         
         elif event_type == "filter_selected":
             # Check if we need to update department dropdown
@@ -475,6 +478,10 @@ class ScheduleController:
     def handle_teacher_span_change(self, teacher_id: int, span: int):
         """Handle teacher span preference change"""
         self.model.update_teacher_span(teacher_id, span)
+
+    def handle_teacher_room_pref_change(self, teacher_id: int, text: str):
+        """Handle teacher room request change"""
+        self.model.update_teacher_room_request(teacher_id, text)
 
     def load_all_teacher_availability(self):
         """Load availability for ALL teachers"""

@@ -42,7 +42,9 @@ class IDSeedingService:
                     if not line or line.startswith("#"): continue
                     
                     parts = line.split(":")
-                    if len(parts) < 3: continue
+                    if len(parts) < 3: 
+                        print(f"[SEEDER] Skipping invalid line: {line}")
+                        continue
 
                     if parts[0] == "F":
                         # F:ID:Name
