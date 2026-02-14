@@ -1,0 +1,31 @@
+--- Initializing ScheduleModel ---
+--- Finding Department 'Moleküler Biyoloji' ---
+  ID: 203, Name: Moleküler Biyoteknoloji, Num: 203, FacultyNum: 2
+
+--- Finding Courses for these Departments ---
+
+Courses for Moleküler Biyoteknoloji (ID: 203, Num: 203):
+  [MAT103] Analiz I (Year 1, Inst 1)
+  [BIO111] Biyoloji (Year 1, Inst 1)
+  [PHY111] Fizik I (Year 1, Inst 1)
+  [CHE111] Kimya I (Year 1, Inst 1)
+  [MBT101] Moleküler Biyoteknoloji'ye Giriş (Year 1, Inst 1)
+  [DEU121] Teknik Almanca I (Year 1, Inst 1)
+  [ENG101] İngilizce I (Year 1, Inst 1)
+  [AIT001] Atatürk İlkeleri ve İnkılap Tarihi I (Year 2, Inst 1)
+  [MBT211] Biyokimya I (Year 2, Inst 1)
+  [MAT201] Diferansiyel Denklemler (Year 2, Inst 1)
+  [NWI201] Fiziksel Kimya I (Year 2, Inst 1)
+  [MBT201] Hücre Biyolojisi (Year 2, Inst 1)
+  [TUR001] Türkçe I (Year 2, Inst 1)
+  [ENG201] İngilizce III (Year 2, Inst 1)
+  [MBT323] Moleküler Biyoteknoloji II (Year 3, Inst 1)
+  [SDBIOI] Seçmeli Dersler-BIO I (Year 3, Inst 1)
+  [ÜSD000] Üniversite Seçmeli Ders Havuzu (Year 3, Inst 2)
+  [ENG301] İleri İngilizce I (Year 3, Inst 1)
+  [ISG001] İş Sağlığı ve Güvenliği I (Year 3, Inst 1)
+  [MBT441] Proje I (Year 4, Inst 2)
+  [SDBIOIII] Seçmeli Dersler (Year 4, Inst 2)
+  [SDMATI] Seçmeli Dersler (Year 4, Inst 3)
+  [PRK401] Staj (Year 4, Inst 2)
+Error: no such column: dsi.ders_instance

@@ -142,8 +142,8 @@ def populate_teachers():
 
     pref_count = 0
     for t_id, t_name, t_surname in all_teachers:
-        # 40% chance to have a room preference
-        if random.random() < 0.40:
+        # 20% chance to have a room preference
+        if random.random() < 0.20:
             prefs = [
                 "Zemin Kat", "Giriş Kat", "Kat 1", "1. Kat", "Kat 2", "2. Kat", 
                 "Lab", "Laboratuvar", "D101", "D205", "Amfi"

@@ -60,6 +60,31 @@ class ORToolsScheduler:
         # 2. Load Courses 
         self.courses = self._fetch_all_course_instances()
         
+        # Filter out Project courses that shouldn't be scheduled
+        # User Request: "MEC319 gibi proje derslerinin çoğunu takvim için yoksayıyorduk"
+        filtered_courses = []
+        for c in self.courses:
+            name = c.get('name', '').lower()
+            code = str(c.get('code', '')).upper() # Handle None/int codes safely
+            
+            if 'MEC319' in code or 'MEC319' in name.upper():
+                print(f"DEBUG: Skipping Project Course: {c['name']} ({code})")
+                continue
+            
+            # Heuristic: If "Proje" is in the name, it might be a project course.
+            # But be careful not to skip "Proje Yönetimi" (Project Management) if it's a lecture.
+            # Logic: If it's a "Project" (Proje) usually it has "Bitirme Projesi" or similar.
+            # User said "Proje derslerinin çoğunu". Let's be aggressive for now or targeted?
+            # Targeting "Bitirme Projesi", "Tasarım Projesi", "Project"
+            if 'bitirme projesi' in name or 'tasarım projesi' in name or 'capstone' in name:
+                 print(f"DEBUG: Skipping Project Course: {c['name']}")
+                 continue
+                 
+            filtered_courses.append(c)
+            
+        self.courses = filtered_courses
+        print(f"DEBUG: Loaded {len(self.courses)} schedulable courses (after filtering projects).")
+        
         # 3. Load Teachers
         self.teachers = self.db_model.get_all_teachers_with_ids()
         
@@ -199,6 +224,7 @@ class ORToolsScheduler:
 
                 # 3. Apply Usage Rules
                 
+                
                 # Rule A: Lab Courses -> ONLY in Lab Rooms, NEVER in Amfi
                 if is_lab_course:
                     if not is_lab_room:
@@ -246,7 +272,6 @@ class ORToolsScheduler:
                 else:
                     # Duration too long for any day? Disable room
                     self.cp_model.Add(r_var == 0)
-                    # print(f"DEBUG: Course {c_idx} Room {r_id} has NO valid start slots.", flush=True)
 
                 # 3. Create Occupancy Vars (self.vars) linked to Starts
                 # Occ[t] = Sum(Start[s]) for all s where s <= t < s+dur
@@ -354,6 +379,9 @@ class ORToolsScheduler:
                                     if (u_start_min < s['end_min'] and u_end_min > s['start_min']):
                                         # Block this slot for this teacher
                                         if (t_id, s['id']) in teacher_slot_vars:
+                                            if t_id == 87: # Debug only for Abdullah Şahin
+                                                print(f"DEBUG_CONST: Blocking Slot {s['day']} {s['start_str']}-{s['end_str']} for Teacher {t_id} due to unavail {u_start}-{u_end}", flush=True)
+                                            
                                             for var in teacher_slot_vars[(t_id, s['id'])]:
                                                 self.cp_model.Add(var == 0)
             except Exception as e:
@@ -585,6 +613,11 @@ class ORToolsScheduler:
                 # DETAILED LOGGING: Show WHY courses have limited room options
                 viable_before = {}
                 for c_idx in teacher_course_indices:
+                    # Check if variables exist for this course (skip if inactive/elective in Phase 1)
+                    has_vars = any((c_idx, r[0]) in self.room_vars for r in self.rooms)
+                    if not has_vars:
+                         continue
+
                     course = self.courses[c_idx]
                     course_name = course.get('name', f'Course{c_idx}')
                     course_type = course.get('type', 'Unknown')
@@ -697,9 +730,15 @@ class ORToolsScheduler:
                             r_floor = r[4] if len(r) > 4 else 0
                             if r_floor != target_floor:
                                 matches = False
+                        
                         if 'lab' in req_lower:
-                            if 'lab' not in r[1].lower():
-                                matches = False
+                            # Only enforce lab match if course is Lab type
+                            course_type = self.courses[c_idx].get('type', '').lower()
+                            if 'lab' in course_type:
+                                if 'lab' not in r[1].lower():
+                                    matches = False
+                            # Else: Theory course ignores teacher lab preference for logging too
+                        
                         if valid_room_ids:
                             if r_id not in valid_room_ids:
                                 matches = False
@@ -860,8 +899,10 @@ class ORToolsScheduler:
         print("\n=== PHASE 1: CORE COURSES ===")
         
         self.cp_model = cp_model.CpModel()
-        # Only create variables for cores
-        self.create_variables(ignore_fixed_rooms=False, optional_indices=elective_indices, active_indices=core_indices)
+        # Create Variables
+        # User requested to ignore fixed rooms for now ("no class needs fixed room")
+        # so we force ignore_fixed_rooms=True to unlock full flexibility
+        self.create_variables(ignore_fixed_rooms=True, optional_indices=elective_indices, active_indices=core_indices)
         
         # Force electives OFF in Phase 1
         for idx in elective_indices:
@@ -869,7 +910,7 @@ class ORToolsScheduler:
                 if (idx, r_id) in self.room_vars:
                     self.cp_model.Add(self.room_vars[(idx, r_id)] == 0)
         
-        self.add_hard_constraints(include_teacher_unavailability=False)
+        self.add_hard_constraints(include_teacher_unavailability=True)
         # print("DEBUG: Phase 1 add_hard_constraints SKIPPED.", flush=True)
         # self.add_soft_constraints_consecutive()
         print("DEBUG: Phase 1 add_soft_constraints_consecutive SKIPPED.", flush=True)

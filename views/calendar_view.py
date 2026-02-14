@@ -267,13 +267,15 @@ class CalendarView(QWidget):
             from datetime import datetime
             current_month = datetime.now().month
             
+            # User Request: "assume its bahar dönemi"
+            # Current logic: Feb (2) is NOT in [8..1] so it is Spring (Bahar).
             is_fall = current_month in [8, 9, 10, 11, 12, 1]
             
             semester_num = (year - 1) * 2 + (1 if is_fall else 2)
             semester_name = "Güz" if is_fall else "Bahar"
             
             sem_courses = dept_data['curriculum'].get(str(semester_num), [])
-            print(f"DEBUG: Found {len(sem_courses)} courses in curriculum for Sem {semester_num}")
+            print(f"DEBUG: Found {len(sem_courses)} courses in curriculum for Sem {semester_num} ({semester_name})")
             
             required_pools = {}
             internship_akts = 0
