@@ -64,12 +64,39 @@ class CurriculumViewDialog(QDialog):
         
         # --- Filter Row 2: Type & Search ---
         row2_layout = QHBoxLayout()
+
+        # Semester Filter (NEW)
+        row2_layout.addWidget(QLabel("Dönem:"))
+        self.sem_group = QButtonGroup(self)
+        self.rb_sem_all = QRadioButton("Hepsi")
+        self.rb_sem_guz = QRadioButton("Güz")
+        self.rb_sem_bahar = QRadioButton("Bahar")
+        self.rb_sem_yaz = QRadioButton("Yaz")
+        
+        self.rb_sem_all.setChecked(True) # Default
+        
+        self.sem_group.addButton(self.rb_sem_all)
+        self.sem_group.addButton(self.rb_sem_guz)
+        self.sem_group.addButton(self.rb_sem_bahar)
+        self.sem_group.addButton(self.rb_sem_yaz)
+        
+        self.rb_sem_all.toggled.connect(self._on_filter_changed)
+        self.rb_sem_guz.toggled.connect(self._on_filter_changed)
+        self.rb_sem_bahar.toggled.connect(self._on_filter_changed)
+        self.rb_sem_yaz.toggled.connect(self._on_filter_changed)
+        
+        row2_layout.addWidget(self.rb_sem_all)
+        row2_layout.addWidget(self.rb_sem_guz)
+        row2_layout.addWidget(self.rb_sem_bahar)
+        row2_layout.addWidget(self.rb_sem_yaz)
+        
+        row2_layout.addSpacing(20)
         
         # Search
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Ders Adı/Kodu...") # Updated text
         self.search_input.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed) # Responsive
-        self.search_input.textChanged.connect(self._refresh_table_display_only)
+        self.search_input.textChanged.connect(self._display_only_refresh)
         row2_layout.addWidget(QLabel("Ara:"))
         row2_layout.addWidget(self.search_input, 1) # Stretch factor 1 (Takes available space)
         
@@ -139,9 +166,9 @@ class CurriculumViewDialog(QDialog):
 
         # --- Table ---
         self.table = QTableWidget()
-        self.table.setColumnCount(9) # Increased to 9 for Action column
+        self.table.setColumnCount(10) # Increased to 10 (Added Semester)
         self.table.setHorizontalHeaderLabels([
-            "Ders Kodu", "Ders Adı", "T", "U", "L", "AKTS", "Tip", "Bölüm/Havuz", "İşlem"
+            "Ders Kodu", "Ders Adı", "T", "U", "L", "AKTS", "Dönem", "Tip", "Bölüm/Havuz", "İşlem"
         ])
         self.table.cellClicked.connect(self._on_cell_clicked)
         header = self.table.horizontalHeader()
@@ -151,8 +178,14 @@ class CurriculumViewDialog(QDialog):
         header.setSectionResizeMode(3, QHeaderView.ResizeToContents) 
         header.setSectionResizeMode(4, QHeaderView.ResizeToContents) 
         header.setSectionResizeMode(5, QHeaderView.ResizeToContents) 
-        header.setSectionResizeMode(8, QHeaderView.Fixed) 
-        self.table.setColumnWidth(8, 80) 
+        header.setSectionResizeMode(6, QHeaderView.ResizeToContents) # Dönem
+        
+        # Halve width of Type (Index 7)
+        header.setSectionResizeMode(7, QHeaderView.Fixed) 
+        self.table.setColumnWidth(7, 70) 
+
+        header.setSectionResizeMode(9, QHeaderView.Fixed) 
+        self.table.setColumnWidth(9, 80) 
         
         layout.addWidget(self.table)
         
@@ -206,18 +239,27 @@ class CurriculumViewDialog(QDialog):
 
         search = self.search_input.text().lower()
         
+        # Determine Semester Filter
+        semester_filter = None
+        if self.rb_sem_guz.isChecked(): semester_filter = "Güz"
+        elif self.rb_sem_bahar.isChecked(): semester_filter = "Bahar"
+        elif self.rb_sem_yaz.isChecked(): semester_filter = "Yaz"
+        
         # Fetch Data
         if hasattr(self.controller.model, 'get_all_curriculum_details'):
-            courses = self.controller.model.get_all_curriculum_details(dept_id, year_filter, faculty_id)
+            # Note: Model currently ignores semester_filter due to DB limitation
+            courses = self.controller.model.get_all_curriculum_details(
+                dept_id, year_filter, faculty_id, semester_filter=semester_filter
+            )
             
             # --- 1. Update Dynamic Pool Checkboxes (Only if Dept Selected) ---
             if dept_id:
                 # Find all unique pool codes in this filtered data
-                # Row Structure: (..., IsPool=9, PoolCode=10)
+                # Row Structure: (..., IsPool=11, PoolCode=12)
                 current_pool_codes = set()
                 for c in courses:
-                    if c[9] == 1 and c[10]: # IsPool and HasCode
-                        current_pool_codes.add(c[10])
+                    if c[11] == 1 and c[12]: # IsPool and HasCode
+                        current_pool_codes.add(c[12])
                 
                 # Update UI Checkboxes
                 # Remove obsolete
@@ -233,7 +275,7 @@ class CurriculumViewDialog(QDialog):
                     if code not in self.pool_checkboxes:
                         chk = QCheckBox(code)
                         chk.setChecked(True) # Default visible
-                        chk.stateChanged.connect(self._refresh_table_display_only) # Optimize: don't re-query
+                        chk.stateChanged.connect(self._display_only_refresh) # Optimize: don't re-query
                         self.pool_checkboxes[code] = chk
                         # Insert before stretch (which is the last item)
                         count = self.pool_checkbox_layout.count()
@@ -245,13 +287,41 @@ class CurriculumViewDialog(QDialog):
                      chk.deleteLater()
                  self.pool_checkboxes.clear()
 
-            self.cached_courses = courses # Cache for filtering
-            self._filter_and_populate()
+            # --- 2. Filter Client-Side (Search & Pools & Type) ---
+            visible_pools = []
+            if dept_id and self.pool_filter_container.isVisible():
+                 for code, cb in self.pool_checkboxes.items():
+                     if cb.isChecked():
+                         visible_pools.append(code)
 
-    def _refresh_table_display_only(self):
-        # Triggered by checkbox toggle, no need to query DB
-        if hasattr(self, 'cached_courses'):
-            self._filter_and_populate()
+            filtered = []
+            for c in courses:
+                # c structure: ... 10:SortYear, 11:IsPool, 12:PoolCode (Shifted by +1)
+                
+                # Filter by Search
+                code, name = str(c[0]).lower(), str(c[1]).lower()
+                if search and (search not in code and search not in name):
+                    continue
+                
+                is_pool = c[11] # New Index
+                pool_code = c[12] # New Index
+                
+                # Filter by Type
+                if self.rb_core.isChecked() and is_pool == 1: continue
+                if self.rb_elective.isChecked() and is_pool == 0: continue
+                
+                # Dynamic Pool Filter
+                if self.pool_filter_container.isVisible():
+                     if is_pool == 1 and pool_code:
+                         if pool_code not in visible_pools:
+                             continue
+
+                filtered.append(c)
+            
+            self._populate_table(filtered)
+
+    def _display_only_refresh(self): # Helper for search box
+         self._refresh_table()
 
     def _toggle_delete_mode(self, state):
         """
@@ -259,8 +329,8 @@ class CurriculumViewDialog(QDialog):
         This prevents freezing when toggling the checkbox.
         """
         is_delete_mode = (state == Qt.Checked)
-        # Column 8 is the Action column
-        self.table.setColumnHidden(8, not is_delete_mode)
+        # Column 9 is the Action column
+        self.table.setColumnHidden(9, not is_delete_mode)
         
         # We also need to loop through rows to instantiate buttons IF they don't exist yet?
         # Actually, _populate_table creates them but hides column. 
@@ -278,50 +348,11 @@ class CurriculumViewDialog(QDialog):
             # and just hide the column.
             pass
 
-    def _filter_and_populate(self):
-        filtered = []
-        search = self.search_input.text().lower()
-        
-        # Determines Type Filter
-        show_core = self.rb_all.isChecked() or self.rb_core.isChecked()
-        show_elective = self.rb_all.isChecked() or self.rb_elective.isChecked()
-        
-        # Determine Pool Visibility (Set of allowed codes)
-        visible_pools = set()
-        for code, chk in self.pool_checkboxes.items():
-            if chk.isChecked():
-                visible_pools.add(code)
-        
-        for c in self.cached_courses:
-            # c: (Code, Name, T, U, L, AKTS, Type, Detail, SortYear, IsPool, PoolCode)
-            code_text = str(c[0]) if c[0] else ""
-            name = c[1]
-            is_pool = c[9]
-            pool_code = c[10]
-            
-            # 1. Search Text (Name OR Code)
-            if search:
-                # Basic case-insensitive check
-                if search not in name.lower() and search not in code_text.lower():
-                    continue
-                
-            # 2. Type Filter
-            if is_pool == 0 and not show_core:
-                continue
-            if is_pool == 1 and not show_elective:
-                continue
-                
-            # 3. Dynamic Pool Toggle (Only if Dept Selected AKA visible_pools has entries potential)
-            # If Dept is selected, user manages pool visibility.
-            # If Filter Area is Visible... checking visibility of container is proxy
-            if self.pool_filter_container.isVisible():
-                 if is_pool == 1 and pool_code:
-                     if pool_code not in visible_pools:
-                         continue
+    def _display_only_refresh(self): # Helper for search box
+         self._refresh_table()
 
-            filtered.append(c)
-            
-        self._populate_table(filtered)
+    def _unused_placeholder(self):
+        pass
 
     # ... (Rest of methods) ...
 

@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QComboBox, 
     QTableWidget, QTableWidgetItem, QPushButton, 
     QLabel, QTimeEdit, QMessageBox, QHeaderView,
-    QLineEdit, QCheckBox, QTabWidget, QWidget, QCompleter, QSpinBox # Added QCompleter
+    QLineEdit, QCheckBox, QTabWidget, QWidget, QCompleter, QSpinBox, QFrame # Added QCompleter, QFrame
 )
 from PyQt5.QtCore import Qt, QTime
 
@@ -32,8 +32,9 @@ class AddUnavailabilityDialog(QDialog):
         self.teacher_combo.completer().setCompletionMode(QCompleter.PopupCompletion)
         self.teacher_combo.completer().setFilterMode(Qt.MatchContains)
         
-        for t_id, t_name in self.teachers:
-            self.teacher_combo.addItem(t_name, t_id)
+        for t in self.teachers:
+            if len(t) >= 2:
+                 self.teacher_combo.addItem(t[1], t[0])
         # Use activated to handle both mouse and keyboard selection reliably
         self.teacher_combo.activated[int].connect(self._on_teacher_changed)
         main_layout.addWidget(self.teacher_combo)
@@ -116,19 +117,13 @@ class AddUnavailabilityDialog(QDialog):
         teacher_id = self.teacher_combo.currentData()
         if teacher_id != -1 and self.controller:
             self.controller.handle_teacher_span_change(teacher_id, value)
-            
-    def _on_room_pref_changed(self, text: str):
-        """Handle room preference change"""
-        teacher_id = self.teacher_combo.currentData()
-        if teacher_id != -1 and self.controller:
-            # We might want to debounce this or save on lose focus, but simple update is fine for local DB
-            self.controller.handle_teacher_room_pref_change(teacher_id, text)
 
     def _on_teacher_changed(self, index):
         """Handle teacher selection change"""
         teacher_id = self.teacher_combo.itemData(index)
         if teacher_id != -1 and self.controller:
-            self.controller.load_teacher_availability(teacher_id)
+            # self.controller.load_teacher_availability(teacher_id) # Not needed for adding?
+            # Actually we might need it if we wanted to show existing? But this is an ADD dialog.
             
             # Load preferences
             span = self.controller.model.get_teacher_span(teacher_id)
@@ -140,20 +135,10 @@ class AddUnavailabilityDialog(QDialog):
                 self.span_combo.setCurrentIndex(0)
             self.span_combo.blockSignals(False)
             
-            # Load Room Preference
-            room_pref = self.controller.model.get_teacher_room_request(teacher_id)
-            self.room_pref_input.blockSignals(True)
-            self.room_pref_input.setText(room_pref)
-            self.room_pref_input.blockSignals(False)
-            
             # Enable inputs
             self.span_combo.setEnabled(True)
-            self.room_pref_input.setEnabled(True)
         else:
-            # self.table.setRowCount(0) # This dialog doesn't have a table
             self.span_combo.setEnabled(False)
-            self.room_pref_input.setEnabled(False)
-            self.room_pref_input.clear()
 
     def get_data(self):
         is_span_tab = (self.tabs.currentIndex() == 0)
@@ -192,8 +177,9 @@ class TeacherAvailabilityView(QDialog):
         self.teacher_combo.completer().setFilterMode(Qt.MatchContains)
         
         self.teacher_combo.addItem("Tüm Öğretmenler", -1)
-        for t_id, t_name in self.teachers:
-            self.teacher_combo.addItem(t_name, t_id)
+        for t in self.teachers:
+            if len(t) >= 2:
+                 self.teacher_combo.addItem(t[1], t[0])
         self.teacher_combo.currentIndexChanged.connect(self._on_teacher_changed)
         teacher_layout.addWidget(self.teacher_combo)
         
@@ -635,6 +621,16 @@ class TeacherAvailabilityView(QDialog):
             import traceback
             traceback.print_exc()
             QMessageBox.critical(self, "Hata", f"Ekleme penceresi açılırken hata: {str(e)}")
+
+
+    def _on_room_pref_changed(self, text):
+        """Handle room preference change"""
+        try:
+            teacher_id = self.teacher_combo.currentData()
+            if teacher_id is not None and teacher_id != -1 and hasattr(self, 'controller'):
+                 self.controller.handle_teacher_room_pref_change(teacher_id, text)
+        except Exception as e:
+            print(f"Error in _on_room_pref_changed: {e}")
 
     def update_table(self, data):
         """Update table with availability data (Slots + Spans)"""

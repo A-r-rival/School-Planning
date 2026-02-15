@@ -83,20 +83,51 @@ class MasterScheduleView(QDialog):
         try:
             # 1. Fetch All Data
             data = self.controller.model.get_master_schedule_data()
-            
+            self.update_schedule(data)
+        except Exception as e:
+            QMessageBox.critical(self, "Hata", f"Veri yüklenirken hata: {e}")
+            import traceback
+            traceback.print_exc()
+
+    def update_schedule(self, data):
+        """Render data to the table"""
+        self._render_data(data)
+
+    def _render_data(self, data):
+        try:
             # 2. Organize by Row Entity
             # row_map: { resource_id: { (day_idx, hour_idx): [courses] } }
             self.row_map = {}
             self.resource_names = {}
             
             for item in data:
+                # Normalization for Legacy Snapshots (Raw DB Dump)
+                if 'teacher_id' not in item and 'ogretmen_id' in item:
+                    item['teacher_id'] = item['ogretmen_id']
+                    item['teacher_name'] = f"Öğretmen {item['ogretmen_id']}"
+                if 'classroom_id' not in item and 'derslik_id' in item:
+                    item['classroom_id'] = item['derslik_id']
+                    item['classroom_name'] = f"Derslik {item['derslik_id']}"
+                if 'day' not in item and 'gun' in item:
+                    item['day'] = item['gun']
+                if 'start' not in item and 'baslangic' in item:
+                    item['start'] = item['baslangic']
+                if 'end' not in item and 'bitis' in item:
+                    item['end'] = item['bitis']
+                if 'code' not in item and 'ders_adi' in item:
+                    item['code'] = item['ders_adi']
+                if 'course_name' not in item and 'ders_adi' in item:
+                    item['course_name'] = item['ders_adi']
+                if 'groups' not in item:
+                    item['groups'] = ""
+
                 # Key determination
                 if self.mode == 'teacher':
-                    rid = item['teacher_id']
-                    rname = item['teacher_name']
+                    rid = item.get('teacher_id')
+                    rname = item.get('teacher_name', f"Öğretmen {rid}")
                 else:
-                    rid = item['classroom_id']
-                    rname = item['classroom_name']
+                    rid = item.get('classroom_id')
+                    rname = item.get('classroom_name', f"Derslik {rid}")
                 
                 if not rid: continue # Skip if no resource (e.g. unassigned teacher/room)
                 

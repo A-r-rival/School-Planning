@@ -1,0 +1,334 @@
+--- Courses with invalid hours (NULL or 0) ---
+Found 332 unschedulable courses:
+  [AIT001] Atatürk İlkeleri ve İnkılâp Tarihi I: T=0, U=0, L=0
+  [AIT001] Atatürk İlkeleri ve İnkilapları Tarihi 1: T=0, U=0, L=0
+  [AIT001] Atatürk İlkeleri ve Inkılap Tarihi 1: T=0, U=0, L=0
+  [BSD] Seçmeli Ders: T=0, U=0, L=0
+  [BSP201] Şantiye Stajı / Internship in Site: T=0, U=0, L=0
+  [BUP403] Büro Stajı / Internship in Office: T=0, U=0, L=0
+  [BWL101] İşletmeye Giriş: T=0, U=0, L=0
+  [BWL102] Organizasyon: T=0, U=0, L=0
+  [BWL103] Muhasebe: T=0, U=0, L=0
+  [BWL104] Bilanço: T=0, U=0, L=0
+  [BWL105] İstatistik 1: T=0, U=0, L=0
+  [BWL106] İstatistik 2: T=0, U=0, L=0
+  [BWL109] Matematik 1: T=0, U=0, L=0
+  [BWL112] Matematik 2: T=0, U=0, L=0
+  [BWL181] İşletmeye Giriş: T=0, U=0, L=0
+  [BWL183] Muhasebenin Temelleri: T=0, U=0, L=0
+  [BWL201] Pazarlamanın Temelleri: T=0, U=0, L=0
+  [BWL205] Maliyet Muhasebesi: T=0, U=0, L=0
+  [BWL207] Yatırım ve Finansman: T=0, U=0, L=0
+  [BWL210] İşletme Finansı: T=0, U=0, L=0
+  [BWL211] İşletme Enformatiğinin Temelleri: T=0, U=0, L=0
+  [BWL212] Stratejik Pazarlama: T=0, U=0, L=0
+  [BWL214] Operasyon Yönetimi: T=0, U=0, L=0
+  [BWL216] E-İş: T=0, U=0, L=0
+  [BWL309] Stratejik Yönetim: T=0, U=0, L=0
+  [BWL310] Bilimsel Çalışma Yöntemleri: T=0, U=0, L=0
+  [BWL314] Yönetim Muhasebesi: T=0, U=0, L=0
+  [BWL407] İşletme Stajı (BWL-Praktikum)*: T=0, U=0, L=0
+  [BWL413] Pazar Araştırması: T=0, U=0, L=0
+  [BWL415] Yöneylem Araştırması: T=0, U=0, L=0
+  [BWL417] İş Etiği: T=0, U=0, L=0
+  [DEU111] İktisatçılar için Almanca 1: T=0, U=0, L=0
+  [DEU111] İşletme Almancası 1: T=0, U=0, L=0
+  [DEU112] İktisatçılar için Almanca 2: T=0, U=0, L=0
+  [DEU112] İşletme Almancası 2: T=0, U=0, L=0
+  [DEU121] Siyaset Bilimi için Almanca I: T=0, U=0, L=0
+  [DEU122] Siyaset Bilimi için Almanca II: T=0, U=0, L=0
+  [ENG101] İngilizce 1: T=0, U=0, L=0
+  [ENG102] İngilizce 2: T=0, U=0, L=0
+  [ENG103] İngilizce I: T=0, U=0, L=0
+  [ENG104] İngilizce II: T=0, U=0, L=0
+  [ENG201] İngilizce 3: T=0, U=0, L=0
+  [ENG202] İngilizce 4: T=0, U=0, L=0
+  [ENG203] İngilizce III: T=0, U=0, L=0
+  [ENG204] İngilizce IV: T=0, U=0, L=0
+  [ENG301] İleri İngilizce 1: T=0, U=0, L=0
+  [ENG302] İleri İngilizce 2: T=0, U=0, L=0
+  [ENG303] İleri İngilizce 1: T=0, U=0, L=0
+  [ENG304] İleri İngilizce 2: T=0, U=0, L=0
+  [ETE299] Temel Staj / Basic Internship: T=0, U=0, L=0
+  [ETE490] İşletmede Mesleki Eğitim: T=0, U=0, L=0
+  [ETE499] Mesleki Alan Stajı / Specialized Internship: T=0, U=0, L=0
+  [HUK150] Anayasa Hukuku II: T=0, U=0, L=0
+  [HUK151] Hukuka Giriş: T=0, U=0, L=0
+  [HUK152] Metodoloji: T=0, U=0, L=0
+  [HUK153] Anayasa Hukuku I: T=0, U=0, L=0
+  [HUK154] Avrupa Hukuk Tarihi: T=0, U=0, L=0
+  [HUK155] Ceza Hukukunun Temel Prensipleri: T=0, U=0, L=0
+  [HUK156] Anayasa Hukuku Pratik Çalışmaları: T=0, U=0, L=0
+  [HUK157] Hukuki İşlem Teorisi: T=0, U=0, L=0
+  [HUK158] Kişiler Hukuku: T=0, U=0, L=0
+  [HUK159] Anayasa Hukukunun Temel Prensipleri: T=0, U=0, L=0
+  [HUK160] Türk Hukuk Tarihi: T=0, U=0, L=0
+  [HUK161] Medeni Hukuka Giriş ve Başlangıç Hükümleri: T=0, U=0, L=0
+  [HUK162] İktisat: T=0, U=0, L=0
+  [HUK163] Ceza Hukukuna Giriş: T=0, U=0, L=0
+  [HUK164] Hukuk Almancası: T=0, U=0, L=0
+  [HUK250] Ceza Hukuku Genel Hükümler II: T=0, U=0, L=0
+  [HUK251] Ceza Hukuku Genel Hükümler I: T=0, U=0, L=0
+  [HUK252] Milletlerarası Hukuk II: T=0, U=0, L=0
+  [HUK253] İdare Hukuku I: T=0, U=0, L=0
+  [HUK254] Adil Yargılama İlkeleri: T=0, U=0, L=0
+  [HUK255] Milletlerarası Hukuk I: T=0, U=0, L=0
+  [HUK256] İdare Hukuku II: T=0, U=0, L=0
+  [HUK257] Alman Sözleşme Hukuku: T=0, U=0, L=0
+  [HUK258] Mali Hukuk: T=0, U=0, L=0
+  [HUK259] Hukuk Felsefesi ve Hukuk Sosyolojisi: T=0, U=0, L=0
+  [HUK260] Borçlar Hukuku Genel Hükümler II: T=0, U=0, L=0
+  [HUK261] Borçlar Hukuku Genel Hükümler I: T=0, U=0, L=0
+  [HUK350] Ceza Hukuku Özel Hükümler II: T=0, U=0, L=0
+  [HUK351] Ceza Hukuku Özel Hükümler I: T=0, U=0, L=0
+  [HUK352] Şirketler Hukuku: T=0, U=0, L=0
+  [HUK353] Ticari İşletme Hukuku: T=0, U=0, L=0
+  [HUK354] Eşya Hukuku II: T=0, U=0, L=0
+  [HUK355] Eşya Hukuku I: T=0, U=0, L=0
+  [HUK356] Medeni Usul Hukuku II: T=0, U=0, L=0
+  [HUK357] Medeni Usul Hukuku I: T=0, U=0, L=0
+  [HUK358] İş ve Sosyal Güvenlik Hukuku II: T=0, U=0, L=0
+  [HUK359] Avrupa Hukuku: T=0, U=0, L=0
+  [HUK360] Devlet Kuramı: T=0, U=0, L=0
+  [HUK361] Alman İdare Hukuku – Temel Kavramlar: T=0, U=0, L=0
+  [HUK362] Alman Ceza Muhakemesi Hukuku: T=0, U=0, L=0
+  [HUK363] Özel Borç İlişkileri I: T=0, U=0, L=0
+  [HUK364] Özel Borç İlişkileri II: T=0, U=0, L=0
+  [HUK365] İş ve Sosyal Güvenlik Hukuku I: T=0, U=0, L=0
+  [HUK451] Ceza Muhakemesi Hukuku I: T=0, U=0, L=0
+  [HUK453] Devletler Özel Hukuku I: T=0, U=0, L=0
+  [HUK455] Aile ve Çocuk Hukuku: T=0, U=0, L=0
+  [HUK457] İcra ve İflas Hukuku I: T=0, U=0, L=0
+  [HUK459] İnsan Hakları Hukuku: T=0, U=0, L=0
+  [HUK461] Alman Özel İdare Hukuku: T=0, U=0, L=0
+  [HUK463] Taşıma Hukuku: T=0, U=0, L=0
+  [HUK465] Kıymetli Evrak Hukuku: T=0, U=0, L=0
+  [HUK561] Avrupa Hukuku ve Uluslararası Hukuk I: T=0, U=0, L=0
+  [HUK563] Ekonomi Hukuku I: T=0, U=0, L=0
+  [HUK565] İleri Alman Hukuku I: T=0, U=0, L=0
+  [HUK658] Avrupa Hukuku ve Uluslararası Hukuk II: T=0, U=0, L=0
+  [HUK660] Ekonomi Hukuku II: T=0, U=0, L=0
+  [HUK662] İleri Alman Hukuku II: T=0, U=0, L=0
+  [HUK751] İnfaz Hukuku: T=0, U=0, L=0
+  [HUK753] Milletlerarası Mal Satım Sözleşmeleri Hukuku: T=0, U=0, L=0
+  [HUK755] Rekabet Hukuku: T=0, U=0, L=0
+  [HUK757] Staj Eğitimi: T=0, U=0, L=0
+  [HUK765] İdarenin Sözleşmelerine ve Kamu İhale Hukukuna Giriş: T=0, U=0, L=0
+  [HUK767] Türkiye-AB Ortaklık Hukuku: T=0, U=0, L=0
+  [HUK769] Etik: T=0, U=0, L=0
+  [HUK856] Avrupa Hukuku ve Uluslararası Hukuk IV: T=0, U=0, L=0
+  [HUK858] Ekonomi Hukuku IV: T=0, U=0, L=0
+  [HUK860] İleri Alman Hukuku IV: T=0, U=0, L=0
+  [HUK911] Hukuka Giriş: T=0, U=0, L=0
+  [HUK921] Hukuka Giriş: T=0, U=0, L=0
+  [HUK931] Hukuka Giriş: T=0, U=0, L=0
+  [HUKSD5] Seçimlik Dersler: T=0, U=0, L=0
+  [HUKSD6] Seçimlik Dersler: T=0, U=0, L=0
+  [HUKSD7] Seçimlik Dersler: T=0, U=0, L=0
+  [INF499] Mesleki Alan Stajı: T=0, U=0, L=0
+  [ISG002] İş Sağlığı ve İş Güvenliği II: T=0, U=0, L=0
+  [KKW101] Sosyal Bilimlerin Temelleri: T=0, U=0, L=0
+  [KKW102] Kültür Bilimleri Araştırma Yöntemleri: T=0, U=0, L=0
+  [KKW103] İletişim Bilimlerine Giriş: T=0, U=0, L=0
+  [KKW105] Kültür Bilimlerine Giriş: T=0, U=0, L=0
+  [KKW106] Kültür Kuramları: T=0, U=0, L=0
+  [KKW118] İletişim Bil. Niceliksel ve Niteliksel Araştırma Y.: T=0, U=0, L=0
+  [KKW121] Çalışma Teknikleri: Bilimsel Çalışmalar: T=0, U=0, L=0
+  [KKW150] İletişim Kuramları I: T=0, U=0, L=0
+  [KKW161] Mesleki Almanca I: Kültür Bilimleri: T=0, U=0, L=0
+  [KKW162] Mesleki Almanca II: İletişim Bilimleri: T=0, U=0, L=0
+  [KKW209] Kültür Üretiminin Araçları Olarak Edebiyat ve Sanat: T=0, U=0, L=0
+  [KKW212] Kültürel Hafızanın Taşıyıcısı Olarak Edebiyat ve Sanat: T=0, U=0, L=0
+  [KKW216] Kültür, Toplum ve Gazetecilik: T=0, U=0, L=0
+  [KKW218] Göç ve Kültür: T=0, U=0, L=0
+  [KKW219] Yeni Medya Teknolojileri: T=0, U=0, L=0
+  [KKW221] Kültür Tarihi: T=0, U=0, L=0
+  [KKW226] Kültür ve Küreselleşme: T=0, U=0, L=0
+  [KKW251] İletişim Kuramları II: T=0, U=0, L=0
+  [KKW261] Mesleki Almanca III: Kültürlerarası İletişim: T=0, U=0, L=0
+  [KKW262] Mesleki Almanca IV: Metin Analizi: T=0, U=0, L=0
+  [KKW317] Halkla İlişkiler: T=0, U=0, L=0
+  [KKW324] Kültürel Bellek: T=0, U=0, L=0
+  [KKW329] Dijital Medya Laboratuvarı I: T=0, U=0, L=0
+  [KKW332] Dijital Medya Laboratuvarı II: T=0, U=0, L=0
+  [KKW361] Mesleki Almanca V: Metin Üretimi I: T=0, U=0, L=0
+  [KKW362] Mesleki Almanca VI: Metin Üretimi II: T=0, U=0, L=0
+  [KKW415] Kültür ve Mekan: T=0, U=0, L=0
+  [KKW419] Staj: T=0, U=0, L=0
+  [KKW437] Araştırma Semineri: T=0, U=0, L=0
+  [KKW439] Bilgi ve İletişim Hukuku: T=0, U=0, L=0
+  [KKW441] Müzeler ve Koleksiyonlar: T=0, U=0, L=0
+  [KKWSDI] Seçmeli Ders I: T=0, U=0, L=0
+  [KKWSDII] Seçmeli Ders II: T=0, U=0, L=0
+  [KKWSDIII] Seçmeli Dersler III: T=0, U=0, L=0
+  [KKWSDIV] Seçmeli Dersler IV: T=0, U=0, L=0
+  [KKWSDV] Seçmeli Dersler V: T=0, U=0, L=0
+  [MAB209] Temel Staj / Basic Internship: T=0, U=0, L=0
+  [MAB490] İşletmede Mesleki Eğitim / Co-operative Education: T=0, U=0, L=0
+  [MAB499] Mesleki Alan Stajı / Vocational Internship: T=0, U=0, L=0
+  [MBT101] Moleküler Biyoteknoloji'ye Giriş: T=0, U=0, L=0
+  [MBT201] Hücre Biyolojisi: T=0, U=0, L=0
+  [MBT204] Mikrobiyoloji I: T=0, U=0, L=0
+  [MBT206] Biyoenformatik: T=0, U=0, L=0
+  [MBT211] Biyokimya I: T=0, U=0, L=0
+  [MBT212] Biyokimya II: T=0, U=0, L=0
+  [MBT222] Moleküler Biyoteknoloji I: T=0, U=0, L=0
+  [MBT323] Moleküler Biyoteknoloji II: T=0, U=0, L=0
+  [MBT324] Moleküler Biyoteknoloji III: T=0, U=0, L=0
+  [MBT332] Biyoteknoloji İşletmeleri Sist. Tek. I: T=0, U=0, L=0
+  [MBT364] Biyoanalitik: T=0, U=0, L=0
+  [MBT441] Proje I: T=0, U=0, L=0
+  [MEC299] Basic Internship / Temel Staj: T=0, U=0, L=0
+  [MEC499] Advanced Internship / Mesleki Alan Stajı: T=0, U=0, L=0
+  [MODÜL] DERSİN ADI: T=0, U=0, L=0
+  [NWI300] Temel Hukuk: T=0, U=0, L=0
+  [POL101] Siyaset Bilimine Giriş: T=0, U=0, L=0
+  [POL104] Siyasal Düşünceler Tarihi: T=0, U=0, L=0
+  [POL105] Uluslararası İlişkiler Tarihi: T=0, U=0, L=0
+  [POL106] Uluslararası İlişkilere Giriş: T=0, U=0, L=0
+  [POL107] Bilimsel Çalışmaya Giriş: T=0, U=0, L=0
+  [POL108] Sosyolojiye Giriş: T=0, U=0, L=0
+  [POL191] Siyaset Bilimine Giriş: T=0, U=0, L=0
+  [POL203] Sosyal Bilimlerde Nitel Yöntemler: T=0, U=0, L=0
+  [POL204] Sosyal Bilimlerde Nicel Yöntemler: T=0, U=0, L=0
+  [POL205] Uluslararası İlişkiler Teorileri: T=0, U=0, L=0
+  [POL208] Siyasal Teori: T=0, U=0, L=0
+  [POL211] Karşılaştırmalı Siyaset Bilimi: T=0, U=0, L=0
+  [POL212] Türk Siyasal Hayatı: T=0, U=0, L=0
+  [POL302] Sosyal Bilimler İçin İstatistik: T=0, U=0, L=0
+  [POL303] Uluslararası Ekonomi Politik: T=0, U=0, L=0
+  [POL304] Avrupa Birliği'nin Siyasi ve İdari Yapısı: T=0, U=0, L=0
+  [POL306] Almanya Siyasi Tarihi: T=0, U=0, L=0
+  [POL309] Türkiye ve Avrupa İlişkilerinde Güncel Meseleler: T=0, U=0, L=0
+  [POL311] Dış Politika Analizi: T=0, U=0, L=0
+  [POL312] Uluslararası Örgütler: T=0, U=0, L=0
+  [POL313] Türk Dış Politikası I: T=0, U=0, L=0
+  [POL314] Türk Dış Politikası II: T=0, U=0, L=0
+  [POL316] Araştırma Semineri: T=0, U=0, L=0
+  [POL403] Alman Dış Politikası: T=0, U=0, L=0
+  [POL405] Avrupa Entegrasyon Teorileri: T=0, U=0, L=0
+  [POL520] Siyaset Bilimi Stajı: T=0, U=0, L=0
+  [POLSDI] Seçmeli Ders Alanı I: T=0, U=0, L=0
+  [POLSDII] Seçmeli Ders Alanı II: T=0, U=0, L=0
+  [POLSDIII] Seçmeli Ders Alanı III: T=0, U=0, L=0
+  [POLSDIV] Seçmeli Ders Alanı IV: T=0, U=0, L=0
+  [PRK401] Staj: T=0, U=0, L=0
+  [SD] Seçmeli Ders: T=0, U=0, L=0
+  [SDBIOI] Seçmeli Dersler-BIO I: T=0, U=0, L=0
+  [SDBIOII] Seçmeli Dersler: T=0, U=0, L=0
+  [SDBIOIII] Seçmeli Dersler: T=0, U=0, L=0
+  [SDI] Seçmeli Alan I - İktisadi Bilimler: T=0, U=0, L=0
+  [SDII] Seçmeli Ders Alanı II / Elective Pool II: T=0, U=0, L=0
+  [SDII] Seçmeli Alan II - Endüstri Müh. Araştırma Alanı: T=0, U=0, L=0
+  [SDIII] Seçmeli Dersler III: T=0, U=0, L=0
+  [SDIIa] Seçmeli II - Uygulamalı Bilgisayar Müh.: T=0, U=0, L=0
+  [SDIIb] Seçmeli II - Bilgisayar Donanımı: T=0, U=0, L=0
+  [SDIIc] Seçmeli II - Bilg. Müh. Kuramsal Temelleri ve Matematik: T=0, U=0, L=0
+  [SDIa] Seçmeli I - Uygulamalı Bilgisayar Mühendisliği: T=0, U=0, L=0
+  [SDIb] Seçmeli I - Bilgisayar Donanımı: T=0, U=0, L=0
+  [SDIc] Seçmeli I - Bilg. Müh. Kuramsal Temelleri ve Matematik: T=0, U=0, L=0
+  [SDK] Zorunlu Seçmeli - Kontrol / Compulsary Elective - Control: T=0, U=0, L=0
+  [SDM] Seçmeli Ders Alanı M / Elective Pool M: T=0, U=0, L=0
+  [SDMATI] Seçmeli Dersler: T=0, U=0, L=0
+  [SDP] Seçmeli Alan - Proje: T=0, U=0, L=0
+  [SDP] Seçmeli Alan - Proje / Elective Courses - Project: T=0, U=0, L=0
+  [SDP] Seçmeli Ders Alanı - Proje / Elective Course - Project: T=0, U=0, L=0
+  [SDP I] Elective Project I / Seçmeli Proje I: T=0, U=0, L=0
+  [SDP II] Elective Project II / Seçmeli Proje II: T=0, U=0, L=0
+  [SDT] Seçmeli Ders Alanı T / Elective Pool T: T=0, U=0, L=0
+  [SDUx] Zorunlu Seçmeli I - Uzmanlık A, B, C veya D: T=0, U=0, L=0
+  [SDV] Seçmeli Ders Alanı V / Elective Pool V: T=0, U=0, L=0
+  [SDVI] Seçmeli Ders Alanı VI / Elective Pool VI: T=0, U=0, L=0
+  [SDVII] Seçmeli Ders Alanı VII: T=0, U=0, L=0
+  [SOZ101] Sosyolojiye Giriş I: T=0, U=0, L=0
+  [SOZ102] Sosyolojiye Giriş II: T=0, U=0, L=0
+  [SOZ103] Sosyolojinin Felsefi Temelleri: T=0, U=0, L=0
+  [SOZ111] Çalışma Teknikleri: Bilimsel Çalışmalar: T=0, U=0, L=0
+  [SOZ132] Sosyal Bilimlerde Mantık ve Argümantasyon: T=0, U=0, L=0
+  [SOZ142] Sosyal ve Kültürel Antropoloji: T=0, U=0, L=0
+  [SOZ151] Küresel Uygarlıklar Tarihi: T=0, U=0, L=0
+  [SOZ152] Türkiye’nin Toplumsal Yapısı: T=0, U=0, L=0
+  [SOZ161] Mesleki Almanca I: T=0, U=0, L=0
+  [SOZ162] Mesleki Almanca II: T=0, U=0, L=0
+  [SOZ201] Sosyoloji Kuramları I: T=0, U=0, L=0
+  [SOZ202] Sosyoloji Kuramları II: T=0, U=0, L=0
+  [SOZ215] Toplum Bilimlerinde Nitel Araştırma Yöntemleri: T=0, U=0, L=0
+  [SOZ216] Toplum Bilimlerinde Nicel Araştırma Yöntemleri: T=0, U=0, L=0
+  [SOZ217] İstatistik: T=0, U=0, L=0
+  [SOZ218] Toplumsal Yapılar ve Değişim: T=0, U=0, L=0
+  [SOZ222] Toplumsal Cinsiyet Sosyolojisi: T=0, U=0, L=0
+  [SOZ231] Göç Sosyolojisi: T=0, U=0, L=0
+  [SOZ241] Kent Sosyolojisi: T=0, U=0, L=0
+  [SOZ261] Mesleki Almanca III: T=0, U=0, L=0
+  [SOZ262] Mesleki Almanca IV: T=0, U=0, L=0
+  [SOZ311] İleri Araştırma Yöntemleri I: T=0, U=0, L=0
+  [SOZ312] İleri Araştırma Yöntemleri II: T=0, U=0, L=0
+  [SOZ361] Mesleki Almanca V: T=0, U=0, L=0
+  [SOZ362] Mesleki Almanca VI: T=0, U=0, L=0
+  [SOZ419] Staj: T=0, U=0, L=0
+  [SOZ421] Türk-Alman İlişkileri: T=0, U=0, L=0
+  [SOZ431] Türkiye Sosyoloji Tarihi: T=0, U=0, L=0
+  [SOZ437] Araştırma Semineri: T=0, U=0, L=0
+  [SOZSDI] Seçmeli Ders: T=0, U=0, L=0
+  [SOZSDII] Seçmeli Ders: T=0, U=0, L=0
+  [SOZSDIII] Seçmeli Ders: T=0, U=0, L=0
+  [SOZSDIV] Seçmeli Ders: T=0, U=0, L=0
+  [SUP] Zorunlu Seçmeli - Uygulamalı Proje / Applied Project: T=0, U=0, L=0
+  [TUR001] Türk Dili I: T=0, U=0, L=0
+  [TUR001] Türkçe 1: T=0, U=0, L=0
+  [TUR002] Türk Dili II: T=0, U=0, L=0
+  [TUR002] Türkçe 2: T=0, U=0, L=0
+  [USD000] Üniversite Seçmeli Ders Havuzu / University Elective Pool: T=0, U=0, L=0
+  [USD000] Üniversite Seçmeli Ders Havuzu: T=0, U=0, L=0
+  [USD000] University Elective / Üniversite Seçmeli: T=0, U=0, L=0
+  [USD001] Üniversite Seçmeli Ders Havuzu I: T=0, U=0, L=0
+  [USD002] Üniversite Seçmeli Ders Havuzu II: T=0, U=0, L=0
+  [VWL101] İktisada Giriş 1: T=0, U=0, L=0
+  [VWL102] İktisada Giriş 2: T=0, U=0, L=0
+  [VWL103] Matematik 1: T=0, U=0, L=0
+  [VWL104] Matematik 2: T=0, U=0, L=0
+  [VWL105] İstatistik 1: T=0, U=0, L=0
+  [VWL106] İstatistik 2: T=0, U=0, L=0
+  [VWL108] Bilimsel Çalışma Yöntemleri: T=0, U=0, L=0
+  [VWL110] Bilgisayar Programlaması ve Kullanımına Giriş: T=0, U=0, L=0
+  [VWL112] Toplum Bilimine Giriş: T=0, U=0, L=0
+  [VWL182] İktisada Giriş: T=0, U=0, L=0
+  [VWL191] İktisada Giriş I: T=0, U=0, L=0
+  [VWL192] İktisada Giriş II: T=0, U=0, L=0
+  [VWL201] Mikro İktisat: T=0, U=0, L=0
+  [VWL202] Makro İktisat: T=0, U=0, L=0
+  [VWL203] İktisadi Tarih: T=0, U=0, L=0
+  [VWL204] Oyun Teorisi: T=0, U=0, L=0
+  [VWL205] Ekonometri I: T=0, U=0, L=0
+  [VWL206] Ekonometri II: T=0, U=0, L=0
+  [VWL208] Çevre ve Doğal Kaynaklar İktisadı: T=0, U=0, L=0
+  [VWL210] Para, Banka ve Finans Piyasaları: T=0, U=0, L=0
+  [VWL281] Mikroiktisat: T=0, U=0, L=0
+  [VWL282] Makroiktisat: T=0, U=0, L=0
+  [VWL301] Uluslararası İktisat I: T=0, U=0, L=0
+  [VWL303] Kamu Maliyesi ve Kamu İktisadı: T=0, U=0, L=0
+  [VWL304] İktisadi Düşünceler Tarihi: T=0, U=0, L=0
+  [VWL306] İktisadi Büyüme ve Kalkınma: T=0, U=0, L=0
+  [VWL308] Sanayi ve Yenilik İktisadı: T=0, U=0, L=0
+  [VWL310] Seminer: T=0, U=0, L=0
+  [VWL423] Staj: T=0, U=0, L=0
+  [VWLSD5] Seçimlik Ders I: T=0, U=0, L=0
+  [VWLSD6] Seçimlik Ders: T=0, U=0, L=0
+  [VWLSD7] Seçimlik Ders VII: T=0, U=0, L=0
+  [WIN299] Temel Staj: T=0, U=0, L=0
+  [WIN490] İşletmede Mesleki Eğitim: T=0, U=0, L=0
+  [WIN499] Mesleki Alan Stajı: T=0, U=0, L=0
+  [ZSD] Zorunlu Seçmeli Ders Alanı: T=0, U=0, L=0
+  [ZSD I] Zorunlu Seçmeli Ders I: T=0, U=0, L=0
+  [ZSD I] Elective I / Zorunlu Seçmeli Ders I: T=0, U=0, L=0
+  [ZSD II] Zorunlu Seçmeli Ders II: T=0, U=0, L=0
+  [ZSD II] Elective II / Zorunlu Seçmeli Ders II: T=0, U=0, L=0
+  [ZSD III] Zorunlu Seçmeli Ders III: T=0, U=0, L=0
+  [ZSD III] Elective III / Zorunlu Seçmeli Ders III: T=0, U=0, L=0
+  [ZSD IV] Zorunlu Seçmeli Ders IV: T=0, U=0, L=0
+  [ZSD V] Zorunlu Seçmeli Ders V: T=0, U=0, L=0
+  [ZSDI] Zorunlu Seçmeli Alan I: T=0, U=0, L=0
+  [ZSDII] Zorunlu Seçmeli Alan II: T=0, U=0, L=0
+  [ÜSD000] Üniversite Seçmeli Ders Havuzu: T=0, U=0, L=0
+  [ÜSD001] Üniversite Seçmeli Ders Havuzu I: T=0, U=0, L=0
+  [ÜSD002] Üniversite Seçmeli Ders Havuzu II: T=0, U=0, L=0

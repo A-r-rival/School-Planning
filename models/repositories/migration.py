@@ -41,6 +41,7 @@ class DatabaseMigration:
             self._005_add_unavailability_description,
             self._006_add_schedule_columns,
             self._007_add_teacher_room_preferences,
+            self._008_add_schedule_snapshots_table,
         ]
 
     # ---------- helpers ----------
@@ -131,7 +132,22 @@ class DatabaseMigration:
 
     def _007_add_teacher_room_preferences(self) -> None:
         """
-        Adds room_request to Ogretmenler and floor to Derslikler.
+        Adds room_request column to Ogretmenler table
         """
-        from .migrations.migration_007_add_teacher_room_preferences import up as add_teacher_room_preferences
-        add_teacher_room_preferences(self._conn)
+        if self._column_exists("Ogretmenler", "room_request"):
+            return
+
+        from .migrations.migration_007_add_teacher_room_preferences import add_room_preferences
+        add_room_preferences(self._conn)
+
+    def _008_add_schedule_snapshots_table(self) -> None:
+        """
+        Creates schedule_snapshots table.
+        """
+        if self._table_exists("schedule_snapshots"):
+            return
+
+        self._log("Creating schedule_snapshots table")
+        from models.repositories.migrations.migration_008_schedule_snapshots import create_schedule_snapshots_table
+        create_schedule_snapshots_table(self._conn)
+        self._log("✅ schedule_snapshots table created")

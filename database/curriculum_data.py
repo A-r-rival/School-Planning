@@ -5713,22 +5713,7 @@ DEPARTMENTS_DATA = {
             0,
             0
         ],
-        [
-            "ZSDI",
-            "Zorunlu Seçmeli Ders",
-            6,
-            2,
-            1,
-            0
-        ],
-        [
-            "SDI",
-            "Seçmeli Ders",
-            6,
-            2,
-            1,
-            0
-        ]
+
     ],
     "5": [
         [
@@ -10627,23 +10612,23 @@ DEPARTMENTS_DATA = {
             "BIO111",
             "Biyoloji",
             6,
-            0,
-            0,
-            0
+            2,
+            1,
+            2
         ],
         [
             "CHE111",
             "Kimya I",
             6,
-            0,
-            0,
-            0
+            2,
+            1,
+            2
         ],
         [
             "DEU121",
             "Teknik Almanca I",
             2,
-            0,
+            2,
             0,
             0
         ],
@@ -10651,7 +10636,7 @@ DEPARTMENTS_DATA = {
             "ENG101",
             "İngilizce I",
             2,
-            0,
+            3,
             0,
             0
         ],
@@ -10659,15 +10644,15 @@ DEPARTMENTS_DATA = {
             "MAT103",
             "Analiz I",
             6,
-            0,
-            0,
+            3,
+            2,
             0
         ],
         [
             "MBT101",
             "Moleküler Biyoteknoloji'ye Giriş",
             2,
-            0,
+            2,
             0,
             0
         ],
@@ -10675,9 +10660,9 @@ DEPARTMENTS_DATA = {
             "PHY111",
             "Fizik I",
             6,
-            0,
-            0,
-            0
+            2,
+            1,
+            2
         ]
     ],
     "2": [
@@ -10685,15 +10670,15 @@ DEPARTMENTS_DATA = {
             "CHE112",
             "Kimya II",
             6,
-            0,
-            0,
-            0
+            2,
+            1,
+            2
         ],
         [
             "DEU122",
             "Teknik Almanca II",
             2,
-            0,
+            2,
             0,
             0
         ],
@@ -10701,7 +10686,7 @@ DEPARTMENTS_DATA = {
             "ENG102",
             "İngilizce II",
             2,
-            0,
+            3,
             0,
             0
         ],
@@ -10709,23 +10694,23 @@ DEPARTMENTS_DATA = {
             "MAT112",
             "Analiz II ve Lineer Cebir",
             6,
-            0,
-            0,
+            3,
+            2,
             0
         ],
         [
             "NWI102",
             "Programlamaya Giriş",
             6,
+            2,
             0,
-            0,
-            0
+            2
         ],
         [
             "NWI106",
             "Proje Yönetimi",
             2,
-            0,
+            2,
             0,
             0
         ],
@@ -10733,9 +10718,9 @@ DEPARTMENTS_DATA = {
             "PHY112",
             "Fizik II",
             6,
-            0,
-            0,
-            0
+            2,
+            1,
+            2
         ]
     ],
     "3": [
@@ -10743,7 +10728,7 @@ DEPARTMENTS_DATA = {
             "AIT001",
             "Atatürk İlkeleri ve İnkılap Tarihi I",
             2,
-            0,
+            2,
             0,
             0
         ],
@@ -10751,7 +10736,7 @@ DEPARTMENTS_DATA = {
             "ENG201",
             "İngilizce III",
             2,
-            0,
+            3,
             0,
             0
         ],
@@ -10759,39 +10744,39 @@ DEPARTMENTS_DATA = {
             "MAT201",
             "Diferansiyel Denklemler",
             6,
-            0,
-            0,
+            3,
+            2,
             0
         ],
         [
             "MBT201",
             "Hücre Biyolojisi",
             6,
-            0,
-            0,
-            0
+            3,
+            1,
+            1
         ],
         [
             "MBT211",
             "Biyokimya I",
             6,
-            0,
-            0,
-            0
+            2,
+            1,
+            2
         ],
         [
             "NWI201",
             "Fiziksel Kimya I",
             6,
-            0,
-            0,
-            0
+            3,
+            1,
+            1
         ],
         [
             "TUR001",
             "Türkçe I",
             2,
-            0,
+            2,
             0,
             0
         ]
@@ -10801,7 +10786,7 @@ DEPARTMENTS_DATA = {
             "AIT002",
             "Atatürk İlkeleri ve İnkılap Tarihi II",
             2,
-            0,
+            2,
             0,
             0
         ],
@@ -10809,7 +10794,7 @@ DEPARTMENTS_DATA = {
             "ENG202",
             "İngilizce IV",
             2,
-            0,
+            3,
             0,
             0
         ],
@@ -10817,39 +10802,39 @@ DEPARTMENTS_DATA = {
             "MBT204",
             "Mikrobiyoloji I",
             6,
-            0,
-            0,
-            0
+            2,
+            1,
+            2
         ],
         [
             "MBT206",
             "Biyoenformatik",
             6,
+            2,
             0,
-            0,
-            0
+            2
         ],
         [
             "MBT212",
             "Biyokimya II",
             6,
+            3,
             0,
-            0,
-            0
+            2
         ],
         [
             "MBT222",
             "Moleküler Biyoteknoloji I",
             6,
-            0,
-            0,
-            0
+            2,
+            1,
+            2
         ],
         [
             "TUR002",
             "Türkçe II",
             2,
-            0,
+            2,
             0,
             0
         ]
@@ -10859,7 +10844,7 @@ DEPARTMENTS_DATA = {
             "ENG301",
             "İleri İngilizce I",
             2,
-            0,
+            3,
             0,
             0
         ],
@@ -10867,7 +10852,7 @@ DEPARTMENTS_DATA = {
             "ISG001",
             "İş Sağlığı ve Güvenliği I",
             2,
-            0,
+            2,
             0,
             0
         ],
@@ -10875,9 +10860,9 @@ DEPARTMENTS_DATA = {
             "MBT323",
             "Moleküler Biyoteknoloji II",
             6,
-            0,
-            0,
-            0
+            2,
+            1,
+            2
         ],
         [
             "SDBIOI",
@@ -10901,7 +10886,7 @@ DEPARTMENTS_DATA = {
             "ENG302",
             "İleri İngilizce II",
             2,
-            0,
+            3,
             0,
             0
         ],
@@ -10909,7 +10894,7 @@ DEPARTMENTS_DATA = {
             "ISG002",
             "İş Sağlığı ve İş Güvenliği II",
             2,
-            0,
+            2,
             0,
             0
         ],
@@ -10917,31 +10902,31 @@ DEPARTMENTS_DATA = {
             "MBT324",
             "Moleküler Biyoteknoloji III",
             5,
+            2,
             0,
-            0,
-            0
+            2
         ],
         [
             "MBT332",
             "Biyoteknoloji İşletmeleri Sist. Tek. I",
             6,
-            0,
-            0,
+            2,
+            1,
             0
         ],
         [
             "MBT364",
             "Biyoanalitik",
             6,
+            3,
             0,
-            0,
-            0
+            2
         ],
         [
             "NWI300",
             "Temel Hukuk",
             3,
-            0,
+            3,
             0,
             0
         ],
@@ -10960,7 +10945,7 @@ DEPARTMENTS_DATA = {
             "Proje I",
             6,
             0,
-            0,
+            4,
             0
         ],
         [
@@ -10995,7 +10980,7 @@ DEPARTMENTS_DATA = {
             12,
             0,
             0,
-            0
+            6
         ],
         [
             "SDBIOIV",

@@ -145,7 +145,9 @@ class CourseRepository:
             result_rows.append(RawCourseRow(
                 name=name,
                 instance=instance,
-                t=t, u=u, l=l,
+                t=t if t is not None else 0,
+                u=u if u is not None else 0,
+                l=l if l is not None else 0,
                 akts=akts,
                 code=code,
                 department=dept_name,

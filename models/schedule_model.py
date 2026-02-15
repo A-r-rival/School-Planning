@@ -46,14 +46,14 @@ class ScheduleModel(QObject):
         script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         if db_path is None:
             db_path = os.path.join(script_dir, "database", "okul_veritabani.db")
+        self.db_path = db_path
         
-        # Initialize database connection
-        self.conn = sqlite3.connect(db_path)
-        self.c = self.conn.cursor()
-        # Initialize database and run migrations
-        from models.repositories.migration import DatabaseMigration
-        migration = DatabaseMigration(self.conn)
-        migration.run_all()
+        # Initialize Semester Lookup
+        self.semester_lookup = {}
+        self._build_semester_lookup()
+
+        # Initialize Connection
+        self.initialize_connection()
         
         # Initialize ID Seeding Service (Auto-seed faculties/departments)
         from models.services.seeder import IDSeedingService
@@ -74,7 +74,51 @@ class ScheduleModel(QObject):
             self.course_repo,
             self.schedule_repo
         )
-        
+
+    def _build_semester_lookup(self):
+        """Builds a lookup map for course semesters from curriculum_data.py"""
+        try:
+            from database import curriculum_data
+            data = getattr(curriculum_data, 'DEPARTMENTS_DATA', {})
+            
+            for dept, details in data.items():
+                curr = details.get('curriculum', {})
+                for sem_key, courses in curr.items():
+                    # sem_key: "1", "2" ... "8"
+                    try:
+                        sem_num = int(sem_key)
+                        is_odd = (sem_num % 2 != 0)
+                        semester = "Güz" if is_odd else "Bahar"
+                        
+                        for course in courses:
+                            # course: [Code, Name, T, U, L, AKTS]
+                            if len(course) >= 2:
+                                code = str(course[0]).strip()
+                                # name = str(course[1]).strip()
+                                
+                                if code not in self.semester_lookup:
+                                    self.semester_lookup[code] = set()
+                                self.semester_lookup[code].add(semester)
+                    except:
+                        continue
+        except Exception as e:
+            print(f"Warning: Could not build semester lookup: {e}")
+            
+    def initialize_connection(self):
+        """Initializes the database connection and runs migrations."""
+        try:
+            self.conn = sqlite3.connect(self.db_path)
+            self.c = self.conn.cursor()
+            
+            # Run migrations
+            from models.repositories.migration import DatabaseMigration
+            migration = DatabaseMigration(self.conn)
+            migration.run_all()
+            
+        except Exception as e:
+            print(f"Database initialization error: {e}")
+            raise
+
     def add_course(self, course_data: CourseInput) -> bool:
         """
         Add a new course to the schedule.
@@ -180,9 +224,10 @@ class ScheduleModel(QObject):
             self.error_occurred.emit(f"Ders silinirken hata: {str(e)}")
             return False
     
-    def get_all_schedule_items(self) -> List[Dict]:
+    def get_all_schedule_items(self, semester_filter: Optional[str] = None) -> List[Dict]:
         """
         Get all scheduled items with structured data for Table View.
+        semester_filter: 'Güz' (Odd semesters), 'Bahar' (Even semesters), 'Yaz' (Empty)
         Returns:
             List[Dict]: List of course data objects with fields:
             id (list of ints for merged), pool, code, name, teacher, day, start, end, classes,
@@ -190,20 +235,20 @@ class ScheduleModel(QObject):
         """
         try:
             query = '''
-                SELECT dp.program_id, dp.ders_adi, o.ad || ' ' || o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu,
+                SELECT dp.program_id, dp.ders_adi, COALESCE(o.ad || ' ' || o.soyad, 'Atanmamış'), dp.gun, dp.baslangic, dp.bitis, d.ders_kodu,
                        GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf'),
                        GROUP_CONCAT(DISTINCT dhi.havuz_kodu),
                        GROUP_CONCAT(DISTINCT b.fakulte_num),
                        GROUP_CONCAT(DISTINCT od.bolum_num),
                        GROUP_CONCAT(DISTINCT od.sinif_duzeyi)
                 FROM Ders_Programi dp
-                JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
+                LEFT JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
                 JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
                 LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
                 LEFT JOIN Bolumler b ON od.bolum_num = b.bolum_id
                 LEFT JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
-                GROUP BY dp.program_id, dp.ders_adi, o.ad, o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu
+                GROUP BY dp.program_id, dp.ders_adi, o.ad, o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu, d.ders_instance
             '''
             self.c.execute(query)
             rows = self.c.fetchall()
@@ -221,6 +266,35 @@ class ScheduleModel(QObject):
                 f_ids = [int(x) for x in fac_ids.split(',')] if fac_ids else []
                 d_ids = [int(x) for x in dept_ids.split(',')] if dept_ids else []
                 y_ids = [int(x) for x in years.split(',')] if years else []
+
+                # --- 1. Filter by Semester (Inference) ---
+                if semester_filter:
+                    # Yaz: Strictly empty for now
+                    if semester_filter == "Yaz":
+                        continue
+
+                    # Determine Course Semester (Priority: Lookup -> Name-Based)
+                    is_fall = False
+                    is_spring = False
+                    
+                    code_str = str(kodu).strip()
+                    
+                    # 1. Lookup from Curriculum Data (Source of Truth)
+                    if code_str and code_str in self.semester_lookup:
+                        sem_set = self.semester_lookup[code_str]
+                        if "Güz" in sem_set: is_fall = True
+                        if "Bahar" in sem_set: is_spring = True
+                    
+                    # 2. Fallback: Default to BOTH (Safe availability)
+                    # User requested removing "I/II" logic.
+                    if not is_fall and not is_spring:
+                        is_fall = True
+                        is_spring = True
+
+                    if semester_filter == "Güz":
+                        if not is_fall: continue
+                    elif semester_filter == "Bahar":
+                        if not is_spring: continue
 
                 items.append({
                     'id': pid,
@@ -305,24 +379,7 @@ class ScheduleModel(QObject):
             self.error_occurred.emit(f"Error fetching teachers: {str(e)}")
             return []
 
-    def get_all_teachers_with_ids(self) -> List[Tuple[int, str]]:
-        """
-        Get all teachers with their IDs.
-        
-        Returns:
-            List of (id, name) tuples
-        """
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT ogretmen_num, ad || ' ' || soyad FROM Ogretmenler ORDER BY ad || ' ' || soyad")
-            data = cursor.fetchall()
-            print(f"DEBUG: get_all_teachers_with_ids fetched {len(data)} rows")
-            if data and len(data) > 0:
-                print(f"DEBUG: First row: {data[0]} (Len: {len(data[0])})")
-            return data
-        except Exception as e:
-            self.error_occurred.emit(f"Error fetching teachers with IDs: {str(e)}")
-            return []
+
 
     def get_all_classrooms_with_ids(self) -> List[Tuple[int, str]]:
         """
@@ -651,11 +708,13 @@ class ScheduleModel(QObject):
             print(f"Error fetching student schedule: {e}")
             return []
 
-    def get_all_curriculum_details(self, dept_id: Optional[int] = None, year: Optional[int] = None, faculty_id: Optional[int] = None) -> List[tuple]:
+    def get_all_curriculum_details(self, dept_id: Optional[int] = None, year: Optional[int] = None, faculty_id: Optional[int] = None, semester_filter: Optional[str] = None) -> List[tuple]:
         """
         Fetch detailed curriculum list, merging Class-Specific and Pool courses.
         Returns list of tuples:
         (Code, Name, T, U, L, AKTS, Type, Dept/Pool Info, SortKey_Year, IsPool, PoolCode)
+        
+        Note: semester_filter is currently ignored due to database limitations (no semester column).
         """
         results = []
         try:
@@ -725,79 +784,54 @@ class ScheduleModel(QObject):
                 str(x[10]).strip().upper() if x[10] else "ZZZZZ", 
                 x[1]
             ))
-            return results
-            
-        except Exception as e:
-            print(f"Error fetching curriculum details: {e}")
-            return []
-        """
-        Fetch detailed curriculum list, merging Class-Specific and Pool courses.
-        Returns list of tuples:
-        (Code, Name, T, U, L, AKTS, Type, Dept/Pool Info, SortKey_Year)
-        """
-        results = []
-        try:
-            # 1. Fetch Class-Specific Courses
-            query_class = """
-                SELECT DISTINCT 
-                    d.ders_kodu, d.ders_adi, d.teori_saati, d.uygulama_saati, d.lab_saati, d.akts,
-                    'Bölüm Dersi' as tip,
-                    b.bolum_adi || ' - ' || od.sinif_duzeyi || '. Sınıf' as detay,
-                    od.sinif_duzeyi as sort_year,
-                    0 as is_pool
-                FROM Dersler d
-                JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
-                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
-                JOIN Bolumler b ON od.bolum_num = b.bolum_id
-                WHERE 1=1
-            """
-            params_class = []
-            if dept_id:
-                 query_class += " AND od.bolum_num = ?"
-                 params_class.append(dept_id)
-            if year:
-                 query_class += " AND od.sinif_duzeyi = ?"
-                 params_class.append(year)
-                 
-            self.c.execute(query_class, tuple(params_class))
-            results.extend(self.c.fetchall())
-            
-            # 2. Fetch Pool Courses
-            # For header separation, we assign them a high sort_year key (e.g., 99)
-            query_pool = """
-                SELECT DISTINCT
-                    d.ders_kodu, d.ders_adi, d.teori_saati, d.uygulama_saati, d.lab_saati, d.akts,
-                    'Havuz Dersi' as tip,
-                    'Havuz: ' || dhi.havuz_kodu,
-                    99 as sort_year,
-                    1 as is_pool
-                FROM Dersler d
-                JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
-                LEFT JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
-                WHERE 1=1
-            """
-            params_pool = []
-            if dept_id:
-                query_pool += " AND dhi.bolum_id = ?"
-                params_pool.append(dept_id)
-            
-            # If specific year filter is active and not Havuz (technically user view logic handles this, 
-            # but if user filters for "1. Class", should pools show? 
-            # Current requirement says "sonra havuzları göstersin", implying if showing "All"
-            # If filtering for Year 1, maybe only Year 1?
-            # User said "filtre olarak özellikleri aynı tut ama sınıf/havuz filtresi olarak değiş".
-            # So if they select "Havuz", we show only pools.
-            # If they select "1", we show only 1.
-            # If "All", we show 1..4 then Pool.
-            # So if year is provided (1..4), we probably shouldn't append pools unless explicitly handled.
-            # But the logic above appends pools if year is None.
-            
-            if year is None or year == 99: # 99 for Havuz filter
-                 self.c.execute(query_pool, tuple(params_pool))
-                 results.extend(self.c.fetchall())
-            
-            # Sort by: Year (ASC), Name (ASC)
-            results.sort(key=lambda x: (x[8], x[1]))
+            # --- Semester Filtering (Inference) ---
+            if semester_filter:
+                filtered_results = []
+                for row in results:
+                    # Row: 0:Code, 1:Name, ... 8:Year, 9:IsPool
+                    
+                    if semester_filter == "Yaz":
+                        continue
+
+                    name = row[1]
+                    code_str = str(code).strip()
+                    
+                    sem_str = "Belirsiz" # Default if unknown
+                    
+                    # 1. Lookup from Curriculum Data (Strict Source of Truth)
+                    if code_str and hasattr(self, 'semester_lookup') and code_str in self.semester_lookup:
+                        sem_set = self.semester_lookup[code_str]
+                        if "Güz" in sem_set and "Bahar" in sem_set:
+                            sem_str = "Güz / Bahar"
+                        elif "Güz" in sem_set:
+                            sem_str = "Güz"
+                        elif "Bahar" in sem_set:
+                            sem_str = "Bahar"
+                    
+                    # Apply Filter for View
+                    # Filter logic:
+                    # Güz -> Show if sem_str contains "Güz" OR is "Belirsiz" (Default available)
+                    # Bahar -> Show if sem_str contains "Bahar" OR is "Belirsiz"
+                    
+                    show_row = False
+                    if semester_filter == "Güz":
+                        if "Güz" in sem_str or sem_str == "Belirsiz": show_row = True
+                    elif semester_filter == "Bahar":
+                        if "Bahar" in sem_str or sem_str == "Belirsiz": show_row = True
+                    elif semester_filter == "Hepsi" or not semester_filter:
+                         show_row = True
+                         
+                    if show_row:
+                        # Construct new row tuple with Semester Column at index 6
+                        # Original: Code, Name, T, U, L, AKTS, Type, Detail, SortKey, IsPool, PoolCode
+                        # New:      Code, Name, T, U, L, AKTS, Sem,  Type, Detail, SortKey, IsPool, PoolCode
+                        
+                        new_row = list(row)
+                        new_row.insert(6, sem_str)
+                        filtered_results.append(tuple(new_row))
+                
+                results = filtered_results
+
             return results
             
         except Exception as e:
@@ -1809,4 +1843,56 @@ class ScheduleModel(QObject):
         except Exception as e:
             print(f"Error fetching master schedule: {e}")
             self.error_occurred.emit(f"Genel takvim verisi çekilirken hata: {e}")
+            return []
+
+    # --- Schedule History / Snapshots ---
+
+    def save_snapshot(self, name: str, semester: str) -> bool:
+        """Save current schedule as a snapshot"""
+        import json
+        try:
+            # 1. Fetch current schedule data using Master Data (Hydrated with Teacher Names)
+            # This ensures Master View can read it later without manual joins
+            data = self.get_master_schedule_data()
+            
+            # Note: get_master_schedule_data returns keys like 'teacher_name' which MasterView expects.
+            # Original raw dump lacked these.
+            
+            json_data = json.dumps(data)
+            
+            # 2. Insert into snapshots
+            self.c.execute(
+                "INSERT INTO schedule_snapshots (name, semester, data) VALUES (?, ?, ?)",
+                (name, semester, json_data)
+            )
+            self.conn.commit()
+            return True
+        except Exception as e:
+            self.error_occurred.emit(f"Program kaydedilirken hata: {str(e)}")
+            return False
+
+    def get_snapshots(self) -> List[Dict]:
+        """Get list of saved snapshots"""
+        try:
+            self.c.execute("SELECT id, name, created_at, semester FROM schedule_snapshots ORDER BY created_at DESC")
+            rows = self.c.fetchall()
+            return [
+                {'id': r[0], 'name': r[1], 'created_at': r[2], 'semester': r[3]}
+                for r in rows
+            ]
+        except Exception as e:
+            self.error_occurred.emit(f"Geçmiş programlar alınırken hata: {str(e)}")
+            return []
+            
+    def get_snapshot_data(self, snapshot_id: int) -> List[Dict]:
+        """Get data for a specific snapshot"""
+        import json
+        try:
+            self.c.execute("SELECT data FROM schedule_snapshots WHERE id = ?", (snapshot_id,))
+            row = self.c.fetchone()
+            if row:
+                return json.loads(row[0])
+            return []
+        except Exception as e:
+            self.error_occurred.emit(f"Program verisi alınırken hata: {str(e)}")
             return []

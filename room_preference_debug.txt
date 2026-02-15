@@ -1,829 +1,845 @@
 === ROOM PREFERENCE DEBUG LOG ===
 
+Teacher ID=97, Request="Lab"
+  Courses: 3
+    Course 225 (Zorunlu Seçmeli Ders):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 226 (Zorunlu Seçmeli Ders):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 236 (İngilizce I / Englisch I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Detected Lab Request
+  Lab Rooms: 15
+    Skipping Course 225 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 226 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 236 (theory course, teacher lab pref doesn't apply)
+  Total room-course combinations banned: 0
+    Course 225 (Zorunlu Seçmeli Ders): 68 viable rooms AFTER constraint
+    Course 226 (Zorunlu Seçmeli Ders): 68 viable rooms AFTER constraint
+    Course 236 (İngilizce I / Englisch I): 68 viable rooms AFTER constraint
+
 Teacher ID=60, Request="Kat 2"
   Courses: 2
-    Course 20 (Bilg. Bil. ve Prog. Giriş / Intro to CS & Programming):
+    Course 5 (Algoritmalar ve Veri Yapıları I):
       Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-11 (Cap=40, Floor=2)
-    Course 21 (Bilg. Bil. ve Prog. Giriş / Intro to CS & Programming):
+      Viable rooms BEFORE teacher pref: 15
+    Course 6 (Algoritmalar ve Veri Yapıları I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-50 (Cap=40, Floor=2)
+      Viable rooms BEFORE teacher pref: 68
   Detected Floor Request: 2
-  Rooms on Floor 2: 23
-  Total room-course combinations banned: 0
-    Course 20 (Bilg. Bil. ve Prog. Giriş / Intro to CS & Programming): 1 viable rooms AFTER constraint
-    Course 21 (Bilg. Bil. ve Prog. Giriş / Intro to CS & Programming): 1 viable rooms AFTER constraint
+  Rooms on Floor 2: 31
+  Total room-course combinations banned: 52
+    Course 5 (Algoritmalar ve Veri Yapıları I): 5 viable rooms AFTER constraint
+    Course 6 (Algoritmalar ve Veri Yapıları I): 26 viable rooms AFTER constraint
 
 Teacher ID=78, Request="D101"
   Courses: 2
-    Course 152 (Statik):
+    Course 108 (Kinematik ve Dinamik / Kinematics and Dynamics):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-7 (Cap=40, Floor=0)
-    Course 153 (Statik):
+      Viable rooms BEFORE teacher pref: 68
+    Course 109 (Kinematik ve Dinamik / Kinematics and Dynamics):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-7 (Cap=40, Floor=0)
+      Viable rooms BEFORE teacher pref: 68
   Total room-course combinations banned: 0
-    Course 152 (Statik): 1 viable rooms AFTER constraint
-    Course 153 (Statik): 1 viable rooms AFTER constraint
+    Course 108 (Kinematik ve Dinamik / Kinematics and Dynamics): 68 viable rooms AFTER constraint
+    Course 109 (Kinematik ve Dinamik / Kinematics and Dynamics): 68 viable rooms AFTER constraint
 
-Teacher ID=41, Request="Zemin Kat"
-  Courses: 4
-    Course 166 (Tasarım Teknikleri / Design Techniques):
+Teacher ID=89, Request="Giriş Kat"
+  Courses: 9
+    Course 49 (Diferansiyel Denklemler / Differential Equations):
       Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-2 (Cap=40, Floor=0)
-    Course 167 (Tasarım Teknikleri / Design Techniques):
+      Viable rooms BEFORE teacher pref: 15
+    Course 50 (Diferansiyel Denklemler / Differential Equations):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-7 (Cap=40, Floor=0)
-    Course 168 (Tasarım Teknikleri / Design Techniques):
+      Viable rooms BEFORE teacher pref: 68
+    Course 51 (Diferansiyel Denklemler / Differential Equations):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-7 (Cap=40, Floor=0)
-    Course 171 (Teknik Almanca I / Technical German I):
+      Viable rooms BEFORE teacher pref: 68
+    Course 60 (Elektrik Makineleri I / Electrical Machines I):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 61 (Elektrik Makineleri I / Electrical Machines I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-2 (Cap=40, Floor=0)
+      Viable rooms BEFORE teacher pref: 68
+    Course 62 (Elektrik Makineleri I / Electrical Machines I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 157 (Signals and Systems / Sinyaller ve Sistemler):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 158 (Signals and Systems / Sinyaller ve Sistemler):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 159 (Signals and Systems / Sinyaller ve Sistemler):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
   Detected Floor Request: 0
-  Rooms on Floor 0: 28
-  Total room-course combinations banned: 0
-    Course 166 (Tasarım Teknikleri / Design Techniques): 1 viable rooms AFTER constraint
-    Course 167 (Tasarım Teknikleri / Design Techniques): 1 viable rooms AFTER constraint
-    Course 168 (Tasarım Teknikleri / Design Techniques): 1 viable rooms AFTER constraint
-    Course 171 (Teknik Almanca I / Technical German I): 1 viable rooms AFTER constraint
+  Rooms on Floor 0: 27
+  Total room-course combinations banned: 306
+    Course 49 (Diferansiyel Denklemler / Differential Equations): 5 viable rooms AFTER constraint
+    Course 50 (Diferansiyel Denklemler / Differential Equations): 22 viable rooms AFTER constraint
+    Course 51 (Diferansiyel Denklemler / Differential Equations): 22 viable rooms AFTER constraint
+    Course 60 (Elektrik Makineleri I / Electrical Machines I): 5 viable rooms AFTER constraint
+    Course 61 (Elektrik Makineleri I / Electrical Machines I): 22 viable rooms AFTER constraint
+    Course 62 (Elektrik Makineleri I / Electrical Machines I): 22 viable rooms AFTER constraint
+    Course 157 (Signals and Systems / Sinyaller ve Sistemler): 5 viable rooms AFTER constraint
+    Course 158 (Signals and Systems / Sinyaller ve Sistemler): 22 viable rooms AFTER constraint
+    Course 159 (Signals and Systems / Sinyaller ve Sistemler): 22 viable rooms AFTER constraint
 
 Teacher ID=82, Request="1. Kat"
-  Courses: 3
-    Course 92 (Intro to Engineering / Mühendisliğe Giris):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-31 (Cap=40, Floor=1)
-    Course 132 (Proje I):
-      Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-10 (Cap=40, Floor=1)
-    Course 133 (Proje I):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-24 (Cap=40, Floor=1)
-  Detected Floor Request: 1
-  Rooms on Floor 1: 27
-  Total room-course combinations banned: 0
-    Course 92 (Intro to Engineering / Mühendisliğe Giris): 1 viable rooms AFTER constraint
-    Course 132 (Proje I): 1 viable rooms AFTER constraint
-    Course 133 (Proje I): 1 viable rooms AFTER constraint
-
-Teacher ID=98, Request="Amfi"
-  Courses: 4
-    Course 16 (Atatürks Principles I / Atatürk İlkeleri I):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-34 (Cap=40, Floor=1)
-    Course 149 (Sinyaller ve Sistemler / Signals and Systems):
-      Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-11 (Cap=40, Floor=2)
-    Course 150 (Sinyaller ve Sistemler / Signals and Systems):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-27 (Cap=40, Floor=1)
-    Course 151 (Sinyaller ve Sistemler / Signals and Systems):
-      Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-27 (Cap=40, Floor=1)
-  Total room-course combinations banned: 0
-    Course 16 (Atatürks Principles I / Atatürk İlkeleri I): 1 viable rooms AFTER constraint
-    Course 149 (Sinyaller ve Sistemler / Signals and Systems): 1 viable rooms AFTER constraint
-    Course 150 (Sinyaller ve Sistemler / Signals and Systems): 1 viable rooms AFTER constraint
-    Course 151 (Sinyaller ve Sistemler / Signals and Systems): 1 viable rooms AFTER constraint
-
-Teacher ID=103, Request="Kat 2"
-  Courses: 3
-    Course 40 (Diferansiyel Denklemler):
-      Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-15 (Cap=40, Floor=2)
-    Course 41 (Diferansiyel Denklemler):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-52 (Cap=40, Floor=2)
-    Course 42 (Diferansiyel Denklemler):
-      Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-52 (Cap=40, Floor=2)
-  Detected Floor Request: 2
-  Rooms on Floor 2: 23
-  Total room-course combinations banned: 0
-    Course 40 (Diferansiyel Denklemler): 1 viable rooms AFTER constraint
-    Course 41 (Diferansiyel Denklemler): 1 viable rooms AFTER constraint
-    Course 42 (Diferansiyel Denklemler): 1 viable rooms AFTER constraint
-
-Teacher ID=62, Request="Lab"
-  Courses: 3
-    Course 11 (Analiz I / Calculus I):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-11 (Cap=40, Floor=0)
-    Course 12 (Analiz I / Calculus I):
-      Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-11 (Cap=40, Floor=0)
-    Course 225 (İngilizce I / Englisch I):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-45 (Cap=40, Floor=2)
-  Detected Lab Request
-  Lab Rooms: 15
-    Skipping Course 11 (theory course, teacher lab pref doesn't apply)
-    Skipping Course 12 (theory course, teacher lab pref doesn't apply)
-    Skipping Course 225 (theory course, teacher lab pref doesn't apply)
-  Total room-course combinations banned: 0
-    Course 11 (Analiz I / Calculus I): 1 viable rooms AFTER constraint
-    Course 12 (Analiz I / Calculus I): 1 viable rooms AFTER constraint
-    Course 225 (İngilizce I / Englisch I): 1 viable rooms AFTER constraint
-
-Teacher ID=95, Request="D101"
-  Courses: 6
-    Course 76 (English I / İngilizce I):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-53 (Cap=40, Floor=2)
-    Course 173 (Teknik Mekanik):
-      Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-11 (Cap=40, Floor=2)
-    Course 174 (Teknik Mekanik):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-6 (Cap=40, Floor=0)
-    Course 175 (Teknik Mekanik):
-      Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-6 (Cap=40, Floor=0)
-    Course 210 (Zorunlu Seçmeli Ders):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-18 (Cap=40, Floor=0)
-    Course 211 (Zorunlu Seçmeli Ders):
-      Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-18 (Cap=40, Floor=0)
-  Total room-course combinations banned: 0
-    Course 76 (English I / İngilizce I): 1 viable rooms AFTER constraint
-    Course 173 (Teknik Mekanik): 1 viable rooms AFTER constraint
-    Course 174 (Teknik Mekanik): 1 viable rooms AFTER constraint
-    Course 175 (Teknik Mekanik): 1 viable rooms AFTER constraint
-    Course 210 (Zorunlu Seçmeli Ders): 1 viable rooms AFTER constraint
-    Course 211 (Zorunlu Seçmeli Ders): 1 viable rooms AFTER constraint
-
-Teacher ID=48, Request="2. Kat"
   Courses: 5
-    Course 7 (Analiz I):
+    Course 66 (Elektrokimya / Electrochemie):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-51 (Cap=40, Floor=2)
-    Course 8 (Analiz I):
+      Viable rooms BEFORE teacher pref: 68
+    Course 67 (Elektrokimya / Electrochemie):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-51 (Cap=40, Floor=2)
-    Course 107 (Lojistik Yönetimi ve Teknolojileri):
+      Viable rooms BEFORE teacher pref: 68
+    Course 204 (Yapı Malzemesi ve Kimyası I / Const. Chemicals & Materials):
       Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-15 (Cap=40, Floor=2)
-    Course 108 (Lojistik Yönetimi ve Teknolojileri):
+      Viable rooms BEFORE teacher pref: 15
+    Course 205 (Yapı Malzemesi ve Kimyası I / Const. Chemicals & Materials):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-51 (Cap=40, Floor=2)
-    Course 109 (Lojistik Yönetimi ve Teknolojileri):
+      Viable rooms BEFORE teacher pref: 68
+    Course 206 (Yapı Malzemesi ve Kimyası I / Const. Chemicals & Materials):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-51 (Cap=40, Floor=2)
-  Detected Floor Request: 2
-  Rooms on Floor 2: 23
-  Total room-course combinations banned: 0
-    Course 7 (Analiz I): 1 viable rooms AFTER constraint
-    Course 8 (Analiz I): 1 viable rooms AFTER constraint
-    Course 107 (Lojistik Yönetimi ve Teknolojileri): 1 viable rooms AFTER constraint
-    Course 108 (Lojistik Yönetimi ve Teknolojileri): 1 viable rooms AFTER constraint
-    Course 109 (Lojistik Yönetimi ve Teknolojileri): 1 viable rooms AFTER constraint
+      Viable rooms BEFORE teacher pref: 68
+  Detected Floor Request: 1
+  Rooms on Floor 1: 25
+  Total room-course combinations banned: 202
+    Course 66 (Elektrokimya / Electrochemie): 20 viable rooms AFTER constraint
+    Course 67 (Elektrokimya / Electrochemie): 20 viable rooms AFTER constraint
+    Course 204 (Yapı Malzemesi ve Kimyası I / Const. Chemicals & Materials): 5 viable rooms AFTER constraint
+    Course 205 (Yapı Malzemesi ve Kimyası I / Const. Chemicals & Materials): 20 viable rooms AFTER constraint
+    Course 206 (Yapı Malzemesi ve Kimyası I / Const. Chemicals & Materials): 20 viable rooms AFTER constraint
 
-Teacher ID=4, Request="Laboratuvar"
-  Courses: 8
-    Course 9 (Analiz I / Analysis I):
+Teacher ID=99, Request="Amfi"
+  Courses: 1
+    Course 231 (Üniversite Seçmeli Ders):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-28 (Cap=40, Floor=1)
-    Course 10 (Analiz I / Analysis I):
-      Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-28 (Cap=40, Floor=1)
-    Course 13 (Analysis I / Calculus I / Analiz I):
+      Viable rooms BEFORE teacher pref: 68
+  Total room-course combinations banned: 0
+    Course 231 (Üniversite Seçmeli Ders): 68 viable rooms AFTER constraint
+
+Teacher ID=15, Request="Kat 1"
+  Courses: 9
+    Course 17 (Ayrık Yapılar):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 18 (Ayrık Yapılar):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-4 (Cap=40, Floor=0)
-    Course 14 (Analysis I / Calculus I / Analiz I):
+      Viable rooms BEFORE teacher pref: 68
+    Course 19 (Ayrık Yapılar):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-4 (Cap=40, Floor=0)
-    Course 112 (Malzeme Biliminde Karakterizasyon Metotları):
+      Viable rooms BEFORE teacher pref: 68
+    Course 110 (Kinematik ve Dinamik / Kinematics and Dynamics):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 111 (Kinematik ve Dinamik / Kinematics and Dynamics):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-22 (Cap=40, Floor=1)
-    Course 113 (Malzeme Biliminde Karakterizasyon Metotları):
+      Viable rooms BEFORE teacher pref: 68
+    Course 112 (Kinematik ve Dinamik / Kinematics and Dynamics):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-22 (Cap=40, Floor=1)
-    Course 158 (Statik / Statics / Statik):
+      Viable rooms BEFORE teacher pref: 68
+    Course 200 (Veritabanı Sistemleri):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 201 (Veritabanı Sistemleri):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-36 (Cap=40, Floor=1)
-    Course 159 (Statik / Statics / Statik):
+      Viable rooms BEFORE teacher pref: 68
+    Course 246 (İş Sağlığı ve Güvenliği I / OHS I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Detected Floor Request: 1
+  Rooms on Floor 1: 25
+  Total room-course combinations banned: 318
+    Course 17 (Ayrık Yapılar): 5 viable rooms AFTER constraint
+    Course 18 (Ayrık Yapılar): 20 viable rooms AFTER constraint
+    Course 19 (Ayrık Yapılar): 20 viable rooms AFTER constraint
+    Course 110 (Kinematik ve Dinamik / Kinematics and Dynamics): 5 viable rooms AFTER constraint
+    Course 111 (Kinematik ve Dinamik / Kinematics and Dynamics): 20 viable rooms AFTER constraint
+    Course 112 (Kinematik ve Dinamik / Kinematics and Dynamics): 20 viable rooms AFTER constraint
+    Course 200 (Veritabanı Sistemleri): 5 viable rooms AFTER constraint
+    Course 201 (Veritabanı Sistemleri): 20 viable rooms AFTER constraint
+    Course 246 (İş Sağlığı ve Güvenliği I / OHS I): 20 viable rooms AFTER constraint
+
+Teacher ID=103, Request="1. Kat"
+  Courses: 1
+    Course 65 (Elektrik-Elektronik Müh. Giriş / Intro to EE Engineering):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Detected Floor Request: 1
+  Rooms on Floor 1: 25
+  Total room-course combinations banned: 48
+    Course 65 (Elektrik-Elektronik Müh. Giriş / Intro to EE Engineering): 20 viable rooms AFTER constraint
+
+Teacher ID=54, Request="Laboratuvar"
+  Courses: 3
+    Course 73 (Elektroteknik / Elektrotechnik):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 74 (Elektroteknik / Elektrotechnik):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 75 (Elektroteknik / Elektrotechnik):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-36 (Cap=40, Floor=1)
+      Viable rooms BEFORE teacher pref: 68
   Detected Lab Request
   Lab Rooms: 15
-    Skipping Course 9 (theory course, teacher lab pref doesn't apply)
-    Skipping Course 10 (theory course, teacher lab pref doesn't apply)
-    Skipping Course 13 (theory course, teacher lab pref doesn't apply)
-    Skipping Course 14 (theory course, teacher lab pref doesn't apply)
-    Skipping Course 112 (theory course, teacher lab pref doesn't apply)
-    Skipping Course 113 (theory course, teacher lab pref doesn't apply)
-    Skipping Course 158 (theory course, teacher lab pref doesn't apply)
-    Skipping Course 159 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 74 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 75 (theory course, teacher lab pref doesn't apply)
   Total room-course combinations banned: 0
-    Course 9 (Analiz I / Analysis I): 1 viable rooms AFTER constraint
-    Course 10 (Analiz I / Analysis I): 1 viable rooms AFTER constraint
-    Course 13 (Analysis I / Calculus I / Analiz I): 1 viable rooms AFTER constraint
-    Course 14 (Analysis I / Calculus I / Analiz I): 1 viable rooms AFTER constraint
-    Course 112 (Malzeme Biliminde Karakterizasyon Metotları): 1 viable rooms AFTER constraint
-    Course 113 (Malzeme Biliminde Karakterizasyon Metotları): 1 viable rooms AFTER constraint
-    Course 158 (Statik / Statics / Statik): 1 viable rooms AFTER constraint
-    Course 159 (Statik / Statics / Statik): 1 viable rooms AFTER constraint
+    Course 73 (Elektroteknik / Elektrotechnik): 15 viable rooms AFTER constraint
+    Course 74 (Elektroteknik / Elektrotechnik): 68 viable rooms AFTER constraint
+    Course 75 (Elektroteknik / Elektrotechnik): 68 viable rooms AFTER constraint
+
+Teacher ID=62, Request="D101"
+  Courses: 2
+    Course 20 (Bilg. Bil. ve Prog. Giriş / Intro to CS & Programming):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 21 (Bilg. Bil. ve Prog. Giriş / Intro to CS & Programming):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Total room-course combinations banned: 0
+    Course 20 (Bilg. Bil. ve Prog. Giriş / Intro to CS & Programming): 15 viable rooms AFTER constraint
+    Course 21 (Bilg. Bil. ve Prog. Giriş / Intro to CS & Programming): 68 viable rooms AFTER constraint
+
+Teacher ID=26, Request="Kat 2"
+  Courses: 5
+    Course 147 (Proje II: Endüstri Projesi):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 148 (Proje II: Endüstri Projesi):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 216 (Yöneylem Araştırması I - Doğrusal Modeller):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 217 (Yöneylem Araştırması I - Doğrusal Modeller):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 241 (İnşaat Mühendisliğine Giriş / Intro to Civil Engineering):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Detected Floor Request: 2
+  Rooms on Floor 2: 31
+  Total room-course combinations banned: 178
+    Course 147 (Proje II: Endüstri Projesi): 5 viable rooms AFTER constraint
+    Course 148 (Proje II: Endüstri Projesi): 26 viable rooms AFTER constraint
+    Course 216 (Yöneylem Araştırması I - Doğrusal Modeller): 26 viable rooms AFTER constraint
+    Course 217 (Yöneylem Araştırması I - Doğrusal Modeller): 26 viable rooms AFTER constraint
+    Course 241 (İnşaat Mühendisliğine Giriş / Intro to Civil Engineering): 26 viable rooms AFTER constraint
+
+Teacher ID=18, Request="Laboratuvar"
+  Courses: 5
+    Course 117 (Malzeme Bilimi: Kariyere Giriş ve Etik):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 177 (Tasarım Teknikleri / Design Techniques):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 178 (Tasarım Teknikleri / Design Techniques):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 179 (Tasarım Teknikleri / Design Techniques):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 183 (Teknik Almanca I / Technisches Deutsch I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Detected Lab Request
+  Lab Rooms: 15
+    Skipping Course 117 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 178 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 179 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 183 (theory course, teacher lab pref doesn't apply)
+  Total room-course combinations banned: 0
+    Course 117 (Malzeme Bilimi: Kariyere Giriş ve Etik): 68 viable rooms AFTER constraint
+    Course 177 (Tasarım Teknikleri / Design Techniques): 15 viable rooms AFTER constraint
+    Course 178 (Tasarım Teknikleri / Design Techniques): 68 viable rooms AFTER constraint
+    Course 179 (Tasarım Teknikleri / Design Techniques): 68 viable rooms AFTER constraint
+    Course 183 (Teknik Almanca I / Technisches Deutsch I): 68 viable rooms AFTER constraint
+
+Teacher ID=77, Request="Zemin Kat"
+  Courses: 3
+    Course 218 (Zemin Mekaniği ve Temel İnşaatı II / Soil Mechanics II):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 219 (Zemin Mekaniği ve Temel İnşaatı II / Soil Mechanics II):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 220 (Zemin Mekaniği ve Temel İnşaatı II / Soil Mechanics II):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Detected Floor Request: 0
+  Rooms on Floor 0: 27
+  Total room-course combinations banned: 102
+    Course 218 (Zemin Mekaniği ve Temel İnşaatı II / Soil Mechanics II): 5 viable rooms AFTER constraint
+    Course 219 (Zemin Mekaniği ve Temel İnşaatı II / Soil Mechanics II): 22 viable rooms AFTER constraint
+    Course 220 (Zemin Mekaniği ve Temel İnşaatı II / Soil Mechanics II): 22 viable rooms AFTER constraint
+
+Teacher ID=84, Request="Lab"
+  Courses: 3
+    Course 43 (Diferansiyel Denklemler):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 44 (Diferansiyel Denklemler):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 45 (Diferansiyel Denklemler):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Detected Lab Request
+  Lab Rooms: 15
+    Skipping Course 44 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 45 (theory course, teacher lab pref doesn't apply)
+  Total room-course combinations banned: 0
+    Course 43 (Diferansiyel Denklemler): 15 viable rooms AFTER constraint
+    Course 44 (Diferansiyel Denklemler): 68 viable rooms AFTER constraint
+    Course 45 (Diferansiyel Denklemler): 68 viable rooms AFTER constraint
+
+Teacher ID=1, Request="Kat 2"
+  Courses: 1
+    Course 140 (Moleküler Biyoteknoloji'ye Giriş):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Detected Floor Request: 2
+  Rooms on Floor 2: 31
+  Total room-course combinations banned: 42
+    Course 140 (Moleküler Biyoteknoloji'ye Giriş): 26 viable rooms AFTER constraint
+
+Teacher ID=13, Request="Giriş Kat"
+  Courses: 1
+    Course 180 (Technical German I / Teknik Almanca I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Detected Floor Request: 0
+  Rooms on Floor 0: 27
+  Total room-course combinations banned: 46
+    Course 180 (Technical German I / Teknik Almanca I): 22 viable rooms AFTER constraint
 
 Teacher ID=76, Request="1. Kat"
   Courses: 2
-    Course 231 (İstatistik / Statistik):
+    Course 169 (Statik / Statics / Statik):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-22 (Cap=40, Floor=1)
-    Course 232 (İstatistik / Statistik):
+      Viable rooms BEFORE teacher pref: 68
+    Course 170 (Statik / Statics / Statik):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-22 (Cap=40, Floor=1)
+      Viable rooms BEFORE teacher pref: 68
   Detected Floor Request: 1
-  Rooms on Floor 1: 27
-  Total room-course combinations banned: 0
-    Course 231 (İstatistik / Statistik): 1 viable rooms AFTER constraint
-    Course 232 (İstatistik / Statistik): 1 viable rooms AFTER constraint
+  Rooms on Floor 1: 25
+  Total room-course combinations banned: 96
+    Course 169 (Statik / Statics / Statik): 20 viable rooms AFTER constraint
+    Course 170 (Statik / Statics / Statik): 20 viable rooms AFTER constraint
 
-Teacher ID=96, Request="Kat 2"
-  Courses: 1
-    Course 222 (İleri İngilizce I / Advanced English I):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-46 (Cap=40, Floor=2)
-  Detected Floor Request: 2
-  Rooms on Floor 2: 23
-  Total room-course combinations banned: 0
-    Course 222 (İleri İngilizce I / Advanced English I): 1 viable rooms AFTER constraint
-
-Teacher ID=8, Request="Lab"
+Teacher ID=9, Request="Amfi"
   Courses: 4
-    Course 196 (Yapı Statiği I / Structural Analysis I):
-      Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-4 (Cap=40, Floor=0)
-    Course 197 (Yapı Statiği I / Structural Analysis I):
+    Course 13 (Analysis I / Calculus I / Analiz I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-8 (Cap=40, Floor=0)
-    Course 198 (Yapı Statiği I / Structural Analysis I):
+      Viable rooms BEFORE teacher pref: 68
+    Course 14 (Analysis I / Calculus I / Analiz I):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-8 (Cap=40, Floor=0)
-    Course 235 (İş Sağlığı ve Güvenliği I / OHS I):
+      Viable rooms BEFORE teacher pref: 68
+    Course 214 (Yenilenebilir Enerji Teknolojileri / Erneuerbare...):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-43 (Cap=40, Floor=1)
-  Detected Lab Request
-  Lab Rooms: 15
-    Skipping Course 197 (theory course, teacher lab pref doesn't apply)
-    Skipping Course 198 (theory course, teacher lab pref doesn't apply)
-    Skipping Course 235 (theory course, teacher lab pref doesn't apply)
+      Viable rooms BEFORE teacher pref: 68
+    Course 215 (Yenilenebilir Enerji Teknolojileri / Erneuerbare...):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
   Total room-course combinations banned: 0
-    Course 196 (Yapı Statiği I / Structural Analysis I): 1 viable rooms AFTER constraint
-    Course 197 (Yapı Statiği I / Structural Analysis I): 1 viable rooms AFTER constraint
-    Course 198 (Yapı Statiği I / Structural Analysis I): 1 viable rooms AFTER constraint
-    Course 235 (İş Sağlığı ve Güvenliği I / OHS I): 1 viable rooms AFTER constraint
+    Course 13 (Analysis I / Calculus I / Analiz I): 68 viable rooms AFTER constraint
+    Course 14 (Analysis I / Calculus I / Analiz I): 68 viable rooms AFTER constraint
+    Course 214 (Yenilenebilir Enerji Teknolojileri / Erneuerbare...): 68 viable rooms AFTER constraint
+    Course 215 (Yenilenebilir Enerji Teknolojileri / Erneuerbare...): 68 viable rooms AFTER constraint
 
 Teacher ID=32, Request="Amfi"
-  Courses: 1
-    Course 184 (Türkçe I):
+  Courses: 9
+    Course 79 (English I / İngilizce I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-14 (Cap=40, Floor=0)
+      Viable rooms BEFORE teacher pref: 68
+    Course 120 (Malzeme Biliminin Temelleri):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 121 (Malzeme Biliminin Temelleri):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 134 (Modern Fizik / Modern Physics):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 135 (Modern Fizik / Modern Physics):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 136 (Modern Fizik / Modern Physics):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 142 (Proje I):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 143 (Proje I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 238 (İngilizce III):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
   Total room-course combinations banned: 0
-    Course 184 (Türkçe I): 1 viable rooms AFTER constraint
+    Course 79 (English I / İngilizce I): 68 viable rooms AFTER constraint
+    Course 120 (Malzeme Biliminin Temelleri): 68 viable rooms AFTER constraint
+    Course 121 (Malzeme Biliminin Temelleri): 68 viable rooms AFTER constraint
+    Course 134 (Modern Fizik / Modern Physics): 15 viable rooms AFTER constraint
+    Course 135 (Modern Fizik / Modern Physics): 68 viable rooms AFTER constraint
+    Course 136 (Modern Fizik / Modern Physics): 68 viable rooms AFTER constraint
+    Course 142 (Proje I): 15 viable rooms AFTER constraint
+    Course 143 (Proje I): 68 viable rooms AFTER constraint
+    Course 238 (İngilizce III): 68 viable rooms AFTER constraint
 
 Teacher ID=83, Request="1. Kat"
-  Courses: 3
-    Course 128 (Modern Fizik / Modern Physics):
+  Courses: 6
+    Course 35 (Biyokimya I):
       Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-10 (Cap=40, Floor=1)
-    Course 129 (Modern Fizik / Modern Physics):
+      Viable rooms BEFORE teacher pref: 15
+    Course 36 (Biyokimya I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-32 (Cap=40, Floor=1)
-    Course 130 (Modern Fizik / Modern Physics):
+      Viable rooms BEFORE teacher pref: 68
+    Course 37 (Biyokimya I):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-32 (Cap=40, Floor=1)
+      Viable rooms BEFORE teacher pref: 68
+    Course 84 (Fizik I / Physik I):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 85 (Fizik I / Physik I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 86 (Fizik I / Physik I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
   Detected Floor Request: 1
-  Rooms on Floor 1: 27
+  Rooms on Floor 1: 25
+  Total room-course combinations banned: 212
+    Course 35 (Biyokimya I): 5 viable rooms AFTER constraint
+    Course 36 (Biyokimya I): 20 viable rooms AFTER constraint
+    Course 37 (Biyokimya I): 20 viable rooms AFTER constraint
+    Course 84 (Fizik I / Physik I): 5 viable rooms AFTER constraint
+    Course 85 (Fizik I / Physik I): 20 viable rooms AFTER constraint
+    Course 86 (Fizik I / Physik I): 20 viable rooms AFTER constraint
+
+Teacher ID=16, Request="Amfi"
+  Courses: 5
+    Course 46 (Diferansiyel Denklemler / Diferentialgleichungen):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 47 (Diferansiyel Denklemler / Diferentialgleichungen):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 48 (Diferansiyel Denklemler / Diferentialgleichungen):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 227 (Zorunlu Seçmeli Ders):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 228 (Zorunlu Seçmeli Ders):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
   Total room-course combinations banned: 0
-    Course 128 (Modern Fizik / Modern Physics): 1 viable rooms AFTER constraint
-    Course 129 (Modern Fizik / Modern Physics): 1 viable rooms AFTER constraint
-    Course 130 (Modern Fizik / Modern Physics): 1 viable rooms AFTER constraint
+    Course 46 (Diferansiyel Denklemler / Diferentialgleichungen): 15 viable rooms AFTER constraint
+    Course 47 (Diferansiyel Denklemler / Diferentialgleichungen): 68 viable rooms AFTER constraint
+    Course 48 (Diferansiyel Denklemler / Diferentialgleichungen): 68 viable rooms AFTER constraint
+    Course 227 (Zorunlu Seçmeli Ders): 68 viable rooms AFTER constraint
+    Course 228 (Zorunlu Seçmeli Ders): 68 viable rooms AFTER constraint
+
+Teacher ID=69, Request="D101"
+  Courses: 2
+    Course 188 (Teknik Çizim ve CAD / Technisches Zeichnen und CAD):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 189 (Teknik Çizim ve CAD / Technisches Zeichnen und CAD):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Total room-course combinations banned: 0
+    Course 188 (Teknik Çizim ve CAD / Technisches Zeichnen und CAD): 15 viable rooms AFTER constraint
+    Course 189 (Teknik Çizim ve CAD / Technisches Zeichnen und CAD): 68 viable rooms AFTER constraint
 
 Teacher ID=19, Request="D205"
   Courses: 2
-    Course 24 (Bilgisayar Ağları):
+    Course 145 (Proje I (Tez Hazırlık ve Seminer) / Projekt I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-5 (Cap=40, Floor=0)
-    Course 25 (Bilgisayar Ağları):
+      Viable rooms BEFORE teacher pref: 68
+    Course 146 (Proje I (Tez Hazırlık ve Seminer) / Projekt I):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-5 (Cap=40, Floor=0)
+      Viable rooms BEFORE teacher pref: 68
   Total room-course combinations banned: 0
-    Course 24 (Bilgisayar Ağları): 1 viable rooms AFTER constraint
-    Course 25 (Bilgisayar Ağları): 1 viable rooms AFTER constraint
+    Course 145 (Proje I (Tez Hazırlık ve Seminer) / Projekt I): 68 viable rooms AFTER constraint
+    Course 146 (Proje I (Tez Hazırlık ve Seminer) / Projekt I): 68 viable rooms AFTER constraint
 
 Teacher ID=45, Request="Giriş Kat"
-  Courses: 9
-    Course 15 (Atatürk İlkeleri ve İnkılap Tarihi I):
+  Courses: 5
+    Course 58 (Elektrik Devreleri I / Electrical Circuits I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-20 (Cap=40, Floor=0)
-    Course 52 (Electrical Circuits I / Elektrik Devreleri I):
+      Viable rooms BEFORE teacher pref: 68
+    Course 59 (Elektrik Devreleri I / Electrical Circuits I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 70 (Elektronik I: Yarı İletken El. / Electronics I):
       Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-4 (Cap=40, Floor=0)
-    Course 53 (Electrical Circuits I / Elektrik Devreleri I):
+      Viable rooms BEFORE teacher pref: 15
+    Course 71 (Elektronik I: Yarı İletken El. / Electronics I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Amfi-1 (Cap=70, Floor=0)
-    Course 54 (Electrical Circuits I / Elektrik Devreleri I):
+      Viable rooms BEFORE teacher pref: 68
+    Course 72 (Elektronik I: Yarı İletken El. / Electronics I):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Amfi-1 (Cap=70, Floor=0)
-    Course 146 (Signals and Systems / Sinyaller ve Sistemler):
-      Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-3 (Cap=40, Floor=0)
-    Course 147 (Signals and Systems / Sinyaller ve Sistemler):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-12 (Cap=40, Floor=0)
-    Course 148 (Signals and Systems / Sinyaller ve Sistemler):
-      Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-12 (Cap=40, Floor=0)
-    Course 187 (Ulaştırma / Transportation):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-13 (Cap=40, Floor=0)
-    Course 188 (Ulaştırma / Transportation):
-      Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-13 (Cap=40, Floor=0)
+      Viable rooms BEFORE teacher pref: 68
   Detected Floor Request: 0
-  Rooms on Floor 0: 28
-  Total room-course combinations banned: 0
-    Course 15 (Atatürk İlkeleri ve İnkılap Tarihi I): 1 viable rooms AFTER constraint
-    Course 52 (Electrical Circuits I / Elektrik Devreleri I): 1 viable rooms AFTER constraint
-    Course 53 (Electrical Circuits I / Elektrik Devreleri I): 1 viable rooms AFTER constraint
-    Course 54 (Electrical Circuits I / Elektrik Devreleri I): 1 viable rooms AFTER constraint
-    Course 146 (Signals and Systems / Sinyaller ve Sistemler): 1 viable rooms AFTER constraint
-    Course 147 (Signals and Systems / Sinyaller ve Sistemler): 1 viable rooms AFTER constraint
-    Course 148 (Signals and Systems / Sinyaller ve Sistemler): 1 viable rooms AFTER constraint
-    Course 187 (Ulaştırma / Transportation): 1 viable rooms AFTER constraint
-    Course 188 (Ulaştırma / Transportation): 1 viable rooms AFTER constraint
+  Rooms on Floor 0: 27
+  Total room-course combinations banned: 194
+    Course 58 (Elektrik Devreleri I / Electrical Circuits I): 22 viable rooms AFTER constraint
+    Course 59 (Elektrik Devreleri I / Electrical Circuits I): 22 viable rooms AFTER constraint
+    Course 70 (Elektronik I: Yarı İletken El. / Electronics I): 5 viable rooms AFTER constraint
+    Course 71 (Elektronik I: Yarı İletken El. / Electronics I): 22 viable rooms AFTER constraint
+    Course 72 (Elektronik I: Yarı İletken El. / Electronics I): 22 viable rooms AFTER constraint
 
 Teacher ID=51, Request="D205"
-  Courses: 1
-    Course 223 (İleri İngilizce I / Fortgeschrittenes Englisch I):
+  Courses: 4
+    Course 194 (Turkish I / Türkçe I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Amfi-2 (Cap=70, Floor=0)
-  Total room-course combinations banned: 0
-    Course 223 (İleri İngilizce I / Fortgeschrittenes Englisch I): 1 viable rooms AFTER constraint
-
-Teacher ID=36, Request="Kat 2"
-  Courses: 2
-    Course 162 (Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım):
+      Viable rooms BEFORE teacher pref: 68
+    Course 207 (Yapı Statiği I / Structural Analysis I):
       Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-12 (Cap=40, Floor=2)
-    Course 163 (Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım):
+      Viable rooms BEFORE teacher pref: 15
+    Course 208 (Yapı Statiği I / Structural Analysis I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-51 (Cap=40, Floor=2)
-  Detected Floor Request: 2
-  Rooms on Floor 2: 23
+      Viable rooms BEFORE teacher pref: 68
+    Course 209 (Yapı Statiği I / Structural Analysis I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
   Total room-course combinations banned: 0
-    Course 162 (Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım): 1 viable rooms AFTER constraint
-    Course 163 (Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım): 1 viable rooms AFTER constraint
+    Course 194 (Turkish I / Türkçe I): 68 viable rooms AFTER constraint
+    Course 207 (Yapı Statiği I / Structural Analysis I): 15 viable rooms AFTER constraint
+    Course 208 (Yapı Statiği I / Structural Analysis I): 68 viable rooms AFTER constraint
+    Course 209 (Yapı Statiği I / Structural Analysis I): 68 viable rooms AFTER constraint
 
 Teacher ID=42, Request="D101"
-  Courses: 1
-    Course 34 (Bilimsel Çalışma Yöntemleri):
+  Courses: 4
+    Course 9 (Analiz I / Analysis I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-32 (Cap=40, Floor=1)
+      Viable rooms BEFORE teacher pref: 68
+    Course 10 (Analiz I / Analysis I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 41 (Design Techniques I (CAD) / Tasarım Tek. I):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 42 (Design Techniques I (CAD) / Tasarım Tek. I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
   Total room-course combinations banned: 0
-    Course 34 (Bilimsel Çalışma Yöntemleri): 1 viable rooms AFTER constraint
+    Course 9 (Analiz I / Analysis I): 68 viable rooms AFTER constraint
+    Course 10 (Analiz I / Analysis I): 68 viable rooms AFTER constraint
+    Course 41 (Design Techniques I (CAD) / Tasarım Tek. I): 15 viable rooms AFTER constraint
+    Course 42 (Design Techniques I (CAD) / Tasarım Tek. I): 68 viable rooms AFTER constraint
 
-Teacher ID=50, Request="Kat 2"
-  Courses: 7
-    Course 17 (Ayrık Yapılar):
-      Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-15 (Cap=40, Floor=2)
-    Course 18 (Ayrık Yapılar):
+Teacher ID=50, Request="Laboratuvar"
+  Courses: 4
+    Course 122 (Malzeme Teknolojisi / Material Science):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-49 (Cap=40, Floor=2)
-    Course 19 (Ayrık Yapılar):
+      Viable rooms BEFORE teacher pref: 68
+    Course 123 (Malzeme Teknolojisi / Material Science):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-49 (Cap=40, Floor=2)
-    Course 46 (Diferansiyel Denklemler / Differential Equations):
-      Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-12 (Cap=40, Floor=2)
-    Course 47 (Diferansiyel Denklemler / Differential Equations):
+      Viable rooms BEFORE teacher pref: 68
+    Course 237 (İngilizce I / English I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-52 (Cap=40, Floor=2)
-    Course 48 (Diferansiyel Denklemler / Differential Equations):
-      Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-52 (Cap=40, Floor=2)
-    Course 228 (İngilizce III / Englisch III):
+      Viable rooms BEFORE teacher pref: 68
+    Course 240 (İngilizce III / English III):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-48 (Cap=40, Floor=2)
-  Detected Floor Request: 2
-  Rooms on Floor 2: 23
+      Viable rooms BEFORE teacher pref: 68
+  Detected Lab Request
+  Lab Rooms: 15
+    Skipping Course 122 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 123 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 237 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 240 (theory course, teacher lab pref doesn't apply)
   Total room-course combinations banned: 0
-    Course 17 (Ayrık Yapılar): 1 viable rooms AFTER constraint
-    Course 18 (Ayrık Yapılar): 1 viable rooms AFTER constraint
-    Course 19 (Ayrık Yapılar): 1 viable rooms AFTER constraint
-    Course 46 (Diferansiyel Denklemler / Differential Equations): 1 viable rooms AFTER constraint
-    Course 47 (Diferansiyel Denklemler / Differential Equations): 1 viable rooms AFTER constraint
-    Course 48 (Diferansiyel Denklemler / Differential Equations): 1 viable rooms AFTER constraint
-    Course 228 (İngilizce III / Englisch III): 1 viable rooms AFTER constraint
+    Course 122 (Malzeme Teknolojisi / Material Science): 68 viable rooms AFTER constraint
+    Course 123 (Malzeme Teknolojisi / Material Science): 68 viable rooms AFTER constraint
+    Course 237 (İngilizce I / English I): 68 viable rooms AFTER constraint
+    Course 240 (İngilizce III / English III): 68 viable rooms AFTER constraint
 
 Teacher ID=38, Request="Giriş Kat"
-  Courses: 7
-    Course 81 (Fizik I / Physik I):
-      Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-1 (Cap=40, Floor=0)
-    Course 82 (Fizik I / Physik I):
+  Courses: 5
+    Course 16 (Atatürks Principles I / Atatürk İlkeleri I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-3 (Cap=40, Floor=0)
-    Course 83 (Fizik I / Physik I):
+      Viable rooms BEFORE teacher pref: 68
+    Course 144 (Proje I):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-3 (Cap=40, Floor=0)
-    Course 104 (Kinematik ve Dinamik / Kinematics and Dynamics):
+      Viable rooms BEFORE teacher pref: 68
+    Course 160 (Sinyaller ve Sistemler / Signals and Systems):
       Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-5 (Cap=40, Floor=0)
-    Course 105 (Kinematik ve Dinamik / Kinematics and Dynamics):
+      Viable rooms BEFORE teacher pref: 15
+    Course 161 (Sinyaller ve Sistemler / Signals and Systems):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-11 (Cap=40, Floor=0)
-    Course 106 (Kinematik ve Dinamik / Kinematics and Dynamics):
+      Viable rooms BEFORE teacher pref: 68
+    Course 162 (Sinyaller ve Sistemler / Signals and Systems):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-11 (Cap=40, Floor=0)
-    Course 186 (Türkçe I / Türkisch I):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-20 (Cap=40, Floor=0)
+      Viable rooms BEFORE teacher pref: 68
   Detected Floor Request: 0
-  Rooms on Floor 0: 28
-  Total room-course combinations banned: 0
-    Course 81 (Fizik I / Physik I): 1 viable rooms AFTER constraint
-    Course 82 (Fizik I / Physik I): 1 viable rooms AFTER constraint
-    Course 83 (Fizik I / Physik I): 1 viable rooms AFTER constraint
-    Course 104 (Kinematik ve Dinamik / Kinematics and Dynamics): 1 viable rooms AFTER constraint
-    Course 105 (Kinematik ve Dinamik / Kinematics and Dynamics): 1 viable rooms AFTER constraint
-    Course 106 (Kinematik ve Dinamik / Kinematics and Dynamics): 1 viable rooms AFTER constraint
-    Course 186 (Türkçe I / Türkisch I): 1 viable rooms AFTER constraint
+  Rooms on Floor 0: 27
+  Total room-course combinations banned: 194
+    Course 16 (Atatürks Principles I / Atatürk İlkeleri I): 22 viable rooms AFTER constraint
+    Course 144 (Proje I): 22 viable rooms AFTER constraint
+    Course 160 (Sinyaller ve Sistemler / Signals and Systems): 5 viable rooms AFTER constraint
+    Course 161 (Sinyaller ve Sistemler / Signals and Systems): 22 viable rooms AFTER constraint
+    Course 162 (Sinyaller ve Sistemler / Signals and Systems): 22 viable rooms AFTER constraint
 
 Teacher ID=10, Request="Kat 2"
-  Courses: 6
-    Course 32 (Bilgisayar ve Toplum Semineri):
+  Courses: 1
+    Course 196 (Türkçe I / Turkish I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-59 (Cap=40, Floor=2)
-    Course 84 (Fiziksel Kimya I):
-      Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-15 (Cap=40, Floor=2)
-    Course 85 (Fiziksel Kimya I):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Amfi-4 (Cap=70, Floor=2)
-    Course 86 (Fiziksel Kimya I):
-      Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Amfi-4 (Cap=70, Floor=2)
-    Course 205 (Yöneylem Araştırması I - Doğrusal Modeller):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-55 (Cap=40, Floor=2)
-    Course 206 (Yöneylem Araştırması I - Doğrusal Modeller):
-      Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-55 (Cap=40, Floor=2)
+      Viable rooms BEFORE teacher pref: 68
   Detected Floor Request: 2
-  Rooms on Floor 2: 23
-  Total room-course combinations banned: 0
-    Course 32 (Bilgisayar ve Toplum Semineri): 1 viable rooms AFTER constraint
-    Course 84 (Fiziksel Kimya I): 1 viable rooms AFTER constraint
-    Course 85 (Fiziksel Kimya I): 1 viable rooms AFTER constraint
-    Course 86 (Fiziksel Kimya I): 1 viable rooms AFTER constraint
-    Course 205 (Yöneylem Araştırması I - Doğrusal Modeller): 1 viable rooms AFTER constraint
-    Course 206 (Yöneylem Araştırması I - Doğrusal Modeller): 1 viable rooms AFTER constraint
+  Rooms on Floor 2: 31
+  Total room-course combinations banned: 42
+    Course 196 (Türkçe I / Turkish I): 26 viable rooms AFTER constraint
 
 Teacher ID=81, Request="Kat 2"
-  Courses: 4
-    Course 55 (Elektrik Devreleri I / Electrical Circuits I):
+  Courses: 8
+    Course 38 (Biyoloji):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 39 (Biyoloji):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-51 (Cap=40, Floor=2)
-    Course 56 (Elektrik Devreleri I / Electrical Circuits I):
+      Viable rooms BEFORE teacher pref: 68
+    Course 40 (Biyoloji):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-51 (Cap=40, Floor=2)
-    Course 144 (Seçmeli Ders):
+      Viable rooms BEFORE teacher pref: 68
+    Course 131 (Mekaniğin Temelleri / Fundamentals of Mechanics):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 132 (Mekaniğin Temelleri / Fundamentals of Mechanics):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-53 (Cap=40, Floor=2)
-    Course 145 (Seçmeli Ders):
+      Viable rooms BEFORE teacher pref: 68
+    Course 133 (Mekaniğin Temelleri / Fundamentals of Mechanics):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-53 (Cap=40, Floor=2)
+      Viable rooms BEFORE teacher pref: 68
+    Course 155 (Seçmeli Ders):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 156 (Seçmeli Ders):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
   Detected Floor Request: 2
-  Rooms on Floor 2: 23
-  Total room-course combinations banned: 0
-    Course 55 (Elektrik Devreleri I / Electrical Circuits I): 1 viable rooms AFTER constraint
-    Course 56 (Elektrik Devreleri I / Electrical Circuits I): 1 viable rooms AFTER constraint
-    Course 144 (Seçmeli Ders): 1 viable rooms AFTER constraint
-    Course 145 (Seçmeli Ders): 1 viable rooms AFTER constraint
+  Rooms on Floor 2: 31
+  Total room-course combinations banned: 272
+    Course 38 (Biyoloji): 5 viable rooms AFTER constraint
+    Course 39 (Biyoloji): 26 viable rooms AFTER constraint
+    Course 40 (Biyoloji): 26 viable rooms AFTER constraint
+    Course 131 (Mekaniğin Temelleri / Fundamentals of Mechanics): 5 viable rooms AFTER constraint
+    Course 132 (Mekaniğin Temelleri / Fundamentals of Mechanics): 26 viable rooms AFTER constraint
+    Course 133 (Mekaniğin Temelleri / Fundamentals of Mechanics): 26 viable rooms AFTER constraint
+    Course 155 (Seçmeli Ders): 26 viable rooms AFTER constraint
+    Course 156 (Seçmeli Ders): 26 viable rooms AFTER constraint
 
-Teacher ID=7, Request="1. Kat"
-  Courses: 2
-    Course 212 (Zorunlu Seçmeli Ders):
+Teacher ID=7, Request="Amfi"
+  Courses: 11
+    Course 30 (Bilgisayar Organizasyonu):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 31 (Bilgisayar Organizasyonu):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-37 (Cap=40, Floor=1)
-    Course 213 (Zorunlu Seçmeli Ders):
+      Viable rooms BEFORE teacher pref: 68
+    Course 63 (Elektrik ve Elektronik Müh. Temelleri / Fund. of EE Eng.):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 64 (Elektrik ve Elektronik Müh. Temelleri / Fund. of EE Eng.):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-37 (Cap=40, Floor=1)
-  Detected Floor Request: 1
-  Rooms on Floor 1: 27
+      Viable rooms BEFORE teacher pref: 68
+    Course 99 (Kimya I):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 100 (Kimya I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 101 (Kimya I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 126 (Mantık):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 127 (Mantık):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 173 (Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 174 (Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
   Total room-course combinations banned: 0
-    Course 212 (Zorunlu Seçmeli Ders): 1 viable rooms AFTER constraint
-    Course 213 (Zorunlu Seçmeli Ders): 1 viable rooms AFTER constraint
+    Course 30 (Bilgisayar Organizasyonu): 15 viable rooms AFTER constraint
+    Course 31 (Bilgisayar Organizasyonu): 68 viable rooms AFTER constraint
+    Course 63 (Elektrik ve Elektronik Müh. Temelleri / Fund. of EE Eng.): 68 viable rooms AFTER constraint
+    Course 64 (Elektrik ve Elektronik Müh. Temelleri / Fund. of EE Eng.): 68 viable rooms AFTER constraint
+    Course 99 (Kimya I): 15 viable rooms AFTER constraint
+    Course 100 (Kimya I): 68 viable rooms AFTER constraint
+    Course 101 (Kimya I): 68 viable rooms AFTER constraint
+    Course 126 (Mantık): 68 viable rooms AFTER constraint
+    Course 127 (Mantık): 68 viable rooms AFTER constraint
+    Course 173 (Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım): 15 viable rooms AFTER constraint
+    Course 174 (Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım): 68 viable rooms AFTER constraint
+
+Teacher ID=11, Request="Amfi"
+  Courses: 3
+    Course 32 (Bilgisayar ve Toplum Semineri):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 212 (Yatırım ve Finansman):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 213 (Yatırım ve Finansman):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Total room-course combinations banned: 0
+    Course 32 (Bilgisayar ve Toplum Semineri): 68 viable rooms AFTER constraint
+    Course 212 (Yatırım ve Finansman): 68 viable rooms AFTER constraint
+    Course 213 (Yatırım ve Finansman): 68 viable rooms AFTER constraint
 
 Teacher ID=12, Request="Giriş Kat"
   Courses: 2
-    Course 189 (Veritabanı Sistemleri):
-      Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-2 (Cap=40, Floor=0)
-    Course 190 (Veritabanı Sistemleri):
+    Course 167 (Statik / Statics):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-18 (Cap=40, Floor=0)
+      Viable rooms BEFORE teacher pref: 68
+    Course 168 (Statik / Statics):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
   Detected Floor Request: 0
-  Rooms on Floor 0: 28
-  Total room-course combinations banned: 0
-    Course 189 (Veritabanı Sistemleri): 1 viable rooms AFTER constraint
-    Course 190 (Veritabanı Sistemleri): 1 viable rooms AFTER constraint
+  Rooms on Floor 0: 27
+  Total room-course combinations banned: 92
+    Course 167 (Statik / Statics): 22 viable rooms AFTER constraint
+    Course 168 (Statik / Statics): 22 viable rooms AFTER constraint
 
 Teacher ID=6, Request="Zemin Kat"
-  Courses: 2
-    Course 191 (Veritabanı Sistemleri):
+  Courses: 7
+    Course 1 (Akışkanlar Mekaniği / Strömungsmechanik):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 2 (Akışkanlar Mekaniği / Strömungsmechanik):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 11 (Analiz I / Calculus I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 12 (Analiz I / Calculus I):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 90 (Hücre Biyolojisi):
       Type: Lab, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Lab-1 (Cap=40, Floor=0)
-    Course 192 (Veritabanı Sistemleri):
+      Viable rooms BEFORE teacher pref: 15
+    Course 91 (Hücre Biyolojisi):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-17 (Cap=40, Floor=0)
-  Detected Floor Request: 0
-  Rooms on Floor 0: 28
-  Total room-course combinations banned: 0
-    Course 191 (Veritabanı Sistemleri): 1 viable rooms AFTER constraint
-    Course 192 (Veritabanı Sistemleri): 1 viable rooms AFTER constraint
-
-Teacher ID=21, Request="Zemin Kat"
-  Courses: 2
-    Course 218 (Zorunlu Seçmeli Ders):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-17 (Cap=40, Floor=0)
-    Course 219 (Zorunlu Seçmeli Ders):
+      Viable rooms BEFORE teacher pref: 68
+    Course 92 (Hücre Biyolojisi):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-17 (Cap=40, Floor=0)
+      Viable rooms BEFORE teacher pref: 68
   Detected Floor Request: 0
-  Rooms on Floor 0: 28
-  Total room-course combinations banned: 0
-    Course 218 (Zorunlu Seçmeli Ders): 1 viable rooms AFTER constraint
-    Course 219 (Zorunlu Seçmeli Ders): 1 viable rooms AFTER constraint
+  Rooms on Floor 0: 27
+  Total room-course combinations banned: 286
+    Course 1 (Akışkanlar Mekaniği / Strömungsmechanik): 22 viable rooms AFTER constraint
+    Course 2 (Akışkanlar Mekaniği / Strömungsmechanik): 22 viable rooms AFTER constraint
+    Course 11 (Analiz I / Calculus I): 22 viable rooms AFTER constraint
+    Course 12 (Analiz I / Calculus I): 22 viable rooms AFTER constraint
+    Course 90 (Hücre Biyolojisi): 5 viable rooms AFTER constraint
+    Course 91 (Hücre Biyolojisi): 22 viable rooms AFTER constraint
+    Course 92 (Hücre Biyolojisi): 22 viable rooms AFTER constraint
 
-Teacher ID=46, Request="Zemin Kat"
+Teacher ID=66, Request="Giriş Kat"
   Courses: 3
-    Course 131 (Occupational Safety I / İş Sağlığı ve Güvenliği I):
+    Course 184 (Teknik Mekanik):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 185 (Teknik Mekanik):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-1 (Cap=40, Floor=0)
-    Course 154 (Statik / Statics):
-      Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-6 (Cap=40, Floor=0)
-    Course 155 (Statik / Statics):
+      Viable rooms BEFORE teacher pref: 68
+    Course 186 (Teknik Mekanik):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-6 (Cap=40, Floor=0)
+      Viable rooms BEFORE teacher pref: 68
   Detected Floor Request: 0
-  Rooms on Floor 0: 28
-  Total room-course combinations banned: 0
-    Course 131 (Occupational Safety I / İş Sağlığı ve Güvenliği I): 1 viable rooms AFTER constraint
-    Course 154 (Statik / Statics): 1 viable rooms AFTER constraint
-    Course 155 (Statik / Statics): 1 viable rooms AFTER constraint
+  Rooms on Floor 0: 27
+  Total room-course combinations banned: 102
+    Course 184 (Teknik Mekanik): 5 viable rooms AFTER constraint
+    Course 185 (Teknik Mekanik): 22 viable rooms AFTER constraint
+    Course 186 (Teknik Mekanik): 22 viable rooms AFTER constraint
 
-Teacher ID=59, Request="Laboratuvar"
-  Courses: 2
-    Course 160 (Takım Tezgâhları / Machine Tools):
+Teacher ID=93, Request="Laboratuvar"
+  Courses: 1
+    Course 76 (Endüstri Mühendisliğine Giriş):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-40 (Cap=40, Floor=1)
-    Course 161 (Takım Tezgâhları / Machine Tools):
-      Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-40 (Cap=40, Floor=1)
+      Viable rooms BEFORE teacher pref: 68
   Detected Lab Request
   Lab Rooms: 15
-    Skipping Course 160 (theory course, teacher lab pref doesn't apply)
-    Skipping Course 161 (theory course, teacher lab pref doesn't apply)
+    Skipping Course 76 (theory course, teacher lab pref doesn't apply)
   Total room-course combinations banned: 0
-    Course 160 (Takım Tezgâhları / Machine Tools): 1 viable rooms AFTER constraint
-    Course 161 (Takım Tezgâhları / Machine Tools): 1 viable rooms AFTER constraint
+    Course 76 (Endüstri Mühendisliğine Giriş): 68 viable rooms AFTER constraint
 
-Teacher ID=63, Request="D205"
+Teacher ID=85, Request="Amfi"
   Courses: 2
-    Course 134 (Proje I (Tez Hazırlık ve Seminer) / Projekt I):
+    Course 192 (Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-36 (Cap=40, Floor=1)
-    Course 135 (Proje I (Tez Hazırlık ve Seminer) / Projekt I):
+      Viable rooms BEFORE teacher pref: 68
+    Course 193 (Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics):
       Type: Uygulama, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-36 (Cap=40, Floor=1)
+      Viable rooms BEFORE teacher pref: 68
   Total room-course combinations banned: 0
-    Course 134 (Proje I (Tez Hazırlık ve Seminer) / Projekt I): 1 viable rooms AFTER constraint
-    Course 135 (Proje I (Tez Hazırlık ve Seminer) / Projekt I): 1 viable rooms AFTER constraint
+    Course 192 (Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics): 68 viable rooms AFTER constraint
+    Course 193 (Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics): 68 viable rooms AFTER constraint
 
-Teacher ID=91, Request="Kat 2"
+Teacher ID=46, Request="Giriş Kat"
+  Courses: 2
+    Course 116 (Makine Mühendisliğine Giriş / Intro to Mech. Engineering):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 195 (Türkçe I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Detected Floor Request: 0
+  Rooms on Floor 0: 27
+  Total room-course combinations banned: 92
+    Course 116 (Makine Mühendisliğine Giriş / Intro to Mech. Engineering): 22 viable rooms AFTER constraint
+    Course 195 (Türkçe I): 22 viable rooms AFTER constraint
+
+Teacher ID=27, Request="D205"
+  Courses: 4
+    Course 52 (Differential Equations / Diferansiyel Denklemler):
+      Type: Lab, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 15
+    Course 53 (Differential Equations / Diferansiyel Denklemler):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 54 (Differential Equations / Diferansiyel Denklemler):
+      Type: Uygulama, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+    Course 141 (Occupational Safety I / İş Sağlığı ve Güvenliği I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Total room-course combinations banned: 0
+    Course 52 (Differential Equations / Diferansiyel Denklemler): 15 viable rooms AFTER constraint
+    Course 53 (Differential Equations / Diferansiyel Denklemler): 68 viable rooms AFTER constraint
+    Course 54 (Differential Equations / Diferansiyel Denklemler): 68 viable rooms AFTER constraint
+    Course 141 (Occupational Safety I / İş Sağlığı ve Güvenliği I): 68 viable rooms AFTER constraint
+
+Teacher ID=91, Request="D101"
+  Courses: 1
+    Course 197 (Türkçe I / Türkisch I):
+      Type: Teori, Capacity Need: Unknown
+      Viable rooms BEFORE teacher pref: 68
+  Total room-course combinations banned: 0
+    Course 197 (Türkçe I / Türkisch I): 68 viable rooms AFTER constraint
+
+Teacher ID=33, Request="Kat 2"
   Courses: 1
     Course 0 (Advanced English I / İleri İngilizce I):
       Type: Teori, Capacity Need: Unknown
-      Viable rooms BEFORE teacher pref: 1
-      Viable room details:
-        - Derslik-54 (Cap=40, Floor=2)
+      Viable rooms BEFORE teacher pref: 68
   Detected Floor Request: 2
-  Rooms on Floor 2: 23
-  Total room-course combinations banned: 0
-    Course 0 (Advanced English I / İleri İngilizce I): 1 viable rooms AFTER constraint
+  Rooms on Floor 2: 31
+  Total room-course combinations banned: 42
+    Course 0 (Advanced English I / İleri İngilizce I): 26 viable rooms AFTER constraint

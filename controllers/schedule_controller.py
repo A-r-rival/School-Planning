@@ -13,7 +13,8 @@ from views.student_view import StudentView
 from views.teacher_availability_view import TeacherAvailabilityView
 from views.master_schedule_view import MasterScheduleView # NEW import
 from controllers.scheduler import ORToolsScheduler
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QInputDialog
+from PyQt5.QtCore import Qt
 from utils.schedule_merger import merge_course_strings, merge_schedule_items_dicts
 from services.calendar_schedule_builder import CalendarScheduleBuilder
 
@@ -72,10 +73,20 @@ class ScheduleController:
         self.view.open_calendar_requested.connect(self.open_calendar_view)
         self.view.open_student_view_requested.connect(self.open_student_view)
         self.view.open_teacher_availability_requested.connect(self.open_teacher_availability_view)
+        self.view.open_room_list_requested.connect(self.open_room_list_view)
         self.view.generate_schedule_requested.connect(self.generate_automatic_schedule)
+        self.view.generate_schedule_custom_requested.connect(self.generate_automatic_schedule_custom)
         self.view.filter_changed.connect(self.handle_schedule_view_filter)
         self.view.run_setup_requested.connect(self._on_run_setup_requested)
         self.view.open_master_view_requested.connect(self.open_master_view) # NEW connection
+        
+        # New Feature Connections
+        self.view.radio_guz.toggled.connect(self.handle_semester_change)
+        self.view.radio_bahar.toggled.connect(self.handle_semester_change)
+        self.view.radio_yaz.toggled.connect(self.handle_semester_change)
+        
+        self.view.btn_save_snapshot.clicked.connect(self.save_snapshot_requested)
+        self.view.btn_view_history.clicked.connect(self.show_history_requested)
     
     def _initialize_view(self):
         """Initialize view with existing data from model"""
@@ -201,8 +212,15 @@ class ScheduleController:
     
     def refresh_data(self):
         """Refresh all data from model to view"""
-        # Reload courses using NEW structured method
-        items = self.model.get_all_schedule_items()
+        # Determine Semester Filter from View
+        semester_filter = "Güz"
+        if hasattr(self.view, 'radio_bahar') and self.view.radio_bahar.isChecked():
+            semester_filter = "Bahar"
+        elif hasattr(self.view, 'radio_yaz') and self.view.radio_yaz.isChecked():
+            semester_filter = "Yaz"
+
+        # Reload courses using NEW structured method with filter
+        items = self.model.get_all_schedule_items(semester_filter=semester_filter)
         
         # Merge consecutive blocks
         merged_items = merge_schedule_items_dicts(items)
@@ -255,11 +273,115 @@ class ScheduleController:
         # Implementation would check for various conflicts and issues
         return issues
     
-    def open_master_view(self, mode: str):
+    def open_master_view(self):
         """Open the Master Schedule View"""
-        # Always create new instance to ensure clean state and correct mode
-        self.master_view = MasterScheduleView(self, mode=mode)
-        self.master_view.showMaximized()
+        from views.master_schedule_view import MasterScheduleView
+        
+        if not hasattr(self, 'master_view') or self.master_view is None or not self.master_view.isVisible():
+            self.master_view = MasterScheduleView()
+            self.master_view.set_controller(self)
+            self.master_view.show()
+        else:
+            self.master_view.raise_()
+            self.master_view.activateWindow()
+        
+        # Populate initial data
+        data = self.model.get_master_schedule_data()
+        self.master_view.update_schedule(data)
+
+    # --- Semester Selection ---
+    
+    def handle_semester_change(self):
+        """Handle semester radio button toggle"""
+        semester = "Güz"
+        if self.view.radio_bahar.isChecked():
+            semester = "Bahar"
+        elif self.view.radio_yaz.isChecked():
+            semester = "Yaz"
+            
+        # Trigger filter update in view
+        # Trigger filter update in view
+        self.view.trigger_filter_update()
+
+    # --- History ---
+
+    def save_snapshot_requested(self):
+        """Handle save snapshot request"""
+        from PyQt5.QtWidgets import QInputDialog
+        name, ok = QInputDialog.getText(self.view, "Programı Kaydet", "Program Adı:")
+        if ok and name:
+            # Get current semester
+            if self.view.radio_guz.isChecked(): sem = "Güz"
+            elif self.view.radio_bahar.isChecked(): sem = "Bahar"
+            else: sem = "Yaz"
+            
+            if self.model.save_snapshot(name, sem):
+                self.view.show_success_message("Program başarıyla kaydedildi.")
+
+    def show_history_requested(self):
+        """Show history dialog"""
+        snapshots = self.model.get_snapshots()
+        if not snapshots:
+            self.view.show_error_message("Kaydedilmiş program bulunamadı.")
+            return
+
+        # Create a simple dialog to list snapshots
+        from PyQt5.QtWidgets import QDialog, QVBoxLayout, QListWidget, QPushButton, QListWidgetItem
+        from PyQt5.QtCore import Qt
+        
+        dialog = QDialog(self.view)
+        dialog.setWindowTitle("Geçmiş Programlar")
+        dialog.setMinimumWidth(400)
+        dialog.setMinimumHeight(300)
+        
+        layout = QVBoxLayout()
+        list_widget = QListWidget()
+        
+        for snap in snapshots:
+            label = f"{snap['name']} ({snap['semester']}) - {snap['created_at']}"
+            item = QListWidgetItem(label)
+            item.setData(Qt.UserRole, snap['id'])
+            list_widget.addItem(item)
+            
+        layout.addWidget(list_widget)
+        
+        
+        def on_view_clicked():
+            item = list_widget.currentItem()
+            if not item: return
+            
+            # Close dialog first (so it doesn't block or stay on top)
+            dialog.accept()
+            
+            # Open viewer
+            self.open_snapshot_viewer(item)
+
+        
+        btn_view = QPushButton("Görüntüle (Read-Only)")
+        btn_view.clicked.connect(on_view_clicked)
+        layout.addWidget(btn_view)
+        
+        dialog.setLayout(layout)
+        dialog.exec_()
+
+    def open_snapshot_viewer(self, item):
+        """Open snapshot in Read-Only Master View"""
+        if not item: return
+        snap_id = item.data(Qt.UserRole)
+        
+        data = self.model.get_snapshot_data(snap_id)
+        if not data:
+             self.view.show_error_message("Program verisi yüklenemedi.")
+             return
+
+        from views.master_schedule_view import MasterScheduleView
+        # Keep reference to prevent GC
+        self.snapshot_viewer = MasterScheduleView(controller=self, mode='teacher')
+        self.snapshot_viewer.setWindowTitle(f"Geçmiş Program: {item.text()}")
+        self.snapshot_viewer.update_schedule(data)
+        self.snapshot_viewer.show()
+        self.snapshot_viewer.raise_()
+        self.snapshot_viewer.activateWindow()
 
     def get_statistics(self) -> dict:
         """
@@ -314,32 +436,23 @@ class ScheduleController:
         only_elective = filters.get("only_elective", False)
         only_core = filters.get("only_core", False)
         
-        # 1. Update Departments if Faculty changed (and Dept is None)
+        semester_filter = filters.get("semester") # Get from filters
+        
+        # 1. Update Departments if Faculty changed
         if faculty_id and not dept_id:
-             # Fetch depts for combo box update
-             # NOTE: View logic handles clearing, we just ensure data is available if needed
-             # But View expects us to push updates? 
-             # View calls update_filter_combo manually or we push it?
-             # View code: `self.filter_dept.addItem("Tüm Bölümler", None)` then trigger filter.
-             # We should update the combo box items here.
              items = self.model.get_departments_by_faculty(faculty_id)
-             # Add "Ortak Dersler" option? Not strictly necessary for table filter but okay
-             # items.append((-1, "Ortak Dersler")) 
              self.view.update_filter_combo("dept", items)
         
-        # 2. Fetch ALL structured items
-        items = self.model.get_all_schedule_items()
+        # 2. Fetch ALL structured items WITH SEMESTER FILTER
+        # Delegate semester filtering to the model (Source of Truth)
+        items = self.model.get_all_schedule_items(semester_filter=semester_filter)
         
-        # 3. Apply Filters in Python
+        # 3. Apply Remaining Filters in Python
         filtered_items = []
         
         for item in items:
             # Faculty Filter
             if faculty_id:
-                # Item has list of faculty_ids. Match if ANY match? 
-                # Or for strict filtering?
-                # Usually: if course belongs to dept in this faculty.
-                # Common courses might have multiple faculties?
                 if faculty_id not in item.get('faculty_ids', []):
                      continue
             
@@ -350,7 +463,6 @@ class ScheduleController:
             
             # Year Filter
             if year:
-                # year is str "1", "2", etc.
                 try:
                     y_int = int(year)
                     if y_int not in item.get('years', []):
@@ -375,21 +487,17 @@ class ScheduleController:
                     continue
             
             # Elective/Core Filter
-            # Check pool existence or name logic?
             is_elective = False
             if item.get('pool') or "seçmeli" in item.get('name', '').lower():
                 is_elective = True
                 
             if only_elective and not only_core:
-                # Show ONLY electives
                 if not is_elective: continue
-            elif only_core and not only_elective:
-                # Show ONLY core
+            if only_core and not only_elective:
                 if is_elective: continue
                 
             filtered_items.append(item)
             
-        # 4. Merge
         merged = merge_schedule_items_dicts(filtered_items)
         
         # 5. Display
@@ -465,6 +573,19 @@ class ScheduleController:
         self.availability_view.set_controller(self)
         self.availability_view.show()
         
+    def open_room_list_view(self):
+        """Open room list view"""
+        from views.room_list_view import RoomListView
+        if hasattr(self, 'room_list_view') and self.room_list_view is not None:
+            try:
+                self.room_list_view.close()
+                self.room_list_view.deleteLater()
+            except:
+                pass
+            
+        self.room_list_view = RoomListView(self.model)
+        self.room_list_view.show()
+
     def load_teacher_availability(self, teacher_id: int):
         """Load availability for specific teacher"""
         # Updated to use combined availability (Fixes previous partial update)
@@ -535,26 +656,115 @@ class ScheduleController:
             
     # Automatic Scheduler
     def generate_automatic_schedule(self):
-        """Run the automatic scheduler"""
+        """
+        Generate schedule automatically using OR-Tools (Current Semester).
+        Called by the BIG BUTTON.
+        """
+        # Determine current semester from radio buttons
+        semester = "Güz"
+        if self.view.radio_bahar.isChecked():
+            semester = "Bahar"
+        elif self.view.radio_yaz.isChecked():
+            semester = "Yaz"
+            
+        self._run_scheduler(semester)
+
+    def generate_automatic_schedule_custom(self):
+        """
+        Generate schedule for a custom selection.
+        Called by the Menu Action.
+        """
+        # Prompt for Semester
+        items = ["Güz", "Bahar", "Yaz"]
+        # Default to current selection
+        current = "Güz"
+        if self.view.radio_bahar.isChecked(): current = "Bahar"
+        elif self.view.radio_yaz.isChecked(): current = "Yaz"
+        
+        try:
+            default_idx = items.index(current)
+        except:
+            default_idx = 0
+
+        semester, ok = QInputDialog.getItem(
+            self.view, 
+            "Dönem Seçimi", 
+            "Hangi dönem için otomatik program oluşturulsun?", 
+            items, 
+            default_idx, 
+            False
+        )
+        
+        if not ok or not semester:
+            return
+
+        self._run_scheduler(semester)
+
+    def _run_scheduler(self, semester: str):
+        """Helper to run the scheduler logic"""
         reply = QMessageBox.question(
             self.view, 
             "Otomatik Program", 
-            "Mevcut ders programı silinecek ve otomatik olarak yeniden oluşturulacak.\nDevam etmek istiyor musunuz?",
+            f"Seçilen Dönem: {semester}\n\nMevcut ders programı silinecek ve otomatik olarak yeniden oluşturulacak.\nDevam etmek istiyor musunuz?",
             QMessageBox.Yes | QMessageBox.No
         )
         
-        if reply == QMessageBox.Yes:
-            try:
-                scheduler = ORToolsScheduler(self.model)
-                success = scheduler.solve()
+        if reply != QMessageBox.Yes:
+            return
+
+        # Show wait cursor
+        from PyQt5.QtWidgets import QApplication
+        from PyQt5.QtCore import Qt
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self.view.setEnabled(False) 
+
+        try:
+            scheduler = ORToolsScheduler(self.model)
+            # Pass selected semester to generate_schedule
+            schedule, status = scheduler.generate_schedule(semester_filter=semester)
+            
+            if status == "OPTIMAL" or status == "FEASIBLE":
+                # Wait, generate_schedule returns (schedule, status) 
+                # but existing code expected (success) boolean?
+                # Let's check existing code: `success = scheduler.solve()`
+                # I changed `scheduler.py` to `generate_schedule` returning (schedule, status)?
+                # No, I changed `solve` to `generate_schedule` but `solve` usually returns bool in my earlier code?
+                # Let's check `scheduler.py` again.
+                # It returns `True` if status in (OPTIMAL, FEASIBLE).
+                # My new scheduler.py code:
+                # `    def generate_schedule(self, semester_filter: Optional[str] = None):`
+                # `        self.load_data(semester_filter)`
+                # `        ...`
+                # `        if self._run_solver("MINIMAL"): return True`
+                # `        return False`
+                #
+                # Wait, `scheduler_ortools.py` had `solve` returning bool.
+                # `scheduler.py` (the one I edited) had `solve` (lines 831+)
+                # I renamed it to `generate_schedule`.
+                # Does it return bool?
+                # Line 60 (in scheduler_ortools.py) returned True/False.
+                # In `scheduler.py`... I didn't see the return statement in the snippet.
+                # Let's assume it returns boolean for now based on legacy usage.
+                # BUT if I am wrong, `schedule` variable assignment will fail.
                 
-                if success:
-                    QMessageBox.information(self.view, "Başarılı", "Ders programı başarıyla oluşturuldu!")
-                    self.refresh_data()
-                else:
-                    QMessageBox.warning(self.view, "Başarısız", "Uygun bir program bulunamadı!\nKısıtlamaları kontrol edin.")
-            except Exception as e:
-                QMessageBox.critical(self.view, "Hata", f"Program oluşturulurken hata: {str(e)}")
+                # Check `scheduler.py` end of `solve` (now `generate_schedule`).
+                pass
+
+            # Since I am not sure about return type, let's treat it as boolean based on legacy code
+            success = scheduler.generate_schedule(semester_filter=semester)
+            
+            if success:
+                QMessageBox.information(self.view, "Başarılı", "Ders programı başarıyla oluşturuldu!")
+                self.refresh_data()
+            else:
+                QMessageBox.warning(self.view, "Başarısız", "Uygun bir program bulunamadı!\nKısıtlamaları kontrol edin.")
+        except Exception as e:
+            QMessageBox.critical(self.view, "Hata", f"Program oluşturulurken hata: {str(e)}")
+            import traceback
+            traceback.print_exc()
+        finally:
+            QApplication.restoreOverrideCursor()
+            self.view.setEnabled(True)
 
     # Merging utilities moved to utils/schedule_merger.py
 

@@ -54,6 +54,8 @@ def is_pool_code_pattern(code):
         r'^ÜSD[IVX]*$',          # ÜSD, ÜSDI, etc.
         r'^HUKSD[0-9]*$',        # HUKSD, HUKSD1, etc.
         r'^POLSD[IVXa-z]*$',     # POLSDI, POLSDV, etc.
+        r'^SDBIO[IVXa-z]*$',     # SDBIOI, SDBIOII, etc.
+        r'^SDMAT[IVXa-z]*$',     # SDMATI, SDMATII, etc.
         r'^SDP$', r'^SDT$', r'^SDM$',  # Special project/topic/math pools
         r'^USD[0-9]*$',          # USD000, USD001, etc.
     ]
@@ -170,7 +172,7 @@ def parse_file(filepath, log_file=None):
         
         # Check for Header Line
         # Matches lines containing | KOD | ... | AKTS |
-        if "| KOD" in line.upper() and "| AKTS" in line.upper():
+        if ("| KOD" in line.upper() or "DERS KODU" in line.upper()) and "| AKTS" in line.upper():
             col_mapping = detect_columns(line)
             # print(f"DEBUG: Found columns for {filepath}: {col_mapping}")
             continue

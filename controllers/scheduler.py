@@ -50,7 +50,7 @@ class ORToolsScheduler:
         self.vars = {}      # (c_idx, r_id, s_id) -> bool_var
         self.room_vars = {} # (c_idx, r_id) -> bool_var
 
-    def load_data(self):
+    def load_data(self, semester_filter: Optional[str] = None):
         """Load necessary data from database. Called once."""
         # 1. Load Rooms
         self.rooms = self.db_model.aktif_derslikleri_getir() 
@@ -60,53 +60,99 @@ class ORToolsScheduler:
         # 2. Load Courses 
         self.courses = self._fetch_all_course_instances()
         
-        # Filter out Project courses that shouldn't be scheduled
-        # User Request: "MEC319 gibi proje derslerinin çoğunu takvim için yoksayıyorduk"
+        # Filter: Project Courses (Existing)
         filtered_courses = []
         for c in self.courses:
             name = c.get('name', '').lower()
-            code = str(c.get('code', '')).upper() # Handle None/int codes safely
+            code = str(c.get('code', '')).upper()
             
             if 'MEC319' in code or 'MEC319' in name.upper():
-                print(f"DEBUG: Skipping Project Course: {c['name']} ({code})")
                 continue
-            
-            # Heuristic: If "Proje" is in the name, it might be a project course.
-            # But be careful not to skip "Proje Yönetimi" (Project Management) if it's a lecture.
-            # Logic: If it's a "Project" (Proje) usually it has "Bitirme Projesi" or similar.
-            # User said "Proje derslerinin çoğunu". Let's be aggressive for now or targeted?
-            # Targeting "Bitirme Projesi", "Tasarım Projesi", "Project"
             if 'bitirme projesi' in name or 'tasarım projesi' in name or 'capstone' in name:
-                 print(f"DEBUG: Skipping Project Course: {c['name']}")
                  continue
-                 
             filtered_courses.append(c)
             
         self.courses = filtered_courses
-        print(f"DEBUG: Loaded {len(self.courses)} schedulable courses (after filtering projects).")
+        
+        # Filter: Semester (NEW)
+        if semester_filter:
+            print(f"DEBUG: Filtering courses for semester: {semester_filter}")
+            semester_courses = []
+            for c in self.courses:
+                # Heuristic: Check Class Year
+                # Güz (Fall): Years 1, 2, 3, 4 (Usually Sem 1, 3, 5, 7)
+                # Bahar (Spring): Years 1, 2, 3, 4 (Usually Sem 2, 4, 6, 8)
+                # 
+                # If we rely on `program_contexts`, we can get detailed info?
+                # course['program_contexts'] is a list of CourseContext objects (dept, year, role, pool)
+                
+                is_match = False
+                
+                # If ANY context matches the semester, include it?
+                # Or if ALL? usually a course belongs to one semester.
+                # But some courses might be opened in both? (Rare in this dataset)
+                
+                # Logic:
+                # Güz -> Odd Semesters (1, 3, 5, 7)
+                # Bahar -> Even Semesters (2, 4, 6, 8)
+                # Yaz -> All? Or specific?
+                
+                # Since we don't have explicit Semester ID in course dict easily accessible 
+                # (it's in contexts), let's check contexts.
+                
+                if semester_filter == "Yaz":
+                    is_match = True # For now, Yaz includes everything or needs specific flag?
+                else:
+                    # Check contexts
+                    for ctx in c.get('program_contexts', []):
+                        # ctx.year is Class Level (1, 2, 3, 4)
+                        # This doesn't distinguish Fall/Spring by itself unless we assume:
+                        # Fall = 1, 3, 5, 7? No, Year 1 has both.
+                        
+                        # WAIT! We removed 'kacinci_yariyil' from DB because it didn't exist.
+                        # Do we have ANY way to distinguish Fall vs Spring?
+                        # `Ogrenci_Donemleri` has `sinif_duzeyi` (1,2,3,4).
+                        # It does NOT have semester (1-8).
+                        
+                        # CRITICAL ISSUE: We might not have Fall/Spring distinction in DB for *Courses*.
+                        # The user selects Güz/Bahar in the UI.
+                        # How did the Filter work before? 
+                        # I strictly disabled it in Controller because "We can't distinguish".
+                        
+                        # Re-read `ScheduleController` logic for Semester Filter:
+                        # "Without 'kacinci_yariyil', we can't distinguish Fall/Spring purely from DB."
+                        # "Temporary: Allow all"
+                        
+                        # So... we actually CANNOT filter by semester effectively yet?
+                        # If so, passing `semester_filter` here does nothing useful unless we heuristic it?
+                        # Heuristic: Maybe course names? Or maybe we just rely on user adding courses manually?
+                        # BUT user wants Auto-Scheduler to respect it.
+                        
+                        # Stopgap: If we really can't distinguish, we can't filter.
+                        # But maybe we can assume:
+                        # - We have NO data.
+                        # - So we just schedule EVERYTHING.
+                        # - The user will be annoyed.
+                        
+                        # Let's check `CurriculumResolver` or `CourseContext` to see if we missed something.
+                        pass
+                
+                # For now, since we lack data, we INCLUDE ALL to avoid empty schedule.
+                # I will print a warning.
+                is_match = True 
+                
+                if is_match:
+                    semester_courses.append(c)
+            
+            self.courses = semester_courses
+            print(f"DEBUG: Loaded {len(self.courses)} courses after Semester Filter ({semester_filter}) - EFFECTIVELY NO FILTER DUE TO MISSING DB DATA.")
+        else:
+            print(f"DEBUG: Loaded {len(self.courses)} schedulable courses (after filtering projects).")
         
         # 3. Load Teachers
         self.teachers = self.db_model.get_all_teachers_with_ids()
         
         # 4. Define Time Slots
-        # 4. Define Time Slots
-        days = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma']
-        # Added 08:00
-        hours = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00']
-        self.time_slots = []
-        for d_idx, day in enumerate(days):
-            for h_idx, hour in enumerate(hours):
-                end_hour = f"{int(hour[:2])+1}:00"
-                self.time_slots.append({
-                    'id': d_idx * SLOTS_PER_DAY + h_idx,
-                    'day': day,
-                    'start_str': hour,
-                    'end_str': end_hour,
-                    'start_min': to_minutes(hour),
-                    'end_min': to_minutes(end_hour)
-                })
-        
-        # 5. Load Course Faculty Map
         self.course_faculties = self.db_model.get_course_faculty_map()
 
     def _fetch_all_course_instances(self):
@@ -201,14 +247,20 @@ class ORToolsScheduler:
                 # Strict matching based on course 'type' provided by Builder
                 # --- ROBUST ROOM TYPE LOGIC ---
                 
-                # 1. Normalize Room Type
+                # 1. Normalize Room Type & Name
                 room_type_str = ""
+                # r[2] is technically 'floor' in current DB schema, but check it anyway
                 if len(r) > 2 and r[2]:
                     room_type_str = str(r[2]).lower()
                 
-                # Check capabilities
-                is_lab_room = any(k in room_type_str for k in ["laboratuvar", "lab"])
-                is_amfi = "amfi" in room_type_str
+                room_name = str(r[1]).lower() if len(r) > 1 and r[1] else ""
+                
+                # Check capabilities (Robust check against Name OR Type/Floor)
+                is_lab_keywords = ["laboratuvar", "lab"]
+                is_lab_room = any(k in room_name for k in is_lab_keywords) or \
+                              any(k in room_type_str for k in is_lab_keywords)
+                              
+                is_amfi = "amfi" in room_name or "amfi" in room_type_str
                 
                 # 2. Normalize Course Type
                 raw_type = course.get('type')
@@ -776,9 +828,9 @@ class ORToolsScheduler:
         
 
 
-    def solve(self):
+    def generate_schedule(self, semester_filter: Optional[str] = None):
         """Solve with 2-Phase Strategy (Core then Elective) and Fallbacks."""
-        self.load_data()
+        self.load_data(semester_filter)
         
         # --- Pre-Solve Capacity Check ---
         total_demand = sum(c['duration'] for c in self.courses)

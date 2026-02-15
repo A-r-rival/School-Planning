@@ -18,8 +18,8 @@ def main():
     # Initialize Model
     model = ScheduleModel()
     
-    # scheduler = ORToolsScheduler(model)
-    scheduler = HeuristicScheduler(model) # Switch to Heuristic
+    scheduler = ORToolsScheduler(model)
+    # scheduler = HeuristicScheduler(model) # Switch to Heuristic
     
     # Load Data
     print("Loading data...")

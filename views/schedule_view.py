@@ -1,8 +1,10 @@
+
 from PyQt5.QtWidgets import (
     QWidget, QLineEdit, QPushButton, QTimeEdit, QVBoxLayout, 
     QListWidget, QComboBox, QLabel, QHBoxLayout, QCompleter, 
     QMessageBox, QInputDialog, QDialog, QFormLayout, QDialogButtonBox,
-    QGroupBox, QTableWidget, QTableWidgetItem, QAbstractItemView, QHeaderView
+    QGroupBox, QTableWidget, QTableWidgetItem, QAbstractItemView, QHeaderView,
+    QRadioButton
 )
 from PyQt5.QtCore import QTime, pyqtSignal, Qt
 from typing import List, Tuple, Optional, Dict, Union
@@ -95,6 +97,10 @@ class ScheduleView(QWidget):
     generate_schedule_requested = pyqtSignal() # Emits when generate button clicked
     run_setup_requested = pyqtSignal() # Emits when setup/load data requested
     open_master_view_requested = pyqtSignal(str) # NEW: Emits mode ('teacher' or 'classroom')
+    open_room_list_requested = pyqtSignal() # NEW: Emits when room list button clicked
+    
+    # Custom signal for menu action
+    generate_schedule_custom_requested = pyqtSignal()
     
     def __init__(self):
         super().__init__()
@@ -104,38 +110,6 @@ class ScheduleView(QWidget):
         self._setup_ui()
         self._connect_signals()
 
-    # ... (skipping unchanged parts)
-
-    def _create_advanced_buttons(self, layout: QVBoxLayout):
-        """Create advanced feature buttons"""
-        # ... (skipping unchanged parts)
-        
-        # ...
-        
-        # Create Menu for Structural Ops
-        from PyQt5.QtWidgets import QMenu, QAction
-        self.struct_menu = QMenu(self)
-        
-        action_add_faculty = self.struct_menu.addAction("Fakülte Ekle")
-        
-        # Re-create the buttons (hidden)
-        self.fakulte_ekle_button = QPushButton("Fakülte Ekle") 
-        self.bolum_ekle_button = QPushButton("Bölüm Ekle")
-        
-        action_add_faculty.triggered.connect(self.fakulte_ekle_button.click)
-        
-        action_add_dept = self.struct_menu.addAction("Bölüm Ekle")
-        action_add_dept.triggered.connect(self.bolum_ekle_button.click)
-        
-        self.struct_menu.addSeparator()
-        
-        # New Setup Action
-        action_run_setup = self.struct_menu.addAction("⚙️ Otomatik Kurulum / Veri Yükle")
-        action_run_setup.triggered.connect(self.run_setup_requested.emit)
-        
-        self.struct_ops_button.setMenu(self.struct_menu)
-        row2_layout.addWidget(self.struct_ops_button)
-    
     def _setup_ui(self):
         """Setup the user interface"""
         layout = QVBoxLayout()
@@ -236,6 +210,42 @@ class ScheduleView(QWidget):
         
         adhoc_group.setLayout(adhoc_layout)
         layout.addWidget(adhoc_group)
+        
+        # --- NEW Group: History Operations ---
+        hist_group = QGroupBox("Geçmiş Programlar")
+        hist_group.setStyleSheet("QGroupBox { font-weight: bold; border: 1px solid gray; border-radius: 5px; margin-top: 10px; } QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 3px 0 3px; }")
+        hist_layout = QHBoxLayout()
+        
+        self.btn_save_snapshot = QPushButton("💾 Güncel Programı Kaydet")
+        self.btn_save_snapshot.setToolTip("Mevcut programın bir kopyasını kaydet")
+        self.btn_save_snapshot.setStyleSheet("""
+            QPushButton {
+                background-color: #9C27B0; 
+                color: white; 
+                padding: 10px; 
+                font-weight: bold; 
+                border-radius: 5px;
+            }
+            QPushButton:hover { background-color: #7B1FA2; }
+        """)
+        
+        self.btn_view_history = QPushButton("📜 Geçmiş Programlar")
+        self.btn_view_history.setToolTip("Kaydedilmiş eski programları görüntüle")
+        self.btn_view_history.setStyleSheet("""
+            QPushButton {
+                background-color: #673AB7; 
+                color: white; 
+                padding: 10px; 
+                font-weight: bold; 
+                border-radius: 5px;
+            }
+            QPushButton:hover { background-color: #512DA8; }
+        """)
+        
+        hist_layout.addWidget(self.btn_save_snapshot)
+        hist_layout.addWidget(self.btn_view_history)
+        hist_group.setLayout(hist_layout)
+        layout.addWidget(hist_group)
     
     # _create_time_inputs removed.
 
@@ -258,30 +268,30 @@ class ScheduleView(QWidget):
         # Department Filter
         self.filter_dept = QComboBox()
         self.filter_dept.addItem("Tüm Bölümler", None)
-        self.filter_dept.currentIndexChanged.connect(self._on_filter_changed)
+        self.filter_dept.currentIndexChanged.connect(self.trigger_filter_update)
         self.filter_dept.setEnabled(False) # Disable until faculty selected
         
         # Year Filter
         self.filter_year = QComboBox()
         self.filter_year.addItem("Tüm Sınıflar", None)
         self.filter_year.addItems([str(i) for i in range(1, 5)])
-        self.filter_year.currentIndexChanged.connect(self._on_filter_changed)
+        self.filter_year.currentIndexChanged.connect(self.trigger_filter_update)
 
         # Day Filter
         self.filter_day = QComboBox()
         self.filter_day.addItem("Tüm Günler", None)
         self.filter_day.addItems(["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma"])
-        self.filter_day.currentIndexChanged.connect(self._on_filter_changed)
+        self.filter_day.currentIndexChanged.connect(self.trigger_filter_update)
         
         # Search Input
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("🔍 Ders Ara...")
-        self.search_input.textChanged.connect(self._on_filter_changed)
+        self.search_input.textChanged.connect(self.trigger_filter_update)
         
-        # Teacher Filter (Manual inputs for now, could be dropdown)
+        # Teacher Filter
         self.search_teacher = QLineEdit()
         self.search_teacher.setPlaceholderText("👨‍🏫 Hoca Ara...")
-        self.search_teacher.textChanged.connect(self._on_filter_changed)
+        self.search_teacher.textChanged.connect(self.trigger_filter_update)
 
         filter_layout.addWidget(self.filter_faculty)
         filter_layout.addWidget(self.filter_dept)
@@ -292,24 +302,71 @@ class ScheduleView(QWidget):
         
         layout.addLayout(filter_layout)
         
-
         # Course type filter - Radio buttons
         type_filter_layout = QHBoxLayout()
         
-        from PyQt5.QtWidgets import QRadioButton, QButtonGroup, QCheckBox
+        from PyQt5.QtWidgets import QRadioButton, QButtonGroup, QCheckBox, QFrame
+
+        # --- NEW: Semester Selection Logic moved here ---
+        semester_layout = QHBoxLayout()
+        semester_label = QLabel("Dönem:")
+        semester_label.setStyleSheet("font-weight: bold;")
+        
+        self.radio_guz = QRadioButton("Güz")
+        self.radio_bahar = QRadioButton("Bahar")
+        self.radio_yaz = QRadioButton("Yaz")
+        
+        # Default
+        # Default: Set based on current month
+        from datetime import datetime
+        current_month = datetime.now().month
+        
+        # Güz: 9, 10, 11, 12, 1
+        # Bahar: 2, 3, 4, 5, 6
+        # Yaz: 7, 8
+        if current_month in [9, 10, 11, 12, 1]:
+            self.radio_guz.setChecked(True)
+        elif current_month in [2, 3, 4, 5, 6]:
+            self.radio_bahar.setChecked(True)
+        elif current_month in [7, 8]:
+            self.radio_yaz.setChecked(True)
+        else:
+             self.radio_guz.setChecked(True) # Fallback
+        
+        # Connect signals
+        self.radio_guz.toggled.connect(self.trigger_filter_update)
+        self.radio_bahar.toggled.connect(self.trigger_filter_update)
+        self.radio_yaz.toggled.connect(self.trigger_filter_update)
+        
+        semester_layout.addWidget(semester_label)
+        semester_layout.addWidget(self.radio_guz)
+        semester_layout.addWidget(self.radio_bahar)
+        semester_layout.addWidget(self.radio_yaz)
+        semester_layout.addSpacing(20)
+        
+        # Add separator line
+        line = QFrame()
+        line.setFrameShape(QFrame.VLine)
+        line.setFrameShadow(QFrame.Sunken)
+        semester_layout.addWidget(line)
+        semester_layout.addSpacing(20)
+
+        # Add to main type filter layout at the start
+        type_filter_layout.addLayout(semester_layout)
+        # ------------------------------------------------
         
         # Create button group to make them mutually exclusive
         self.course_type_group = QButtonGroup()
         
         self.filter_all_courses = QRadioButton("Tüm Dersler")
         self.filter_all_courses.setChecked(True)  # Default
-        self.filter_all_courses.toggled.connect(self._on_filter_changed)
+        self.filter_all_courses.toggled.connect(self.trigger_filter_update)
         
         self.filter_only_core = QRadioButton("Sadece Doğrudan Zorunlu")
-        self.filter_only_core.toggled.connect(self._on_filter_changed)
+        self.filter_only_core.toggled.connect(self.trigger_filter_update)
         
         self.filter_only_elective = QRadioButton("Sadece Seçmeli")
-        self.filter_only_elective.toggled.connect(self._on_filter_changed)
+        self.filter_only_elective.toggled.connect(self.trigger_filter_update)
         
         # Add to button group
         self.course_type_group.addButton(self.filter_all_courses)
@@ -405,7 +462,7 @@ class ScheduleView(QWidget):
         # Now trigger the general update
         self._on_filter_changed()
 
-    def _on_filter_changed(self):
+    def trigger_filter_update(self):
         """Handle filter changes and emit signal"""
         # Determine course type filter from radio buttons
         only_elective = self.filter_only_elective.isChecked()
@@ -420,7 +477,9 @@ class ScheduleView(QWidget):
             "search_text": self.search_input.text(),
             "teacher_text": self.search_teacher.text(),
             "only_elective": only_elective,
-            "only_core": only_core
+            "only_core": only_core,
+            # Semester Selection
+            "semester": "Güz" if self.radio_guz.isChecked() else ("Bahar" if self.radio_bahar.isChecked() else "Yaz")
         }
         # If "Tüm Sınıflar" (None data) is not selected, pass the text value
         if self.filter_year.currentIndex() > 0:
@@ -466,13 +525,26 @@ class ScheduleView(QWidget):
     def _open_curriculum_view(self):
         """Open dialog to view all curriculum courses"""
         try:
+            # Check if already open
+            if hasattr(self, 'curriculum_dialog') and self.curriculum_dialog is not None:
+                if self.curriculum_dialog.isVisible():
+                    self.curriculum_dialog.activateWindow()
+                    self.curriculum_dialog.raise_()
+                    return
+                else:
+                    # If closed but object exists, close properly and recreate (or just reuse?)
+                    # Safer to recreate to ensure fresh state/event loop connection
+                    try:
+                        self.curriculum_dialog.close()
+                    except:
+                        pass
+                    self.curriculum_dialog = None
+
             from views.curriculum_view import CurriculumViewDialog
-            dialog = CurriculumViewDialog(self.controller, self)
+            self.curriculum_dialog = CurriculumViewDialog(self.controller, self)
             
-            # Since this is a viewer, we just show it. 
-            # If we wanted to return data, we'd handle Accepted.
-            # But the user just wants to VIEW.
-            dialog.exec_() 
+            # Use show() instead of exec_() for modeless window
+            self.curriculum_dialog.show() 
             
         except ImportError:
             QMessageBox.warning(self, "Hata", "CurriculumViewDialog henüz oluşturulmadı/import edilemedi.")
@@ -545,6 +617,21 @@ class ScheduleView(QWidget):
             QPushButton:hover { background-color: #E64A19; }
         """)
         row1_layout.addWidget(self.teacher_availability_button)
+
+        # Room List Button (NEW)
+        self.btn_view_rooms = QPushButton("Odaları Listele")
+        self.btn_view_rooms.setStyleSheet("""
+            QPushButton {
+                background-color: #795548;
+                color: white;
+                border: none;
+                padding: 12px;
+                font-size: 13px;
+                border-radius: 3px;
+            }
+            QPushButton:hover { background-color: #5D4037; }
+        """)
+        row1_layout.addWidget(self.btn_view_rooms)
         
         layout.addLayout(row1_layout)
 
@@ -602,13 +689,17 @@ class ScheduleView(QWidget):
         action_run_setup = self.struct_menu.addAction("⚙️ Otomatik Kurulum / Veri Yükle")
         action_run_setup.triggered.connect(self.run_setup_requested.emit)
         
+        self.struct_menu.addSeparator()
+        action_gen_custom = self.struct_menu.addAction("📅 Farklı Bir Dönem İçin Program Oluştur...")
+        action_gen_custom.triggered.connect(self.generate_schedule_custom_requested.emit)
+        
         self.struct_ops_button.setMenu(self.struct_menu)
         row2_layout.addWidget(self.struct_ops_button)
         
         layout.addLayout(row2_layout)
         
-        # Generate Schedule button
-        self.generate_schedule_button = QPushButton("Otomatik Program Oluştur")
+        # Generate Schedule button (Renamed)
+        self.generate_schedule_button = QPushButton("Şuanki Dönem için Otomatik Ders Programı Oluştur")
         self.generate_schedule_button.setStyleSheet("""
             QPushButton {
                 background-color: #3F51B5;
@@ -635,6 +726,7 @@ class ScheduleView(QWidget):
         self.calendar_button.clicked.connect(self.open_calendar_requested.emit)
         self.student_button.clicked.connect(self.open_student_view_requested.emit)
         self.teacher_availability_button.clicked.connect(self.open_teacher_availability_requested.emit)
+        self.btn_view_rooms.clicked.connect(self.open_room_list_requested.emit)
         self.generate_schedule_button.clicked.connect(self.generate_schedule_requested.emit)
 
     def set_controller(self, controller):
