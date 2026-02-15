@@ -255,11 +255,11 @@ class CurriculumViewDialog(QDialog):
             # --- 1. Update Dynamic Pool Checkboxes (Only if Dept Selected) ---
             if dept_id:
                 # Find all unique pool codes in this filtered data
-                # Row Structure: (..., IsPool=11, PoolCode=12)
+                # Row Structure: (..., 10:IsPool, 11:PoolCode)
                 current_pool_codes = set()
                 for c in courses:
-                    if c[11] == 1 and c[12]: # IsPool and HasCode
-                        current_pool_codes.add(c[12])
+                    if c[10] == 1 and c[11]: # IsPool and HasCode
+                        current_pool_codes.add(c[11])
                 
                 # Update UI Checkboxes
                 # Remove obsolete
@@ -296,15 +296,15 @@ class CurriculumViewDialog(QDialog):
 
             filtered = []
             for c in courses:
-                # c structure: ... 10:SortYear, 11:IsPool, 12:PoolCode (Shifted by +1)
+                # c structure: ... 8:Detail, 9:SortYear, 10:IsPool, 11:PoolCode
                 
                 # Filter by Search
                 code, name = str(c[0]).lower(), str(c[1]).lower()
                 if search and (search not in code and search not in name):
                     continue
                 
-                is_pool = c[11] # New Index
-                pool_code = c[12] # New Index
+                is_pool = c[10] # Correct Index
+                pool_code = c[11] # Correct Index
                 
                 # Filter by Type
                 if self.rb_core.isChecked() and is_pool == 1: continue
@@ -361,7 +361,7 @@ class CurriculumViewDialog(QDialog):
         from PyQt5.QtGui import QColor
         self.table.setRowCount(0)
         # Ensure column visibility matches checkbox
-        self.table.setColumnHidden(8, not self.chk_delete_mode.isChecked())
+        self.table.setColumnHidden(9, not self.chk_delete_mode.isChecked())
         
         current_header = None
         
@@ -377,9 +377,11 @@ class CurriculumViewDialog(QDialog):
             return colors[idx]
 
         for row_data in data:
-            sort_year = row_data[8]
-            is_pool = row_data[9]
-            _raw_pool_code = row_data[10] # Added Pool Code
+            # Indices: 8:Detail, 9:SortYear, 10:IsPool, 11:PoolCode
+            detail_text = row_data[8]
+            sort_year = row_data[9]
+            is_pool = row_data[10]
+            _raw_pool_code = row_data[11] 
             
             # Normalize Pool Code for Grouping
             pool_code = str(_raw_pool_code).strip().upper() if _raw_pool_code else ""
@@ -406,6 +408,7 @@ class CurriculumViewDialog(QDialog):
             self.table.insertRow(row_idx)
             
             # Values (Skip meta indices 8+)
+            # 0..7 (Code...Type) matches Table Columns 0..7
             display_vals = row_data[:8]
             
             for col_idx, val in enumerate(display_vals):
@@ -413,7 +416,12 @@ class CurriculumViewDialog(QDialog):
                 item.setFlags(item.flags() ^ Qt.ItemIsEditable) 
                 self.table.setItem(row_idx, col_idx, item)
             
-            # Action Column (Lightweight text item)
+            # Column 8: Detail (Bölüm/Havuz)
+            item_detail = QTableWidgetItem(str(detail_text))
+            item_detail.setFlags(item_detail.flags() ^ Qt.ItemIsEditable)
+            self.table.setItem(row_idx, 8, item_detail)
+            
+            # Column 9: Action (Lightweight text item)
             # Store course name in UserRole for easy access
             btn_item = QTableWidgetItem("Sil")
             btn_item.setTextAlignment(Qt.AlignCenter)
@@ -424,13 +432,13 @@ class CurriculumViewDialog(QDialog):
             btn_item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             btn_item.setData(Qt.UserRole, row_data[1]) # Store Name
             
-            self.table.setItem(row_idx, 8, btn_item)
+            self.table.setItem(row_idx, 9, btn_item)
             
         self.table.setUpdatesEnabled(True) # Re-enable updates
 
     def _on_cell_clicked(self, row, col):
         """Handle cell clicks for custom actions"""
-        if col == 8: # Delete Action Column
+        if col == 9: # Delete Action Column
             item = self.table.item(row, col)
             if item:
                 course_name = item.data(Qt.UserRole)

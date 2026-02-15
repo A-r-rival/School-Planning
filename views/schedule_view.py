@@ -699,7 +699,7 @@ class ScheduleView(QWidget):
         layout.addLayout(row2_layout)
         
         # Generate Schedule button (Renamed)
-        self.generate_schedule_button = QPushButton("Şuanki Dönem için Otomatik Ders Programı Oluştur")
+        self.generate_schedule_button = QPushButton("Filtrede Seçili Dönem İçin Otomatik Ders Programı Oluştur")
         self.generate_schedule_button.setStyleSheet("""
             QPushButton {
                 background-color: #3F51B5;

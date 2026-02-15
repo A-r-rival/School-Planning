@@ -274,8 +274,13 @@ class CalendarView(QWidget):
             semester_num = (year - 1) * 2 + (1 if is_fall else 2)
             semester_name = "Güz" if is_fall else "Bahar"
             
-            sem_courses = dept_data['curriculum'].get(str(semester_num), [])
-            print(f"DEBUG: Found {len(sem_courses)} courses in curriculum for Sem {semester_num} ({semester_name})")
+            # Build descriptive key matching curriculum_data format
+            sem_year = (semester_num + 1) // 2
+            sem_season = "Güz" if semester_num % 2 != 0 else "Bahar"
+            sem_key = f"{semester_num}. Dönem / {sem_year}. Yıl {sem_season} Dönemi"
+            
+            sem_courses = dept_data['curriculum'].get(sem_key, [])
+            print(f"DEBUG: Found {len(sem_courses)} courses in curriculum for {sem_key}")
             
             required_pools = {}
             internship_akts = 0

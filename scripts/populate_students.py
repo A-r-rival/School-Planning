@@ -158,7 +158,7 @@ def populate():
     
     # 1. Seed Faculties and Departments using Seeder Service
     print("Seeding Faculties and Departments from file...")
-    from models.services.seeder import IDSeedingService
+    from models.services.faculty_and_department_id_seeder import IDSeedingService
     seeder = IDSeedingService(model.conn, "faculty_department_codes.txt")
     seeder.seed()
     
@@ -213,7 +213,7 @@ def populate():
         other_faculty_depts = [d for d, f in dept_to_faculty.items() if f != dept_to_faculty[dept_name]]
         
         for year in range(1, 5): # 1-4
-            current_semester = year * 2 - 1
+            current_semester = year * 2  # Include both Güz and Bahar for this year level
             entry_year = 2024 - year + 1
             
             donem_sinif_num = f"{entry_year}_{bolum_num}_{year}"
@@ -323,11 +323,13 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
     # For irregular: current_semester (but they might be retaking old ones)
     
     # We iterate 1..current_semester
-    for sem in range(1, current_semester + 1):
-        sem_str = str(sem)
-        if sem_str not in curriculum: continue
+    for sem_key in sorted(curriculum.keys(), key=lambda k: int(k.split('.')[0])):
+        # Parse semester number from key like "1. Dönem / 1. Yıl Güz Dönemi"
+        sem = int(sem_key.split('.')[0])
+        if sem > current_semester:
+            continue
         
-        courses = curriculum[sem_str]
+        courses = curriculum[sem_key]
         
         term_label = "Guz" if sem % 2 != 0 else "Bahar"
         # Calculate term year based on when they took it
@@ -416,9 +418,13 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
                             instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l)
                             model.c.execute("INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem) VALUES (?, ?, ?, ?, ?, ?)",
                                           (s_num, r_code, r_name, grade, status, term_str))
-                            # Don't add to taken_codes so they can retake? 
-                            # Actually, if they failed, they "took" it. But for selection logic, maybe we want them to retake.
-                            # For now, let's just record it.
+                            
+                            # Add class relation even for failed courses
+                            course_year_level = (sem + 1) // 2
+                            cohort_entry_year = 2024 - course_year_level + 1
+                            donem_sinif_num = f"{cohort_entry_year}_{bolum_id}_{course_year_level}"
+                            model.c.execute("INSERT OR IGNORE INTO Ders_Sinif_Iliskisi (ders_adi, ders_instance, donem_sinif_num) VALUES (?, ?, ?)",
+                                          (r_name, instance, donem_sinif_num))
                         elif roll < 0.20: # Skip (never took)
                             continue
                         else: # Pass
@@ -430,6 +436,13 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
                             instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l)
                             model.c.execute("INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem) VALUES (?, ?, ?, ?, ?, ?)",
                                           (s_num, r_code, r_name, grade, status, term_str))
+                            
+                            # Add class relation for past semesters too
+                            course_year_level = (sem + 1) // 2
+                            cohort_entry_year = 2024 - course_year_level + 1
+                            donem_sinif_num = f"{cohort_entry_year}_{bolum_id}_{course_year_level}"
+                            model.c.execute("INSERT OR IGNORE INTO Ders_Sinif_Iliskisi (ders_adi, ders_instance, donem_sinif_num) VALUES (?, ?, ?)",
+                                          (r_name, instance, donem_sinif_num))
                     else:
                         # Regular - Pass
                         grade = "AA"
@@ -440,6 +453,13 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
                         instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l)
                         model.c.execute("INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem) VALUES (?, ?, ?, ?, ?, ?)",
                                       (s_num, r_code, r_name, grade, status, term_str))
+                        
+                        # Add class relation for past semesters too
+                        course_year_level = (sem + 1) // 2
+                        cohort_entry_year = 2024 - course_year_level + 1
+                        donem_sinif_num = f"{cohort_entry_year}_{bolum_id}_{course_year_level}"
+                        model.c.execute("INSERT OR IGNORE INTO Ders_Sinif_Iliskisi (ders_adi, ders_instance, donem_sinif_num) VALUES (?, ?, ?)",
+                                      (r_name, instance, donem_sinif_num))
 
     if passed_courses:
         passed_str = ", ".join(passed_courses)

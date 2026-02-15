@@ -74,78 +74,29 @@ class ORToolsScheduler:
             
         self.courses = filtered_courses
         
-        # Filter: Semester (NEW)
-        if semester_filter:
+        # Filter: Semester (using semester_lookup from curriculum_data)
+        if semester_filter and semester_filter not in ("Hepsi", "Yaz"):
             print(f"DEBUG: Filtering courses for semester: {semester_filter}")
             semester_courses = []
+            lookup = getattr(self.db_model, 'semester_lookup', {})
+            
             for c in self.courses:
-                # Heuristic: Check Class Year
-                # Güz (Fall): Years 1, 2, 3, 4 (Usually Sem 1, 3, 5, 7)
-                # Bahar (Spring): Years 1, 2, 3, 4 (Usually Sem 2, 4, 6, 8)
-                # 
-                # If we rely on `program_contexts`, we can get detailed info?
-                # course['program_contexts'] is a list of CourseContext objects (dept, year, role, pool)
+                code = str(c.get('code', '')).strip()
                 
-                is_match = False
-                
-                # If ANY context matches the semester, include it?
-                # Or if ALL? usually a course belongs to one semester.
-                # But some courses might be opened in both? (Rare in this dataset)
-                
-                # Logic:
-                # Güz -> Odd Semesters (1, 3, 5, 7)
-                # Bahar -> Even Semesters (2, 4, 6, 8)
-                # Yaz -> All? Or specific?
-                
-                # Since we don't have explicit Semester ID in course dict easily accessible 
-                # (it's in contexts), let's check contexts.
-                
-                if semester_filter == "Yaz":
-                    is_match = True # For now, Yaz includes everything or needs specific flag?
+                if code and code in lookup:
+                    sem_set = lookup[code]
+                    # Include if course matches the selected semester
+                    if semester_filter in sem_set:
+                        semester_courses.append(c)
+                    # Also include if course is in both semesters
+                    elif "Güz" in sem_set and "Bahar" in sem_set:
+                        semester_courses.append(c)
                 else:
-                    # Check contexts
-                    for ctx in c.get('program_contexts', []):
-                        # ctx.year is Class Level (1, 2, 3, 4)
-                        # This doesn't distinguish Fall/Spring by itself unless we assume:
-                        # Fall = 1, 3, 5, 7? No, Year 1 has both.
-                        
-                        # WAIT! We removed 'kacinci_yariyil' from DB because it didn't exist.
-                        # Do we have ANY way to distinguish Fall vs Spring?
-                        # `Ogrenci_Donemleri` has `sinif_duzeyi` (1,2,3,4).
-                        # It does NOT have semester (1-8).
-                        
-                        # CRITICAL ISSUE: We might not have Fall/Spring distinction in DB for *Courses*.
-                        # The user selects Güz/Bahar in the UI.
-                        # How did the Filter work before? 
-                        # I strictly disabled it in Controller because "We can't distinguish".
-                        
-                        # Re-read `ScheduleController` logic for Semester Filter:
-                        # "Without 'kacinci_yariyil', we can't distinguish Fall/Spring purely from DB."
-                        # "Temporary: Allow all"
-                        
-                        # So... we actually CANNOT filter by semester effectively yet?
-                        # If so, passing `semester_filter` here does nothing useful unless we heuristic it?
-                        # Heuristic: Maybe course names? Or maybe we just rely on user adding courses manually?
-                        # BUT user wants Auto-Scheduler to respect it.
-                        
-                        # Stopgap: If we really can't distinguish, we can't filter.
-                        # But maybe we can assume:
-                        # - We have NO data.
-                        # - So we just schedule EVERYTHING.
-                        # - The user will be annoyed.
-                        
-                        # Let's check `CurriculumResolver` or `CourseContext` to see if we missed something.
-                        pass
-                
-                # For now, since we lack data, we INCLUDE ALL to avoid empty schedule.
-                # I will print a warning.
-                is_match = True 
-                
-                if is_match:
+                    # Unknown semester — include to avoid losing courses
                     semester_courses.append(c)
             
             self.courses = semester_courses
-            print(f"DEBUG: Loaded {len(self.courses)} courses after Semester Filter ({semester_filter}) - EFFECTIVELY NO FILTER DUE TO MISSING DB DATA.")
+            print(f"DEBUG: Loaded {len(self.courses)} courses after Semester Filter ({semester_filter}).")
         else:
             print(f"DEBUG: Loaded {len(self.courses)} schedulable courses (after filtering projects).")
         
@@ -153,6 +104,34 @@ class ORToolsScheduler:
         self.teachers = self.db_model.get_all_teachers_with_ids()
         
         # 4. Define Time Slots
+        self.time_slots = []
+        days = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma"]
+        
+        # Standard time slots (45 mins + 10 mins break, Lunch break 12:00-13:00)
+        # 08:30, 09:25, 10:20, 11:15, 13:00, 13:55, 14:50, 15:45, 16:40
+        slot_times = [
+            ("08:30", "09:15"), ("09:25", "10:10"), ("10:20", "11:05"), ("11:15", "12:00"),
+            ("13:00", "13:45"), ("13:55", "14:40"), ("14:50", "15:35"), ("15:45", "16:30"), ("16:40", "17:25")
+        ]
+        
+        for d_idx, day in enumerate(days):
+            for s_idx, (start, end) in enumerate(slot_times):
+                if s_idx >= SLOTS_PER_DAY: 
+                    break
+                
+                self.time_slots.append({
+                    'id': len(self.time_slots),
+                    'day': day,
+                    'day_idx': d_idx,
+                    'slot_idx': s_idx, 
+                    'start_str': start,
+                    'end_str': end,
+                    'start_min': to_minutes(start),
+                    'end_min': to_minutes(end)
+                })
+                
+        print(f"DEBUG: Initialized {len(self.time_slots)} time slots.")
+
         self.course_faculties = self.db_model.get_course_faculty_map()
 
     def _fetch_all_course_instances(self):
@@ -952,9 +931,9 @@ class ORToolsScheduler:
         
         self.cp_model = cp_model.CpModel()
         # Create Variables
-        # User requested to ignore fixed rooms for now ("no class needs fixed room")
-        # so we force ignore_fixed_rooms=True to unlock full flexibility
-        self.create_variables(ignore_fixed_rooms=True, optional_indices=elective_indices, active_indices=core_indices)
+        # User requested to FORCE use of fixed rooms.
+        # So ignore_fixed_rooms=False
+        self.create_variables(ignore_fixed_rooms=False, optional_indices=elective_indices, active_indices=core_indices)
         
         # Force electives OFF in Phase 1
         for idx in elective_indices:
@@ -1000,7 +979,7 @@ class ORToolsScheduler:
         print("\n=== PHASE 2: ELECTIVES (Cores Fixed) ===")
         
         self.cp_model = cp_model.CpModel()
-        # Create variables for all courses, electives optional
+        # MATCH Phase 1: Enforce fixed rooms
         self.create_variables(ignore_fixed_rooms=False, optional_indices=elective_indices)
         
         # Re-Map Stable Keys to New Indices

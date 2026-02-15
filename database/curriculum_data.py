@@ -19,7 +19,7 @@ COMMON_USD_POOL = [
 DEPARTMENTS_DATA = {
     "Bilgisayar Müh": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "MAT103",
             "Analiz I",
@@ -77,7 +77,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "MAT106",
             "Lineer Cebir",
@@ -135,7 +135,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "INF201",
             "Ayrık Yapılar",
@@ -193,7 +193,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "MAT204",
             "Veri Analizinin İstatistiksel Yöntemleri",
@@ -251,7 +251,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "SDP",
             "Seçmeli Alan - Proje",
@@ -309,7 +309,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "SDIIa",
             "Seçmeli II - Uygulamalı Bilgisayar Müh.",
@@ -359,7 +359,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "INF499",
             "Mesleki Alan Stajı",
@@ -385,7 +385,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "INF492",
             "Bitirme Tezi",
@@ -1745,7 +1745,7 @@ DEPARTMENTS_DATA = {
     },
     "Elektrik-Elektronik Müh": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "MAT103",
             "Analiz I / Analysis I",
@@ -1803,7 +1803,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "MAT108",
             "Analiz II / Analysis II",
@@ -1861,7 +1861,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "MAT201",
             "Diferansiyel Denklemler / Differential Equations",
@@ -1919,7 +1919,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "MAT204",
             "Veri Analizinin İstat. Yönt. / Stat. Methods of Data Anal.",
@@ -1977,7 +1977,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "ETE321",
             "Elektromanyetik Alanlar / Electromagnetic Fields",
@@ -2019,7 +2019,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "ETE304",
             "Kontrol Müh. Temelleri / Fund. of Control Eng.",
@@ -2061,7 +2061,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "ETE499",
             "Mesleki Alan Stajı / Specialized Internship",
@@ -2111,7 +2111,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "ETE492",
             "Lisans Bitirme Çalışması / Bachelor Thesis",
@@ -4542,7 +4542,7 @@ DEPARTMENTS_DATA = {
     },
     "Endüstri Müh": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "WIN091",
             "Endüstri Mühendisliğine Giriş",
@@ -4600,7 +4600,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "WIN092",
             "Bilimsel Çalışma Yöntemleri",
@@ -4658,7 +4658,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "WIN203",
             "Bilgisayar Bilimine ve Programlamaya Giriş",
@@ -4716,7 +4716,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "WIN204",
             "Muhasebe ve Bilanço",
@@ -4774,7 +4774,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "WIN313",
             "Lojistik Yönetimi ve Teknolojileri",
@@ -4816,7 +4816,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "WIN302",
             "Fabrika Yönetimine Giriş",
@@ -4858,7 +4858,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "WIN403",
             "Proje II: Endüstri Projesi",
@@ -4916,7 +4916,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "WIN492",
             "Bitirme Tezi",
@@ -5498,7 +5498,7 @@ DEPARTMENTS_DATA = {
     },
     "Enerji Bilimi ve Teknolojileri": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "PHY111",
             "Fizik I / Physik I",
@@ -5556,7 +5556,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "PHY112",
             "Fizik II / Physik II",
@@ -5614,7 +5614,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "EBT201",
             "Yenilenebilir Enerji Teknolojileri / Erneuerbare...",
@@ -5672,7 +5672,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "EBT204",
             "Termodinamik / Thermodynamik",
@@ -5713,9 +5713,24 @@ DEPARTMENTS_DATA = {
             0,
             0
         ],
-
+        [
+            "ZSDI",
+            "Zorunlu Seçmeli Ders",
+            6,
+            2,
+            1,
+            0
+        ],
+        [
+            "SDI",
+            "Seçmeli Ders",
+            6,
+            2,
+            1,
+            0
+        ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "EBT303",
             "Akışkanlar Mekaniği / Strömungsmechanik",
@@ -5757,7 +5772,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "EBT308",
             "Uygulamalı Enerji Bilimi Laboratuvarı / Angewandtes...",
@@ -5799,7 +5814,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "EBT401",
             "Proje I (Tez Hazırlık ve Seminer) / Projekt I",
@@ -5857,7 +5872,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "EBT402",
             "Proje II",
@@ -6295,7 +6310,7 @@ DEPARTMENTS_DATA = {
     },
     "Hukuk Fakültesi": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "HUK151",
             "Hukuka Giriş",
@@ -6361,7 +6376,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "HUK150",
             "Anayasa Hukuku II",
@@ -6435,7 +6450,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "HUK251",
             "Ceza Hukuku Genel Hükümler I",
@@ -6493,7 +6508,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "HUK250",
             "Ceza Hukuku Genel Hükümler II",
@@ -6551,7 +6566,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "HUK351",
             "Ceza Hukuku Özel Hükümler I",
@@ -6641,7 +6656,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "HUK350",
             "Ceza Hukuku Özel Hükümler II",
@@ -6731,7 +6746,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "HUK451",
             "Ceza Muhakemesi Hukuku I",
@@ -6821,7 +6836,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "HUK450",
             "Ceza Muhakemesi Hukuku II",
@@ -7107,7 +7122,7 @@ DEPARTMENTS_DATA = {
     },
     "Kültür ve İletişim Bölümü": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "AIT001",
             "Atatürk İlkeleri ve İnkılap Tarihi I",
@@ -7173,7 +7188,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "AIT002",
             "Atatürk İlkeleri ve İnkılap Tarihi II",
@@ -7239,7 +7254,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "ENG201",
             "İngilizce III",
@@ -7297,7 +7312,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "ENG202",
             "İngilizce IV",
@@ -7355,7 +7370,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "ENG301",
             "İleri İngilizce I",
@@ -7397,7 +7412,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "ENG302",
             "İleri İngilizce II",
@@ -7439,7 +7454,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "KKW415",
             "Kültür ve Mekan",
@@ -7489,7 +7504,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "KKW424",
             "Kültürel ve Yaratıcı Endüstriler / Kurumlar",
@@ -8001,7 +8016,7 @@ DEPARTMENTS_DATA = {
     },
     "Makine Müh": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "MAT103",
             "Analiz I / Calculus I",
@@ -8059,7 +8074,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "MAT108",
             "Analiz II / Calculus II",
@@ -8117,7 +8132,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "MAB213",
             "Elektrik ve Elektronik Müh. Temelleri / Fund. of EE Eng.",
@@ -8175,7 +8190,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "MAB210",
             "İmalat Teknolojisinin Temelleri / Fund. Manufacturing Tech.",
@@ -8233,7 +8248,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "MAB301",
             "Takım Tezgâhları / Machine Tools",
@@ -8291,7 +8306,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "MAB312",
             "Isı Transferi / Heat Transfer",
@@ -8349,7 +8364,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "MAB499",
             "Mesleki Alan Stajı / Vocational Internship",
@@ -8383,7 +8398,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "MAB492",
             "Bitirme Tezi / Bachelor Thesis",
@@ -9112,7 +9127,7 @@ DEPARTMENTS_DATA = {
     },
     "Malzeme Bilimi ve Teknolojileri": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "PHY111",
             "Fizik I",
@@ -9170,7 +9185,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "PHY112",
             "Fizik II",
@@ -9228,7 +9243,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "NWI201",
             "Fiziksel Kimya I",
@@ -9286,7 +9301,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "NWI202",
             "Fiziksel Kimya II",
@@ -9344,7 +9359,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "MAT201",
             "Diferansiyel Denklemler",
@@ -9386,7 +9401,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "NWI302",
             "İstatistiksel ve Sayısal Yöntemler",
@@ -9428,7 +9443,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "MWT401",
             "Proje I",
@@ -9486,7 +9501,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "MWT402",
             "Proje II",
@@ -9774,7 +9789,7 @@ DEPARTMENTS_DATA = {
     },
     "Mekatronik Müh": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "MAT103",
             "Analysis I / Calculus I / Analiz I",
@@ -9832,7 +9847,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "MAT108",
             "Analysis II / Analysis II / Analiz II",
@@ -9890,7 +9905,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "MAT201",
             "Differential Equations / Diferansiyel Denklemler",
@@ -9948,7 +9963,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "MAT204",
             "Stat. Methods for Data Analysis / İstatistik",
@@ -10006,7 +10021,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "MEC313",
             "Industrial Automation / End. Otomasyon Tek.",
@@ -10048,7 +10063,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "MEC308",
             "Industrial Robotics I / Endüstriyel Robotik I",
@@ -10090,7 +10105,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "MEC499",
             "Advanced Internship / Mesleki Alan Stajı",
@@ -10140,7 +10155,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "MEC492",
             "Bachelor Thesis / Bitirme Tezi",
@@ -10607,7 +10622,7 @@ DEPARTMENTS_DATA = {
     },
     "Moleküler Biyoteknoloji": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "BIO111",
             "Biyoloji",
@@ -10665,7 +10680,7 @@ DEPARTMENTS_DATA = {
             2
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "CHE112",
             "Kimya II",
@@ -10723,7 +10738,7 @@ DEPARTMENTS_DATA = {
             2
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "AIT001",
             "Atatürk İlkeleri ve İnkılap Tarihi I",
@@ -10781,7 +10796,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "AIT002",
             "Atatürk İlkeleri ve İnkılap Tarihi II",
@@ -10839,7 +10854,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "ENG301",
             "İleri İngilizce I",
@@ -10881,7 +10896,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "ENG302",
             "İleri İngilizce II",
@@ -10939,7 +10954,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "MBT441",
             "Proje I",
@@ -10973,7 +10988,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "MBT442",
             "Proje II",
@@ -11395,7 +11410,7 @@ DEPARTMENTS_DATA = {
     },
     "Siyaset Bilimi ve Uluslararası İlişkiler": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "AIT001",
             "Atatürk İlkeleri ve İnkılap Tarihi I",
@@ -11461,7 +11476,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "AIT002",
             "Atatürk İlkeleri ve İnkılap Tarihi II",
@@ -11527,7 +11542,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "ENG203",
             "İngilizce III",
@@ -11577,7 +11592,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "ENG204",
             "İngilizce IV",
@@ -11619,7 +11634,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "ENG301",
             "İleri İngilizce I",
@@ -11677,7 +11692,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "ENG302",
             "İleri İngilizce II",
@@ -11735,7 +11750,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "POL403",
             "Alman Dış Politikası",
@@ -11761,7 +11776,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "POL402",
             "Bitirme Ödevi",
@@ -13269,7 +13284,7 @@ DEPARTMENTS_DATA = {
     },
     "Sosyoloji": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "SOZ101",
             "Sosyolojiye Giriş I",
@@ -13335,7 +13350,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "SOZ102",
             "Sosyolojiye Giriş II",
@@ -13401,7 +13416,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "SOZ201",
             "Sosyoloji Kuramları I",
@@ -13459,7 +13474,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "SOZ202",
             "Sosyoloji Kuramları II",
@@ -13517,7 +13532,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "SOZ311",
             "İleri Araştırma Yöntemleri I",
@@ -13575,7 +13590,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "SOZ312",
             "İleri Araştırma Yöntemleri II",
@@ -13633,7 +13648,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "SOZ419",
             "Staj",
@@ -13675,7 +13690,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "SOZ422",
             "Ulusaşırı Türk-Alman Alanları",
@@ -14709,7 +14724,7 @@ DEPARTMENTS_DATA = {
     },
     "İktisat": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "VWL101",
             "İktisada Giriş 1",
@@ -14767,7 +14782,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "VWL102",
             "İktisada Giriş 2",
@@ -14833,7 +14848,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "VWL201",
             "Mikro İktisat",
@@ -14883,7 +14898,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "VWL202",
             "Makro İktisat",
@@ -14933,7 +14948,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "VWL301",
             "Uluslararası İktisat I",
@@ -14975,7 +14990,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "VWL304",
             "İktisadi Düşünceler Tarihi",
@@ -15033,7 +15048,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "VWLSD7",
             "Seçimlik Ders VII",
@@ -15059,7 +15074,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "VWL410",
             "Bitirme Tezi ve Kollogyum",
@@ -16055,7 +16070,7 @@ DEPARTMENTS_DATA = {
     },
     "İnşaat Müh": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "MAT103",
             "Analiz I / Calculus I",
@@ -16113,7 +16128,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "MAT108",
             "Analiz II / Calculus II",
@@ -16171,7 +16186,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "MAT201",
             "Diferansiyel Denklemler / Differential Equations",
@@ -16229,7 +16244,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "AIT002",
             "Atatürk İlkeleri ve İnkılap Tarihi II",
@@ -16287,7 +16302,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "BAU301",
             "Yapı İnşaatı II / Construction Engineering II",
@@ -16313,7 +16328,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "ZSD",
             "Zorunlu Seçmeli Ders Alanı",
@@ -16331,7 +16346,7 @@ DEPARTMENTS_DATA = {
             1
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "ENG301",
             "İleri İngilizce I / Advanced English I",
@@ -16389,7 +16404,7 @@ DEPARTMENTS_DATA = {
             1
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "ZSD",
             "Zorunlu Seçmeli Ders Alanı",
@@ -16749,7 +16764,7 @@ DEPARTMENTS_DATA = {
     },
     "İşletme": {
         "curriculum": {
-    "1": [
+    "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "BWL101",
             "İşletmeye Giriş",
@@ -16807,7 +16822,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "2": [
+    "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "BWL104",
             "Bilanço",
@@ -16865,7 +16880,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "3": [
+    "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "BWL201",
             "Pazarlamanın Temelleri",
@@ -16923,7 +16938,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "4": [
+    "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "BWL216",
             "E-İş",
@@ -16981,7 +16996,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "5": [
+    "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "BWL309",
             "Stratejik Yönetim",
@@ -17039,7 +17054,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "6": [
+    "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "BWL310",
             "Bilimsel Çalışma Yöntemleri",
@@ -17097,7 +17112,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "7": [
+    "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "BWL407",
             "İşletme Stajı (BWL-Praktikum)*",
@@ -17155,7 +17170,7 @@ DEPARTMENTS_DATA = {
             0
         ]
     ],
-    "8": [
+    "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "BWL408",
             "Bitirme Tezi",

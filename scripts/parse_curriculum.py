@@ -78,19 +78,33 @@ class Regexes:
 
     pool_code = re.compile(r'([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*)\s*([IVX0-9]+[a-zA-Z]?)?', re.IGNORECASE)
 
+def semester_key(sem_num):
+    """
+    Convert an integer semester number (1-8) to a descriptive string.
+    Examples:
+        1 -> "1. Dönem / 1. Yıl Güz Dönemi"
+        2 -> "2. Dönem / 1. Yıl Bahar Dönemi"
+        3 -> "3. Dönem / 2. Yıl Güz Dönemi"
+        4 -> "4. Dönem / 2. Yıl Bahar Dönemi"
+    """
+    year = (sem_num + 1) // 2
+    season = "Güz" if sem_num % 2 != 0 else "Bahar"
+    return f"{sem_num}. Dönem / {year}. Yıl {season} Dönemi"
+
 def check_semester_akts(curriculum, dept_name):
     """Check if each semester has exactly 30 AKTS and return discrepancies."""
     akts_issues = []
     
-    for semester in range(1, 9):  # Check semesters 1-8
-        if semester in curriculum:
-            total_akts = sum(course[2] for course in curriculum[semester])
-            if total_akts == 31 and dept_name == "Hukuk Fakültesi" and semester == 8:
+    for sem_num in range(1, 9):  # Check semesters 1-8
+        key = semester_key(sem_num)
+        if key in curriculum:
+            total_akts = sum(course[2] for course in curriculum[key])
+            if total_akts == 31 and dept_name == "Hukuk Fakültesi" and sem_num == 8:
                 continue
-            if total_akts == 28 and dept_name == "İnşaat Müh" and semester == 8:
+            if total_akts == 28 and dept_name == "İnşaat Müh" and sem_num == 8:
                 continue
             elif total_akts != 30:
-                akts_issues.append(f"Dönem {semester}: {total_akts} AKTS")
+                akts_issues.append(f"Dönem {sem_num}: {total_akts} AKTS")
     
     return akts_issues
 
@@ -314,8 +328,9 @@ def parse_file(filepath, log_file=None):
                     for pool_code in current_pool_codes:
                         pools[pool_code].append(course_tuple)
             elif 1 <= current_semester <= 8:
-                if current_semester not in curriculum:
-                    curriculum[current_semester] = []
+                sem_k = semester_key(current_semester)
+                if sem_k not in curriculum:
+                    curriculum[sem_k] = []
                 
                 # Allow duplicates for placeholder courses (ZSD, SD, ÜSD, etc.)
                 is_placeholder = "SD" in code
@@ -325,16 +340,16 @@ def parse_file(filepath, log_file=None):
                 # But if existing entries have different T/U/L (unlikely), it won't match.
                 
                 if is_placeholder:
-                     curriculum[current_semester].append(course_tuple)
+                     curriculum[sem_k].append(course_tuple)
                 else:
                     # Check if code+name matches
                     exists = False
-                    for existing in curriculum[current_semester]:
+                    for existing in curriculum[sem_k]:
                         if existing[0] == code and existing[1] == name:
                             exists = True
                             break
                     if not exists:
-                        curriculum[current_semester].append(course_tuple)
+                        curriculum[sem_k].append(course_tuple)
 
     return curriculum, pools
 

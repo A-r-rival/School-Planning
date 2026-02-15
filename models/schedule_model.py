@@ -56,7 +56,7 @@ class ScheduleModel(QObject):
         self.initialize_connection()
         
         # Initialize ID Seeding Service (Auto-seed faculties/departments)
-        from models.services.seeder import IDSeedingService
+        from models.services.faculty_and_department_id_seeder import IDSeedingService
         seeder = IDSeedingService(self.conn)
         seeder.seed()
         
@@ -84,9 +84,9 @@ class ScheduleModel(QObject):
             for dept, details in data.items():
                 curr = details.get('curriculum', {})
                 for sem_key, courses in curr.items():
-                    # sem_key: "1", "2" ... "8"
+                    # sem_key: "1. Dönem / 1. Yıl Güz Dönemi" or legacy "1"
                     try:
-                        sem_num = int(sem_key)
+                        sem_num = int(sem_key.split('.')[0])
                         is_odd = (sem_num % 2 != 0)
                         semester = "Güz" if is_odd else "Bahar"
                         
@@ -94,7 +94,6 @@ class ScheduleModel(QObject):
                             # course: [Code, Name, T, U, L, AKTS]
                             if len(course) >= 2:
                                 code = str(course[0]).strip()
-                                # name = str(course[1]).strip()
                                 
                                 if code not in self.semester_lookup:
                                     self.semester_lookup[code] = set()
@@ -784,53 +783,52 @@ class ScheduleModel(QObject):
                 str(x[10]).strip().upper() if x[10] else "ZZZZZ", 
                 x[1]
             ))
-            # --- Semester Filtering (Inference) ---
-            if semester_filter:
-                filtered_results = []
-                for row in results:
-                    # Row: 0:Code, 1:Name, ... 8:Year, 9:IsPool
-                    
-                    if semester_filter == "Yaz":
-                        continue
-
-                    name = row[1]
-                    code_str = str(code).strip()
-                    
-                    sem_str = "Belirsiz" # Default if unknown
-                    
-                    # 1. Lookup from Curriculum Data (Strict Source of Truth)
-                    if code_str and hasattr(self, 'semester_lookup') and code_str in self.semester_lookup:
-                        sem_set = self.semester_lookup[code_str]
-                        if "Güz" in sem_set and "Bahar" in sem_set:
-                            sem_str = "Güz / Bahar"
-                        elif "Güz" in sem_set:
-                            sem_str = "Güz"
-                        elif "Bahar" in sem_set:
-                            sem_str = "Bahar"
-                    
-                    # Apply Filter for View
-                    # Filter logic:
-                    # Güz -> Show if sem_str contains "Güz" OR is "Belirsiz" (Default available)
-                    # Bahar -> Show if sem_str contains "Bahar" OR is "Belirsiz"
-                    
-                    show_row = False
-                    if semester_filter == "Güz":
-                        if "Güz" in sem_str or sem_str == "Belirsiz": show_row = True
-                    elif semester_filter == "Bahar":
-                        if "Bahar" in sem_str or sem_str == "Belirsiz": show_row = True
-                    elif semester_filter == "Hepsi" or not semester_filter:
-                         show_row = True
-                         
-                    if show_row:
-                        # Construct new row tuple with Semester Column at index 6
-                        # Original: Code, Name, T, U, L, AKTS, Type, Detail, SortKey, IsPool, PoolCode
-                        # New:      Code, Name, T, U, L, AKTS, Sem,  Type, Detail, SortKey, IsPool, PoolCode
-                        
-                        new_row = list(row)
-                        new_row.insert(6, sem_str)
-                        filtered_results.append(tuple(new_row))
+            # --- Semester Filtering & Column Injection (Always Run) ---
+            # Always run to ensure the "Semester" column is added at index 6
+            filtered_results = []
+            for row in results:
+                # Row: 0:Code, 1:Name, ... 8:Year, 9:IsPool
                 
-                results = filtered_results
+                if semester_filter == "Yaz":
+                    # We don't support Yaz yet in DB, just skip or show empty?
+                    # For now, let's just filtering logic handle it.
+                    pass
+
+                code = row[0] # Fix: Define code
+                name = row[1]
+                code_str = str(code).strip()
+                
+                sem_str = "Belirsiz" # Default if unknown
+                
+                # 1. Lookup from Curriculum Data (Strict Source of Truth)
+                if code_str and hasattr(self, 'semester_lookup') and code_str in self.semester_lookup:
+                    sem_set = self.semester_lookup[code_str]
+                    if "Güz" in sem_set and "Bahar" in sem_set:
+                        sem_str = "Güz / Bahar"
+                    elif "Güz" in sem_set:
+                        sem_str = "Güz"
+                    elif "Bahar" in sem_set:
+                        sem_str = "Bahar"
+                
+                # Apply Filter for View
+                show_row = False
+                if semester_filter == "Güz":
+                    if "Güz" in sem_str or sem_str == "Belirsiz": show_row = True
+                elif semester_filter == "Bahar":
+                    if "Bahar" in sem_str or sem_str == "Belirsiz": show_row = True
+                elif semester_filter == "Hepsi" or not semester_filter:
+                     show_row = True
+                     
+                if show_row:
+                    # Construct new row tuple with Semester Column at index 6
+                    # Original: Code, Name, T, U, L, AKTS, Type, Detail, SortKey, IsPool, PoolCode
+                    # New:      Code, Name, T, U, L, AKTS, Sem,  Type, Detail, SortKey, IsPool, PoolCode
+                    
+                    new_row = list(row)
+                    new_row.insert(6, sem_str)
+                    filtered_results.append(tuple(new_row))
+            
+            results = filtered_results
 
             return results
             
