@@ -87,8 +87,7 @@ class ScheduleView(QWidget):
     
     # Signals for controller communication
     course_add_requested = pyqtSignal(dict)  # Emits course data when add button clicked
-    course_remove_requested = pyqtSignal(str)  # Emits course info when remove button clicked (Legacy for single ID string)
-    course_remove_by_ids_requested = pyqtSignal(list) # NEW: Emits list of IDs to remove
+    course_remove_by_ids_requested = pyqtSignal(list) # Emits list of IDs to remove
     faculty_add_requested = pyqtSignal(str)  # Emits faculty name when add faculty requested
     department_add_requested = pyqtSignal(int, str)  # Emits faculty_id, department_name when add department requested
     open_calendar_requested = pyqtSignal() # Emits when calendar button clicked
@@ -850,10 +849,7 @@ class ScheduleView(QWidget):
             # Assuming controller will send dicts
             pass
     
-    def clear_inputs(self):
-        """Clear all input fields - Not needed with Dialog"""
-        pass
-    
+
     def show_error_message(self, message: str):
         """Show error message to user"""
         QMessageBox.warning(self, "Hata", message)

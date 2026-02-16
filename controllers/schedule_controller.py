@@ -11,11 +11,10 @@ if TYPE_CHECKING:
 from views.calendar_view import CalendarView
 from views.student_view import StudentView
 from views.teacher_availability_view import TeacherAvailabilityView
-from views.master_schedule_view import MasterScheduleView # NEW import
 from controllers.scheduler import ORToolsScheduler
 from PyQt5.QtWidgets import QMessageBox, QInputDialog
 from PyQt5.QtCore import Qt
-from utils.schedule_merger import merge_course_strings, merge_schedule_items_dicts
+from utils.schedule_merger import merge_schedule_items_dicts
 from services.calendar_schedule_builder import CalendarScheduleBuilder
 
 
@@ -66,7 +65,6 @@ class ScheduleController:
         """Connect view signals to controller methods"""
         # Connect view signals to controller methods
         self.view.course_add_requested.connect(self.handle_add_course)
-        self.view.course_remove_requested.connect(self.handle_remove_course)
         self.view.course_remove_by_ids_requested.connect(self.handle_remove_course_by_ids)
         self.view.faculty_add_requested.connect(self.handle_add_faculty)
         self.view.department_add_requested.connect(self.handle_add_department)
@@ -128,9 +126,6 @@ class ScheduleController:
         success = self.model.add_course(course_input)
         
         if success:
-            # Clear inputs on successful addition
-            self.view.clear_inputs()
-            
             # Update teacher completer with new teacher if needed
             teachers = self.model.get_teachers()
             self.view.update_teacher_completer(teachers)
@@ -139,12 +134,6 @@ class ScheduleController:
         """Add new course to curriculum via model (Template)"""
         return self.model.add_curriculum_course_as_template(data)
     
-    def handle_remove_course(self, course_info: str):
-        """Handle remove course request from view (Legacy)"""
-        success = self.model.remove_course(course_info)
-        if success:
-            teachers = self.model.get_teachers()
-            self.view.update_teacher_completer(teachers)
 
     def handle_remove_course_by_ids(self, ids: List[int]):
         """Handle remove course by list of IDs"""
@@ -237,41 +226,29 @@ class ScheduleController:
         # Close database connections through model
         self.model.close_connections()
     
-    # Additional controller methods for future extensions
+    # --- FUTURE: Export/Import (Not yet implemented) ---
     
     def export_schedule(self, format_type: str = "text"):
         """
-        Export schedule in specified format
+        FUTURE: Export schedule to Excel/CSV/JSON.
+        Planned for eventual Excel export feature.
         
         Args:
             format_type: Export format ('text', 'csv', 'json')
         """
-        # This can be implemented later for export functionality
-        courses = self.model.get_all_courses_as_string()
-        # Implementation would depend on format_type
+        # TODO: Implement Excel export using openpyxl or similar
         pass
     
     def import_schedule(self, file_path: str):
         """
-        Import schedule from file
+        FUTURE: Import schedule from file.
         
         Args:
             file_path: Path to import file
         """
-        # This can be implemented later for import functionality
+        # TODO: Implement schedule import from Excel/CSV
         pass
     
-    def validate_schedule(self) -> list:
-        """
-        Validate entire schedule for conflicts and issues
-        
-        Returns:
-            List of validation issues
-        """
-        # This can be implemented later for comprehensive validation
-        issues = []
-        # Implementation would check for various conflicts and issues
-        return issues
     
     def open_master_view(self):
         """Open the Master Schedule View"""
@@ -383,31 +360,6 @@ class ScheduleController:
         self.snapshot_viewer.raise_()
         self.snapshot_viewer.activateWindow()
 
-    def get_statistics(self) -> dict:
-        """
-        Get schedule statistics
-        
-        Returns:
-            Dictionary with statistics
-        """
-        courses = self.model.get_all_courses()
-        teachers = self.model.get_teachers()
-        
-        stats = {
-            'total_courses': len(courses),
-            'total_teachers': len(teachers),
-            'days_with_classes': len(set(course.split(' - ')[2].split(' ')[0] for course in courses)),
-            'courses_per_day': {}
-        }
-        
-        # Calculate courses per day
-        for course in courses:
-            parts = course.split(' - ')
-            if len(parts) >= 3:
-                day = parts[2].split(' ')[0]
-                stats['courses_per_day'][day] = stats['courses_per_day'].get(day, 0) + 1
-        
-        return stats
 
     def open_calendar_view(self):
         """Open the weekly calendar view"""
@@ -720,37 +672,6 @@ class ScheduleController:
 
         try:
             scheduler = ORToolsScheduler(self.model)
-            # Pass selected semester to generate_schedule
-            schedule, status = scheduler.generate_schedule(semester_filter=semester)
-            
-            if status == "OPTIMAL" or status == "FEASIBLE":
-                # Wait, generate_schedule returns (schedule, status) 
-                # but existing code expected (success) boolean?
-                # Let's check existing code: `success = scheduler.solve()`
-                # I changed `scheduler.py` to `generate_schedule` returning (schedule, status)?
-                # No, I changed `solve` to `generate_schedule` but `solve` usually returns bool in my earlier code?
-                # Let's check `scheduler.py` again.
-                # It returns `True` if status in (OPTIMAL, FEASIBLE).
-                # My new scheduler.py code:
-                # `    def generate_schedule(self, semester_filter: Optional[str] = None):`
-                # `        self.load_data(semester_filter)`
-                # `        ...`
-                # `        if self._run_solver("MINIMAL"): return True`
-                # `        return False`
-                #
-                # Wait, `scheduler_ortools.py` had `solve` returning bool.
-                # `scheduler.py` (the one I edited) had `solve` (lines 831+)
-                # I renamed it to `generate_schedule`.
-                # Does it return bool?
-                # Line 60 (in scheduler_ortools.py) returned True/False.
-                # In `scheduler.py`... I didn't see the return statement in the snippet.
-                # Let's assume it returns boolean for now based on legacy usage.
-                # BUT if I am wrong, `schedule` variable assignment will fail.
-                
-                # Check `scheduler.py` end of `solve` (now `generate_schedule`).
-                pass
-
-            # Since I am not sure about return type, let's treat it as boolean based on legacy code
             success = scheduler.generate_schedule(semester_filter=semester)
             
             if success:

@@ -2,17 +2,6 @@
 """
 Schedule Model - MVC Pattern
 Handles all data operations and business logic
-
-⚠️ FROZEN: Transitional ScheduleModel
-This file is intentionally NOT clean.
-Do not refactor further until:
-- StudentModel
-- FacultyModel
-- ClassroomModel
-- AvailabilityModel
-are extracted.
-
-Only bugfixes allowed.
 """
 import os
 import sqlite3
@@ -170,59 +159,6 @@ class ScheduleModel(QObject):
             print(f"[ERROR] {error_msg}")
             return False
     
-    def remove_course(self, course_info: str) -> bool:
-        """
-        DEPRECATED: Remove a course from the schedule by parsing string.
-        Use remove_course_by_id instead for better reliability.
-        
-        This method delegates to remove_course_by_id after minimal parsing.
-        
-        Args:
-            course_info: Course information string (format: "[CODE] Name - Teacher (Day HH:MM-HH:MM)")
-        
-        Returns:
-            bool: True if successful, False otherwise
-        """
-        try:
-            # Parse minimal info needed to find the course
-            # Updated regex to handle optional {Havuzlar: ...} part
-            import re
-            # Pattern: [CODE] {optional pools} Name - Teacher (Day Time)
-            match = re.search(r"\[(.*?)\](?:\s*\{Havuzlar:.*?\})?\s*(.*?)\s*-\s*(.*?)\s*\((.*?)\s*(\d{2}:\d{2})-(\d{2}:\d{2})\)", course_info)
-            
-            if not match:
-                self.error_occurred.emit("Format hatası: Ders bilgisi okunamadı")
-                return False
-            
-            code, ders_adi, hoca_adi, gun, baslangic, bitis = match.groups()
-            
-            # Find program_id in database
-            query = '''
-                SELECT dp.program_id
-                FROM Ders_Programi dp
-                JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
-                WHERE dp.ders_adi = ? 
-                AND (o.ad || ' ' || o.soyad) = ?
-                AND dp.gun = ?
-                AND dp.baslangic = ?
-            '''
-            self.c.execute(query, (ders_adi, hoca_adi, gun, baslangic))
-            row = self.c.fetchone()
-            
-            if row:
-                # Delegate to ID-based method
-                success = self.remove_course_by_id(row[0])
-                if success:
-                    self.course_removed.emit(course_info)
-                return success
-            else:
-                self.error_occurred.emit("Silinecek ders bulunamadı!")
-                return False
-                
-        except Exception as e:
-            self.error_occurred.emit(f"Ders silinirken hata: {str(e)}")
-            return False
-    
     def get_all_schedule_items(self, semester_filter: Optional[str] = None) -> List[Dict]:
         """
         Get all scheduled items with structured data for Table View.
@@ -314,54 +250,6 @@ class ScheduleModel(QObject):
             self.error_occurred.emit(f"Dersler yüklenirken hata: {str(e)}")
             return []
 
-
-
-    def get_all_courses_as_string(self) -> List[str]:
-        """
-        Get all courses from database as formatted strings
-        
-        Returns:
-            List[str]: List of course information strings
-        """
-        try:
-            query = '''
-                SELECT dp.ders_adi, o.ad || ' ' || o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu,
-                       GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf'),
-                       GROUP_CONCAT(DISTINCT dhi.havuz_kodu)
-                FROM Ders_Programi dp
-                JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
-                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
-                LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
-                LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
-                LEFT JOIN Bolumler b ON od.bolum_num = b.bolum_id
-                LEFT JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
-                GROUP BY dp.program_id, dp.ders_adi, o.ad, o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu
-            '''
-            self.c.execute(query)
-            rows = self.c.fetchall()
-            
-            courses = []
-            for ders, hoca, gun, baslangic, bitis, kodu, siniflar, havuzlar in rows:
-                saat = f"{baslangic}-{bitis}"
-                # Format: [Code] {Pools: X,Y} Name - Teacher (Day Time) [Classes]
-                display_code = kodu if kodu else "CODE"
-                
-                # Add pool information if available (for elective courses)
-                pool_str = ""
-                if havuzlar:
-                    # Clean up and sort pool codes
-                    pool_codes = sorted(set(p.strip() for p in havuzlar.split(',') if p.strip()))
-                    if pool_codes:
-                        pools_display = ', '.join(pool_codes)
-                        pool_str = f" {{Havuzlar: {pools_display}}}"
-                
-                classes_str = f" [{siniflar}]" if siniflar else ""
-                course_info = f"[{display_code}]{pool_str} {ders} - {hoca} ({gun} {saat}){classes_str}"
-                courses.append(course_info)
-            return courses
-        except Exception as e:
-            self.error_occurred.emit(f"Dersler yüklenirken hata: {str(e)}")
-            return []
     
     def get_teachers(self):
         """
@@ -379,104 +267,8 @@ class ScheduleModel(QObject):
             return []
 
 
-
-    def get_all_classrooms_with_ids(self) -> List[Tuple[int, str]]:
-        """
-        Get all classrooms with their IDs.
-        
-        Returns:
-            List of (id, name) tuples
-        """
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT derslik_num, derslik_adi FROM Derslikler ORDER BY derslik_adi")
-            data = cursor.fetchall()
-            print(f"DEBUG: get_all_classrooms_with_ids fetched {len(data)} rows")
-            return data
-        except Exception as e:
-            self.error_occurred.emit(f"Error fetching classrooms with IDs: {str(e)}")
-            return []
-
-    def get_faculties(self) -> List[Tuple[int, str]]:
-        """
-        Get all faculties.
-        
-        Returns:
-            List of (id, name) tuples
-        """
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT fakulte_num, fakulte_adi FROM Fakulteler ORDER BY fakulte_adi")
-            return cursor.fetchall()
-        except Exception as e:
-            self.error_occurred.emit(f"Error fetching faculties: {str(e)}")
-            return []
-
-    def get_departments_by_faculty(self, faculty_id: int) -> List[Tuple[int, str]]:
-        """
-        Get departments belonging to a faculty.
-        
-        Args:
-            faculty_id: Faculty ID
-            
-        Returns:
-            List of (id, name) tuples
-        """
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT bolum_id, bolum_adi FROM Bolumler WHERE fakulte_num = ? ORDER BY bolum_adi", (faculty_id,))
-            return cursor.fetchall()
-        except Exception as e:
-            self.error_occurred.emit(f"Error fetching departments: {str(e)}")
-            return []
     
-    def _validate_course_data(self, course_data: Dict[str, str]) -> bool:
-        """
-        Validate course data before adding
-        
-        Args:
-            course_data: Course data dictionary
-        
-        Returns:
-            bool: True if valid, False otherwise
-        """
-        required_fields = ['ders', 'hoca', 'gun', 'baslangic', 'bitis']
-        
-        # Check required fields
-        for field in required_fields:
-            if field not in course_data or not course_data[field].strip():
-                self.error_occurred.emit(f"{field} alanı boş olamaz!")
-                return False
-        
-        # Check time validity
-        try:
-            start_time = datetime.strptime(course_data['baslangic'], "%H:%M").time()
-            end_time = datetime.strptime(course_data['bitis'], "%H:%M").time()
-            
-            if start_time >= end_time:
-                self.error_occurred.emit("Başlangıç saati bitiş saatinden önce olmalıdır!")
-                return False
-                
-        except ValueError:
-            self.error_occurred.emit("Geçersiz saat formatı! (HH:MM formatında olmalı)")
-            return False
-        
-        return True
-    
-    def _has_slot_conflict(self, slot: ScheduleSlot) -> bool:
-        """
-        DEPRECATED: Use schedule_repo.has_conflict instead.
-        Kept for backward compatibility.
-        """
-        return self.schedule_repo.has_conflict(slot)
-    
-    def _check_time_conflict(self, gun: str, baslangic: str, bitis: str) -> bool:
-        """
-        DEPRECATED: Use schedule_repo.has_conflict instead.
-        Kept for backward compatibility during refactoring.
-        """
-        slot = ScheduleSlot.from_strings(gun, baslangic, bitis)
-        return self.schedule_repo.has_conflict(slot)
+
 
     def get_schedule_by_teacher(self, teacher_id: int) -> List[tuple]:
         """Get schedule for a specific teacher"""
