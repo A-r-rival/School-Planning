@@ -48,14 +48,15 @@ Completed 16.02.2026. See [POST_AUDIT_REPORT](file:///d:/Git_Projects/School-Pla
 
 ---
 
-### 6. Project Structure Cleanup
-Move loose debug/utility scripts from root to `scripts/debug/`.
+### ~~6. Project Structure Cleanup~~ ✅
+Moved 13 loose debug/utility scripts from root to `scripts/debug/`.
 
-#### [MOVE] Root Scripts → `scripts/debug/`
 - `debug_molbio.py`, `debug_teachers.py`
 - `check_pool.py`, `check_rooms.py`
 - `verify_fix_db.py`, `verify_parsing.py`
-- `dump_*.py`, `find_lines_*.py`, `inspect_*.py`
+- `dump_lines_sem5.py`, `dump_lines_year3.py`, `dump_sem6.py`
+- `find_lines_year3.py`
+- `inspect_db.py`, `inspect_year3_pools.py`
 - `report_bad_courses.py`
 
 ---

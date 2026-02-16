@@ -390,14 +390,11 @@ class CalendarView(QWidget):
                         if len(item) == 2:
                             item_id, name = item
                             widget.addItem(str(name), item_id)
-                        elif len(item) >= 3:
-                            # Fallback: assume first is ID, concat rest? Or second is name?
-                            # Let's assume (id, first, last) -> (id, first + last)
-                            item_id = item[0]
-                            name = " ".join(str(x) for x in item[1:])
-                            widget.addItem(name, item_id)
-                            print(f"DEBUG warning: Item {item} has length {len(item)}, auto-joined name.")
-                        else:
+                        elif len(item) == 3:
+                            # (id, name, extra_field) — e.g. teachers have room_preference
+                            item_id, name, _ = item
+                            widget.addItem(str(name), item_id)
+                        elif len(item) > 3:
                             print(f"DEBUG error: Skipping malformed item: {item}")
                     except Exception as loop_e:
                         print(f"DEBUG loop error handling item {item}: {loop_e}")
@@ -498,8 +495,16 @@ class CalendarView(QWidget):
                 start_hour = int(start.split(':')[0])
                 end_hour = int(end.split(':')[0])
                 
-                # Create slot entries for ALL hours the course spans
-                # This allows the merge logic to correctly span consecutive hours
+                # Fix: a course from 09:00-09:50 has start_hour=9, end_hour=9
+                # → range(9,9) is empty → course gets zero slots and is invisible.
+                # Only bump when the course fits within a single hour.
+                if end_hour <= start_hour:
+                    end_hour = start_hour + 1
+                
+                # TODO: Future — half-hour granularity needed for lunch break.
+                # Students need a ~30min break between 11:30-14:00 for cafeteria.
+                # This will require switching from 1-hour rows to 30-min rows.
+                
                 for hour in range(start_hour, end_hour):
                     if hour not in slots[day]:
                         slots[day][hour] = []

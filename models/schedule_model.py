@@ -178,7 +178,7 @@ class ScheduleModel(QObject):
                        GROUP_CONCAT(DISTINCT od.sinif_duzeyi)
                 FROM Ders_Programi dp
                 LEFT JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
-                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
                 LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
                 LEFT JOIN Bolumler b ON od.bolum_num = b.bolum_id
@@ -276,9 +276,9 @@ class ScheduleModel(QObject):
             query = '''
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, 
                        (SELECT derslik_adi FROM Derslikler WHERE derslik_num = dp.derslik_id) as oda,
-                       d.ders_kodu, dp.ders_tipi
+                       COALESCE(d.ders_kodu, 'CUSTOM') as ders_kodu, dp.ders_tipi
                 FROM Ders_Programi dp
-                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 WHERE dp.ogretmen_id = ?
             '''
             self.c.execute(query, (teacher_id,))
@@ -466,9 +466,9 @@ class ScheduleModel(QObject):
             query = '''
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi,
                        (SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = dp.ogretmen_id) as hoca,
-                       GROUP_CONCAT(DISTINCT d.ders_kodu), dp.ders_tipi
+                       GROUP_CONCAT(DISTINCT COALESCE(d.ders_kodu, 'CUSTOM')), dp.ders_tipi
                 FROM Ders_Programi dp
-                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 WHERE dp.derslik_id = ?
                 GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, dp.ogretmen_id, dp.ders_tipi
             '''
@@ -486,9 +486,9 @@ class ScheduleModel(QObject):
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi,
                        (SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = dp.ogretmen_id) as hoca,
                        (SELECT derslik_adi FROM Derslikler WHERE derslik_num = dp.derslik_id) as oda,
-                       d.ders_kodu, dp.ders_tipi
+                       COALESCE(d.ders_kodu, 'CUSTOM') as ders_kodu, dp.ders_tipi
                 FROM Ders_Programi dp
-                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
                 JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
                 WHERE od.bolum_num = ? AND od.sinif_duzeyi = ?
