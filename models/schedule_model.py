@@ -2,6 +2,20 @@
 """
 Schedule Model - MVC Pattern
 Handles all data operations and business logic
+
+Sections:
+    1.  INIT & CONNECTION
+    2.  SCHEDULE CRUD
+    3.  CALENDAR QUERIES
+    4.  TEACHER-COURSE ASSIGNMENT
+    5.  CURRICULUM MANAGEMENT
+    6.  TEACHER & CLASSROOM LOOKUPS
+    7.  FACULTY & DEPARTMENT
+    8.  STUDENT & STUDENT-NUMBER HELPERS
+    9.  CLASSROOM CRUD
+    10. TEACHER AVAILABILITY & UNAVAILABILITY
+    11. STUDENT QUERIES & GRADES
+    12. MASTER VIEW & SNAPSHOTS
 """
 import os
 import sqlite3
@@ -28,6 +42,10 @@ class ScheduleModel(QObject):
     course_removed = pyqtSignal(str)  # Emits course info when removed
     error_occurred = pyqtSignal(str)  # Emits error messages
     
+    # ════════════════════════════════════════════════════════════════
+    # INIT & CONNECTION
+    # ════════════════════════════════════════════════════════════════
+
     def __init__(self, db_path: str = None):
         super().__init__()
         
@@ -106,6 +124,10 @@ class ScheduleModel(QObject):
         except Exception as e:
             print(f"Database initialization error: {e}")
             raise
+
+    # ════════════════════════════════════════════════════════════════
+    # SCHEDULE CRUD
+    # ════════════════════════════════════════════════════════════════
 
     def add_course(self, course_data: CourseInput) -> bool:
         """
@@ -251,6 +273,10 @@ class ScheduleModel(QObject):
             return []
 
     
+    # ════════════════════════════════════════════════════════════════
+    # CALENDAR QUERIES (used by CalendarScheduleBuilder)
+    # ════════════════════════════════════════════════════════════════
+
     def get_teachers(self):
         """
         Get all unique teacher names
@@ -286,6 +312,10 @@ class ScheduleModel(QObject):
         except Exception as e:
             print(f"Error fetching teacher schedule: {e}")
             return []
+
+    # ════════════════════════════════════════════════════════════════
+    # TEACHER-COURSE ASSIGNMENT
+    # ════════════════════════════════════════════════════════════════
 
     def assign_teacher_to_course(self, teacher_id: int, course_name: str, instance: int = 1) -> bool:
         """
@@ -338,6 +368,10 @@ class ScheduleModel(QObject):
             print(f"Error fetching all assigned: {e}")
             return []
 
+    # ════════════════════════════════════════════════════════════════
+    # CURRICULUM MANAGEMENT
+    # ════════════════════════════════════════════════════════════════
+
     def delete_curriculum_course(self, course_name: str) -> bool:
         """
         Delete a course from the curriculum + all related tables.
@@ -351,10 +385,9 @@ class ScheduleModel(QObject):
                 self.c.execute("DELETE FROM Ders_Sinif_Iliskisi WHERE ders_adi = ?", (course_name,))
                 self.c.execute("DELETE FROM Ders_Havuz_Iliskisi WHERE ders_adi = ?", (course_name,))
                 
-                # 3. Delete from Scheule & Preferences (Cascade logically)
+                # 3. Delete from Schedule (Cascade logically)
                 self.c.execute("DELETE FROM Ders_Programi WHERE ders_adi = ?", (course_name,))
                 self.c.execute("DELETE FROM Ders_Ogretmen_Iliskisi WHERE ders_adi = ?", (course_name,))
-                self.c.execute("DELETE FROM Ogretmen_Ders_Tercihleri WHERE ders_adi = ?", (course_name,))
                 
             self.course_removed.emit(course_name)
             return True
@@ -363,24 +396,7 @@ class ScheduleModel(QObject):
             self.error_occurred.emit(f"Ders silinirken hata: {e}")
             return False
 
-    def get_all_teacher_course_preferences(self) -> List[tuple]:
-        """
-        Get all teacher preferences
-        Returns: List of (ders_adi, note, preference_type, ogretmen_adi_soyadi, ogretmen_id)
-        """
-        try:
-            query = """
-                SELECT p.ders_adi, p.preference_note, p.preference_type, (o.ad || ' ' || o.soyad) as hoca, o.ogretmen_num
-                FROM Ogretmen_Ders_Tercihleri p
-                JOIN Ogretmenler o ON p.ogretmen_id = o.ogretmen_num
-                ORDER BY p.ders_adi
-            """
-            self.c.execute(query)
-            return self.c.fetchall()
-        except Exception as e:
-            print(f"Error fetching preferences: {e}")
-            return []
-            
+
     def add_curriculum_course_as_template(self, data: Dict) -> bool:
         """
         Add a course template to the curriculum (Dersler + Ders_Sinif_Iliskisi).
@@ -637,6 +653,11 @@ class ScheduleModel(QObject):
             print(f"Error fetching curriculum courses: {e}")
             return []
 
+
+    # ════════════════════════════════════════════════════════════════
+    # TEACHER & CLASSROOM LOOKUPS
+    # ════════════════════════════════════════════════════════════════
+
     def get_all_teachers_with_ids(self) -> List[Tuple[int, str, Optional[str]]]:
         """Get all teachers with their IDs and room preferences"""
         try:
@@ -681,6 +702,10 @@ class ScheduleModel(QObject):
         except Exception as e:
             print(f"Error fetching classrooms: {e}")
             return []
+
+    # ════════════════════════════════════════════════════════════════
+    # FACULTY & DEPARTMENT
+    # ════════════════════════════════════════════════════════════════
 
     def get_departments_by_faculty(self, faculty_id: int) -> List[Tuple[int, str]]:
         """Get departments for a faculty"""
@@ -838,89 +863,12 @@ class ScheduleModel(QObject):
         except Exception as e:
             print(f"Veritabanı bağlantısı kapatılırken hata: {str(e)}")
     
-    # Database management methods from DbManager
 
-    def add_teacher_course_preference(self, teacher_id: int, course_name: str, note: str, preference_type: str) -> bool:
-        """
-        Add a teacher's preference (WANTED/BLOCKED) for a course.
-        """
-        try:
-            with self.conn:
-                self.conn.execute("""
-                    INSERT OR REPLACE INTO Ogretmen_Ders_Tercihleri 
-                    (ogretmen_id, ders_adi, ders_secim_notu, tercih_tipi)
-                    VALUES (?, ?, ?, ?)
-                """, (teacher_id, course_name, note, preference_type))
-            return True
-        except Exception as e:
-            self.error_occurred.emit(f"Tercih eklenirken hata: {e}")
-            return False
 
-    def remove_teacher_course_preference(self, teacher_id: int, course_name: str) -> bool:
-        """
-        Remove a teacher's preference for a course.
-        """
-        try:
-            with self.conn:
-                self.conn.execute("""
-                    DELETE FROM Ogretmen_Ders_Tercihleri 
-                    WHERE ogretmen_id = ? AND ders_adi = ?
-                """, (teacher_id, course_name))
-            return True
-        except Exception as e:
-            self.error_occurred.emit(f"Tercih silinirken hata: {e}")
-            return False
+    # ════════════════════════════════════════════════════════════════
+    # STUDENT & STUDENT-NUMBER HELPERS
+    # ════════════════════════════════════════════════════════════════
 
-    def get_teacher_course_preferences(self, teacher_id: int) -> List[Tuple]:
-        """
-        Get all preferences for a teacher.
-        Returns list of (ders_adi, ders_secim_notu, tercih_tipi)
-        """
-        try:
-            self.c.execute("""
-                SELECT ders_adi, ders_secim_notu, tercih_tipi
-                FROM Ogretmen_Ders_Tercihleri
-                WHERE ogretmen_id = ?
-                ORDER BY tercih_tipi DESC, ders_adi
-            """, (teacher_id,))
-            return self.c.fetchall()
-        except Exception as e:
-            print(f"Error fetching preferences: {e}")
-            return []
-
-    def get_all_teacher_course_preferences(self) -> List[Tuple]:
-        """
-        Get preferences for ALL teachers.
-        Returns list of (ders_adi, ders_secim_notu, tercih_tipi, ogretmen_adi_soyadi)
-        """
-        try:
-            self.c.execute("""
-                SELECT p.ders_adi, p.ders_secim_notu, p.tercih_tipi, (o.ad || ' ' || o.soyad) as hoca
-                FROM Ogretmen_Ders_Tercihleri p
-                JOIN Ogretmenler o ON p.ogretmen_id = o.ogretmen_num
-                ORDER BY hoca, p.tercih_tipi DESC, p.ders_adi
-            """)
-            return self.c.fetchall()
-        except Exception as e:
-            print(f"Error fetching all preferences: {e}")
-            return []
-
-    def get_all_courses_assigned_to_teachers(self) -> List[Tuple]:
-        """
-        Get assigned courses for ALL teachers.
-        Returns list of (ders_adi, ders_instance, ogretmen_adi_soyadi)
-        """
-        try:
-            self.c.execute("""
-                SELECT i.ders_adi, i.ders_instance, (o.ad || ' ' || o.soyad) as hoca
-                FROM Ders_Ogretmen_Iliskisi i
-                JOIN Ogretmenler o ON i.ogretmen_id = o.ogretmen_num
-                ORDER BY hoca, i.ders_adi
-            """)
-            return self.c.fetchall()
-        except Exception as e:
-            print(f"Error fetching all assignments: {e}")
-            return []
     def fakulte_numarasini_al(self, ogrenci_num2: int) -> int:
         numara_str = str(ogrenci_num2).zfill(10)  # 10 haneye tamamla, güvenlik için
         return int(numara_str[2:4])
@@ -1184,6 +1132,10 @@ class ScheduleModel(QObject):
         self.c.execute('SELECT ders_adi, ders_instance FROM Alinan_Dersler WHERE donem_sinif_num = ?', (donem_sinif_num,))
         return self.c.fetchall()
     
+    # ════════════════════════════════════════════════════════════════
+    # CLASSROOM CRUD
+    # ════════════════════════════════════════════════════════════════
+
     def derslik_ekle(self, derslik_adi, tip, kapasite, ozellikler=None):
         """Derslik ekle"""
         self.c.execute('''
@@ -1222,6 +1174,10 @@ class ScheduleModel(QObject):
         """Tüm derslikleri getir (silinmiş olanlar dahil)"""
         self.c.execute('SELECT derslik_num, derslik_adi, tip, kapasite, silindi, silinme_tarihi FROM Derslikler')
         return self.c.fetchall()
+
+    # ════════════════════════════════════════════════════════════════
+    # TEACHER AVAILABILITY & UNAVAILABILITY
+    # ════════════════════════════════════════════════════════════════
 
     def add_teacher_unavailability(self, teacher_id: int, day: str, start_time: str, end_time: str, description: str = "") -> bool:
         """
@@ -1393,6 +1349,10 @@ class ScheduleModel(QObject):
             return False
 
 
+
+    # ════════════════════════════════════════════════════════════════
+    # STUDENT QUERIES & GRADES
+    # ════════════════════════════════════════════════════════════════
 
     def get_student_grades(self, student_id: int, show_history: bool = False) -> List[tuple]:
         """
@@ -1586,6 +1546,10 @@ class ScheduleModel(QObject):
         except Exception as e:
             self.error_occurred.emit(f"Oda tercihi güncellenirken hata: {str(e)}")
             return False
+
+    # ════════════════════════════════════════════════════════════════
+    # MASTER VIEW & SNAPSHOTS
+    # ════════════════════════════════════════════════════════════════
 
     def get_master_schedule_data(self) -> List[Dict]:
         """
