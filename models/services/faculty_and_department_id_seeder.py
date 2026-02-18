@@ -7,16 +7,10 @@ class IDSeedingService:
     Ensures that IDs are consistent even after database resets.
     """
     
-    def __init__(self, conn: sqlite3.Connection, mapping_file: str = "faculty_department_codes.txt"):
+    def __init__(self, conn: sqlite3.Connection, mapping_file: str = os.path.join("database", "faculty_department_codes.txt")):
         self.conn = conn
         # Resolve mapping_file relative to project root if not absolute
         if not os.path.isabs(mapping_file):
-             # Assume project root is parent of parent of this file's dir (models/services/ -> models/ -> root)
-             # Wait, models/services/seeder.py -> models/services -> models -> root? No.
-             # models/services/seeder.py -> models/services -> models -> root
-             # os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-             # But safer to just look for it in CWD if running from root, or relative to this file.
-             # The app runs from root usually.
              project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
              self.mapping_file = os.path.join(project_root, mapping_file)
         else:

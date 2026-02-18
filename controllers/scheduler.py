@@ -134,6 +134,12 @@ class ORToolsScheduler:
 
         self.course_faculties = self.db_model.get_course_faculty_map()
 
+        # Teacher Day Span Preferences
+        self.teacher_day_spans = {}
+        for t_id, span in self.db_model.get_all_teacher_day_spans():
+            self.teacher_day_spans[t_id] = span
+        print(f"DEBUG: Loaded {len(self.teacher_day_spans)} teachers with day span preferences.")
+
     def _fetch_all_course_instances(self):
         """
         Refactored Fetching Pipeline using separated services.
@@ -420,49 +426,12 @@ class ORToolsScheduler:
                 print(f"CRITICAL ERROR in Teacher Unavailability: {e}", flush=True)
                 traceback.print_exc()
 
-        # 4. Teacher Day Span Optimization (Sliding Window)
-        print("DEBUG: Teacher Day Span Optimization DONE (SKIPPED).", flush=True)
+        # 4. Teacher Day Span Optimization
+        self.add_teacher_day_span_constraints()
 
         # 5. Student Group Conflict (Refactored)
         self.add_student_group_conflicts()
         print("DEBUG: Executed add_student_group_conflicts", flush=True)
-        
-        # 6. OPTIONAL: Different Days Soft Constraint
-        ENABLE_DIFFERENT_DAYS_CONSTRAINT = False
-        if ENABLE_DIFFERENT_DAYS_CONSTRAINT:
-            print("DEBUG: Adding Soft Constraints (Different Days)...")
-            course_parts = collections.defaultdict(list)
-            for c_idx, course in enumerate(self.courses):
-                if 'parent_key' in course:
-                    course_parts[course['parent_key']].append(c_idx)
-            
-            penalties = []
-            for p_key, indices in course_parts.items():
-                if len(indices) < 2: continue
-                
-                for i in range(len(indices)):
-                    for j in range(i + 1, len(indices)):
-                        idx1, idx2 = indices[i], indices[j]
-                        for d_idx in range(5):
-                            days_slots = [s for s in self.time_slots if s['id'] // SLOTS_PER_DAY == d_idx]
-                            
-                            vars1 = [self.vars[(idx1, r_id, s['id'])] for s in days_slots for r_id in [r[0] for r in self.rooms] if (idx1, r_id, s['id']) in self.vars]
-                            vars2 = [self.vars[(idx2, r_id, s['id'])] for s in days_slots for r_id in [r[0] for r in self.rooms] if (idx2, r_id, s['id']) in self.vars]
-                            
-                            if vars1 and vars2:
-                                b1, b2 = self.cp_model.NewBoolVar(f'p{idx1}d{d_idx}'), self.cp_model.NewBoolVar(f'p{idx2}d{d_idx}')
-                                self.cp_model.Add(sum(vars1) > 0).OnlyEnforceIf(b1)
-                                self.cp_model.Add(sum(vars1) == 0).OnlyEnforceIf(b1.Not())
-                                self.cp_model.Add(sum(vars2) > 0).OnlyEnforceIf(b2)
-                                self.cp_model.Add(sum(vars2) == 0).OnlyEnforceIf(b2.Not())
-                                
-                                conflict = self.cp_model.NewBoolVar(f'c_{idx1}_{idx2}_{d_idx}')
-                                self.cp_model.AddBoolAnd([b1, b2]).OnlyEnforceIf(conflict)
-                                self.cp_model.AddBoolOr([b1.Not(), b2.Not()]).OnlyEnforceIf(conflict.Not())
-                                penalties.append(conflict)
-            
-            if penalties:
-                self.cp_model.Minimize(sum(penalties))
 
 
     def get_role_for_group(self, course, group_dept: str, group_year: int) -> CourseRole:
@@ -798,12 +767,96 @@ class ORToolsScheduler:
 
 
 
+    def add_teacher_day_span_constraints(self):
+        """
+        Soft Constraint: Penalize teachers being scheduled on more days than their
+        preferred_day_span. Uses penalty variables added to self.soft_penalties.
+        """
+        if not self.teacher_day_spans:
+            print("DEBUG: No teacher day span preferences found. Skipping.", flush=True)
+            return
+
+        print(f"DEBUG: Adding day span constraints for {len(self.teacher_day_spans)} teachers...", flush=True)
+
+        if not hasattr(self, 'soft_penalties'):
+            self.soft_penalties = []
+
+        for t_id, preferred_span in self.teacher_day_spans.items():
+            # Create a BoolVar for each day: "teacher has any class on this day"
+            day_active_vars = []
+            for d_idx in range(5):
+                day_slots = [s['id'] for s in self.time_slots if s['id'] // SLOTS_PER_DAY == d_idx]
+
+                # Collect all vars for this teacher on this day
+                t_day_vars = []
+                for key, var in self.vars.items():
+                    c_idx, r_id, s_id = key
+                    if s_id in day_slots and t_id in self.courses[c_idx].get('teacher_ids', set()):
+                        t_day_vars.append(var)
+
+                if t_day_vars:
+                    active = self.cp_model.NewBoolVar(f'tspan_t{t_id}_d{d_idx}')
+                    self.cp_model.AddMaxEquality(active, t_day_vars)
+                    day_active_vars.append(active)
+
+            # Penalize each active day beyond the preferred span
+            if len(day_active_vars) > preferred_span:
+                total_active = sum(day_active_vars)
+                # excess = max(0, total_active - preferred_span)
+                excess = self.cp_model.NewIntVar(0, 5, f'tspan_excess_{t_id}')
+                self.cp_model.Add(excess >= total_active - preferred_span)
+                self.cp_model.Add(excess >= 0)
+                self.soft_penalties.append(excess)
+
+        print(f"DEBUG: Teacher day span constraints added. {len(self.soft_penalties)} penalty vars.", flush=True)
+
     def add_soft_constraints_consecutive(self):
         """
         Soft Constraint: Encourage different session types (T/U/L) to be on DIFFERENT days.
-        Simplified version using day-level granularity to avoid variable explosion.
+        Groups courses by parent_key and penalizes parts of the same course on the same day.
+        Penalties are stored in self.soft_penalties for the objective function.
         """
-        return
+        if not hasattr(self, 'soft_penalties'):
+            self.soft_penalties = []
+
+        # Group courses by parent_key
+        course_parts = collections.defaultdict(list)
+        for c_idx, course in enumerate(self.courses):
+            if 'parent_key' in course:
+                course_parts[course['parent_key']].append(c_idx)
+
+        penalty_count = 0
+        for p_key, indices in course_parts.items():
+            if len(indices) < 2:
+                continue
+
+            for i in range(len(indices)):
+                for j in range(i + 1, len(indices)):
+                    idx1, idx2 = indices[i], indices[j]
+                    for d_idx in range(5):
+                        day_slots = [s['id'] for s in self.time_slots if s['id'] // SLOTS_PER_DAY == d_idx]
+
+                        vars1 = [self.vars[(idx1, r_id, s_id)] for s_id in day_slots
+                                 for r_id in [r[0] for r in self.rooms]
+                                 if (idx1, r_id, s_id) in self.vars]
+                        vars2 = [self.vars[(idx2, r_id, s_id)] for s_id in day_slots
+                                 for r_id in [r[0] for r in self.rooms]
+                                 if (idx2, r_id, s_id) in self.vars]
+
+                        if vars1 and vars2:
+                            b1 = self.cp_model.NewBoolVar(f'dd_p{idx1}_d{d_idx}')
+                            self.cp_model.AddMaxEquality(b1, vars1)
+
+                            b2 = self.cp_model.NewBoolVar(f'dd_p{idx2}_d{d_idx}')
+                            self.cp_model.AddMaxEquality(b2, vars2)
+
+                            conflict = self.cp_model.NewBoolVar(f'dd_c_{idx1}_{idx2}_{d_idx}')
+                            self.cp_model.AddBoolAnd([b1, b2]).OnlyEnforceIf(conflict)
+                            self.cp_model.AddBoolOr([b1.Not(), b2.Not()]).OnlyEnforceIf(conflict.Not())
+                            self.soft_penalties.append(conflict)
+                            penalty_count += 1
+
+        print(f"DEBUG: add_soft_constraints_consecutive added {penalty_count} day-separation penalties.", flush=True)
         
 
 
@@ -941,10 +994,14 @@ class ORToolsScheduler:
                 if (idx, r_id) in self.room_vars:
                     self.cp_model.Add(self.room_vars[(idx, r_id)] == 0)
         
+        self.soft_penalties = []  # Reset for Phase 1
         self.add_hard_constraints(include_teacher_unavailability=True)
-        # print("DEBUG: Phase 1 add_hard_constraints SKIPPED.", flush=True)
-        # self.add_soft_constraints_consecutive()
-        print("DEBUG: Phase 1 add_soft_constraints_consecutive SKIPPED.", flush=True)
+        self.add_soft_constraints_consecutive()
+        
+        # Phase 1 Objective: Minimize soft penalties
+        if hasattr(self, 'soft_penalties') and self.soft_penalties:
+            self.cp_model.Minimize(sum(self.soft_penalties))
+            print(f"DEBUG: Phase 1 objective: minimize {len(self.soft_penalties)} soft penalties.", flush=True)
         
         try:
             if not self._run_solver("PHASE1_CORE", timeout=180.0):
@@ -996,10 +1053,9 @@ class ORToolsScheduler:
             else:
                 print(f"WARNING: Could not map stable key {stable_key} in Phase 2!")
         
+        self.soft_penalties = []  # Reset for Phase 2
         self.add_hard_constraints(include_teacher_unavailability=True)
-        # print("DEBUG: Phase 2 add_hard_constraints SKIPPED.", flush=True)
         self.add_soft_constraints_consecutive()
-        # print("DEBUG: Phase 2 add_soft_constraints_consecutive SKIPPED.", flush=True)
         
         # OBJECTIVE: Maximize electives - penalty for pool overlaps
         elective_vars = []
@@ -1041,6 +1097,11 @@ class ORToolsScheduler:
             # Penalize Core-Elective Conflicts (Soft Constraint)
             if hasattr(self, 'core_elective_penalties') and self.core_elective_penalties:
                 objective = objective - 1000 * sum(self.core_elective_penalties) # High penalty
+            
+            # Integrate soft penalties (day separation, teacher day span)
+            if hasattr(self, 'soft_penalties') and self.soft_penalties:
+                objective = objective - 5 * sum(self.soft_penalties)
+            
             self.cp_model.Maximize(objective)
         
         # Solve Phase 2

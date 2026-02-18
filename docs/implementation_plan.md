@@ -89,15 +89,21 @@ Break down `ScheduleModel` (83KB monolith) by delegating to repositories.
 
 ---
 
-### 8. Scheduler Soft Constraints (Currently Disabled)
-Two soft constraints were disabled during debugging and left as no-ops:
+### ~~8. Scheduler Soft Constraints~~ ✅
 
-| Constraint | Location | Status |
+Completed 18.02.2026. Two soft constraints re-enabled and implemented:
+
+| Constraint | Method | Effect |
 |---|---|---|
-| `add_soft_constraints_consecutive` | `scheduler.py:995` | Commented out, prints SKIPPED |
-| `Teacher Day Span Optimization` | `scheduler.py:472` | Only prints SKIPPED, no implementation |
+| Session Type Day Separation | `add_soft_constraints_consecutive` | Penalizes T/U/L parts of same course on same day |
+| Teacher Day Span | `add_teacher_day_span_constraints` | Penalizes exceeding `preferred_day_span` in `Ogretmenler` |
 
-**Decision needed:** Re-enable consecutive constraints? Implement teacher day span?
+Both use `self.soft_penalties` integrated into the objective:
+- **Phase 1**: `Minimize(sum(soft_penalties))`
+- **Phase 2**: subtracted from the `Maximize(electives - penalties)` objective
+
+Dead `ENABLE_DIFFERENT_DAYS_CONSTRAINT` block (~37 lines) removed from `add_hard_constraints`.
+Added `get_all_teacher_day_spans()` batch query to `schedule_model.py`.
 
 ---
 

@@ -1499,6 +1499,18 @@ class ScheduleModel(QObject):
             print(f"Error getting teacher span: {e}")
             return 0
 
+    def get_all_teacher_day_spans(self) -> List[tuple]:
+        """Get (teacher_id, preferred_day_span) for all teachers with a span set."""
+        try:
+            self.c.execute(
+                "SELECT ogretmen_num, preferred_day_span FROM Ogretmenler "
+                "WHERE preferred_day_span IS NOT NULL AND preferred_day_span > 0"
+            )
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching teacher day spans: {e}")
+            return []
+
     def get_pool_codes_by_department(self, dept_id: int) -> List[str]:
         """Get unique pool codes used by a department"""
         try:

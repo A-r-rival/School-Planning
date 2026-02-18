@@ -250,13 +250,18 @@ class ScheduleController:
         pass
     
     
-    def open_master_view(self):
-        """Open the Master Schedule View"""
+    def open_master_view(self, mode: str = 'teacher'):
+        """Open the Master Schedule View with specified mode ('teacher' or 'classroom')"""
         from views.master_schedule_view import MasterScheduleView
         
+        # Check if existing view needs to be closed (different mode)
+        if (hasattr(self, 'master_view') and self.master_view is not None):
+            if self.master_view.mode != mode:
+                self.master_view.close()
+                self.master_view = None
+
         if not hasattr(self, 'master_view') or self.master_view is None or not self.master_view.isVisible():
-            self.master_view = MasterScheduleView()
-            self.master_view.set_controller(self)
+            self.master_view = MasterScheduleView(controller=self, mode=mode)
             self.master_view.show()
         else:
             self.master_view.raise_()
