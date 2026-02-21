@@ -165,13 +165,22 @@ class CalendarView(QWidget):
     def _setup_calendar_grid(self):
         """Setup the table widget as a calendar"""
         days = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma"]
-        hours = [f"{h:02d}:00" for h in range(8, 17)] # 08:00 to 16:00 (End 17:00)
+        
+        # New Standard: 30-minute slots from 08:30 to 17:30 (18 slots)
+        self.time_labels = []
+        start_h, start_m = 8, 30
+        for _ in range(18):
+            self.time_labels.append(f"{start_h:02d}:{start_m:02d}")
+            start_m += 30
+            if start_m >= 60:
+                start_m -= 60
+                start_h += 1 
         
         self.calendar_table.setColumnCount(len(days))
-        self.calendar_table.setRowCount(len(hours))
+        self.calendar_table.setRowCount(len(self.time_labels))
         
         self.calendar_table.setHorizontalHeaderLabels(days)
-        self.calendar_table.setVerticalHeaderLabels(hours)
+        self.calendar_table.setVerticalHeaderLabels(self.time_labels)
         
         # Styling
         self.calendar_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -492,33 +501,46 @@ class CalendarView(QWidget):
             if day not in day_map: continue
             
             try:
-                start_hour = int(start.split(':')[0])
-                end_hour = int(end.split(':')[0])
+                # Parse Start/End Time
+                def time_str_to_min(t_str):
+                    h, m = map(int, t_str.split(':'))
+                    return h * 60 + m
                 
-                # Fix: a course from 09:00-09:50 has start_hour=9, end_hour=9
-                # → range(9,9) is empty → course gets zero slots and is invisible.
-                # Only bump when the course fits within a single hour.
-                if end_hour <= start_hour:
-                    end_hour = start_hour + 1
+                start_min = time_str_to_min(start)
+                end_min = time_str_to_min(end)
                 
-                # TODO: Future — half-hour granularity needed for lunch break.
-                # Students need a ~30min break between 11:30-14:00 for cafeteria.
-                # This will require switching from 1-hour rows to 30-min rows.
+                # Base Time: 08:30 (510 min)
+                base_min = 8 * 60 + 30
                 
-                for hour in range(start_hour, end_hour):
-                    if hour not in slots[day]:
-                        slots[day][hour] = []
-                    
-                    slots[day][hour].append({
-                        'start_str': start, 
-                        'end_str': end, 
-                        'course': course, 
-                        'extra': extra,
-                        'pools_found': pools_found, # Store raw pools, resolve colors later
-                        'is_elective': is_elective,
-                        'is_unavailability': is_unavailability
-                    })
-            except:
+                # Calculate start slot index
+                start_slot_idx = (start_min - base_min) // 30
+                end_slot_idx = (end_min - base_min) // 30 # Exclusive end
+                
+                # Correction for rounding or slightly off times?
+                # Assume strictly 30-min aligned input for now.
+                
+                for slot_idx in range(start_slot_idx, end_slot_idx):
+                    # Valid slot range: 0 to 17
+                    if 0 <= slot_idx < 18:
+                         # Map back to HH:MM label for key? Or just use index?
+                         # Using label as key compatible with existing logic
+                         if slot_idx < len(self.time_labels):
+                             label = self.time_labels[slot_idx]
+                             if label not in slots[day]:
+                                 slots[day][label] = []
+                             
+                             slots[day][label].append({
+                                 'start_str': start, 
+                                 'end_str': end, 
+                                 'course': course, 
+                                 'extra': extra,
+                                 'pools_found': pools_found,
+                                 'is_elective': is_elective,
+                                 'is_unavailability': is_unavailability
+                             })
+
+            except Exception as e:
+                print(f"DEBUG: Error parsing time {start}-{end}: {e}")
                 continue
                 
         return slots
@@ -595,7 +617,13 @@ class CalendarView(QWidget):
                 current_start = start_hours[i]
                 courses_in_slot = day_slots[current_start] 
                 
-                row = current_start - 8 
+                row = -1
+                try:
+                    row = self.time_labels.index(current_start)
+                except ValueError:
+                    i += 1
+                    continue
+
                 if row < 0 or row >= self.calendar_table.rowCount():
                     i += 1
                     continue

@@ -541,7 +541,24 @@ class ScheduleController:
                 pass
             
         self.room_list_view = RoomListView(self.model)
+        # Connect signals
+        self.room_list_view.room_calendar_requested.connect(self.handle_room_calendar_request)
+        self.room_list_view.room_master_requested.connect(lambda: self.open_master_view(mode='classroom'))
         self.room_list_view.show()
+
+    def handle_room_calendar_request(self, room_id: int):
+        """Handle request to open individual room calendar"""
+        self.open_calendar_view()
+        if self.calendar_view:
+            # Set to "Derslik" type
+            self.calendar_view.view_type_combo.setCurrentText("Derslik")
+            # Select the specific room in filter_widget_1
+            index = self.calendar_view.filter_widget_1.findData(room_id)
+            if index >= 0:
+                self.calendar_view.filter_widget_1.setCurrentIndex(index)
+            
+            self.calendar_view.raise_()
+            self.calendar_view.activateWindow()
 
     def load_teacher_availability(self, teacher_id: int):
         """Load availability for specific teacher"""

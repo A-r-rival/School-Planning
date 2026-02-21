@@ -1136,14 +1136,39 @@ class ScheduleModel(QObject):
     # CLASSROOM CRUD
     # ════════════════════════════════════════════════════════════════
 
-    def derslik_ekle(self, derslik_adi, tip, kapasite, ozellikler=None):
+    def derslik_ekle(self, derslik_adi, tip, kapasite, floor=0, ozellikler=None, notlar=None):
         """Derslik ekle"""
+        # Ensure tipping matches schema (derslik_tipi)
         self.c.execute('''
-            INSERT INTO Derslikler (derslik_adi, tip, kapasite, ozellikler)
-            VALUES (?, ?, ?, ?)
-        ''', (derslik_adi, tip, kapasite, ozellikler))
+            INSERT INTO Derslikler (derslik_adi, derslik_tipi, kapasite, floor, ozellikler, notlar)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (derslik_adi, tip, kapasite, floor, ozellikler, notlar))
         self.conn.commit()
         return self.c.lastrowid
+
+    def derslik_guncelle(self, derslik_num, data):
+        """Derslik bilgilerini güncelle"""
+        # data keys: derslik_adi, derslik_tipi, kapasite, floor, notlar
+        query = 'UPDATE Derslikler SET '
+        params = []
+        updates = []
+        
+        for key, value in data.items():
+            updates.append(f"{key} = ?")
+            params.append(value)
+            
+        query += ", ".join(updates)
+        query += " WHERE derslik_num = ?"
+        params.append(derslik_num)
+        
+        self.c.execute(query, tuple(params))
+        self.conn.commit()
+        return True
+
+    def get_derslik_by_id(self, derslik_num):
+        """Derslik detaylarını getir"""
+        self.c.execute('SELECT derslik_num, derslik_adi, derslik_tipi, kapasite, floor, notlar FROM Derslikler WHERE derslik_num = ?', (derslik_num,))
+        return self.c.fetchone()
 
     def derslik_sil(self, derslik_num):
         """Derslik soft delete - gerçekten silmez, sadece işaretler"""
@@ -1157,18 +1182,18 @@ class ScheduleModel(QObject):
 
     def aktif_derslikleri_getir(self):
         """Sadece aktif (silinmemiş) derslikleri getir"""
-        # Ensure column 'floor' exists or handle it gracefully? 
+        # Ensure column 'floor' and 'notlar' exist or handle it gracefully? 
         # Assuming migration ran.
         try:
-            self.c.execute('SELECT derslik_num, derslik_adi, derslik_tipi, kapasite, floor FROM Derslikler WHERE silindi = 0')
+            self.c.execute('SELECT derslik_num, derslik_adi, derslik_tipi, kapasite, floor, notlar FROM Derslikler WHERE silindi = 0')
             return self.c.fetchall()
         except sqlite3.OperationalError:
             # Fallback for old schema if migration failed silently (shouldn't happen)
-            print("WARNING: 'floor' column missing in Derslikler. Returning default.")
+            print("WARNING: 'floor' or 'notlar' column missing in Derslikler. Returning default.")
             self.c.execute('SELECT derslik_num, derslik_adi, derslik_tipi, kapasite FROM Derslikler WHERE silindi = 0')
             rows = self.c.fetchall()
-            # Append default floor 0
-            return [r + (0,) for r in rows]
+            # Append default floor 0 and empty notlar
+            return [r + (0, "") for r in rows]
 
     def tum_derslikleri_getir(self):
         """Tüm derslikleri getir (silinmiş olanlar dahil)"""
@@ -1574,7 +1599,7 @@ class ScheduleModel(QObject):
                        dp.ders_adi, 
                        dp.gun, dp.baslangic, dp.bitis,
                        dp.ogretmen_id, (o.ad || ' ' || o.soyad) as ogretmen_adi,
-                       dp.derslik_id, dlk.derslik_adi,
+                       dp.derslik_id, dlk.derslik_adi, dlk.derslik_tipi,
                        d.ders_kodu,
                        GROUP_CONCAT(DISTINCT b.bolum_adi || ' ' || od.sinif_duzeyi || '. Sınıf') as siniflar
                 FROM Ders_Programi dp
@@ -1585,7 +1610,7 @@ class ScheduleModel(QObject):
                 LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
                 LEFT JOIN Bolumler b ON od.bolum_num = b.bolum_id
                 GROUP BY dp.program_id, dp.ders_adi, dp.gun, dp.baslangic, dp.bitis, 
-                         dp.ogretmen_id, o.ad, o.soyad, dp.derslik_id, dlk.derslik_adi
+                         dp.ogretmen_id, o.ad, o.soyad, dp.derslik_id, dlk.derslik_adi, dlk.derslik_tipi
             '''
             self.c.execute(query)
             rows = self.c.fetchall()
@@ -1602,8 +1627,9 @@ class ScheduleModel(QObject):
                     'teacher_name': r[6],
                     'classroom_id': r[7],
                     'classroom_name': r[8],
-                    'code': r[9],
-                    'groups': r[10]
+                    'classroom_type': r[9],
+                    'code': r[10],
+                    'groups': r[11]
                 })
             return data
         except Exception as e:

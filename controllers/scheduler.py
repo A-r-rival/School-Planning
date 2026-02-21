@@ -18,7 +18,7 @@ from controllers.scheduler_services import (
 )
 
 # Constants
-SLOTS_PER_DAY = 9  # Hours per day (08:00-17:00)
+SLOTS_PER_DAY = 18  # 30-min slots from 08:30 to 17:30
 
 def to_minutes(time_str: str) -> int:
     """Convert HH:MM string to minutes since midnight."""
@@ -103,34 +103,55 @@ class ORToolsScheduler:
         # 3. Load Teachers
         self.teachers = self.db_model.get_all_teachers_with_ids()
         
-        # 4. Define Time Slots
+        # 4. Define Time Slots (30-minute blocks)
         self.time_slots = []
         days = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma"]
         
-        # Standard time slots (45 mins + 10 mins break, Lunch break 12:00-13:00)
-        # 08:30, 09:25, 10:20, 11:15, 13:00, 13:55, 14:50, 15:45, 16:40
-        slot_times = [
-            ("08:30", "09:15"), ("09:25", "10:10"), ("10:20", "11:05"), ("11:15", "12:00"),
-            ("13:00", "13:45"), ("13:55", "14:40"), ("14:50", "15:35"), ("15:45", "16:30"), ("16:40", "17:25")
-        ]
+        # Start: 08:30
+        # End: 17:30 (18 slots * 30 mins = 9 hours)
+        # 08:30, 09:00, 09:30, 10:00 ... 17:00, 17:30
         
+        start_hour = 8
+        start_minute = 30
+        self.slots_per_day = 18 # GLOBAL for class usage, though SLOTS_PER_DAY constant exists
+        
+        # Override global constant if possible, or just use local logic
+        # We need to ensure SLOTS_PER_DAY constant is updated or ignored
+        # For now, let's redefine internal logic to rely on calculated slots
+        
+        current_id = 0
         for d_idx, day in enumerate(days):
-            for s_idx, (start, end) in enumerate(slot_times):
-                if s_idx >= SLOTS_PER_DAY: 
-                    break
+            # Reset time for each day
+            h = start_hour
+            m = start_minute
+            
+            for s_idx in range(self.slots_per_day):
+                # Format Start
+                start_str = f"{h:02d}:{m:02d}"
+                start_min = h * 60 + m
+                
+                # Calculate End (Start + 30 mins)
+                m += 30
+                if m >= 60:
+                    m -= 60
+                    h += 1
+                
+                end_str = f"{h:02d}:{m:02d}"
+                end_min = h * 60 + m
                 
                 self.time_slots.append({
-                    'id': len(self.time_slots),
+                    'id': current_id,
                     'day': day,
                     'day_idx': d_idx,
                     'slot_idx': s_idx, 
-                    'start_str': start,
-                    'end_str': end,
-                    'start_min': to_minutes(start),
-                    'end_min': to_minutes(end)
+                    'start_time_string': start_str,
+                    'end_time_string': end_str,
+                    'start_min': start_min,
+                    'end_min': end_min
                 })
+                current_id += 1
                 
-        print(f"DEBUG: Initialized {len(self.time_slots)} time slots.")
+        print(f"DEBUG: Initialized {len(self.time_slots)} time slots (30-min intervals).")
 
         self.course_faculties = self.db_model.get_course_faculty_map()
 
@@ -415,12 +436,11 @@ class ORToolsScheduler:
                                     # Check time overlap
                                     if (u_start_min < s['end_min'] and u_end_min > s['start_min']):
                                         # Block this slot for this teacher
-                                        if (t_id, s['id']) in teacher_slot_vars:
-                                            if t_id == 87: # Debug only for Abdullah Şahin
-                                                print(f"DEBUG_CONST: Blocking Slot {s['day']} {s['start_str']}-{s['end_str']} for Teacher {t_id} due to unavail {u_start}-{u_end}", flush=True)
-                                            
-                                            for var in teacher_slot_vars[(t_id, s['id'])]:
-                                                self.cp_model.Add(var == 0)
+                                        # if t_id == 87: # Debug only for Abdullah Şahin
+                                        #    print(f"DEBUG_CONST: Blocking Slot {s['day']} {s['start_time_string']}-{s['end_time_string']} for Teacher {t_id} due to unavail {u_start}-{u_end}", flush=True)
+                                        
+                                        for var in teacher_slot_vars[(t_id, s['id'])]:
+                                            self.cp_model.Add(var == 0)
             except Exception as e:
                 import traceback
                 print(f"CRITICAL ERROR in Teacher Unavailability: {e}", flush=True)
@@ -432,6 +452,10 @@ class ORToolsScheduler:
         # 5. Student Group Conflict (Refactored)
         self.add_student_group_conflicts()
         print("DEBUG: Executed add_student_group_conflicts", flush=True)
+
+        # 6. Lunch Break Constraint (NEW)
+        self.add_lunch_break_constraints()
+        print("DEBUG: Executed add_lunch_break_constraints", flush=True)
 
 
     def get_role_for_group(self, course, group_dept: str, group_year: int) -> CourseRole:
@@ -564,6 +588,106 @@ class ORToolsScheduler:
         print("DEBUG: add_student_group_conflicts DONE.", flush=True)
         
 
+    def add_lunch_break_constraints(self):
+        """
+        Enforce at least one empty slot between 11:30 and 14:00 for every student group.
+        Time window: 11:30 (690 min) to 14:00 (840 min).
+        Slots contained in this window must not be fully occupied.
+        Max occupied slots = Total Lunch Slots - 1.
+        """
+        print("DEBUG: Starting add_lunch_break_constraints...", flush=True)
+        
+        # 1. Identify Lunch Slots per Day
+        lunch_start_min = 11 * 60 + 30 # 690
+        lunch_end_min = 14 * 60        # 840
+        
+        lunch_slots_by_day = collections.defaultdict(list)
+        
+        for s in self.time_slots:
+            # We want slots that are FULLY within the window? 
+            # User said "11:30 ile 14:00 arasında ... ara olması"
+            # So the break must happen IN this interval.
+            # If a slot starts at 11:30, it is IN.
+            # If a slot ends at 14:00, it is IN.
+            # Slots: 11:30-12:00, 12:00-12:30, 12:30-13:00, 13:00-13:30, 13:30-14:00.
+            # All these are candidates.
+            if s['start_min'] >= lunch_start_min and s['end_min'] <= lunch_end_min:
+                lunch_slots_by_day[s['day_idx']].append(s['id'])
+                
+        # Debug: Print identified slots
+        for d_idx, slots in lunch_slots_by_day.items():
+            print(f"DEBUG_LUNCH: Day {d_idx} Lunch Slots: {slots}", flush=True)
+
+        # 2. Group Variables by Semantic Group (Dept, Year)
+        # We need to reconstruct the mapping because vars are by (c_idx, r_id, s_id)
+        # And we need to sum occupancy for a group.
+        
+        # Mapping: (Dept, Year, DayIdx) -> [List of BoolVars in Lunch Window]
+        group_lunch_vars = collections.defaultdict(list)
+        
+        for key, var in self.vars.items():
+            c_idx, r_id, s_id = key
+            
+            # Check if this slot is a lunch slot
+            # Find day of this slot
+            # We can use self.time_slots definition, but looking up every time is slow.
+            # Better: pre-calculate slot_id -> day_idx and is_lunch
+             
+            # Optimization: 
+            is_lunch = False
+            day_idx = -1
+            
+            # Simple lookup from our prepared map?
+            # Reverse map: s_id -> (day_idx, is_lunch)
+            # But let's just do it inline if efficient enough
+            s_day = s_id // self.slots_per_day
+            
+            if s_id in lunch_slots_by_day[s_day]:
+                is_lunch = True
+                
+            if not is_lunch:
+                continue
+                
+            course = self.courses[c_idx]
+            
+            # Add this var to all relevant groups
+            # We need to deduplicate later if multiple courses map to same group-slot?
+            # Actually, self.vars is unique per course-room-slot.
+            # But multiple courses can belong to same group.
+            
+            for g_id in course['group_ids']:
+                if g_id in self.group_metadata:
+                    g_desc = self.group_metadata[g_id]
+                    g_dept, g_year = g_desc if isinstance(g_desc, tuple) else (g_desc, None)
+                    
+                    group_lunch_vars[(g_dept, g_year, s_day)].append(var)
+
+        # 3. Apply Constraints
+        # For each (Dept, Year, Day), Sum(Vars) <= (NumLunchSlots - 1)
+        
+        print(f"DEBUG_LUNCH: Applying constraints for {len(group_lunch_vars)} group-day combinations.", flush=True)
+        
+        for (g_dept, g_year, s_day), vars_list in group_lunch_vars.items():
+            lunch_slots_count = len(lunch_slots_by_day[s_day])
+            max_allowed = lunch_slots_count - 1
+            
+            # We use a boolean OR logic: 
+            # At least one slot is empty <==> Not all slots are full?
+            # No, strictly: Sum(Occupied) <= Max-1 means at least 1 is free.
+            # IF occupancy is binary (0 or 1 per slot).
+            # But wait! A slot might have MULTIPLE vars if multiple courses are scheduled?
+            # NO! Student Group Hard Conflict (Constraint 5) ensures Max 1 course per slot per group.
+            # So Sum(Vars) is effectively count of occupied slots.
+            
+            if vars_list:
+                self.cp_model.Add(sum(vars_list) <= max_allowed)
+                
+                # Debug Log for typical groups
+                # if "Bilgisayar" in str(g_dept) or "Endüstri" in str(g_dept):
+                #      print(f"DEBUG_LUNCH: Constraint applied for Group {g_dept} {g_year} on Day {s_day}. Max Allowed: {max_allowed} / {lunch_slots_count}", flush=True)
+
+        
+
 
     def add_teacher_room_preferences(self):
         """
@@ -659,6 +783,12 @@ class ORToolsScheduler:
                     debug_log.append(f"  Rooms on Floor {target_floor}: {len(floor_rooms)}\n")
                     
                     for c_idx in teacher_course_indices:
+                        # User Request: Labs should ignore teacher floor preferences
+                        course_type = self.courses[c_idx].get('type', '').lower()
+                        if 'lab' in course_type:
+                            debug_log.append(f"    Skipping Floor Constraint for Course {c_idx} (Type: {course_type})\n")
+                            continue
+
                         for r in self.rooms:
                             r_id = r[0]
                             r_floor = r[4] if len(r) > 4 else 0
@@ -1249,7 +1379,7 @@ class ORToolsScheduler:
                     INSERT INTO Ders_Programi (ders_adi, ders_instance, ogretmen_id, derslik_id, gun, baslangic, bitis, ders_tipi)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (course['name'], course['instance'], main_teacher_id, r_id, 
-                      start_slot['day'], start_slot['start_str'], end_slot['end_str'], course['type']))
+                      start_slot['day'], start_slot['start_time_string'], end_slot['end_time_string'], course['type']))
                 
                 # Store room assignments separately for T and L
                 if course['type'] == 'Teori' or course['type'] == 'Uygulama':

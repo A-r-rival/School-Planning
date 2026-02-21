@@ -42,7 +42,13 @@ class DatabaseMigration:
             self._006_add_schedule_columns,
             self._007_add_teacher_room_preferences,
             self._008_add_schedule_snapshots_table,
+            self._009_add_room_notes,
         ]
+
+    def _009_add_room_notes(self) -> None:
+        """Adds notlar column to Derslikler table."""
+        from .migrations.migration_009_add_room_notes import up
+        up(self._conn)
 
     # ---------- helpers ----------
 

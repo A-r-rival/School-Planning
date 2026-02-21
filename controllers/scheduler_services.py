@@ -317,7 +317,7 @@ class SchedulableCourseBuilder:
                 blocks.append({
                     **common_props,
                     'type': 'Teori',
-                    'duration': pc.t,
+                    'duration': pc.t * 2,
                     'fixed_room': pc.fixed_t_room
                 })
             
@@ -326,7 +326,7 @@ class SchedulableCourseBuilder:
                     **common_props,
                     'type': 'Uygulama',
                     # U usually shares theory room or has none
-                    'duration': pc.u,
+                    'duration': pc.u * 2,
                     'fixed_room': pc.fixed_t_room 
                 })
                 
@@ -334,7 +334,7 @@ class SchedulableCourseBuilder:
                 blocks.append({
                     **common_props,
                     'type': 'Lab',
-                    'duration': pc.l,
+                    'duration': pc.l * 2,
                     'fixed_room': pc.fixed_l_room
                 })
                 
