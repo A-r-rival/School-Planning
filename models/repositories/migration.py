@@ -108,7 +108,7 @@ class DatabaseMigration:
             return
 
         self._log("Creating Ogretmen_Ders_Tercihleri table")
-        from .migrations.teacher_course_preferences_003 import create_teacher_course_preferences_table
+        from .migrations.teacher_course_preferences_003 import up as create_teacher_course_preferences_table
         create_teacher_course_preferences_table(self._conn)
         self._log("✅ Ogretmen_Ders_Tercihleri table created")
 
@@ -143,7 +143,7 @@ class DatabaseMigration:
         if self._column_exists("Ogretmenler", "room_request"):
             return
 
-        from .migrations.migration_007_add_teacher_room_preferences import add_room_preferences
+        from .migrations.migration_007_add_teacher_room_preferences import up as add_room_preferences
         add_room_preferences(self._conn)
 
     def _008_add_schedule_snapshots_table(self) -> None:

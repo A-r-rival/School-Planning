@@ -1,4 +1,5 @@
 # Auto-generated curriculum data
+# Sanitized by the script
 
 # ==========================================
 # COMMON POOLS
@@ -22,7 +23,7 @@ DEPARTMENTS_DATA = {
     "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "MAT103",
-            "Analiz I",
+            "Analiz 1",
             6,
             3,
             2,
@@ -54,7 +55,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU121",
-            "Teknik Almanca I",
+            "Teknik Almanca 1",
             2,
             2,
             0,
@@ -62,7 +63,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG101",
-            "İngilizce I",
+            "İngilizce 1",
             2,
             3,
             0,
@@ -70,7 +71,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR001",
-            "Türkçe I",
+            "Türkçe 1",
             2,
             2,
             0,
@@ -112,7 +113,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU122",
-            "Teknik Almanca II",
+            "Teknik Almanca 2",
             2,
             2,
             0,
@@ -120,7 +121,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG102",
-            "İngilizce II",
+            "İngilizce 2",
             2,
             3,
             0,
@@ -128,7 +129,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR002",
-            "Türkçe II",
+            "Türkçe 2",
             2,
             2,
             0,
@@ -146,7 +147,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF203",
-            "Algoritmalar ve Veri Yapıları I",
+            "Algoritmalar ve Veri Yapıları 1",
             6,
             2,
             0,
@@ -178,7 +179,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG201",
-            "İngilizce III",
+            "İngilizce 3",
             2,
             3,
             0,
@@ -186,7 +187,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT001",
-            "Atatürk İlkeleri ve İnkılap Tarihi I",
+            "Atatürk İlkeleri ve İnkılap Tarihi 1",
             2,
             2,
             0,
@@ -212,7 +213,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF204",
-            "Algoritmalar ve Veri Yapıları II",
+            "Algoritmalar ve Veri Yapıları 2",
             6,
             2,
             0,
@@ -236,7 +237,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG202",
-            "İngilizce IV",
+            "İngilizce 4",
             2,
             3,
             0,
@@ -244,7 +245,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT002",
-            "Atatürk İlkeleri ve İnkılap Tarihi II",
+            "Atatürk İlkeleri ve İnkılap Tarihi 2",
             2,
             2,
             0,
@@ -262,7 +263,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDIa",
-            "Seçmeli I - Uygulamalı Bilgisayar Mühendisliği",
+            "Seçmeli 1 - Uygulamalı Bilgisayar Mühendisliği",
             6,
             0,
             0,
@@ -270,7 +271,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDIb",
-            "Seçmeli I - Bilgisayar Donanımı",
+            "Seçmeli 1 - Bilgisayar Donanımı",
             6,
             0,
             0,
@@ -278,7 +279,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDIc",
-            "Seçmeli I - Bilg. Müh. Kuramsal Temelleri ve Matematik",
+            "Seçmeli 1 - Bilg. Müh. Kuramsal Temelleri ve Matematik",
             6,
             0,
             0,
@@ -286,7 +287,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "USD001",
-            "Üniversite Seçmeli Ders Havuzu I",
+            "Üniversite Seçmeli Ders Havuzu 1",
             2,
             0,
             0,
@@ -294,7 +295,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG001",
-            "İş Sağlığı ve Güvenliği I",
+            "İş Sağlığı ve Güvenliği 1",
             2,
             2,
             0,
@@ -302,7 +303,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG301",
-            "İleri İngilizce I",
+            "İleri İngilizce 1",
             2,
             3,
             0,
@@ -312,7 +313,7 @@ DEPARTMENTS_DATA = {
     "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "SDIIa",
-            "Seçmeli II - Uygulamalı Bilgisayar Müh.",
+            "Seçmeli 2 - Uygulamalı Bilgisayar Müh.",
             12,
             0,
             0,
@@ -320,7 +321,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDIIb",
-            "Seçmeli II - Bilgisayar Donanımı",
+            "Seçmeli 2 - Bilgisayar Donanımı",
             6,
             0,
             0,
@@ -328,7 +329,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDIIc",
-            "Seçmeli II - Bilg. Müh. Kuramsal Temelleri ve Matematik",
+            "Seçmeli 2 - Bilg. Müh. Kuramsal Temelleri ve Matematik",
             6,
             0,
             0,
@@ -336,7 +337,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "USD002",
-            "Üniversite Seçmeli Ders Havuzu II",
+            "Üniversite Seçmeli Ders Havuzu 2",
             2,
             0,
             0,
@@ -344,7 +345,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG002",
-            "İş Sağlığı ve Güvenliği II",
+            "İş Sağlığı ve Güvenliği 2",
             2,
             2,
             0,
@@ -352,7 +353,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG302",
-            "İleri İngilizce II",
+            "İleri İngilizce 2",
             2,
             3,
             0,
@@ -378,7 +379,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDIII",
-            "Seçmeli Dersler III",
+            "Seçmeli Dersler 3",
             18,
             0,
             0,
@@ -396,7 +397,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDIV",
-            "Seçmeli Dersler IV",
+            "Seçmeli Dersler 4",
             18,
             0,
             0,
@@ -406,12 +407,12 @@ DEPARTMENTS_DATA = {
 },
         "pool_codes": {
     "SDIII": [
-        "İşletme Enformatiği: Seçilmiş Konular I",
-        "İşletme Enformatiği: Seçilmiş Konular II",
-        "İşletme Enformatiği: Seçilmiş Konular III",
-        "İşletme Enformatiği: Seçilmiş Konular IV",
-        "İşletme Enformatiği: Seçilmiş Konular V",
-        "İşletme Enformatiği: Seçilmiş Konular VI",
+        "İşletme Enformatiği: Seçilmiş Konular 1",
+        "İşletme Enformatiği: Seçilmiş Konular 2",
+        "İşletme Enformatiği: Seçilmiş Konular 3",
+        "İşletme Enformatiği: Seçilmiş Konular 4",
+        "İşletme Enformatiği: Seçilmiş Konular 5",
+        "İşletme Enformatiği: Seçilmiş Konular 6",
         "Dijital Pazarlama",
         "Karar Teorisi",
         "Örgütsel Davranış",
@@ -434,30 +435,30 @@ DEPARTMENTS_DATA = {
         "Dijital Dönüşüm Yönetimi",
         "Mühendisler İçin Hukuk",
         "Girişimcilik",
-        "Sosyal Beceriler I",
-        "Sosyal Beceriler II",
-        "Sosyal Beceriler III",
-        "Sosyal Beceriler IV",
-        "Sosyal Beceriler V",
-        "Sosyal Beceriler VI",
-        "Sosyal Beceriler VII",
-        "Sosyal Beceriler VIII",
-        "Sosyal Beceriler IX",
-        "Sosyal Beceriler X",
-        "Bilgisayar Mühendisliği Semineri I",
-        "Bilgisayar Mühendisliği Semineri II",
+        "Sosyal Beceriler 1",
+        "Sosyal Beceriler 2",
+        "Sosyal Beceriler 3",
+        "Sosyal Beceriler 4",
+        "Sosyal Beceriler 5",
+        "Sosyal Beceriler 6",
+        "Sosyal Beceriler 7",
+        "Sosyal Beceriler 8",
+        "Sosyal Beceriler 9",
+        "Sosyal Beceriler 10",
+        "Bilgisayar Mühendisliği Semineri 1",
+        "Bilgisayar Mühendisliği Semineri 2",
         "Mekaniğin Temelleri",
         "Modern Fizik",
         "Biyoloji",
-        "Kimya I",
-        "Kimya II",
+        "Kimya 1",
+        "Kimya 2",
         "Doğa Bilimlerine Giriş",
-        "Fizik I",
-        "Fizik II",
-        "Biyokimya I",
-        "Fiziksel Kimya I",
-        "Mikrobiyoloji I",
-        "Moleküler Biyoteknoloji I"
+        "Fizik 1",
+        "Fizik 2",
+        "Biyokimya 1",
+        "Fiziksel Kimya 1",
+        "Mikrobiyoloji 1",
+        "Moleküler Biyoteknoloji 1"
     ],
     "SDIa": [
         "Akıllı Sistemler",
@@ -473,8 +474,8 @@ DEPARTMENTS_DATA = {
         "Dağıtık Sistemler",
         "Yazılım Bağlamında Validasyon ve Verifikasyon",
         "Derin Öğrenme",
-        "Bilgisayar Grafiği I",
-        "Bilgisayar Grafiği II",
+        "Bilgisayar Grafiği 1",
+        "Bilgisayar Grafiği 2",
         "Pekiştirmeli Öğrenme",
         "Tıbbi Görüntü İşleme",
         "Bilgisayar Görmesinin Temelleri",
@@ -483,15 +484,15 @@ DEPARTMENTS_DATA = {
         "Bilgi Görselleme",
         "Web Mühendisliği",
         "İnsan-Makine İletişimi",
-        "Uygulamalı Bilg. Müh: Seçilmiş Konular I",
-        "Uyg. Bilg. Müh. Seç. Kon. II - Multimedya İçerik Arama",
-        "Uygulamalı Bilg. Müh: Seçilmiş Konular III",
-        "Uygulamalı Bilg. Müh: Seçilmiş Konular IV",
-        "Uygulamalı Bilg. Müh: Seçilmiş Konular V",
-        "Uygulamalı Bilg. Müh: Seçilmiş Konular VI",
-        "Yazılım Projesi I",
-        "Yazılım Projesi II",
-        "Yazılım Projesi III",
+        "Uygulamalı Bilg. Müh: Seçilmiş Konular 1",
+        "Uyg. Bilg. Müh. Seç. Kon. 2 - Multimedya İçerik Arama",
+        "Uygulamalı Bilg. Müh: Seçilmiş Konular 3",
+        "Uygulamalı Bilg. Müh: Seçilmiş Konular 4",
+        "Uygulamalı Bilg. Müh: Seçilmiş Konular 5",
+        "Uygulamalı Bilg. Müh: Seçilmiş Konular 6",
+        "Yazılım Projesi 1",
+        "Yazılım Projesi 2",
+        "Yazılım Projesi 3",
         "Tıp Alanında Yapay Zeka",
         "Biyoinfomartiğe Giriş"
     ],
@@ -501,21 +502,21 @@ DEPARTMENTS_DATA = {
         "Mobil Komünikasyon",
         "GPU Programlama",
         "Görüntü İşlemenin Temelleri",
-        "Donanımsal Bilg. Müh: Seçilmiş Konular I",
-        "Donanımsal Bilg. Müh: Seçilmiş Konular II",
-        "Donanımsal Bilg. Müh: Seçilmiş Konular III",
-        "Donanımsal Bilg. Müh: Seçilmiş Konular IV",
-        "Donanımsal Bilg. Müh: Seçilmiş Konular V",
-        "Donanımsal Bilg. Müh: Seçilmiş Konular VI",
-        "Donanım Projesi I",
-        "Donanım Projesi II",
-        "Donanım Projesi III",
+        "Donanımsal Bilg. Müh: Seçilmiş Konular 1",
+        "Donanımsal Bilg. Müh: Seçilmiş Konular 2",
+        "Donanımsal Bilg. Müh: Seçilmiş Konular 3",
+        "Donanımsal Bilg. Müh: Seçilmiş Konular 4",
+        "Donanımsal Bilg. Müh: Seçilmiş Konular 5",
+        "Donanımsal Bilg. Müh: Seçilmiş Konular 6",
+        "Donanım Projesi 1",
+        "Donanım Projesi 2",
+        "Donanım Projesi 3",
         "Sayısal Tasarım",
         "Elektrik ve Manyetizma",
-        "Elektrik Devreleri I",
-        "Elektrik Devreleri II",
+        "Elektrik Devreleri 1",
+        "Elektrik Devreleri 2",
         "Sinyaller ve Sistemler",
-        "Elektronik I: Yarı İletken Elemanlar",
+        "Elektronik 1: Yarı İletken Elemanlar",
         "Telekomünikasyon",
         "Gömülü Sistemler",
         "VLSI Tasarımına Giriş",
@@ -523,14 +524,14 @@ DEPARTMENTS_DATA = {
         "Dijital Görüntü İşleme",
         "Dijital Sinyal İşleme",
         "Teknik Çizim ve Bilgisayar Destekli Tasarım",
-        "Malzeme Teknolojisi I",
-        "Malzeme Teknolojisi II",
-        "Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım",
+        "Malzeme Teknolojisi 1",
+        "Malzeme Teknolojisi 2",
+        "Tasarım Tek. 1: Teknik Çizim ve Bilg. Destekli Tasarım",
         "Ölçüm Teknikleri",
         "Endüstriyel Otomasyon Teknolojisi",
-        "Endüstriyel Robotik I",
-        "Görüntü Tabanlı Otomasyon I",
-        "Görüntü Tabanlı Otomasyon II"
+        "Endüstriyel Robotik 1",
+        "Görüntü Tabanlı Otomasyon 1",
+        "Görüntü Tabanlı Otomasyon 2"
     ],
     "SDIc": [
         "Yapay Zeka",
@@ -538,25 +539,25 @@ DEPARTMENTS_DATA = {
         "Kodlama Teorisi ve Kriptoloji",
         "Algoritmik Geometrinin Temelleri",
         "Algoritma Mühendisliği",
-        "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular I",
-        "Bilg. Müh. Teorik Temelleri: II",
-        "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular III",
-        "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular IV",
-        "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular V",
-        "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular VI",
+        "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular 1",
+        "Bilg. Müh. Teorik Temelleri: 2",
+        "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular 3",
+        "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular 4",
+        "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular 5",
+        "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular 6",
         "Bilgisayar Destekli İstatistik",
         "Diferansiyel Denklemler ve Nümerik",
         "Bilgisayar Mühendisleri için İleri Matematik",
         "Algoritmalar ve Karmaşıklık Teorisi",
         "Programlama Paradigmaları",
-        "Analiz II",
+        "Analiz 2",
         "Diferansiyel Denklemler",
         "Numerik Matematik",
-        "Yöneylem Araştırması I - Doğrusal Modeller",
-        "Yöneylem Araştırması II - Rassal Modeller"
+        "Yöneylem Araştırması 1 - Doğrusal Modeller",
+        "Yöneylem Araştırması 2 - Rassal Modeller"
     ],
     "SDP": [
-        "Proje I: Yenilik ve Teknoloji Yönetimi Projesi",
+        "Proje 1: Yenilik ve Teknoloji Yönetimi Projesi",
         "Mekatronik Projesi",
         "Yazılım Mühendisliği Projesi",
         "Elektrik ve Elektronik Mühendisliği Projesi"
@@ -566,7 +567,7 @@ DEPARTMENTS_DATA = {
     "SDP": [
         [
             "WIN311",
-            "Proje I: Yenilik ve Teknoloji Yönetimi Projesi",
+            "Proje 1: Yenilik ve Teknoloji Yönetimi Projesi",
             6,
             1,
             0,
@@ -704,7 +705,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF514",
-            "Bilgisayar Grafiği I",
+            "Bilgisayar Grafiği 1",
             6,
             2,
             0,
@@ -712,7 +713,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF515",
-            "Bilgisayar Grafiği II",
+            "Bilgisayar Grafiği 2",
             6,
             2,
             0,
@@ -784,7 +785,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF524",
-            "Uygulamalı Bilg. Müh: Seçilmiş Konular I",
+            "Uygulamalı Bilg. Müh: Seçilmiş Konular 1",
             6,
             2,
             0,
@@ -792,7 +793,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF525",
-            "Uyg. Bilg. Müh. Seç. Kon. II - Multimedya İçerik Arama",
+            "Uyg. Bilg. Müh. Seç. Kon. 2 - Multimedya İçerik Arama",
             6,
             2,
             0,
@@ -800,7 +801,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF526",
-            "Uygulamalı Bilg. Müh: Seçilmiş Konular III",
+            "Uygulamalı Bilg. Müh: Seçilmiş Konular 3",
             6,
             2,
             2,
@@ -808,7 +809,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF527",
-            "Uygulamalı Bilg. Müh: Seçilmiş Konular IV",
+            "Uygulamalı Bilg. Müh: Seçilmiş Konular 4",
             6,
             2,
             2,
@@ -816,7 +817,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF528",
-            "Uygulamalı Bilg. Müh: Seçilmiş Konular V",
+            "Uygulamalı Bilg. Müh: Seçilmiş Konular 5",
             4,
             1,
             0,
@@ -824,7 +825,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF529",
-            "Uygulamalı Bilg. Müh: Seçilmiş Konular VI",
+            "Uygulamalı Bilg. Müh: Seçilmiş Konular 6",
             4,
             1,
             0,
@@ -832,7 +833,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF530",
-            "Yazılım Projesi I",
+            "Yazılım Projesi 1",
             6,
             0,
             0,
@@ -840,7 +841,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF531",
-            "Yazılım Projesi II",
+            "Yazılım Projesi 2",
             6,
             0,
             0,
@@ -848,7 +849,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF532",
-            "Yazılım Projesi III",
+            "Yazılım Projesi 3",
             6,
             0,
             0,
@@ -914,7 +915,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF606",
-            "Donanımsal Bilg. Müh: Seçilmiş Konular I",
+            "Donanımsal Bilg. Müh: Seçilmiş Konular 1",
             6,
             2,
             0,
@@ -922,7 +923,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF607",
-            "Donanımsal Bilg. Müh: Seçilmiş Konular II",
+            "Donanımsal Bilg. Müh: Seçilmiş Konular 2",
             6,
             2,
             0,
@@ -930,7 +931,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF608",
-            "Donanımsal Bilg. Müh: Seçilmiş Konular III",
+            "Donanımsal Bilg. Müh: Seçilmiş Konular 3",
             6,
             2,
             2,
@@ -938,7 +939,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF609",
-            "Donanımsal Bilg. Müh: Seçilmiş Konular IV",
+            "Donanımsal Bilg. Müh: Seçilmiş Konular 4",
             6,
             2,
             2,
@@ -946,7 +947,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF610",
-            "Donanımsal Bilg. Müh: Seçilmiş Konular V",
+            "Donanımsal Bilg. Müh: Seçilmiş Konular 5",
             4,
             1,
             0,
@@ -954,7 +955,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF611",
-            "Donanımsal Bilg. Müh: Seçilmiş Konular VI",
+            "Donanımsal Bilg. Müh: Seçilmiş Konular 6",
             4,
             1,
             2,
@@ -962,7 +963,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF612",
-            "Donanım Projesi I",
+            "Donanım Projesi 1",
             6,
             0,
             0,
@@ -970,7 +971,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF613",
-            "Donanım Projesi II",
+            "Donanım Projesi 2",
             6,
             0,
             0,
@@ -978,7 +979,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF614",
-            "Donanım Projesi III",
+            "Donanım Projesi 3",
             6,
             0,
             0,
@@ -1002,7 +1003,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE201",
-            "Elektrik Devreleri I",
+            "Elektrik Devreleri 1",
             6,
             3,
             2,
@@ -1010,7 +1011,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE202",
-            "Elektrik Devreleri II",
+            "Elektrik Devreleri 2",
             6,
             3,
             2,
@@ -1026,7 +1027,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE311",
-            "Elektronik I: Yarı İletken Elemanlar",
+            "Elektronik 1: Yarı İletken Elemanlar",
             6,
             2,
             2,
@@ -1090,7 +1091,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB207",
-            "Malzeme Teknolojisi I",
+            "Malzeme Teknolojisi 1",
             6,
             3,
             2,
@@ -1098,7 +1099,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB310",
-            "Malzeme Teknolojisi II",
+            "Malzeme Teknolojisi 2",
             6,
             3,
             1,
@@ -1106,7 +1107,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC107",
-            "Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım",
+            "Tasarım Tek. 1: Teknik Çizim ve Bilg. Destekli Tasarım",
             6,
             1,
             2,
@@ -1130,7 +1131,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC308",
-            "Endüstriyel Robotik I",
+            "Endüstriyel Robotik 1",
             6,
             3,
             1,
@@ -1138,7 +1139,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC321",
-            "Görüntü Tabanlı Otomasyon I",
+            "Görüntü Tabanlı Otomasyon 1",
             6,
             3,
             1,
@@ -1146,7 +1147,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC324",
-            "Görüntü Tabanlı Otomasyon II",
+            "Görüntü Tabanlı Otomasyon 2",
             6,
             3,
             1,
@@ -1196,7 +1197,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF706",
-            "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular I",
+            "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular 1",
             6,
             2,
             0,
@@ -1204,7 +1205,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF707",
-            "Bilg. Müh. Teorik Temelleri: II",
+            "Bilg. Müh. Teorik Temelleri: 2",
             6,
             2,
             0,
@@ -1212,7 +1213,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF708",
-            "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular III",
+            "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular 3",
             6,
             2,
             2,
@@ -1220,7 +1221,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF709",
-            "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular IV",
+            "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular 4",
             6,
             2,
             2,
@@ -1228,7 +1229,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF710",
-            "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular V",
+            "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular 5",
             4,
             1,
             0,
@@ -1236,7 +1237,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF711",
-            "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular VI",
+            "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular 6",
             4,
             1,
             2,
@@ -1284,7 +1285,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT108",
-            "Analiz II",
+            "Analiz 2",
             6,
             3,
             2,
@@ -1308,7 +1309,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "WIN209",
-            "Yöneylem Araştırması I - Doğrusal Modeller",
+            "Yöneylem Araştırması 1 - Doğrusal Modeller",
             6,
             2,
             2,
@@ -1316,7 +1317,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "WIN316",
-            "Yöneylem Araştırması II - Rassal Modeller",
+            "Yöneylem Araştırması 2 - Rassal Modeller",
             6,
             2,
             2,
@@ -1326,7 +1327,7 @@ DEPARTMENTS_DATA = {
     "SDIII": [
         [
             "INF801",
-            "İşletme Enformatiği: Seçilmiş Konular I",
+            "İşletme Enformatiği: Seçilmiş Konular 1",
             6,
             2,
             0,
@@ -1334,7 +1335,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF802",
-            "İşletme Enformatiği: Seçilmiş Konular II",
+            "İşletme Enformatiği: Seçilmiş Konular 2",
             6,
             2,
             0,
@@ -1342,7 +1343,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF803",
-            "İşletme Enformatiği: Seçilmiş Konular III",
+            "İşletme Enformatiği: Seçilmiş Konular 3",
             6,
             2,
             2,
@@ -1350,7 +1351,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF804",
-            "İşletme Enformatiği: Seçilmiş Konular IV",
+            "İşletme Enformatiği: Seçilmiş Konular 4",
             6,
             2,
             2,
@@ -1358,7 +1359,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF805",
-            "İşletme Enformatiği: Seçilmiş Konular V",
+            "İşletme Enformatiği: Seçilmiş Konular 5",
             4,
             1,
             0,
@@ -1366,7 +1367,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF806",
-            "İşletme Enformatiği: Seçilmiş Konular VI",
+            "İşletme Enformatiği: Seçilmiş Konular 6",
             4,
             1,
             2,
@@ -1550,7 +1551,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF901",
-            "Sosyal Beceriler I",
+            "Sosyal Beceriler 1",
             2,
             1,
             0,
@@ -1558,7 +1559,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF902",
-            "Sosyal Beceriler II",
+            "Sosyal Beceriler 2",
             3,
             2,
             0,
@@ -1566,7 +1567,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF903",
-            "Sosyal Beceriler III",
+            "Sosyal Beceriler 3",
             4,
             2,
             0,
@@ -1574,7 +1575,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF904",
-            "Sosyal Beceriler IV",
+            "Sosyal Beceriler 4",
             5,
             2,
             1,
@@ -1582,7 +1583,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF905",
-            "Sosyal Beceriler V",
+            "Sosyal Beceriler 5",
             6,
             2,
             2,
@@ -1590,7 +1591,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF906",
-            "Sosyal Beceriler VI",
+            "Sosyal Beceriler 6",
             2,
             1,
             0,
@@ -1598,7 +1599,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF907",
-            "Sosyal Beceriler VII",
+            "Sosyal Beceriler 7",
             3,
             2,
             0,
@@ -1606,7 +1607,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF908",
-            "Sosyal Beceriler VIII",
+            "Sosyal Beceriler 8",
             4,
             2,
             0,
@@ -1614,7 +1615,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF909",
-            "Sosyal Beceriler IX",
+            "Sosyal Beceriler 9",
             5,
             2,
             1,
@@ -1622,7 +1623,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF910",
-            "Sosyal Beceriler X",
+            "Sosyal Beceriler 10",
             6,
             2,
             2,
@@ -1630,7 +1631,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF911",
-            "Bilgisayar Mühendisliği Semineri I",
+            "Bilgisayar Mühendisliği Semineri 1",
             4,
             2,
             0,
@@ -1638,7 +1639,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF912",
-            "Bilgisayar Mühendisliği Semineri II",
+            "Bilgisayar Mühendisliği Semineri 2",
             4,
             2,
             0,
@@ -1670,7 +1671,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "CHE111",
-            "Kimya I",
+            "Kimya 1",
             6,
             2,
             1,
@@ -1678,7 +1679,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "CHE112",
-            "Kimya II",
+            "Kimya 2",
             6,
             2,
             1,
@@ -1694,7 +1695,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "PHY111",
-            "Fizik I",
+            "Fizik 1",
             6,
             2,
             1,
@@ -1702,7 +1703,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "PHY112",
-            "Fizik II",
+            "Fizik 2",
             6,
             2,
             1,
@@ -1710,7 +1711,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MBT211",
-            "Biyokimya I",
+            "Biyokimya 1",
             6,
             2,
             1,
@@ -1718,7 +1719,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "NWI201",
-            "Fiziksel Kimya I",
+            "Fiziksel Kimya 1",
             6,
             3,
             1,
@@ -1726,7 +1727,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MBT204",
-            "Mikrobiyoloji I",
+            "Mikrobiyoloji 1",
             6,
             2,
             1,
@@ -1734,7 +1735,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MBT222",
-            "Moleküler Biyoteknoloji I",
+            "Moleküler Biyoteknoloji 1",
             6,
             2,
             1,
@@ -1748,7 +1749,7 @@ DEPARTMENTS_DATA = {
     "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "MAT103",
-            "Analiz I / Analysis I",
+            "Analiz 1",
             6,
             3,
             2,
@@ -1756,7 +1757,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "PHY101",
-            "Mekaniğin Temelleri / Fundamentals of Mechanics",
+            "Mekaniğin Temelleri",
             6,
             3,
             1,
@@ -1764,7 +1765,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE101",
-            "Sayısal Tasarım / Digital Design",
+            "Sayısal Tasarım",
             6,
             2,
             1,
@@ -1772,7 +1773,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE103",
-            "Bilg. Bil. ve Prog. Giriş / Intro to CS & Programming",
+            "Bilg. Bil. ve Prog. Giriş",
             6,
             2,
             0,
@@ -1780,7 +1781,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE091",
-            "Elektrik-Elektronik Müh. Giriş / Intro to EE Engineering",
+            "Elektrik-Elektronik Müh. Giriş",
             2,
             2,
             0,
@@ -1788,7 +1789,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU121",
-            "Teknik Almanca I / Technical German I",
+            "Teknik Almanca 1",
             2,
             2,
             0,
@@ -1796,7 +1797,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG101",
-            "İngilizce I / English I",
+            "İngilizce 1",
             2,
             3,
             0,
@@ -1806,7 +1807,7 @@ DEPARTMENTS_DATA = {
     "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "MAT108",
-            "Analiz II / Analysis II",
+            "Analiz 2",
             6,
             3,
             2,
@@ -1814,7 +1815,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "PHY102",
-            "Elektrik ve Manyetizma / Electricity and Magnetism",
+            "Elektrik ve Manyetizma",
             6,
             3,
             1,
@@ -1822,7 +1823,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT106",
-            "Lineer Cebir / Linear Algebra",
+            "Lineer Cebir",
             6,
             2,
             2,
@@ -1830,7 +1831,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDII",
-            "Seçmeli Ders Alanı II / Elective Pool II",
+            "Seçmeli Ders Alanı 2",
             6,
             0,
             0,
@@ -1838,7 +1839,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE092",
-            "Bilimsel Çalışma Yöntemleri / Scientific Work",
+            "Bilimsel Çalışma Yöntemleri",
             2,
             2,
             0,
@@ -1846,7 +1847,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU122",
-            "Teknik Almanca II / Technical German II",
+            "Teknik Almanca 2",
             2,
             2,
             0,
@@ -1854,7 +1855,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG102",
-            "İngilizce II / English II",
+            "İngilizce 2",
             2,
             3,
             0,
@@ -1864,7 +1865,7 @@ DEPARTMENTS_DATA = {
     "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "MAT201",
-            "Diferansiyel Denklemler / Differential Equations",
+            "Diferansiyel Denklemler",
             6,
             2,
             1,
@@ -1872,7 +1873,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE201",
-            "Elektrik Devreleri I / Electrical Circuits I",
+            "Elektrik Devreleri 1",
             6,
             4,
             1,
@@ -1880,7 +1881,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "PHY103",
-            "Modern Fizik / Modern Physics",
+            "Modern Fizik",
             6,
             3,
             1,
@@ -1888,7 +1889,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE207",
-            "Malzeme Teknolojisi / Material Science",
+            "Malzeme Teknolojisi",
             6,
             3,
             2,
@@ -1896,7 +1897,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE299",
-            "Temel Staj / Basic Internship",
+            "Temel Staj",
             2,
             0,
             0,
@@ -1904,7 +1905,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR001",
-            "Türkçe I / Turkish I",
+            "Türkçe 1",
             2,
             2,
             0,
@@ -1912,7 +1913,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG201",
-            "İngilizce III / English III",
+            "İngilizce 3",
             2,
             3,
             0,
@@ -1922,7 +1923,7 @@ DEPARTMENTS_DATA = {
     "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "MAT204",
-            "Veri Analizinin İstat. Yönt. / Stat. Methods of Data Anal.",
+            "Veri Analizinin İstat. Yönt.",
             6,
             2,
             2,
@@ -1930,7 +1931,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE202",
-            "Elektrik Devreleri II / Electrical Circuits II",
+            "Elektrik Devreleri 2",
             6,
             3,
             2,
@@ -1938,7 +1939,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE208",
-            "Ölçüm Teknikleri / Measurement Techniques",
+            "Ölçüm Teknikleri",
             6,
             2,
             1,
@@ -1946,7 +1947,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE292",
-            "Proje Yönetimi / Project Management",
+            "Proje Yönetimi",
             2,
             1,
             1,
@@ -1954,7 +1955,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR002",
-            "Türkçe II / Turkish II",
+            "Türkçe 2",
             2,
             2,
             0,
@@ -1962,7 +1963,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG202",
-            "İngilizce IV / English IV",
+            "İngilizce 4",
             2,
             3,
             0,
@@ -1970,7 +1971,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "USD000",
-            "Üniversite Seçmeli Ders Havuzu / University Elective Pool",
+            "Üniversite Seçmeli Ders Havuzu",
             6,
             0,
             0,
@@ -1980,7 +1981,7 @@ DEPARTMENTS_DATA = {
     "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "ETE321",
-            "Elektromanyetik Alanlar / Electromagnetic Fields",
+            "Elektromanyetik Alanlar",
             6,
             3,
             1,
@@ -1988,7 +1989,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE303",
-            "Sinyaller ve Sistemler / Signals and Systems",
+            "Sinyaller ve Sistemler",
             6,
             3,
             1,
@@ -1996,7 +1997,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE311",
-            "Elektronik I: Yarı İletken El. / Electronics I",
+            "Elektronik 1: Yarı İletken El.",
             6,
             2,
             2,
@@ -2004,7 +2005,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE331",
-            "Elektrik Makineleri I / Electrical Machines I",
+            "Elektrik Makineleri 1",
             6,
             3,
             1,
@@ -2012,7 +2013,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDV",
-            "Seçmeli Ders Alanı V / Elective Pool V",
+            "Seçmeli Ders Alanı 5",
             6,
             0,
             0,
@@ -2022,7 +2023,7 @@ DEPARTMENTS_DATA = {
     "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "ETE304",
-            "Kontrol Müh. Temelleri / Fund. of Control Eng.",
+            "Kontrol Müh. Temelleri",
             6,
             3,
             1,
@@ -2030,7 +2031,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE372",
-            "Telekomünikasyon / Telecommunications",
+            "Telekomünikasyon",
             6,
             3,
             2,
@@ -2038,7 +2039,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDT",
-            "Seçmeli Ders Alanı T / Elective Pool T",
+            "Seçmeli Ders Alanı T",
             6,
             0,
             0,
@@ -2046,7 +2047,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDM",
-            "Seçmeli Ders Alanı M / Elective Pool M",
+            "Seçmeli Ders Alanı M",
             6,
             0,
             0,
@@ -2054,7 +2055,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDVI",
-            "Seçmeli Ders Alanı VI / Elective Pool VI",
+            "Seçmeli Ders Alanı 6",
             6,
             0,
             0,
@@ -2064,7 +2065,7 @@ DEPARTMENTS_DATA = {
     "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "ETE499",
-            "Mesleki Alan Stajı / Specialized Internship",
+            "Mesleki Alan Stajı",
             6,
             0,
             0,
@@ -2072,7 +2073,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG001",
-            "İş Sağlığı ve Güvenliği I / OHS I",
+            "İş Sağlığı ve Güvenliği 1",
             2,
             2,
             0,
@@ -2080,7 +2081,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT001",
-            "Atatürk İlkeleri ve İnkılap Tarihi I",
+            "Atatürk İlkeleri ve İnkılap Tarihi 1",
             2,
             2,
             0,
@@ -2088,7 +2089,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG301",
-            "İleri İngilizce I / Advanced English I",
+            "İleri İngilizce 1",
             2,
             3,
             0,
@@ -2096,7 +2097,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDP",
-            "Seçmeli Alan - Proje / Elective Courses - Project",
+            "Seçmeli Alan - Proje",
             6,
             0,
             0,
@@ -2104,7 +2105,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDVII",
-            "Seçmeli Ders Alanı VII",
+            "Seçmeli Ders Alanı 7",
             12,
             0,
             0,
@@ -2114,7 +2115,7 @@ DEPARTMENTS_DATA = {
     "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "ETE492",
-            "Lisans Bitirme Çalışması / Bachelor Thesis",
+            "Lisans Bitirme Çalışması",
             12,
             0,
             0,
@@ -2122,7 +2123,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG002",
-            "İş Sağlığı ve Güvenliği II / OHS II",
+            "İş Sağlığı ve Güvenliği 2",
             2,
             2,
             0,
@@ -2130,7 +2131,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT002",
-            "Atatürk İlkeleri ve İnkılap Tarihi II",
+            "Atatürk İlkeleri ve İnkılap Tarihi 2",
             2,
             2,
             0,
@@ -2138,7 +2139,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG302",
-            "İleri İngilizce II / Advanced English II",
+            "İleri İngilizce 2",
             2,
             3,
             0,
@@ -2146,7 +2147,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDVIII",
-            "Seçmeli Ders Alanı VIII",
+            "Seçmeli Ders Alanı 8",
             12,
             0,
             0,
@@ -2156,35 +2157,35 @@ DEPARTMENTS_DATA = {
 },
         "pool_codes": {
     "SDII": [
-        "Mikroişlemciler / Microprocessors",
-        "Nesnel Programlama / Object Oriented Programming"
+        "Mikroişlemciler",
+        "Nesnel Programlama"
     ],
     "SDM": [
-        "Numerik Matematik / Numerical Mathematics",
-        "Kompleks Analiz / Complex Analysis"
+        "Numerik Matematik",
+        "Kompleks Analiz"
     ],
     "SDP": [
-        "Elektrik-Elektronik Müh. Projesi / EEE Project",
-        "Mekatronik Projesi / Mechatronics Project",
-        "Yazılım Mühendisliği Projesi / Software Eng. Project"
+        "Elektrik-Elektronik Müh. Projesi",
+        "Mekatronik Projesi",
+        "Yazılım Mühendisliği Projesi"
     ],
     "SDT": [
-        "Elektronik II: Devre Teknolojisi / Circuit Technology",
-        "Sayısal Sinyal İşlemenin Temelleri / Fund. of DSP"
+        "Elektronik 2: Devre Teknolojisi",
+        "Sayısal Sinyal İşlemenin Temelleri"
     ],
     "SDV": [
-        "Mikroişlemciler / Microprocessors",
-        "Elektronik II: Devre Teknolojisi",
+        "Mikroişlemciler",
+        "Elektronik 2: Devre Teknolojisi",
         "Sayısal Sinyal İşlemenin Temelleri",
-        "Elektroteknik: Seçilmiş Konular I",
-        "Elektroteknik: Seçilmiş Konular II",
+        "Elektroteknik: Seçilmiş Konular 1",
+        "Elektroteknik: Seçilmiş Konular 2",
         "Optik Haberleşme Tekniği",
         "İşlemsel Yükselteçler ile Devre Tasarımı",
         "Elektronik Laboratuvarı",
         "RF Ön Uç Bileşenleri ve Devreler",
         "Elektromanyetik Dalgaların Temelleri",
         "Anten Teorisine Giriş",
-        "Elektrik Makineleri II",
+        "Elektrik Makineleri 2",
         "Elektrik Enerjisi Kaynakları",
         "Güç Elektroniği",
         "FPGA Programlama",
@@ -2216,8 +2217,8 @@ DEPARTMENTS_DATA = {
         "Akıllı Şebekeler",
         "Yenilenebilir Enerji Teknolojisi",
         "İşletmede Mesleki Eğitim",
-        "Elektroteknik: Seçilmiş Konular III",
-        "Elektroteknik: Seçilmiş Konular IV",
+        "Elektroteknik: Seçilmiş Konular 3",
+        "Elektroteknik: Seçilmiş Konular 4",
         "Tıbbi Cihazlarda Kalite Yönetim Sisteminin Kurulması",
         "Tıbbi Cihazlarda Test, Kontrol ve Kalibrasyon",
         "Nesnel Programlama",
@@ -2231,25 +2232,25 @@ DEPARTMENTS_DATA = {
         "Numerik Matematik",
         "Kompleks Analiz",
         "Uygulamalı Kontrol Mühendisliği",
-        "Endüstriyel Robotik I",
+        "Endüstriyel Robotik 1",
         "Endüstriyel Otomasyon Teknolojisi",
-        "Görüntü Tabanlı Otomasyon I",
-        "Görüntü Tabanlı Otomasyon II",
-        "Endüstriyel Robotik II"
+        "Görüntü Tabanlı Otomasyon 1",
+        "Görüntü Tabanlı Otomasyon 2",
+        "Endüstriyel Robotik 2"
     ],
     "SDVI": [
-        "Mikroişlemciler / Microprocessors",
-        "Elektronik II: Devre Teknolojisi",
+        "Mikroişlemciler",
+        "Elektronik 2: Devre Teknolojisi",
         "Sayısal Sinyal İşlemenin Temelleri",
-        "Elektroteknik: Seçilmiş Konular I",
-        "Elektroteknik: Seçilmiş Konular II",
+        "Elektroteknik: Seçilmiş Konular 1",
+        "Elektroteknik: Seçilmiş Konular 2",
         "Optik Haberleşme Tekniği",
         "İşlemsel Yükselteçler ile Devre Tasarımı",
         "Elektronik Laboratuvarı",
         "RF Ön Uç Bileşenleri ve Devreler",
         "Elektromanyetik Dalgaların Temelleri",
         "Anten Teorisine Giriş",
-        "Elektrik Makineleri II",
+        "Elektrik Makineleri 2",
         "Elektrik Enerjisi Kaynakları",
         "Güç Elektroniği",
         "FPGA Programlama",
@@ -2281,8 +2282,8 @@ DEPARTMENTS_DATA = {
         "Akıllı Şebekeler",
         "Yenilenebilir Enerji Teknolojisi",
         "İşletmede Mesleki Eğitim",
-        "Elektroteknik: Seçilmiş Konular III",
-        "Elektroteknik: Seçilmiş Konular IV",
+        "Elektroteknik: Seçilmiş Konular 3",
+        "Elektroteknik: Seçilmiş Konular 4",
         "Tıbbi Cihazlarda Kalite Yönetim Sisteminin Kurulması",
         "Tıbbi Cihazlarda Test, Kontrol ve Kalibrasyon",
         "Nesnel Programlama",
@@ -2296,25 +2297,25 @@ DEPARTMENTS_DATA = {
         "Numerik Matematik",
         "Kompleks Analiz",
         "Uygulamalı Kontrol Mühendisliği",
-        "Endüstriyel Robotik I",
+        "Endüstriyel Robotik 1",
         "Endüstriyel Otomasyon Teknolojisi",
-        "Görüntü Tabanlı Otomasyon I",
-        "Görüntü Tabanlı Otomasyon II",
-        "Endüstriyel Robotik II"
+        "Görüntü Tabanlı Otomasyon 1",
+        "Görüntü Tabanlı Otomasyon 2",
+        "Endüstriyel Robotik 2"
     ],
     "SDVII": [
-        "Mikroişlemciler / Microprocessors",
-        "Elektronik II: Devre Teknolojisi",
+        "Mikroişlemciler",
+        "Elektronik 2: Devre Teknolojisi",
         "Sayısal Sinyal İşlemenin Temelleri",
-        "Elektroteknik: Seçilmiş Konular I",
-        "Elektroteknik: Seçilmiş Konular II",
+        "Elektroteknik: Seçilmiş Konular 1",
+        "Elektroteknik: Seçilmiş Konular 2",
         "Optik Haberleşme Tekniği",
         "İşlemsel Yükselteçler ile Devre Tasarımı",
         "Elektronik Laboratuvarı",
         "RF Ön Uç Bileşenleri ve Devreler",
         "Elektromanyetik Dalgaların Temelleri",
         "Anten Teorisine Giriş",
-        "Elektrik Makineleri II",
+        "Elektrik Makineleri 2",
         "Elektrik Enerjisi Kaynakları",
         "Güç Elektroniği",
         "FPGA Programlama",
@@ -2346,8 +2347,8 @@ DEPARTMENTS_DATA = {
         "Akıllı Şebekeler",
         "Yenilenebilir Enerji Teknolojisi",
         "İşletmede Mesleki Eğitim",
-        "Elektroteknik: Seçilmiş Konular III",
-        "Elektroteknik: Seçilmiş Konular IV",
+        "Elektroteknik: Seçilmiş Konular 3",
+        "Elektroteknik: Seçilmiş Konular 4",
         "Tıbbi Cihazlarda Kalite Yönetim Sisteminin Kurulması",
         "Tıbbi Cihazlarda Test, Kontrol ve Kalibrasyon",
         "Nesnel Programlama",
@@ -2361,25 +2362,25 @@ DEPARTMENTS_DATA = {
         "Numerik Matematik",
         "Kompleks Analiz",
         "Uygulamalı Kontrol Mühendisliği",
-        "Endüstriyel Robotik I",
+        "Endüstriyel Robotik 1",
         "Endüstriyel Otomasyon Teknolojisi",
-        "Görüntü Tabanlı Otomasyon I",
-        "Görüntü Tabanlı Otomasyon II",
-        "Endüstriyel Robotik II"
+        "Görüntü Tabanlı Otomasyon 1",
+        "Görüntü Tabanlı Otomasyon 2",
+        "Endüstriyel Robotik 2"
     ],
     "SDVIII": [
-        "Mikroişlemciler / Microprocessors",
-        "Elektronik II: Devre Teknolojisi",
+        "Mikroişlemciler",
+        "Elektronik 2: Devre Teknolojisi",
         "Sayısal Sinyal İşlemenin Temelleri",
-        "Elektroteknik: Seçilmiş Konular I",
-        "Elektroteknik: Seçilmiş Konular II",
+        "Elektroteknik: Seçilmiş Konular 1",
+        "Elektroteknik: Seçilmiş Konular 2",
         "Optik Haberleşme Tekniği",
         "İşlemsel Yükselteçler ile Devre Tasarımı",
         "Elektronik Laboratuvarı",
         "RF Ön Uç Bileşenleri ve Devreler",
         "Elektromanyetik Dalgaların Temelleri",
         "Anten Teorisine Giriş",
-        "Elektrik Makineleri II",
+        "Elektrik Makineleri 2",
         "Elektrik Enerjisi Kaynakları",
         "Güç Elektroniği",
         "FPGA Programlama",
@@ -2411,8 +2412,8 @@ DEPARTMENTS_DATA = {
         "Akıllı Şebekeler",
         "Yenilenebilir Enerji Teknolojisi",
         "İşletmede Mesleki Eğitim",
-        "Elektroteknik: Seçilmiş Konular III",
-        "Elektroteknik: Seçilmiş Konular IV",
+        "Elektroteknik: Seçilmiş Konular 3",
+        "Elektroteknik: Seçilmiş Konular 4",
         "Tıbbi Cihazlarda Kalite Yönetim Sisteminin Kurulması",
         "Tıbbi Cihazlarda Test, Kontrol ve Kalibrasyon",
         "Nesnel Programlama",
@@ -2426,18 +2427,18 @@ DEPARTMENTS_DATA = {
         "Numerik Matematik",
         "Kompleks Analiz",
         "Uygulamalı Kontrol Mühendisliği",
-        "Endüstriyel Robotik I",
+        "Endüstriyel Robotik 1",
         "Endüstriyel Otomasyon Teknolojisi",
-        "Görüntü Tabanlı Otomasyon I",
-        "Görüntü Tabanlı Otomasyon II",
-        "Endüstriyel Robotik II"
+        "Görüntü Tabanlı Otomasyon 1",
+        "Görüntü Tabanlı Otomasyon 2",
+        "Endüstriyel Robotik 2"
     ]
 },
         "pools": {
     "SDII": [
         [
             "ETE104",
-            "Mikroişlemciler / Microprocessors",
+            "Mikroişlemciler",
             6,
             3,
             1,
@@ -2445,7 +2446,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF102",
-            "Nesnel Programlama / Object Oriented Programming",
+            "Nesnel Programlama",
             6,
             2,
             0,
@@ -2455,7 +2456,7 @@ DEPARTMENTS_DATA = {
     "SDM": [
         [
             "MAT302",
-            "Numerik Matematik / Numerical Mathematics",
+            "Numerik Matematik",
             6,
             3,
             1,
@@ -2463,7 +2464,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT392",
-            "Kompleks Analiz / Complex Analysis",
+            "Kompleks Analiz",
             6,
             3,
             1,
@@ -2473,7 +2474,7 @@ DEPARTMENTS_DATA = {
     "SDT": [
         [
             "ETE312",
-            "Elektronik II: Devre Teknolojisi / Circuit Technology",
+            "Elektronik 2: Devre Teknolojisi",
             6,
             4,
             1,
@@ -2481,7 +2482,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE374",
-            "Sayısal Sinyal İşlemenin Temelleri / Fund. of DSP",
+            "Sayısal Sinyal İşlemenin Temelleri",
             6,
             2,
             1,
@@ -2491,7 +2492,7 @@ DEPARTMENTS_DATA = {
     "SDP": [
         [
             "ETE491",
-            "Elektrik-Elektronik Müh. Projesi / EEE Project",
+            "Elektrik-Elektronik Müh. Projesi",
             6,
             1,
             0,
@@ -2499,7 +2500,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC319",
-            "Mekatronik Projesi / Mechatronics Project",
+            "Mekatronik Projesi",
             6,
             1,
             0,
@@ -2507,7 +2508,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF303",
-            "Yazılım Mühendisliği Projesi / Software Eng. Project",
+            "Yazılım Mühendisliği Projesi",
             6,
             1,
             0,
@@ -2517,7 +2518,7 @@ DEPARTMENTS_DATA = {
     "SDV": [
         [
             "ETE104",
-            "Mikroişlemciler / Microprocessors",
+            "Mikroişlemciler",
             6,
             3,
             1,
@@ -2525,7 +2526,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE312",
-            "Elektronik II: Devre Teknolojisi",
+            "Elektronik 2: Devre Teknolojisi",
             6,
             4,
             1,
@@ -2541,7 +2542,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE393",
-            "Elektroteknik: Seçilmiş Konular I",
+            "Elektroteknik: Seçilmiş Konular 1",
             6,
             2,
             0,
@@ -2549,7 +2550,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE394",
-            "Elektroteknik: Seçilmiş Konular II",
+            "Elektroteknik: Seçilmiş Konular 2",
             6,
             2,
             0,
@@ -2605,7 +2606,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE433",
-            "Elektrik Makineleri II",
+            "Elektrik Makineleri 2",
             6,
             3,
             1,
@@ -2861,7 +2862,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE493",
-            "Elektroteknik: Seçilmiş Konular III",
+            "Elektroteknik: Seçilmiş Konular 3",
             6,
             2,
             0,
@@ -2869,7 +2870,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE494",
-            "Elektroteknik: Seçilmiş Konular IV",
+            "Elektroteknik: Seçilmiş Konular 4",
             6,
             2,
             0,
@@ -2981,7 +2982,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC308",
-            "Endüstriyel Robotik I",
+            "Endüstriyel Robotik 1",
             6,
             3,
             1,
@@ -2997,7 +2998,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC321",
-            "Görüntü Tabanlı Otomasyon I",
+            "Görüntü Tabanlı Otomasyon 1",
             6,
             3,
             1,
@@ -3005,7 +3006,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC324",
-            "Görüntü Tabanlı Otomasyon II",
+            "Görüntü Tabanlı Otomasyon 2",
             6,
             3,
             1,
@@ -3013,7 +3014,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC421",
-            "Endüstriyel Robotik II",
+            "Endüstriyel Robotik 2",
             6,
             2,
             1,
@@ -3023,7 +3024,7 @@ DEPARTMENTS_DATA = {
     "SDVI": [
         [
             "ETE104",
-            "Mikroişlemciler / Microprocessors",
+            "Mikroişlemciler",
             6,
             3,
             1,
@@ -3031,7 +3032,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE312",
-            "Elektronik II: Devre Teknolojisi",
+            "Elektronik 2: Devre Teknolojisi",
             6,
             4,
             1,
@@ -3047,7 +3048,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE393",
-            "Elektroteknik: Seçilmiş Konular I",
+            "Elektroteknik: Seçilmiş Konular 1",
             6,
             2,
             0,
@@ -3055,7 +3056,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE394",
-            "Elektroteknik: Seçilmiş Konular II",
+            "Elektroteknik: Seçilmiş Konular 2",
             6,
             2,
             0,
@@ -3111,7 +3112,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE433",
-            "Elektrik Makineleri II",
+            "Elektrik Makineleri 2",
             6,
             3,
             1,
@@ -3367,7 +3368,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE493",
-            "Elektroteknik: Seçilmiş Konular III",
+            "Elektroteknik: Seçilmiş Konular 3",
             6,
             2,
             0,
@@ -3375,7 +3376,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE494",
-            "Elektroteknik: Seçilmiş Konular IV",
+            "Elektroteknik: Seçilmiş Konular 4",
             6,
             2,
             0,
@@ -3487,7 +3488,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC308",
-            "Endüstriyel Robotik I",
+            "Endüstriyel Robotik 1",
             6,
             3,
             1,
@@ -3503,7 +3504,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC321",
-            "Görüntü Tabanlı Otomasyon I",
+            "Görüntü Tabanlı Otomasyon 1",
             6,
             3,
             1,
@@ -3511,7 +3512,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC324",
-            "Görüntü Tabanlı Otomasyon II",
+            "Görüntü Tabanlı Otomasyon 2",
             6,
             3,
             1,
@@ -3519,7 +3520,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC421",
-            "Endüstriyel Robotik II",
+            "Endüstriyel Robotik 2",
             6,
             2,
             1,
@@ -3529,7 +3530,7 @@ DEPARTMENTS_DATA = {
     "SDVII": [
         [
             "ETE104",
-            "Mikroişlemciler / Microprocessors",
+            "Mikroişlemciler",
             6,
             3,
             1,
@@ -3537,7 +3538,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE312",
-            "Elektronik II: Devre Teknolojisi",
+            "Elektronik 2: Devre Teknolojisi",
             6,
             4,
             1,
@@ -3553,7 +3554,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE393",
-            "Elektroteknik: Seçilmiş Konular I",
+            "Elektroteknik: Seçilmiş Konular 1",
             6,
             2,
             0,
@@ -3561,7 +3562,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE394",
-            "Elektroteknik: Seçilmiş Konular II",
+            "Elektroteknik: Seçilmiş Konular 2",
             6,
             2,
             0,
@@ -3617,7 +3618,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE433",
-            "Elektrik Makineleri II",
+            "Elektrik Makineleri 2",
             6,
             3,
             1,
@@ -3873,7 +3874,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE493",
-            "Elektroteknik: Seçilmiş Konular III",
+            "Elektroteknik: Seçilmiş Konular 3",
             6,
             2,
             0,
@@ -3881,7 +3882,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE494",
-            "Elektroteknik: Seçilmiş Konular IV",
+            "Elektroteknik: Seçilmiş Konular 4",
             6,
             2,
             0,
@@ -3993,7 +3994,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC308",
-            "Endüstriyel Robotik I",
+            "Endüstriyel Robotik 1",
             6,
             3,
             1,
@@ -4009,7 +4010,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC321",
-            "Görüntü Tabanlı Otomasyon I",
+            "Görüntü Tabanlı Otomasyon 1",
             6,
             3,
             1,
@@ -4017,7 +4018,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC324",
-            "Görüntü Tabanlı Otomasyon II",
+            "Görüntü Tabanlı Otomasyon 2",
             6,
             3,
             1,
@@ -4025,7 +4026,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC421",
-            "Endüstriyel Robotik II",
+            "Endüstriyel Robotik 2",
             6,
             2,
             1,
@@ -4035,7 +4036,7 @@ DEPARTMENTS_DATA = {
     "SDVIII": [
         [
             "ETE104",
-            "Mikroişlemciler / Microprocessors",
+            "Mikroişlemciler",
             6,
             3,
             1,
@@ -4043,7 +4044,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE312",
-            "Elektronik II: Devre Teknolojisi",
+            "Elektronik 2: Devre Teknolojisi",
             6,
             4,
             1,
@@ -4059,7 +4060,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE393",
-            "Elektroteknik: Seçilmiş Konular I",
+            "Elektroteknik: Seçilmiş Konular 1",
             6,
             2,
             0,
@@ -4067,7 +4068,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE394",
-            "Elektroteknik: Seçilmiş Konular II",
+            "Elektroteknik: Seçilmiş Konular 2",
             6,
             2,
             0,
@@ -4123,7 +4124,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE433",
-            "Elektrik Makineleri II",
+            "Elektrik Makineleri 2",
             6,
             3,
             1,
@@ -4379,7 +4380,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE493",
-            "Elektroteknik: Seçilmiş Konular III",
+            "Elektroteknik: Seçilmiş Konular 3",
             6,
             2,
             0,
@@ -4387,7 +4388,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE494",
-            "Elektroteknik: Seçilmiş Konular IV",
+            "Elektroteknik: Seçilmiş Konular 4",
             6,
             2,
             0,
@@ -4499,7 +4500,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC308",
-            "Endüstriyel Robotik I",
+            "Endüstriyel Robotik 1",
             6,
             3,
             1,
@@ -4515,7 +4516,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC321",
-            "Görüntü Tabanlı Otomasyon I",
+            "Görüntü Tabanlı Otomasyon 1",
             6,
             3,
             1,
@@ -4523,7 +4524,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC324",
-            "Görüntü Tabanlı Otomasyon II",
+            "Görüntü Tabanlı Otomasyon 2",
             6,
             3,
             1,
@@ -4531,7 +4532,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC421",
-            "Endüstriyel Robotik II",
+            "Endüstriyel Robotik 2",
             6,
             2,
             1,
@@ -4561,7 +4562,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "WIN107",
-            "Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım",
+            "Tasarım Tek. 1: Teknik Çizim ve Bilg. Destekli Tasarım",
             6,
             2,
             0,
@@ -4577,7 +4578,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT103",
-            "Analiz I",
+            "Analiz 1",
             6,
             3,
             2,
@@ -4585,7 +4586,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU121",
-            "Teknik Almanca I",
+            "Teknik Almanca 1",
             2,
             2,
             0,
@@ -4593,7 +4594,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG101",
-            "İngilizce I",
+            "İngilizce 1",
             2,
             3,
             0,
@@ -4635,7 +4636,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT108",
-            "Analiz II",
+            "Analiz 2",
             6,
             3,
             2,
@@ -4651,7 +4652,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG102",
-            "İngilizce II",
+            "İngilizce 2",
             2,
             3,
             0,
@@ -4677,7 +4678,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "WIN209",
-            "Yöneylem Araştırması I - Doğrusal Modeller",
+            "Yöneylem Araştırması 1 - Doğrusal Modeller",
             6,
             2,
             2,
@@ -4701,7 +4702,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG201",
-            "İngilizce III",
+            "İngilizce 3",
             2,
             3,
             0,
@@ -4709,7 +4710,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR001",
-            "Türkçe I",
+            "Türkçe 1",
             2,
             2,
             0,
@@ -4759,7 +4760,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG202",
-            "İngilizce IV",
+            "İngilizce 4",
             2,
             3,
             0,
@@ -4767,7 +4768,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR002",
-            "Türkçe II",
+            "Türkçe 2",
             2,
             2,
             0,
@@ -4801,7 +4802,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDI",
-            "Seçmeli Alan I - İktisadi Bilimler",
+            "Seçmeli Alan 1 - İktisadi Bilimler",
             6,
             0,
             0,
@@ -4809,7 +4810,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSDI",
-            "Zorunlu Seçmeli Alan I",
+            "Zorunlu Seçmeli Alan 1",
             6,
             0,
             0,
@@ -4835,7 +4836,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDII",
-            "Seçmeli Alan II - Endüstri Müh. Araştırma Alanı",
+            "Seçmeli Alan 2 - Endüstri Müh. Araştırma Alanı",
             6,
             0,
             0,
@@ -4843,7 +4844,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSDII",
-            "Zorunlu Seçmeli Alan II",
+            "Zorunlu Seçmeli Alan 2",
             6,
             0,
             0,
@@ -4861,7 +4862,7 @@ DEPARTMENTS_DATA = {
     "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "WIN403",
-            "Proje II: Endüstri Projesi",
+            "Proje 2: Endüstri Projesi",
             6,
             1,
             0,
@@ -4877,7 +4878,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT001",
-            "Atatürk İlkeleri ve İnkılap Tarihi I",
+            "Atatürk İlkeleri ve İnkılap Tarihi 1",
             2,
             2,
             0,
@@ -4885,7 +4886,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG301",
-            "İleri İngilizce I",
+            "İleri İngilizce 1",
             2,
             3,
             0,
@@ -4893,7 +4894,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG001",
-            "İş Sağlığı ve Güvenliği I",
+            "İş Sağlığı ve Güvenliği 1",
             2,
             2,
             0,
@@ -4901,7 +4902,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSDI",
-            "Zorunlu Seçmeli Alan I",
+            "Zorunlu Seçmeli Alan 1",
             6,
             0,
             0,
@@ -4909,7 +4910,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSDI",
-            "Zorunlu Seçmeli Alan I",
+            "Zorunlu Seçmeli Alan 1",
             6,
             0,
             0,
@@ -4927,7 +4928,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT002",
-            "Atatürk İlkeleri ve İnkılap Tarihi II",
+            "Atatürk İlkeleri ve İnkılap Tarihi 2",
             2,
             2,
             0,
@@ -4935,7 +4936,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG302",
-            "İleri İngilizce II",
+            "İleri İngilizce 2",
             2,
             3,
             0,
@@ -4943,7 +4944,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG002",
-            "İş Sağlığı ve Güvenliği II",
+            "İş Sağlığı ve Güvenliği 2",
             2,
             2,
             0,
@@ -4951,7 +4952,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSDII",
-            "Zorunlu Seçmeli Alan II",
+            "Zorunlu Seçmeli Alan 2",
             6,
             0,
             0,
@@ -4959,7 +4960,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSDII",
-            "Zorunlu Seçmeli Alan II",
+            "Zorunlu Seçmeli Alan 2",
             6,
             0,
             0,
@@ -4975,12 +4976,12 @@ DEPARTMENTS_DATA = {
         "İktisadi Tarih"
     ],
     "SDII": [
-        "Yöneylem Araştırması II - Rassal Modeller",
+        "Yöneylem Araştırması 2 - Rassal Modeller",
         "Mühendisler İçin Hukuk",
         "Para, Banka ve Finans Piyasaları"
     ],
     "SDP": [
-        "Proje I: Yenilik ve Teknoloji Yönetimi Projesi",
+        "Proje 1: Yenilik ve Teknoloji Yönetimi Projesi",
         "Yazılım Mühendisliği Projesi",
         "Mekatronik Projesi"
     ],
@@ -4991,21 +4992,21 @@ DEPARTMENTS_DATA = {
         "Endüstriyel Enformasyon Tek. ve Sanal Ürün Geliştirme",
         "Üretim Planlama ve Yönetimi",
         "Elektromobilite için Pil Üretim Teknolojisi",
-        "Endüstri Mühendisliği: Seçilmiş Konular I",
+        "Endüstri Mühendisliği: Seçilmiş Konular 1",
         "Altı Sigma ve Problem Çözme",
         "Sayısal Tasarım",
-        "Elektrik Devreleri I",
-        "Algoritmalar ve Veri Yapıları I",
+        "Elektrik Devreleri 1",
+        "Algoritmalar ve Veri Yapıları 1",
         "Yapay Sinir Ağları",
         "Veri Madenciliği",
         "Bilişim Sistemleri Güvenliği",
         "Web Mühendisliği",
         "İnsan-Makine Etkileşimi",
-        "Tasarım Teknikleri II: Mekanik Parça Tasarımı",
-        "Malzeme Teknolojisi I",
+        "Tasarım Teknikleri 2: Mekanik Parça Tasarımı",
+        "Malzeme Teknolojisi 1",
         "Takım Tezgahları",
         "Termodinamik",
-        "İmalat Teknolojisi I",
+        "İmalat Teknolojisi 1",
         "Endüstriyel Otomasyon Teknolojisi"
     ],
     "ZSDII": [
@@ -5015,7 +5016,7 @@ DEPARTMENTS_DATA = {
         "Endüstriyel Enformasyon Tek. ve Sanal Ürün Geliştirme",
         "Montaj Teknolojisi Temelleri",
         "Elektromobilite için Pil Üretim Teknolojisi",
-        "Endüstri Mühendisliği: Seçilmiş Konular II",
+        "Endüstri Mühendisliği: Seçilmiş Konular 2",
         "Havaalanı Yönetimi",
         "Mühendisler için Python",
         "İşletmede Mesleki Eğitim",
@@ -5027,19 +5028,19 @@ DEPARTMENTS_DATA = {
         "Web Mühendisliği",
         "İnsan-Makine Etkileşimi",
         "Girişimcilik",
-        "Malzeme Teknolojisi I",
+        "Malzeme Teknolojisi 1",
         "İmalat Teknolojisinin Temelleri",
         "Araç Teknolojisinin Temelleri",
         "Numerik Matematik",
         "Ölçüm Teknikleri",
-        "Endüstriyel Robotik I"
+        "Endüstriyel Robotik 1"
     ]
 },
         "pools": {
     "SDP": [
         [
             "WIN311",
-            "Proje I: Yenilik ve Teknoloji Yönetimi Projesi",
+            "Proje 1: Yenilik ve Teknoloji Yönetimi Projesi",
             6,
             1,
             0,
@@ -5099,7 +5100,7 @@ DEPARTMENTS_DATA = {
     "SDII": [
         [
             "WIN316",
-            "Yöneylem Araştırması II - Rassal Modeller",
+            "Yöneylem Araştırması 2 - Rassal Modeller",
             6,
             2,
             2,
@@ -5173,7 +5174,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "WIN411",
-            "Endüstri Mühendisliği: Seçilmiş Konular I",
+            "Endüstri Mühendisliği: Seçilmiş Konular 1",
             6,
             2,
             2,
@@ -5197,7 +5198,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE201",
-            "Elektrik Devreleri I",
+            "Elektrik Devreleri 1",
             6,
             3,
             2,
@@ -5205,7 +5206,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF203",
-            "Algoritmalar ve Veri Yapıları I",
+            "Algoritmalar ve Veri Yapıları 1",
             6,
             2,
             0,
@@ -5253,7 +5254,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB203",
-            "Tasarım Teknikleri II: Mekanik Parça Tasarımı",
+            "Tasarım Teknikleri 2: Mekanik Parça Tasarımı",
             6,
             2,
             1,
@@ -5261,7 +5262,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB207",
-            "Malzeme Teknolojisi I",
+            "Malzeme Teknolojisi 1",
             6,
             3,
             2,
@@ -5285,7 +5286,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB311",
-            "İmalat Teknolojisi I",
+            "İmalat Teknolojisi 1",
             6,
             3,
             1,
@@ -5351,7 +5352,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "WIN412",
-            "Endüstri Mühendisliği: Seçilmiş Konular II",
+            "Endüstri Mühendisliği: Seçilmiş Konular 2",
             6,
             2,
             2,
@@ -5447,7 +5448,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB207",
-            "Malzeme Teknolojisi I",
+            "Malzeme Teknolojisi 1",
             6,
             3,
             2,
@@ -5487,7 +5488,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC308",
-            "Endüstriyel Robotik I",
+            "Endüstriyel Robotik 1",
             6,
             3,
             1,
@@ -5501,7 +5502,7 @@ DEPARTMENTS_DATA = {
     "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "PHY111",
-            "Fizik I / Physik I",
+            "Fizik 1",
             6,
             2,
             1,
@@ -5509,7 +5510,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "CHE111",
-            "Kimya I / Chemie I",
+            "Kimya 1",
             6,
             2,
             1,
@@ -5517,7 +5518,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "EBT103",
-            "Enerji Bilimi ve Teknolojilerine Giriş / Einführung...",
+            "Enerji Bilimi ve Teknolojilerine Giriş",
             2,
             2,
             1,
@@ -5525,7 +5526,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT103",
-            "Analiz I / Analysis I",
+            "Analiz 1",
             6,
             3,
             2,
@@ -5533,7 +5534,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "EBT105",
-            "Teknik Çizim ve CAD / Technisches Zeichnen und CAD",
+            "Teknik Çizim ve CAD",
             6,
             2,
             0,
@@ -5541,7 +5542,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU121",
-            "Teknik Almanca I / Technisches Deutsch I",
+            "Teknik Almanca 1",
             2,
             2,
             0,
@@ -5549,7 +5550,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG101",
-            "İngilizce I / Englisch I",
+            "İngilizce 1",
             2,
             3,
             0,
@@ -5559,7 +5560,7 @@ DEPARTMENTS_DATA = {
     "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "PHY112",
-            "Fizik II / Physik II",
+            "Fizik 2",
             6,
             2,
             1,
@@ -5567,7 +5568,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "CHE112",
-            "Kimya II / Chemie II",
+            "Kimya 2",
             6,
             2,
             1,
@@ -5575,7 +5576,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT112",
-            "Analiz II ve Lineer Cebir / Analysis II und Lineare Algebra",
+            "Analiz 2 ve Lineer Cebir",
             6,
             3,
             2,
@@ -5583,7 +5584,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "EBT104",
-            "Bilimsel Programlama / Wissenschaftliches Programmierung",
+            "Bilimsel Programlama",
             6,
             2,
             0,
@@ -5591,7 +5592,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "NWI106",
-            "Proje Yönetimi / Projektmanagement",
+            "Proje Yönetimi",
             2,
             2,
             0,
@@ -5599,7 +5600,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU122",
-            "Teknik Almanca II / Technisches Deutsch II",
+            "Teknik Almanca 2",
             2,
             2,
             0,
@@ -5607,7 +5608,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG102",
-            "İngilizce II / Englisch II",
+            "İngilizce 2",
             2,
             3,
             0,
@@ -5617,7 +5618,7 @@ DEPARTMENTS_DATA = {
     "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "EBT201",
-            "Yenilenebilir Enerji Teknolojileri / Erneuerbare...",
+            "Yenilenebilir Enerji Teknolojileri",
             6,
             3,
             1,
@@ -5625,7 +5626,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "EBT203",
-            "Elektrokimya / Electrochemie",
+            "Elektrokimya",
             6,
             3,
             1,
@@ -5633,7 +5634,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT201",
-            "Diferansiyel Denklemler / Diferentialgleichungen",
+            "Diferansiyel Denklemler",
             6,
             2,
             2,
@@ -5641,7 +5642,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "NWI206",
-            "Elektroteknik / Elektrotechnik",
+            "Elektroteknik",
             6,
             2,
             1,
@@ -5649,7 +5650,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR001",
-            "Türkçe I / Türkisch I",
+            "Türkçe 1",
             2,
             2,
             0,
@@ -5657,7 +5658,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT001",
-            "Atatürk İlkeleri ve İnkılap Tarihi I",
+            "Atatürk İlkeleri ve İnkılap Tarihi 1",
             2,
             2,
             0,
@@ -5665,7 +5666,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG201",
-            "İngilizce III / Englisch III",
+            "İngilizce 3",
             2,
             3,
             0,
@@ -5675,7 +5676,7 @@ DEPARTMENTS_DATA = {
     "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "EBT204",
-            "Termodinamik / Thermodynamik",
+            "Termodinamik",
             6,
             3,
             2,
@@ -5683,7 +5684,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "EBT206",
-            "Katıhal Fiziği / Festkörperphysik",
+            "Katıhal Fiziği",
             6,
             2,
             1,
@@ -5691,7 +5692,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR002",
-            "Türkçe II / Türkisch II",
+            "Türkçe 2",
             2,
             2,
             0,
@@ -5699,7 +5700,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT002",
-            "Atatürk İlkeleri ve İnkılap Tarihi II",
+            "Atatürk İlkeleri ve İnkılap Tarihi 2",
             2,
             2,
             0,
@@ -5707,7 +5708,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG202",
-            "İngilizce IV / Englisch IV",
+            "İngilizce 4",
             2,
             3,
             0,
@@ -5733,7 +5734,7 @@ DEPARTMENTS_DATA = {
     "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "EBT303",
-            "Akışkanlar Mekaniği / Strömungsmechanik",
+            "Akışkanlar Mekaniği",
             6,
             3,
             2,
@@ -5741,7 +5742,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "EBT305",
-            "İstatistik / Statistik",
+            "İstatistik",
             6,
             2,
             2,
@@ -5775,7 +5776,7 @@ DEPARTMENTS_DATA = {
     "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "EBT308",
-            "Uygulamalı Enerji Bilimi Laboratuvarı / Angewandtes...",
+            "Uygulamalı Enerji Bilimi Laboratuvarı",
             6,
             1,
             0,
@@ -5783,7 +5784,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "EBT302",
-            "Nümerik Analiz / Numerische Analyse",
+            "Nümerik Analiz",
             6,
             2,
             1,
@@ -5791,7 +5792,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "EBT306",
-            "Isı Transferi / Wärmeübertragung",
+            "Isı Transferi",
             6,
             3,
             2,
@@ -5817,7 +5818,7 @@ DEPARTMENTS_DATA = {
     "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "EBT401",
-            "Proje I (Tez Hazırlık ve Seminer) / Projekt I",
+            "Proje 1 (Tez Hazırlık ve Seminer)",
             6,
             4,
             1,
@@ -5825,7 +5826,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG001",
-            "İş Sağlığı ve Güvenliği I / Arbeitsschutz... I",
+            "İş Sağlığı ve Güvenliği 1",
             2,
             2,
             0,
@@ -5833,7 +5834,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG301",
-            "İleri İngilizce I / Fortgeschrittenes Englisch I",
+            "İleri İngilizce 1",
             2,
             3,
             0,
@@ -5875,7 +5876,7 @@ DEPARTMENTS_DATA = {
     "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "EBT402",
-            "Proje II",
+            "Proje 2",
             10,
             0,
             6,
@@ -5883,7 +5884,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "EBT404",
-            "Seminer / Seminar",
+            "Seminer",
             2,
             2,
             0,
@@ -5891,7 +5892,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "EBT406",
-            "Enerji Yönetimi / Energiemanagement",
+            "Enerji Yönetimi",
             6,
             3,
             2,
@@ -5899,7 +5900,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "PRK400",
-            "Endüstri Stajı Semineri / Industriepraktikum Seminar",
+            "Endüstri Stajı Semineri",
             5,
             2,
             0,
@@ -5907,7 +5908,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG002",
-            "İş Sağlığı ve Güvenliği II / Arbeitsschutz... II",
+            "İş Sağlığı ve Güvenliği 2",
             2,
             2,
             0,
@@ -5915,7 +5916,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG302",
-            "İleri İngilizce II / Fortgeschrittenes Englisch II",
+            "İleri İngilizce 2",
             2,
             3,
             0,
@@ -6321,7 +6322,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK153",
-            "Anayasa Hukuku I",
+            "Anayasa Hukuku 1",
             3,
             0,
             0,
@@ -6369,7 +6370,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG101",
-            "İngilizce I",
+            "İngilizce 1",
             2,
             0,
             0,
@@ -6379,7 +6380,7 @@ DEPARTMENTS_DATA = {
     "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "HUK150",
-            "Anayasa Hukuku II",
+            "Anayasa Hukuku 2",
             4,
             0,
             0,
@@ -6443,7 +6444,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG102",
-            "İngilizce II",
+            "İngilizce 2",
             2,
             0,
             0,
@@ -6453,7 +6454,7 @@ DEPARTMENTS_DATA = {
     "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "HUK251",
-            "Ceza Hukuku Genel Hükümler I",
+            "Ceza Hukuku Genel Hükümler 1",
             5,
             0,
             0,
@@ -6461,7 +6462,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK253",
-            "İdare Hukuku I",
+            "İdare Hukuku 1",
             5,
             0,
             0,
@@ -6469,7 +6470,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK255",
-            "Milletlerarası Hukuk I",
+            "Milletlerarası Hukuk 1",
             3,
             0,
             0,
@@ -6493,7 +6494,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK261",
-            "Borçlar Hukuku Genel Hükümler I",
+            "Borçlar Hukuku Genel Hükümler 1",
             6,
             0,
             0,
@@ -6501,7 +6502,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG201",
-            "İngilizce III",
+            "İngilizce 3",
             2,
             0,
             0,
@@ -6511,7 +6512,7 @@ DEPARTMENTS_DATA = {
     "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "HUK250",
-            "Ceza Hukuku Genel Hükümler II",
+            "Ceza Hukuku Genel Hükümler 2",
             5,
             0,
             0,
@@ -6519,7 +6520,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK252",
-            "Milletlerarası Hukuk II",
+            "Milletlerarası Hukuk 2",
             5,
             0,
             0,
@@ -6535,7 +6536,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK256",
-            "İdare Hukuku II",
+            "İdare Hukuku 2",
             5,
             0,
             0,
@@ -6551,7 +6552,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK260",
-            "Borçlar Hukuku Genel Hükümler II",
+            "Borçlar Hukuku Genel Hükümler 2",
             6,
             0,
             0,
@@ -6559,7 +6560,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG202",
-            "İngilizce IV",
+            "İngilizce 4",
             2,
             0,
             0,
@@ -6569,7 +6570,7 @@ DEPARTMENTS_DATA = {
     "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "HUK351",
-            "Ceza Hukuku Özel Hükümler I",
+            "Ceza Hukuku Özel Hükümler 1",
             3,
             0,
             0,
@@ -6585,7 +6586,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK355",
-            "Eşya Hukuku I",
+            "Eşya Hukuku 1",
             3,
             0,
             0,
@@ -6593,7 +6594,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK357",
-            "Medeni Usul Hukuku I",
+            "Medeni Usul Hukuku 1",
             3,
             0,
             0,
@@ -6617,7 +6618,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK363",
-            "Özel Borç İlişkileri I",
+            "Özel Borç İlişkileri 1",
             2,
             0,
             0,
@@ -6625,7 +6626,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK365",
-            "İş ve Sosyal Güvenlik Hukuku I",
+            "İş ve Sosyal Güvenlik Hukuku 1",
             2,
             0,
             0,
@@ -6633,7 +6634,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG301",
-            "İleri İngilizce I",
+            "İleri İngilizce 1",
             2,
             0,
             0,
@@ -6641,7 +6642,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR001",
-            "Türk Dili I",
+            "Türk Dili 1",
             2,
             0,
             0,
@@ -6659,7 +6660,7 @@ DEPARTMENTS_DATA = {
     "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "HUK350",
-            "Ceza Hukuku Özel Hükümler II",
+            "Ceza Hukuku Özel Hükümler 2",
             3,
             0,
             0,
@@ -6675,7 +6676,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK354",
-            "Eşya Hukuku II",
+            "Eşya Hukuku 2",
             3,
             0,
             0,
@@ -6683,7 +6684,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK356",
-            "Medeni Usul Hukuku II",
+            "Medeni Usul Hukuku 2",
             3,
             0,
             0,
@@ -6691,7 +6692,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK358",
-            "İş ve Sosyal Güvenlik Hukuku II",
+            "İş ve Sosyal Güvenlik Hukuku 2",
             2,
             0,
             0,
@@ -6715,7 +6716,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK364",
-            "Özel Borç İlişkileri II",
+            "Özel Borç İlişkileri 2",
             3,
             0,
             0,
@@ -6723,7 +6724,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG302",
-            "İleri İngilizce II",
+            "İleri İngilizce 2",
             2,
             0,
             0,
@@ -6731,7 +6732,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR002",
-            "Türk Dili II",
+            "Türk Dili 2",
             2,
             0,
             0,
@@ -6749,7 +6750,7 @@ DEPARTMENTS_DATA = {
     "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "HUK451",
-            "Ceza Muhakemesi Hukuku I",
+            "Ceza Muhakemesi Hukuku 1",
             4,
             0,
             0,
@@ -6757,7 +6758,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK453",
-            "Devletler Özel Hukuku I",
+            "Devletler Özel Hukuku 1",
             3,
             0,
             0,
@@ -6773,7 +6774,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK457",
-            "İcra ve İflas Hukuku I",
+            "İcra ve İflas Hukuku 1",
             4,
             0,
             0,
@@ -6813,7 +6814,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT001",
-            "Atatürk İlkeleri ve İnkılâp Tarihi I",
+            "Atatürk İlkeleri ve İnkılâp Tarihi 1",
             2,
             0,
             0,
@@ -6839,7 +6840,7 @@ DEPARTMENTS_DATA = {
     "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "HUK450",
-            "Ceza Muhakemesi Hukuku II",
+            "Ceza Muhakemesi Hukuku 2",
             4,
             0,
             0,
@@ -6847,7 +6848,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK452",
-            "İcra ve İflas Hukuku II",
+            "İcra ve İflas Hukuku 2",
             4,
             0,
             0,
@@ -6855,7 +6856,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK454",
-            "Devletler Özel Hukuku II",
+            "Devletler Özel Hukuku 2",
             5,
             0,
             0,
@@ -6903,7 +6904,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT002",
-            "Atatürk İlkeleri ve İnkılâp Tarihi II",
+            "Atatürk İlkeleri ve İnkılâp Tarihi 2",
             2,
             0,
             0,
@@ -6922,15 +6923,15 @@ DEPARTMENTS_DATA = {
         "pool_codes": {
     "HUKSD5": [
         "DERSİN ADI",
-        "Avrupa Hukuku ve Uluslararası Hukuk I",
-        "Ekonomi Hukuku I",
-        "İleri Alman Hukuku I"
+        "Avrupa Hukuku ve Uluslararası Hukuk 1",
+        "Ekonomi Hukuku 1",
+        "İleri Alman Hukuku 1"
     ],
     "HUKSD6": [
         "DERSİN ADI",
-        "Avrupa Hukuku ve Uluslararası Hukuk II",
-        "Ekonomi Hukuku II",
-        "İleri Alman Hukuku II"
+        "Avrupa Hukuku ve Uluslararası Hukuk 2",
+        "Ekonomi Hukuku 2",
+        "İleri Alman Hukuku 2"
     ],
     "HUKSD7": [
         "DERSİN ADI",
@@ -6944,9 +6945,9 @@ DEPARTMENTS_DATA = {
     ],
     "HUKSD8": [
         "DERSİN ADI",
-        "Avrupa Hukuku ve Uluslararası Hukuk IV",
-        "Ekonomi Hukuku IV",
-        "İleri Alman Hukuku IV"
+        "Avrupa Hukuku ve Uluslararası Hukuk 4",
+        "Ekonomi Hukuku 4",
+        "İleri Alman Hukuku 4"
     ]
 },
         "pools": {
@@ -6961,7 +6962,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK561",
-            "Avrupa Hukuku ve Uluslararası Hukuk I",
+            "Avrupa Hukuku ve Uluslararası Hukuk 1",
             2,
             0,
             0,
@@ -6969,7 +6970,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK563",
-            "Ekonomi Hukuku I",
+            "Ekonomi Hukuku 1",
             2,
             0,
             0,
@@ -6977,7 +6978,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK565",
-            "İleri Alman Hukuku I",
+            "İleri Alman Hukuku 1",
             2,
             0,
             0,
@@ -6995,7 +6996,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK658",
-            "Avrupa Hukuku ve Uluslararası Hukuk II",
+            "Avrupa Hukuku ve Uluslararası Hukuk 2",
             2,
             0,
             0,
@@ -7003,7 +7004,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK660",
-            "Ekonomi Hukuku II",
+            "Ekonomi Hukuku 2",
             2,
             0,
             0,
@@ -7011,7 +7012,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK662",
-            "İleri Alman Hukuku II",
+            "İleri Alman Hukuku 2",
             2,
             0,
             0,
@@ -7095,7 +7096,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK856",
-            "Avrupa Hukuku ve Uluslararası Hukuk IV",
+            "Avrupa Hukuku ve Uluslararası Hukuk 4",
             2,
             0,
             0,
@@ -7103,7 +7104,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK858",
-            "Ekonomi Hukuku IV",
+            "Ekonomi Hukuku 4",
             2,
             0,
             0,
@@ -7111,7 +7112,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK860",
-            "İleri Alman Hukuku IV",
+            "İleri Alman Hukuku 4",
             2,
             0,
             0,
@@ -7125,7 +7126,7 @@ DEPARTMENTS_DATA = {
     "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "AIT001",
-            "Atatürk İlkeleri ve İnkılap Tarihi I",
+            "Atatürk İlkeleri ve İnkılap Tarihi 1",
             2,
             0,
             0,
@@ -7133,7 +7134,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG101",
-            "İngilizce I",
+            "İngilizce 1",
             2,
             0,
             0,
@@ -7173,7 +7174,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKW161",
-            "Mesleki Almanca I: Kültür Bilimleri",
+            "Mesleki Almanca 1: Kültür Bilimleri",
             2,
             0,
             0,
@@ -7181,7 +7182,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR001",
-            "Türkçe I",
+            "Türkçe 1",
             2,
             0,
             0,
@@ -7191,7 +7192,7 @@ DEPARTMENTS_DATA = {
     "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "AIT002",
-            "Atatürk İlkeleri ve İnkılap Tarihi II",
+            "Atatürk İlkeleri ve İnkılap Tarihi 2",
             2,
             0,
             0,
@@ -7199,7 +7200,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG102",
-            "İngilizce II",
+            "İngilizce 2",
             2,
             0,
             0,
@@ -7231,7 +7232,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKW150",
-            "İletişim Kuramları I",
+            "İletişim Kuramları 1",
             5,
             0,
             0,
@@ -7239,7 +7240,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKW162",
-            "Mesleki Almanca II: İletişim Bilimleri",
+            "Mesleki Almanca 2: İletişim Bilimleri",
             2,
             0,
             0,
@@ -7247,7 +7248,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR002",
-            "Türkçe II",
+            "Türkçe 2",
             2,
             0,
             0,
@@ -7257,7 +7258,7 @@ DEPARTMENTS_DATA = {
     "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "ENG201",
-            "İngilizce III",
+            "İngilizce 3",
             2,
             0,
             0,
@@ -7289,7 +7290,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKW251",
-            "İletişim Kuramları II",
+            "İletişim Kuramları 2",
             5,
             0,
             0,
@@ -7297,7 +7298,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKW261",
-            "Mesleki Almanca III: Kültürlerarası İletişim",
+            "Mesleki Almanca 3: Kültürlerarası İletişim",
             2,
             0,
             0,
@@ -7305,7 +7306,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKWSDI",
-            "Seçmeli Ders I",
+            "Seçmeli Ders 1",
             10,
             0,
             0,
@@ -7315,7 +7316,7 @@ DEPARTMENTS_DATA = {
     "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "ENG202",
-            "İngilizce IV",
+            "İngilizce 4",
             2,
             0,
             0,
@@ -7355,7 +7356,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKW262",
-            "Mesleki Almanca IV: Metin Analizi",
+            "Mesleki Almanca 4: Metin Analizi",
             2,
             0,
             0,
@@ -7363,7 +7364,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKWSDII",
-            "Seçmeli Ders II",
+            "Seçmeli Ders 2",
             10,
             0,
             0,
@@ -7373,7 +7374,7 @@ DEPARTMENTS_DATA = {
     "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "ENG301",
-            "İleri İngilizce I",
+            "İleri İngilizce 1",
             2,
             0,
             0,
@@ -7389,7 +7390,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKW329",
-            "Dijital Medya Laboratuvarı I",
+            "Dijital Medya Laboratuvarı 1",
             4,
             0,
             0,
@@ -7397,7 +7398,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKW361",
-            "Mesleki Almanca V: Metin Üretimi I",
+            "Mesleki Almanca 5: Metin Üretimi 1",
             2,
             0,
             0,
@@ -7405,7 +7406,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKWSDIII",
-            "Seçmeli Dersler III",
+            "Seçmeli Dersler 3",
             16,
             0,
             0,
@@ -7415,7 +7416,7 @@ DEPARTMENTS_DATA = {
     "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "ENG302",
-            "İleri İngilizce II",
+            "İleri İngilizce 2",
             2,
             0,
             0,
@@ -7431,7 +7432,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKW332",
-            "Dijital Medya Laboratuvarı II",
+            "Dijital Medya Laboratuvarı 2",
             4,
             0,
             0,
@@ -7439,7 +7440,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKW362",
-            "Mesleki Almanca VI: Metin Üretimi II",
+            "Mesleki Almanca 6: Metin Üretimi 2",
             2,
             0,
             0,
@@ -7447,7 +7448,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKWSDIV",
-            "Seçmeli Dersler IV",
+            "Seçmeli Dersler 4",
             16,
             0,
             0,
@@ -7497,7 +7498,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKWSDV",
-            "Seçmeli Dersler V",
+            "Seçmeli Dersler 5",
             3,
             0,
             0,
@@ -7507,7 +7508,7 @@ DEPARTMENTS_DATA = {
     "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "KKW424",
-            "Kültürel ve Yaratıcı Endüstriler / Kurumlar",
+            "Kültürel ve Yaratıcı Endüstriler",
             4,
             0,
             0,
@@ -7531,7 +7532,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "KKWSDVI",
-            "Seçmeli Ders VI",
+            "Seçmeli Ders 6",
             4,
             0,
             0,
@@ -8019,7 +8020,7 @@ DEPARTMENTS_DATA = {
     "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "MAT103",
-            "Analiz I / Calculus I",
+            "Analiz 1",
             6,
             3,
             2,
@@ -8027,7 +8028,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB107",
-            "Teknik Çizim ve CAD / Technical Drawing and CAD",
+            "Teknik Çizim ve CAD",
             6,
             2,
             0,
@@ -8035,7 +8036,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB109",
-            "Statik / Statics",
+            "Statik",
             6,
             3,
             2,
@@ -8043,7 +8044,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB105",
-            "Bilg. Bil. ve Prog. Giriş / Intro to CS and Programming",
+            "Bilg. Bil. ve Prog. Giriş",
             6,
             2,
             2,
@@ -8051,7 +8052,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB091",
-            "Makine Mühendisliğine Giriş / Intro to Mech. Engineering",
+            "Makine Mühendisliğine Giriş",
             2,
             2,
             0,
@@ -8059,7 +8060,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG101",
-            "İngilizce I / English I",
+            "İngilizce 1",
             2,
             3,
             0,
@@ -8067,7 +8068,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU121",
-            "Teknik Almanca I / Technical German I",
+            "Teknik Almanca 1",
             2,
             2,
             0,
@@ -8077,7 +8078,7 @@ DEPARTMENTS_DATA = {
     "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "MAT108",
-            "Analiz II / Calculus II",
+            "Analiz 2",
             6,
             3,
             2,
@@ -8085,7 +8086,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT106",
-            "Lineer Cebir / Linear Algebra",
+            "Lineer Cebir",
             6,
             2,
             2,
@@ -8093,7 +8094,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB112",
-            "Mukavemet / Strength of Materials",
+            "Mukavemet",
             6,
             3,
             2,
@@ -8101,7 +8102,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB108",
-            "Tasarım Tek. I: Teknik Çizim 2 / Design Methods I",
+            "Tasarım Tek. 1: Teknik Çizim 2",
             6,
             2,
             0,
@@ -8109,7 +8110,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB092",
-            "Bilimsel Çalışma Yöntemleri / Scientific Research Methods",
+            "Bilimsel Çalışma Yöntemleri",
             2,
             2,
             0,
@@ -8117,7 +8118,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG102",
-            "İngilizce II / English II",
+            "İngilizce 2",
             2,
             3,
             0,
@@ -8125,7 +8126,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU122",
-            "Teknik Almanca II / Technical German II",
+            "Teknik Almanca 2",
             2,
             2,
             0,
@@ -8135,7 +8136,7 @@ DEPARTMENTS_DATA = {
     "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "MAB213",
-            "Elektrik ve Elektronik Müh. Temelleri / Fund. of EE Eng.",
+            "Elektrik ve Elektronik Müh. Temelleri",
             6,
             3,
             1,
@@ -8143,7 +8144,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB203",
-            "Tasarım Tek. II: Mekanik Parça Tas. / Design Methods II",
+            "Tasarım Tek. 2: Mekanik Parça Tas.",
             6,
             2,
             1,
@@ -8151,7 +8152,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB205",
-            "Kinematik ve Dinamik / Kinematics and Dynamics",
+            "Kinematik ve Dinamik",
             6,
             3,
             1,
@@ -8159,7 +8160,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB207",
-            "Malzeme Teknolojisi I / Material Technology I",
+            "Malzeme Teknolojisi 1",
             6,
             3,
             2,
@@ -8167,7 +8168,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB209",
-            "Temel Staj / Basic Internship",
+            "Temel Staj",
             2,
             0,
             0,
@@ -8175,7 +8176,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT001",
-            "Atatürk İlkeleri ve İnkılap Tarihi I",
+            "Atatürk İlkeleri ve İnkılap Tarihi 1",
             2,
             2,
             0,
@@ -8183,7 +8184,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG201",
-            "İngilizce III / English III",
+            "İngilizce 3",
             2,
             3,
             0,
@@ -8193,7 +8194,7 @@ DEPARTMENTS_DATA = {
     "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "MAB210",
-            "İmalat Teknolojisinin Temelleri / Fund. Manufacturing Tech.",
+            "İmalat Teknolojisinin Temelleri",
             6,
             3,
             1,
@@ -8201,7 +8202,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB216",
-            "Ölçüm Teknikleri / Measurement Techniques",
+            "Ölçüm Teknikleri",
             6,
             2,
             1,
@@ -8209,7 +8210,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT204",
-            "Veri Analizinin İstat. Yönt. / Stat. Methods for Data Anal.",
+            "Veri Analizinin İstat. Yönt.",
             6,
             2,
             2,
@@ -8217,7 +8218,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB214",
-            "Dif. Denk. ve Sayısal Yönt. / Diff. Eq. & Numerical Meth.",
+            "Dif. Denk. ve Sayısal Yönt.",
             6,
             2,
             2,
@@ -8225,7 +8226,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB292",
-            "Proje Yönetimi / Project Management",
+            "Proje Yönetimi",
             2,
             1,
             1,
@@ -8233,7 +8234,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT002",
-            "Atatürk İlkeleri ve İnkılap Tarihi II",
+            "Atatürk İlkeleri ve İnkılap Tarihi 2",
             2,
             2,
             0,
@@ -8241,7 +8242,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG202",
-            "İngilizce IV / English IV",
+            "İngilizce 4",
             2,
             3,
             0,
@@ -8251,7 +8252,7 @@ DEPARTMENTS_DATA = {
     "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "MAB301",
-            "Takım Tezgâhları / Machine Tools",
+            "Takım Tezgâhları",
             6,
             2,
             1,
@@ -8259,7 +8260,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB317",
-            "Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics",
+            "Titreşim ve Makine Dinamiği",
             6,
             3,
             2,
@@ -8267,7 +8268,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB303",
-            "Termodinamik / Thermodynamics",
+            "Termodinamik",
             6,
             3,
             2,
@@ -8275,7 +8276,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDUx",
-            "Zorunlu Seçmeli I - Uzmanlık A, B, C veya D",
+            "Zorunlu Seçmeli 1 - Uzmanlık A, B, C veya D",
             6,
             0,
             0,
@@ -8283,7 +8284,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG001",
-            "İş Sağlığı ve Güvenliği I / OHS I",
+            "İş Sağlığı ve Güvenliği 1",
             2,
             2,
             0,
@@ -8291,7 +8292,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG301",
-            "İleri İngilizce I / Advanced English I",
+            "İleri İngilizce 1",
             2,
             3,
             0,
@@ -8299,7 +8300,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR001",
-            "Türkçe I / Turkish I",
+            "Türkçe 1",
             2,
             2,
             0,
@@ -8309,7 +8310,7 @@ DEPARTMENTS_DATA = {
     "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "MAB312",
-            "Isı Transferi / Heat Transfer",
+            "Isı Transferi",
             6,
             3,
             1,
@@ -8317,7 +8318,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB314",
-            "Akışkanlar Mekaniği / Fluid Mechanics",
+            "Akışkanlar Mekaniği",
             6,
             3,
             1,
@@ -8325,7 +8326,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDK",
-            "Zorunlu Seçmeli - Kontrol / Compulsary Elective - Control",
+            "Zorunlu Seçmeli - Kontrol",
             6,
             0,
             0,
@@ -8333,7 +8334,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDP",
-            "Seçmeli Ders Alanı - Proje / Elective Course - Project",
+            "Seçmeli Ders Alanı - Proje",
             6,
             0,
             0,
@@ -8341,7 +8342,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR002",
-            "Türkçe II / Turkish II",
+            "Türkçe 2",
             2,
             2,
             0,
@@ -8349,7 +8350,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG002",
-            "İş Sağlığı ve Güvenliği II / OHS II",
+            "İş Sağlığı ve Güvenliği 2",
             2,
             2,
             0,
@@ -8357,7 +8358,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG302",
-            "İleri İngilizce II / Advanced English II",
+            "İleri İngilizce 2",
             2,
             3,
             0,
@@ -8367,7 +8368,7 @@ DEPARTMENTS_DATA = {
     "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "MAB499",
-            "Mesleki Alan Stajı / Vocational Internship",
+            "Mesleki Alan Stajı",
             6,
             0,
             0,
@@ -8375,7 +8376,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SUP",
-            "Zorunlu Seçmeli - Uygulamalı Proje / Applied Project",
+            "Zorunlu Seçmeli - Uygulamalı Proje",
             6,
             0,
             0,
@@ -8391,7 +8392,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "USD000",
-            "Üniversite Seçmeli Ders Havuzu / University Elective Pool",
+            "Üniversite Seçmeli Ders Havuzu",
             6,
             0,
             0,
@@ -8401,7 +8402,7 @@ DEPARTMENTS_DATA = {
     "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "MAB492",
-            "Bitirme Tezi / Bachelor Thesis",
+            "Bitirme Tezi",
             12,
             0,
             0,
@@ -8419,100 +8420,100 @@ DEPARTMENTS_DATA = {
 },
         "pool_codes": {
     "SDK": [
-        "Kontrol Mühendisliğinin Temelleri / Fund. of Control Eng.",
-        "Kontrol Mühendisliğinin Temelleri / Fund. of Control Eng."
+        "Kontrol Mühendisliğinin Temelleri",
+        "Kontrol Mühendisliğinin Temelleri"
     ],
     "SDP": [
-        "Proje: Üretim Teknikleri / Project: Production Tech.",
-        "Proje: Tasarım / Project: Design",
-        "Proje: Uzay Havacılık / Project: Aerospace Tech.",
-        "Proje: Taşıt Sistemleri / Project: Transport Systems",
-        "İnterdisipliner Proje / Interdisciplinary Project",
-        "Endüstri Projesi / Industry Project"
+        "Proje: Üretim Teknikleri",
+        "Proje: Tasarım",
+        "Proje: Uzay Havacılık",
+        "Proje: Taşıt Sistemleri",
+        "İnterdisipliner Proje",
+        "Endüstri Projesi"
     ],
     "SDUa": [
-        "Fabrika Yönetimine Giriş / Intro to Factory Management",
-        "İmalat Teknolojisi I / Manufacturing Technology I",
-        "İmalat Teknolojisi II / Manufacturing Technology II",
-        "Yüzey Teknolojisi / Surface Technology",
-        "Proje: Üretim Teknikleri / Project: Production Tech.",
-        "Üretim: Seçilmiş Konular I / Selected Topics in Prod. I",
-        "Malzeme Teknolojisi II / Material Technology II",
-        "İmalat Tesisleri / Manufacturing Facilities",
-        "Kaynak Teknolojisi / Welding Technology",
-        "Kalite İçin Veri İşleme / Data Processing for Quality",
-        "Endüstriyel Robotik I / Industrial Robotics I",
-        "İmalatta Sonlu Elemanlar / FEM Apps in Production",
-        "Mikroprodüksiyon Teknolojileri / Microproduction Tech.",
-        "Endüstriyel Otomasyon Tek. / Industrial Automation Tech.",
-        "Endüstriyel Robotik II / Industrial Robotics II",
-        "Elektrik Makineleri I / Electrical Machines I",
-        "Üretim: Seçilmiş Konular III / Selected Topics in Prod III",
-        "Takım Tezgahları II / Machine Tools II"
+        "Fabrika Yönetimine Giriş",
+        "İmalat Teknolojisi 1",
+        "İmalat Teknolojisi 2",
+        "Yüzey Teknolojisi",
+        "Proje: Üretim Teknikleri",
+        "Üretim: Seçilmiş Konular 1",
+        "Malzeme Teknolojisi 2",
+        "İmalat Tesisleri",
+        "Kaynak Teknolojisi",
+        "Kalite İçin Veri İşleme",
+        "Endüstriyel Robotik 1",
+        "İmalatta Sonlu Elemanlar",
+        "Mikroprodüksiyon Teknolojileri",
+        "Endüstriyel Otomasyon Tek.",
+        "Endüstriyel Robotik 2",
+        "Elektrik Makineleri 1",
+        "Üretim: Seçilmiş Konular 3",
+        "Takım Tezgahları 2"
     ],
     "SDUb": [
-        "Tasarım Tek. III / Design Methods III",
-        "Sonlu Elemanlar Yöntemi / Finite-Element-Methods",
-        "Sürekli Ortamlar Mekaniği / Continuum Mechanics",
-        "Makine Müh. Bilişim Tek. / IT in Mech. Engineering",
-        "Proje: Tasarım / Project: Design",
-        "Tasarım: Seçilmiş Konular I / Selected Topics in Design I",
-        "Metodik Tasarım / Methodical Design",
-        "Yorulma Dayanımı / Fatigue Strength",
-        "Mekanikte Enerji Yöntemleri / Methods of Energy in Mech.",
-        "Katı Cisim Simulasyonu / Rigid Body Simulation",
-        "Yapısal Mekanik / Structural Mechanics",
-        "Elektrik Makineleri I / Electrical Machines I",
-        "Dişli Teorisi ve Mekanizmalar / Gear Theory & Mechanisms",
-        "Tasarım: Seçilmiş Konular II / Selected Topics Design II",
-        "Tasarım: Seçilmiş Konular III / Selected Topics Design III"
+        "Tasarım Tek. 3",
+        "Sonlu Elemanlar Yöntemi",
+        "Sürekli Ortamlar Mekaniği",
+        "Makine Müh. Bilişim Tek.",
+        "Proje: Tasarım",
+        "Tasarım: Seçilmiş Konular 1",
+        "Metodik Tasarım",
+        "Yorulma Dayanımı",
+        "Mekanikte Enerji Yöntemleri",
+        "Katı Cisim Simulasyonu",
+        "Yapısal Mekanik",
+        "Elektrik Makineleri 1",
+        "Dişli Teorisi ve Mekanizmalar",
+        "Tasarım: Seçilmiş Konular 2",
+        "Tasarım: Seçilmiş Konular 3"
     ],
     "SDUc": [
-        "Akışkan Makineleri / Fluid Machines",
-        "Hesaplamalı Akışkanlar Dinamiği I / CFD I",
-        "Havacılık Endüstrisine Giriş / Intro to Aerospace Tech.",
-        "Proje: Uzay Havacılık / Project: Aerospace Technology",
-        "Uzay Havacılık: Seç. Konular I / Sel. Topics Aerospace I",
-        "Akıllı Sistemler / Intelligent Systems",
-        "Makine Öğrenmesi / Machine Learning",
-        "Yapısal Mekanik / Structural Mechanics",
-        "Tasarım Tek. III / Design Methods III",
-        "Sonlu Elemanlar Yöntemi / Finite-Element-Methods",
-        "Aerodinamik / Aerodynamics",
-        "Sürekli Ortamlar Mekaniği / Continuum Mechanics",
-        "Uzay Teknolojisinin Temelleri / Basics of Aerospace Tech.",
-        "Hesaplamalı Akışkanlar Dinamiği II / CFD II",
-        "Hesaplamalı Akışkanlar Dinamiği III / CFD III",
-        "Uzay Havacılık: Seç. Konular II / Sel. Topics Aerospace II",
-        "Uzay Havacılık: Seç. Konular III / Sel. Topics Aerospace III"
+        "Akışkan Makineleri",
+        "Hesaplamalı Akışkanlar Dinamiği 1",
+        "Havacılık Endüstrisine Giriş",
+        "Proje: Uzay Havacılık",
+        "Uzay Havacılık: Seç. Konular 1",
+        "Akıllı Sistemler",
+        "Makine Öğrenmesi",
+        "Yapısal Mekanik",
+        "Tasarım Tek. 3",
+        "Sonlu Elemanlar Yöntemi",
+        "Aerodinamik",
+        "Sürekli Ortamlar Mekaniği",
+        "Uzay Teknolojisinin Temelleri",
+        "Hesaplamalı Akışkanlar Dinamiği 2",
+        "Hesaplamalı Akışkanlar Dinamiği 3",
+        "Uzay Havacılık: Seç. Konular 2",
+        "Uzay Havacılık: Seç. Konular 3"
     ],
     "SDUd": [
-        "Araç Teknolojisinin Temelleri / Basics of Automotive Eng.",
-        "Dişli Teorisi ve Mekanizmalar / Gear Theory & Mechanisms",
-        "Katı Cisim Simulasyonu / Rigid Body Simulation",
-        "Proje: Taşıt Sistemleri / Project: Transport Systems",
-        "Taşıt Sist.: Seç. Konular I / Sel. Topics Transport Sys I",
-        "Elektrik Makineleri I / Electrical Machines I",
-        "Motor Teknolojilerinin Temelleri / Basics of Power Engines",
-        "Tasarım Tek. III / Design Methods III",
-        "Sonlu Elemanlar Yöntemi / Finite-Element-Methods",
-        "Malzeme Teknolojisi II / Material Technology II",
-        "Raylı Taşıt Teknolojisi / Railed Vehicles Systems",
-        "Raylı Sistemlerin Temelleri / Basics of Railway Systems",
-        "Taşıt Sist.: Seç. Konular II / Sel. Topics Transport Sys II",
-        "Araç Tasarımının Temelleri / Fund. of Vehicle Construction",
-        "Ticari Araç Mühendisliği / Commercial Vehicle Engineering",
-        "Taşıt Sist.: Seç. Konular III / Sel. Topics Transport III"
+        "Araç Teknolojisinin Temelleri",
+        "Dişli Teorisi ve Mekanizmalar",
+        "Katı Cisim Simulasyonu",
+        "Proje: Taşıt Sistemleri",
+        "Taşıt Sist.: Seç. Konular 1",
+        "Elektrik Makineleri 1",
+        "Motor Teknolojilerinin Temelleri",
+        "Tasarım Tek. 3",
+        "Sonlu Elemanlar Yöntemi",
+        "Malzeme Teknolojisi 2",
+        "Raylı Taşıt Teknolojisi",
+        "Raylı Sistemlerin Temelleri",
+        "Taşıt Sist.: Seç. Konular 2",
+        "Araç Tasarımının Temelleri",
+        "Ticari Araç Mühendisliği",
+        "Taşıt Sist.: Seç. Konular 3"
     ],
     "SDUe": [
-        "İşletmede Mesleki Eğitim / Co-operative Education"
+        "İşletmede Mesleki Eğitim"
     ]
 },
         "pools": {
     "SDK": [
         [
             "MAB308",
-            "Kontrol Mühendisliğinin Temelleri / Fund. of Control Eng.",
+            "Kontrol Mühendisliğinin Temelleri",
             6,
             3,
             1,
@@ -8520,7 +8521,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE304",
-            "Kontrol Mühendisliğinin Temelleri / Fund. of Control Eng.",
+            "Kontrol Mühendisliğinin Temelleri",
             6,
             3,
             1,
@@ -8530,7 +8531,7 @@ DEPARTMENTS_DATA = {
     "SDP": [
         [
             "MAB391",
-            "Proje: Üretim Teknikleri / Project: Production Tech.",
+            "Proje: Üretim Teknikleri",
             6,
             1,
             0,
@@ -8538,7 +8539,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB392",
-            "Proje: Tasarım / Project: Design",
+            "Proje: Tasarım",
             6,
             1,
             0,
@@ -8546,7 +8547,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB393",
-            "Proje: Uzay Havacılık / Project: Aerospace Tech.",
+            "Proje: Uzay Havacılık",
             6,
             1,
             0,
@@ -8554,7 +8555,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB394",
-            "Proje: Taşıt Sistemleri / Project: Transport Systems",
+            "Proje: Taşıt Sistemleri",
             6,
             1,
             0,
@@ -8562,7 +8563,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB427",
-            "İnterdisipliner Proje / Interdisciplinary Project",
+            "İnterdisipliner Proje",
             6,
             1,
             0,
@@ -8570,7 +8571,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB428",
-            "Endüstri Projesi / Industry Project",
+            "Endüstri Projesi",
             6,
             1,
             0,
@@ -8580,7 +8581,7 @@ DEPARTMENTS_DATA = {
     "SDUa": [
         [
             "WIN302",
-            "Fabrika Yönetimine Giriş / Intro to Factory Management",
+            "Fabrika Yönetimine Giriş",
             6,
             2,
             1,
@@ -8588,7 +8589,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB311",
-            "İmalat Teknolojisi I / Manufacturing Technology I",
+            "İmalat Teknolojisi 1",
             6,
             3,
             1,
@@ -8596,7 +8597,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB409",
-            "İmalat Teknolojisi II / Manufacturing Technology II",
+            "İmalat Teknolojisi 2",
             6,
             3,
             1,
@@ -8604,7 +8605,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB411",
-            "Yüzey Teknolojisi / Surface Technology",
+            "Yüzey Teknolojisi",
             6,
             3,
             2,
@@ -8612,7 +8613,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB391",
-            "Proje: Üretim Teknikleri / Project: Production Tech.",
+            "Proje: Üretim Teknikleri",
             6,
             1,
             0,
@@ -8620,7 +8621,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB381",
-            "Üretim: Seçilmiş Konular I / Selected Topics in Prod. I",
+            "Üretim: Seçilmiş Konular 1",
             6,
             1,
             0,
@@ -8628,7 +8629,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB310",
-            "Malzeme Teknolojisi II / Material Technology II",
+            "Malzeme Teknolojisi 2",
             6,
             3,
             1,
@@ -8636,7 +8637,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB423",
-            "İmalat Tesisleri / Manufacturing Facilities",
+            "İmalat Tesisleri",
             6,
             3,
             2,
@@ -8644,7 +8645,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB404",
-            "Kaynak Teknolojisi / Welding Technology",
+            "Kaynak Teknolojisi",
             6,
             3,
             2,
@@ -8652,7 +8653,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB408",
-            "Kalite İçin Veri İşleme / Data Processing for Quality",
+            "Kalite İçin Veri İşleme",
             6,
             3,
             2,
@@ -8660,7 +8661,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC308",
-            "Endüstriyel Robotik I / Industrial Robotics I",
+            "Endüstriyel Robotik 1",
             6,
             3,
             1,
@@ -8668,7 +8669,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB453",
-            "İmalatta Sonlu Elemanlar / FEM Apps in Production",
+            "İmalatta Sonlu Elemanlar",
             6,
             3,
             1,
@@ -8676,7 +8677,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB403",
-            "Mikroprodüksiyon Teknolojileri / Microproduction Tech.",
+            "Mikroprodüksiyon Teknolojileri",
             6,
             3,
             2,
@@ -8684,7 +8685,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC313",
-            "Endüstriyel Otomasyon Tek. / Industrial Automation Tech.",
+            "Endüstriyel Otomasyon Tek.",
             6,
             2,
             1,
@@ -8692,7 +8693,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC421",
-            "Endüstriyel Robotik II / Industrial Robotics II",
+            "Endüstriyel Robotik 2",
             6,
             2,
             1,
@@ -8700,7 +8701,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE331",
-            "Elektrik Makineleri I / Electrical Machines I",
+            "Elektrik Makineleri 1",
             6,
             3,
             1,
@@ -8708,7 +8709,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB465",
-            "Üretim: Seçilmiş Konular III / Selected Topics in Prod III",
+            "Üretim: Seçilmiş Konular 3",
             6,
             3,
             2,
@@ -8716,7 +8717,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB470",
-            "Takım Tezgahları II / Machine Tools II",
+            "Takım Tezgahları 2",
             6,
             3,
             2,
@@ -8726,7 +8727,7 @@ DEPARTMENTS_DATA = {
     "SDUb": [
         [
             "MAB305",
-            "Tasarım Tek. III / Design Methods III",
+            "Tasarım Tek. 3",
             6,
             3,
             1,
@@ -8734,7 +8735,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB353",
-            "Sonlu Elemanlar Yöntemi / Finite-Element-Methods",
+            "Sonlu Elemanlar Yöntemi",
             6,
             3,
             1,
@@ -8742,7 +8743,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB001",
-            "Sürekli Ortamlar Mekaniği / Continuum Mechanics",
+            "Sürekli Ortamlar Mekaniği",
             6,
             2,
             2,
@@ -8750,7 +8751,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB413",
-            "Makine Müh. Bilişim Tek. / IT in Mech. Engineering",
+            "Makine Müh. Bilişim Tek.",
             6,
             3,
             2,
@@ -8758,7 +8759,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB392",
-            "Proje: Tasarım / Project: Design",
+            "Proje: Tasarım",
             6,
             1,
             0,
@@ -8766,7 +8767,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB382",
-            "Tasarım: Seçilmiş Konular I / Selected Topics in Design I",
+            "Tasarım: Seçilmiş Konular 1",
             6,
             3,
             2,
@@ -8774,7 +8775,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB425",
-            "Metodik Tasarım / Methodical Design",
+            "Metodik Tasarım",
             6,
             3,
             1,
@@ -8782,7 +8783,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB426",
-            "Yorulma Dayanımı / Fatigue Strength",
+            "Yorulma Dayanımı",
             6,
             3,
             2,
@@ -8790,7 +8791,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB002",
-            "Mekanikte Enerji Yöntemleri / Methods of Energy in Mech.",
+            "Mekanikte Enerji Yöntemleri",
             6,
             3,
             2,
@@ -8798,7 +8799,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB401",
-            "Katı Cisim Simulasyonu / Rigid Body Simulation",
+            "Katı Cisim Simulasyonu",
             6,
             3,
             1,
@@ -8806,7 +8807,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB351",
-            "Yapısal Mekanik / Structural Mechanics",
+            "Yapısal Mekanik",
             6,
             3,
             1,
@@ -8814,7 +8815,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE331",
-            "Elektrik Makineleri I / Electrical Machines I",
+            "Elektrik Makineleri 1",
             6,
             3,
             1,
@@ -8822,7 +8823,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB304",
-            "Dişli Teorisi ve Mekanizmalar / Gear Theory & Mechanisms",
+            "Dişli Teorisi ve Mekanizmalar",
             6,
             3,
             1,
@@ -8830,7 +8831,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB462",
-            "Tasarım: Seçilmiş Konular II / Selected Topics Design II",
+            "Tasarım: Seçilmiş Konular 2",
             6,
             3,
             1,
@@ -8838,7 +8839,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB466",
-            "Tasarım: Seçilmiş Konular III / Selected Topics Design III",
+            "Tasarım: Seçilmiş Konular 3",
             6,
             3,
             2,
@@ -8848,7 +8849,7 @@ DEPARTMENTS_DATA = {
     "SDUc": [
         [
             "MAB456",
-            "Akışkan Makineleri / Fluid Machines",
+            "Akışkan Makineleri",
             6,
             3,
             1,
@@ -8856,7 +8857,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB355",
-            "Hesaplamalı Akışkanlar Dinamiği I / CFD I",
+            "Hesaplamalı Akışkanlar Dinamiği 1",
             6,
             3,
             1,
@@ -8864,7 +8865,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB455",
-            "Havacılık Endüstrisine Giriş / Intro to Aerospace Tech.",
+            "Havacılık Endüstrisine Giriş",
             6,
             3,
             1,
@@ -8872,7 +8873,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB393",
-            "Proje: Uzay Havacılık / Project: Aerospace Technology",
+            "Proje: Uzay Havacılık",
             6,
             1,
             0,
@@ -8880,7 +8881,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB383",
-            "Uzay Havacılık: Seç. Konular I / Sel. Topics Aerospace I",
+            "Uzay Havacılık: Seç. Konular 1",
             6,
             3,
             2,
@@ -8888,7 +8889,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF501",
-            "Akıllı Sistemler / Intelligent Systems",
+            "Akıllı Sistemler",
             6,
             2,
             2,
@@ -8896,7 +8897,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF502",
-            "Makine Öğrenmesi / Machine Learning",
+            "Makine Öğrenmesi",
             6,
             2,
             2,
@@ -8904,7 +8905,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB351",
-            "Yapısal Mekanik / Structural Mechanics",
+            "Yapısal Mekanik",
             6,
             3,
             1,
@@ -8912,7 +8913,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB305",
-            "Tasarım Tek. III / Design Methods III",
+            "Tasarım Tek. 3",
             6,
             3,
             1,
@@ -8920,7 +8921,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB353",
-            "Sonlu Elemanlar Yöntemi / Finite-Element-Methods",
+            "Sonlu Elemanlar Yöntemi",
             6,
             3,
             1,
@@ -8928,7 +8929,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB407",
-            "Aerodinamik / Aerodynamics",
+            "Aerodinamik",
             6,
             3,
             2,
@@ -8936,7 +8937,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB001",
-            "Sürekli Ortamlar Mekaniği / Continuum Mechanics",
+            "Sürekli Ortamlar Mekaniği",
             6,
             2,
             2,
@@ -8944,7 +8945,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB406",
-            "Uzay Teknolojisinin Temelleri / Basics of Aerospace Tech.",
+            "Uzay Teknolojisinin Temelleri",
             6,
             3,
             2,
@@ -8952,7 +8953,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB417",
-            "Hesaplamalı Akışkanlar Dinamiği II / CFD II",
+            "Hesaplamalı Akışkanlar Dinamiği 2",
             6,
             3,
             1,
@@ -8960,7 +8961,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB415",
-            "Hesaplamalı Akışkanlar Dinamiği III / CFD III",
+            "Hesaplamalı Akışkanlar Dinamiği 3",
             6,
             3,
             1,
@@ -8968,7 +8969,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB463",
-            "Uzay Havacılık: Seç. Konular II / Sel. Topics Aerospace II",
+            "Uzay Havacılık: Seç. Konular 2",
             6,
             3,
             2,
@@ -8976,7 +8977,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB467",
-            "Uzay Havacılık: Seç. Konular III / Sel. Topics Aerospace III",
+            "Uzay Havacılık: Seç. Konular 3",
             6,
             3,
             2,
@@ -8986,7 +8987,7 @@ DEPARTMENTS_DATA = {
     "SDUd": [
         [
             "MAB354",
-            "Araç Teknolojisinin Temelleri / Basics of Automotive Eng.",
+            "Araç Teknolojisinin Temelleri",
             6,
             3,
             1,
@@ -8994,7 +8995,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB304",
-            "Dişli Teorisi ve Mekanizmalar / Gear Theory & Mechanisms",
+            "Dişli Teorisi ve Mekanizmalar",
             6,
             3,
             2,
@@ -9002,7 +9003,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB401",
-            "Katı Cisim Simulasyonu / Rigid Body Simulation",
+            "Katı Cisim Simulasyonu",
             6,
             3,
             1,
@@ -9010,7 +9011,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB394",
-            "Proje: Taşıt Sistemleri / Project: Transport Systems",
+            "Proje: Taşıt Sistemleri",
             6,
             1,
             0,
@@ -9018,7 +9019,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB384",
-            "Taşıt Sist.: Seç. Konular I / Sel. Topics Transport Sys I",
+            "Taşıt Sist.: Seç. Konular 1",
             6,
             3,
             2,
@@ -9026,7 +9027,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE331",
-            "Elektrik Makineleri I / Electrical Machines I",
+            "Elektrik Makineleri 1",
             6,
             3,
             1,
@@ -9034,7 +9035,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB405",
-            "Motor Teknolojilerinin Temelleri / Basics of Power Engines",
+            "Motor Teknolojilerinin Temelleri",
             6,
             3,
             1,
@@ -9042,7 +9043,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB305",
-            "Tasarım Tek. III / Design Methods III",
+            "Tasarım Tek. 3",
             6,
             3,
             1,
@@ -9050,7 +9051,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB353",
-            "Sonlu Elemanlar Yöntemi / Finite-Element-Methods",
+            "Sonlu Elemanlar Yöntemi",
             6,
             3,
             1,
@@ -9058,7 +9059,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB310",
-            "Malzeme Teknolojisi II / Material Technology II",
+            "Malzeme Teknolojisi 2",
             6,
             3,
             1,
@@ -9066,7 +9067,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB421",
-            "Raylı Taşıt Teknolojisi / Railed Vehicles Systems",
+            "Raylı Taşıt Teknolojisi",
             6,
             3,
             1,
@@ -9074,7 +9075,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB422",
-            "Raylı Sistemlerin Temelleri / Basics of Railway Systems",
+            "Raylı Sistemlerin Temelleri",
             6,
             3,
             1,
@@ -9082,7 +9083,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB464",
-            "Taşıt Sist.: Seç. Konular II / Sel. Topics Transport Sys II",
+            "Taşıt Sist.: Seç. Konular 2",
             6,
             3,
             2,
@@ -9090,7 +9091,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB356",
-            "Araç Tasarımının Temelleri / Fund. of Vehicle Construction",
+            "Araç Tasarımının Temelleri",
             6,
             3,
             2,
@@ -9098,7 +9099,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB357",
-            "Ticari Araç Mühendisliği / Commercial Vehicle Engineering",
+            "Ticari Araç Mühendisliği",
             6,
             3,
             2,
@@ -9106,7 +9107,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB468",
-            "Taşıt Sist.: Seç. Konular III / Sel. Topics Transport III",
+            "Taşıt Sist.: Seç. Konular 3",
             6,
             3,
             2,
@@ -9116,7 +9117,7 @@ DEPARTMENTS_DATA = {
     "SDUe": [
         [
             "MAB490",
-            "İşletmede Mesleki Eğitim / Co-operative Education",
+            "İşletmede Mesleki Eğitim",
             18,
             0,
             0,
@@ -9130,7 +9131,7 @@ DEPARTMENTS_DATA = {
     "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "PHY111",
-            "Fizik I",
+            "Fizik 1",
             6,
             2,
             1,
@@ -9138,7 +9139,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "CHE111",
-            "Kimya I",
+            "Kimya 1",
             6,
             2,
             1,
@@ -9154,7 +9155,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT103",
-            "Analiz I",
+            "Analiz 1",
             6,
             3,
             2,
@@ -9170,7 +9171,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU121",
-            "Teknik Almanca I",
+            "Teknik Almanca 1",
             2,
             2,
             0,
@@ -9178,7 +9179,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG101",
-            "İngilizce I",
+            "İngilizce 1",
             2,
             3,
             0,
@@ -9188,7 +9189,7 @@ DEPARTMENTS_DATA = {
     "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "PHY112",
-            "Fizik II",
+            "Fizik 2",
             6,
             2,
             1,
@@ -9196,7 +9197,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "CHE112",
-            "Kimya II",
+            "Kimya 2",
             6,
             2,
             1,
@@ -9204,7 +9205,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT112",
-            "Analiz II ve Lineer Cebir",
+            "Analiz 2 ve Lineer Cebir",
             6,
             3,
             2,
@@ -9228,7 +9229,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU122",
-            "Teknik Almanca II",
+            "Teknik Almanca 2",
             2,
             2,
             0,
@@ -9236,7 +9237,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG102",
-            "İngilizce II",
+            "İngilizce 2",
             2,
             3,
             0,
@@ -9246,7 +9247,7 @@ DEPARTMENTS_DATA = {
     "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "NWI201",
-            "Fiziksel Kimya I",
+            "Fiziksel Kimya 1",
             6,
             2,
             1,
@@ -9262,7 +9263,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR001",
-            "Türkçe I",
+            "Türkçe 1",
             2,
             2,
             0,
@@ -9270,7 +9271,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT001",
-            "Atatürk İlkeleri ve İnkılap Tarihi I",
+            "Atatürk İlkeleri ve İnkılap Tarihi 1",
             2,
             2,
             0,
@@ -9278,7 +9279,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG201",
-            "İngilizce III",
+            "İngilizce 3",
             2,
             3,
             0,
@@ -9286,7 +9287,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSD I",
-            "Zorunlu Seçmeli Ders I",
+            "Zorunlu Seçmeli Ders 1",
             6,
             0,
             0,
@@ -9294,7 +9295,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSD I",
-            "Zorunlu Seçmeli Ders I",
+            "Zorunlu Seçmeli Ders 1",
             6,
             0,
             0,
@@ -9304,7 +9305,7 @@ DEPARTMENTS_DATA = {
     "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "NWI202",
-            "Fiziksel Kimya II",
+            "Fiziksel Kimya 2",
             6,
             3,
             1,
@@ -9328,7 +9329,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR002",
-            "Türkçe II",
+            "Türkçe 2",
             2,
             2,
             0,
@@ -9336,7 +9337,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT002",
-            "Atatürk İlkeleri ve İnkılap Tarihi II",
+            "Atatürk İlkeleri ve İnkılap Tarihi 2",
             2,
             2,
             0,
@@ -9344,7 +9345,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG202",
-            "İngilizce IV",
+            "İngilizce 4",
             2,
             3,
             0,
@@ -9352,7 +9353,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSD II",
-            "Zorunlu Seçmeli Ders II",
+            "Zorunlu Seçmeli Ders 2",
             6,
             0,
             0,
@@ -9394,7 +9395,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSD III",
-            "Zorunlu Seçmeli Ders III",
+            "Zorunlu Seçmeli Ders 3",
             6,
             0,
             0,
@@ -9428,7 +9429,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSD IV",
-            "Zorunlu Seçmeli Ders IV",
+            "Zorunlu Seçmeli Ders 4",
             6,
             0,
             0,
@@ -9436,7 +9437,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSD IV",
-            "Zorunlu Seçmeli Ders IV",
+            "Zorunlu Seçmeli Ders 4",
             6,
             0,
             0,
@@ -9446,7 +9447,7 @@ DEPARTMENTS_DATA = {
     "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "MWT401",
-            "Proje I",
+            "Proje 1",
             6,
             1,
             0,
@@ -9462,7 +9463,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG001",
-            "İş Sağlığı ve İş Güvenliği I",
+            "İş Sağlığı ve İş Güvenliği 1",
             2,
             2,
             0,
@@ -9470,7 +9471,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG301",
-            "İleri İngilizce I",
+            "İleri İngilizce 1",
             2,
             3,
             0,
@@ -9478,7 +9479,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSD V",
-            "Zorunlu Seçmeli Ders V",
+            "Zorunlu Seçmeli Ders 5",
             6,
             0,
             0,
@@ -9486,7 +9487,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSD V",
-            "Zorunlu Seçmeli Ders V",
+            "Zorunlu Seçmeli Ders 5",
             6,
             0,
             0,
@@ -9494,7 +9495,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSD V",
-            "Zorunlu Seçmeli Ders V",
+            "Zorunlu Seçmeli Ders 5",
             6,
             0,
             0,
@@ -9504,7 +9505,7 @@ DEPARTMENTS_DATA = {
     "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "MWT402",
-            "Proje II",
+            "Proje 2",
             12,
             1,
             0,
@@ -9528,7 +9529,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG002",
-            "İş Sağlığı ve İş Güvenliği II",
+            "İş Sağlığı ve İş Güvenliği 2",
             2,
             2,
             0,
@@ -9536,7 +9537,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG302",
-            "İleri İngilizce II",
+            "İleri İngilizce 2",
             2,
             3,
             0,
@@ -9552,7 +9553,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSD VI",
-            "Zorunlu Sosyal Seçmeli Ders VI",
+            "Zorunlu Sosyal Seçmeli Ders 6",
             3,
             0,
             0,
@@ -9566,7 +9567,7 @@ DEPARTMENTS_DATA = {
         "Statik",
         "Malzeme Kimyası",
         "Malzeme Yapısı",
-        "Tasarım Teknikleri I: Teknik Çizim ve CAD"
+        "Tasarım Teknikleri 1: Teknik Çizim ve CAD"
     ],
     "ZSD II": [
         "Elektrotekniğe Giriş",
@@ -9632,7 +9633,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "NWI203",
-            "Tasarım Teknikleri I: Teknik Çizim ve CAD",
+            "Tasarım Teknikleri 1: Teknik Çizim ve CAD",
             6,
             1,
             2,
@@ -9792,7 +9793,7 @@ DEPARTMENTS_DATA = {
     "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "MAT103",
-            "Analysis I / Calculus I / Analiz I",
+            "Analiz 1",
             6,
             3,
             2,
@@ -9800,7 +9801,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC107",
-            "Design Techniques I (CAD) / Tasarım Tek. I",
+            "Tasarım Tek. 1",
             6,
             2,
             0,
@@ -9808,7 +9809,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC109",
-            "Statik / Statics / Statik",
+            "Statik",
             6,
             3,
             2,
@@ -9816,7 +9817,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC105",
-            "Intro to Computer Sci. / Bilg. Bil. Giris",
+            "Bilg. Bil. Giris",
             6,
             2,
             0,
@@ -9824,7 +9825,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC091",
-            "Intro to Engineering / Mühendisliğe Giris",
+            "Mühendisliğe Giris",
             2,
             2,
             0,
@@ -9832,7 +9833,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU121",
-            "Technical German I / Teknik Almanca I",
+            "Teknik Almanca 1",
             2,
             2,
             0,
@@ -9840,7 +9841,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG101",
-            "English I / İngilizce I",
+            "İngilizce 1",
             2,
             3,
             0,
@@ -9850,7 +9851,7 @@ DEPARTMENTS_DATA = {
     "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "MAT108",
-            "Analysis II / Analysis II / Analiz II",
+            "Analiz 2",
             6,
             3,
             2,
@@ -9858,7 +9859,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "PHY102",
-            "Electricity & Magnetism / Elektrik ve Manyetizma",
+            "Elektrik ve Manyetizma",
             6,
             3,
             1,
@@ -9866,7 +9867,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC112",
-            "Strength of Materials / Mukavemet",
+            "Mukavemet",
             6,
             3,
             2,
@@ -9874,7 +9875,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT106",
-            "Linear Algebra / Lineer Cebir",
+            "Linear Algebra",
             6,
             2,
             2,
@@ -9882,7 +9883,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC092",
-            "Scientific Research Methods / Bilimsel Yöntemler",
+            "Bilimsel Yöntemler",
             2,
             2,
             0,
@@ -9890,7 +9891,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU122",
-            "Technical German II / Teknik Almanca II",
+            "Teknik Almanca 2",
             2,
             2,
             0,
@@ -9898,7 +9899,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG102",
-            "English II / İngilizce II",
+            "İngilizce 2",
             2,
             3,
             0,
@@ -9908,7 +9909,7 @@ DEPARTMENTS_DATA = {
     "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "MAT201",
-            "Differential Equations / Diferansiyel Denklemler",
+            "Differential Equations",
             6,
             2,
             1,
@@ -9916,7 +9917,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC213",
-            "Electrical Circuits I / Elektrik Devreleri I",
+            "Elektrik Devreleri 1",
             6,
             3,
             1,
@@ -9924,7 +9925,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC209",
-            "Kinematics and Dynamics / Kinematik ve Dinamik",
+            "Kinematik ve Dinamik",
             6,
             3,
             1,
@@ -9932,7 +9933,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC207",
-            "Material Technology I / Malzeme Teknolojisi I",
+            "Malzeme Teknolojisi 1",
             6,
             3,
             1,
@@ -9940,7 +9941,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC299",
-            "Basic Internship / Temel Staj",
+            "Temel Staj",
             2,
             0,
             0,
@@ -9948,7 +9949,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR001",
-            "Turkish I / Türkçe I",
+            "Türkçe 1",
             2,
             2,
             0,
@@ -9956,7 +9957,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG201",
-            "English III / İngilizce III",
+            "İngilizce 3",
             2,
             3,
             0,
@@ -9966,7 +9967,7 @@ DEPARTMENTS_DATA = {
     "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "MAT204",
-            "Stat. Methods for Data Analysis / İstatistik",
+            "İstatistik",
             6,
             2,
             2,
@@ -9974,7 +9975,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC214",
-            "Electrical Circuits II / Elektrik Devreleri II",
+            "Elektrik Devreleri 2",
             6,
             3,
             1,
@@ -9982,7 +9983,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC208",
-            "Measuring Techniques / Ölçüm Teknikleri",
+            "Ölçüm Teknikleri",
             6,
             2,
             1,
@@ -9990,7 +9991,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC218",
-            "OOP / Nesnel Programlama",
+            "OOP",
             6,
             2,
             0,
@@ -9998,7 +9999,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC292",
-            "Project Management / Proje Yönetimi",
+            "Proje Yönetimi",
             2,
             1,
             1,
@@ -10006,7 +10007,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR002",
-            "Turkish II / Türkçe II",
+            "Türkçe 2",
             2,
             2,
             0,
@@ -10014,7 +10015,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG202",
-            "English IV / İngilizce IV",
+            "İngilizce 4",
             2,
             3,
             0,
@@ -10024,7 +10025,7 @@ DEPARTMENTS_DATA = {
     "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "MEC313",
-            "Industrial Automation / End. Otomasyon Tek.",
+            "End. Otomasyon Tek.",
             6,
             3,
             1,
@@ -10032,7 +10033,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC311",
-            "Signals and Systems / Sinyaller ve Sistemler",
+            "Sinyaller ve Sistemler",
             6,
             3,
             1,
@@ -10040,7 +10041,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC317",
-            "Algorithms & Data Struct. I / Algoritma ve Veri Y.",
+            "Algoritma ve Veri Y.",
             6,
             2,
             0,
@@ -10048,7 +10049,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC319",
-            "Mechatronics Project / Mekatronik Projesi",
+            "Mekatronik Projesi",
             6,
             1,
             0,
@@ -10056,7 +10057,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSD I",
-            "Elective I / Zorunlu Seçmeli Ders I",
+            "Zorunlu Seçmeli Ders 1",
             6,
             0,
             0,
@@ -10066,7 +10067,7 @@ DEPARTMENTS_DATA = {
     "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "MEC308",
-            "Industrial Robotics I / Endüstriyel Robotik I",
+            "Endüstriyel Robotik 1",
             6,
             3,
             1,
@@ -10074,7 +10075,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC302",
-            "Control Engineering / Kontrol Müh. Temelleri",
+            "Kontrol Müh. Temelleri",
             6,
             3,
             1,
@@ -10082,7 +10083,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDP I",
-            "Elective Project I / Seçmeli Proje I",
+            "Seçmeli Proje 1",
             6,
             0,
             0,
@@ -10090,7 +10091,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSD II",
-            "Elective II / Zorunlu Seçmeli Ders II",
+            "Zorunlu Seçmeli Ders 2",
             6,
             0,
             0,
@@ -10098,7 +10099,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "USD000",
-            "University Elective / Üniversite Seçmeli",
+            "Üniversite Seçmeli",
             6,
             0,
             0,
@@ -10108,7 +10109,7 @@ DEPARTMENTS_DATA = {
     "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "MEC499",
-            "Advanced Internship / Mesleki Alan Stajı",
+            "Mesleki Alan Stajı",
             6,
             0,
             0,
@@ -10116,7 +10117,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG001",
-            "Occupational Safety I / İş Sağlığı ve Güvenliği I",
+            "İş Sağlığı ve Güvenliği 1",
             2,
             2,
             0,
@@ -10124,7 +10125,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT001",
-            "Atatürks Principles I / Atatürk İlkeleri I",
+            "Atatürk İlkeleri 1",
             2,
             2,
             0,
@@ -10132,7 +10133,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG301",
-            "Advanced English I / İleri İngilizce I",
+            "İleri İngilizce 1",
             2,
             3,
             0,
@@ -10140,7 +10141,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDP II",
-            "Elective Project II / Seçmeli Proje II",
+            "Seçmeli Proje 2",
             6,
             0,
             0,
@@ -10148,7 +10149,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSD III",
-            "Elective III / Zorunlu Seçmeli Ders III",
+            "Zorunlu Seçmeli Ders 3",
             12,
             0,
             0,
@@ -10158,7 +10159,7 @@ DEPARTMENTS_DATA = {
     "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "MEC492",
-            "Bachelor Thesis / Bitirme Tezi",
+            "Bitirme Tezi",
             12,
             0,
             0,
@@ -10166,7 +10167,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG002",
-            "Occupational Safety II / İş Sağlığı ve Güv. II",
+            "İş Sağlığı ve Güv. 2",
             2,
             2,
             0,
@@ -10174,7 +10175,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT002",
-            "Atatürks Principles II / Atatürk İlkeleri II",
+            "Atatürk İlkeleri 2",
             2,
             2,
             0,
@@ -10182,7 +10183,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG302",
-            "Advanced English II / İleri İngilizce II",
+            "İleri İngilizce 2",
             2,
             3,
             0,
@@ -10190,7 +10191,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ZSD IV",
-            "Elective IV / Zorunlu Seçmeli Ders IV",
+            "Zorunlu Seçmeli Ders 4",
             12,
             0,
             0,
@@ -10200,62 +10201,62 @@ DEPARTMENTS_DATA = {
 },
         "pool_codes": {
     "SDP I": [
-        "Robotics Project I / Robotik Projesi I",
-        "Production Auto. Project I / Üretim Projesi I",
-        "Intelligent Sys. Project I / Akıllı Sis. Proj. I"
+        "Robotik Projesi 1",
+        "Üretim Projesi 1",
+        "Akıllı Sis. Proj. 1"
     ],
     "SDP II": [
-        "Robotics Project II / Robotik Projesi II",
-        "Production Auto. Project II / Üretim Projesi II",
-        "Intelligent Sys. Project II / Akıllı Sis. Proj. II"
+        "Robotik Projesi 2",
+        "Üretim Projesi 2",
+        "Akıllı Sis. Proj. 2"
     ],
     "ZSD": [
-        "Image-Based Auto. I / Görüntü Tabanlı Oto. I",
-        "Applied Control Tech. / Uygulamalı Kontrol Müh.",
-        "Image-Based Auto. II / Görüntü Tabanlı Oto. II",
-        "Electronic Components / Elektrik Devre Elemanlari",
-        "Manufacturing Tech. I / İmalat Teknolojileri I",
-        "Industrial Robotics II / Endüstriyel Robotik II",
-        "Database Systems / Veritabanı Sistemleri",
-        "Machine Tools / Takım Tezgahları",
-        "Thermodynamics I / Termodinamik I",
-        "Software Engineering / Yazılım Mühendisliği",
-        "Sys. ID & Intelligent Ctrl / Sis. Tnm. ve Akıllı K.",
-        "Human-Machine Interaction / Bilg.-Makine Etkileşimi",
-        "Electrical Machines I / Elektrik Makinaları I",
-        "Microprocessors / Mikroişlemciler",
-        "Intro to Factory Ops / Fabrika Yönetimine Giriş",
-        "Machine Learning / Makine Öğrenmesi",
-        "Digital Design / Sayısal Tasarım",
-        "Electronics I / Elektronik I : Yarı İletken El.",
-        "CS Selected Topics I / Bilg. Müh. Seçilmiş K. I",
-        "CS Selected Topics II / Bilg. Müh. Seçilmiş K. II",
-        "EE Selected Topics I / Elektrotek. Seçilmiş K. I",
-        "EE Selected Topics II / Elektrotek. Seçilmiş K. II",
-        "ME Selected Topics I / Makine Müh. Seçilmiş K. I",
-        "ME Selected Topics II / Makine Müh. Seçilmiş K. II",
-        "Embedded Systems / Gömülü Sistemler",
-        "Mechatronics Topics II / Mekatronik Seçilmiş K. II",
-        "Power Electronics / Güç Elektroniği",
-        "Materials Technology II / Malzeme Teknolojisi II",
-        "Ind. Info Tech / End. Enf. Tek. ve Sanal Ürün Gel.",
-        "Quality Management / Kalite Yönetimi",
-        "Assembly Tech / Montaj Teknolojisi Temelleri",
-        "Fluid Mechanics / Akışkanlar Mekaniği",
-        "Heat Transfer / Isı Transferi",
-        "FPGA Programming / FPGA Programlama",
-        "Intro to VLSI Design / VLSI Tasarımına Giriş",
-        "Intelligent Systems / Akıllı Sistemler",
-        "Neural Networks / Yapay Sinir Ağları",
-        "Deep Learning / Derin Öğrenme",
-        "Artificial Intelligence / Yapay Zeka"
+        "Görüntü Tabanlı Oto. 1",
+        "Uygulamalı Kontrol Müh.",
+        "Görüntü Tabanlı Oto. 2",
+        "Elektrik Devre Elemanlari",
+        "İmalat Teknolojileri 1",
+        "Endüstriyel Robotik 2",
+        "Veritabanı Sistemleri",
+        "Takım Tezgahları",
+        "Termodinamik 1",
+        "Yazılım Mühendisliği",
+        "Sis. Tnm. ve Akıllı K.",
+        "Bilg.-Makine Etkileşimi",
+        "Elektrik Makinaları 1",
+        "Mikroişlemciler",
+        "Fabrika Yönetimine Giriş",
+        "Makine Öğrenmesi",
+        "Sayısal Tasarım",
+        "Elektronik 1 : Yarı İletken El.",
+        "Bilg. Müh. Seçilmiş K. 1",
+        "Bilg. Müh. Seçilmiş K. 2",
+        "Elektrotek. Seçilmiş K. 1",
+        "Elektrotek. Seçilmiş K. 2",
+        "Makine Müh. Seçilmiş K. 1",
+        "Makine Müh. Seçilmiş K. 2",
+        "Gömülü Sistemler",
+        "Mekatronik Seçilmiş K. 2",
+        "Güç Elektroniği",
+        "Malzeme Teknolojisi 2",
+        "End. Enf. Tek. ve Sanal Ürün Gel.",
+        "Kalite Yönetimi",
+        "Montaj Teknolojisi Temelleri",
+        "Akışkanlar Mekaniği",
+        "Isı Transferi",
+        "FPGA Programlama",
+        "VLSI Tasarımına Giriş",
+        "Akıllı Sistemler",
+        "Yapay Sinir Ağları",
+        "Derin Öğrenme",
+        "Artificial Intelligence"
     ]
 },
         "pools": {
     "SDP I": [
         [
             "MEC423",
-            "Robotics Project I / Robotik Projesi I",
+            "Robotik Projesi 1",
             6,
             1,
             0,
@@ -10263,7 +10264,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC425",
-            "Production Auto. Project I / Üretim Projesi I",
+            "Üretim Projesi 1",
             6,
             1,
             0,
@@ -10271,7 +10272,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC427",
-            "Intelligent Sys. Project I / Akıllı Sis. Proj. I",
+            "Akıllı Sis. Proj. 1",
             6,
             1,
             0,
@@ -10281,7 +10282,7 @@ DEPARTMENTS_DATA = {
     "SDP II": [
         [
             "MEC424",
-            "Robotics Project II / Robotik Projesi II",
+            "Robotik Projesi 2",
             6,
             1,
             0,
@@ -10289,7 +10290,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC426",
-            "Production Auto. Project II / Üretim Projesi II",
+            "Üretim Projesi 2",
             6,
             1,
             0,
@@ -10297,7 +10298,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC428",
-            "Intelligent Sys. Project II / Akıllı Sis. Proj. II",
+            "Akıllı Sis. Proj. 2",
             6,
             1,
             0,
@@ -10307,7 +10308,7 @@ DEPARTMENTS_DATA = {
     "ZSD": [
         [
             "MEC321",
-            "Image-Based Auto. I / Görüntü Tabanlı Oto. I",
+            "Görüntü Tabanlı Oto. 1",
             6,
             2,
             1,
@@ -10315,7 +10316,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC002",
-            "Applied Control Tech. / Uygulamalı Kontrol Müh.",
+            "Uygulamalı Kontrol Müh.",
             6,
             1,
             1,
@@ -10323,7 +10324,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC324",
-            "Image-Based Auto. II / Görüntü Tabanlı Oto. II",
+            "Görüntü Tabanlı Oto. 2",
             6,
             2,
             1,
@@ -10331,7 +10332,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC312",
-            "Electronic Components / Elektrik Devre Elemanlari",
+            "Elektrik Devre Elemanlari",
             6,
             2,
             1,
@@ -10339,7 +10340,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB311",
-            "Manufacturing Tech. I / İmalat Teknolojileri I",
+            "İmalat Teknolojileri 1",
             6,
             3,
             1,
@@ -10347,7 +10348,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC421",
-            "Industrial Robotics II / Endüstriyel Robotik II",
+            "Endüstriyel Robotik 2",
             6,
             2,
             1,
@@ -10355,7 +10356,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF205",
-            "Database Systems / Veritabanı Sistemleri",
+            "Veritabanı Sistemleri",
             6,
             2,
             0,
@@ -10363,7 +10364,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB301",
-            "Machine Tools / Takım Tezgahları",
+            "Takım Tezgahları",
             6,
             2,
             1,
@@ -10371,7 +10372,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB202",
-            "Thermodynamics I / Termodinamik I",
+            "Termodinamik 1",
             6,
             3,
             2,
@@ -10379,7 +10380,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF202",
-            "Software Engineering / Yazılım Mühendisliği",
+            "Yazılım Mühendisliği",
             6,
             1,
             0,
@@ -10387,7 +10388,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE456",
-            "Sys. ID & Intelligent Ctrl / Sis. Tnm. ve Akıllı K.",
+            "Sis. Tnm. ve Akıllı K.",
             6,
             2,
             1,
@@ -10395,7 +10396,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF523",
-            "Human-Machine Interaction / Bilg.-Makine Etkileşimi",
+            "Bilg.-Makine Etkileşimi",
             6,
             2,
             0,
@@ -10403,7 +10404,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE331",
-            "Electrical Machines I / Elektrik Makinaları I",
+            "Elektrik Makinaları 1",
             6,
             3,
             1,
@@ -10411,7 +10412,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE104",
-            "Microprocessors / Mikroişlemciler",
+            "Mikroişlemciler",
             6,
             3,
             1,
@@ -10419,7 +10420,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "WIN302",
-            "Intro to Factory Ops / Fabrika Yönetimine Giriş",
+            "Fabrika Yönetimine Giriş",
             6,
             2,
             1,
@@ -10427,7 +10428,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF502",
-            "Machine Learning / Makine Öğrenmesi",
+            "Makine Öğrenmesi",
             6,
             2,
             0,
@@ -10435,7 +10436,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE101",
-            "Digital Design / Sayısal Tasarım",
+            "Sayısal Tasarım",
             6,
             2,
             1,
@@ -10443,7 +10444,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE311",
-            "Electronics I / Elektronik I : Yarı İletken El.",
+            "Elektronik 1 : Yarı İletken El.",
             6,
             2,
             2,
@@ -10451,7 +10452,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC030",
-            "CS Selected Topics I / Bilg. Müh. Seçilmiş K. I",
+            "Bilg. Müh. Seçilmiş K. 1",
             6,
             2,
             0,
@@ -10459,7 +10460,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC031",
-            "CS Selected Topics II / Bilg. Müh. Seçilmiş K. II",
+            "Bilg. Müh. Seçilmiş K. 2",
             3,
             1,
             0,
@@ -10467,7 +10468,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC032",
-            "EE Selected Topics I / Elektrotek. Seçilmiş K. I",
+            "Elektrotek. Seçilmiş K. 1",
             6,
             2,
             0,
@@ -10475,7 +10476,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC033",
-            "EE Selected Topics II / Elektrotek. Seçilmiş K. II",
+            "Elektrotek. Seçilmiş K. 2",
             3,
             1,
             0,
@@ -10483,7 +10484,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC034",
-            "ME Selected Topics I / Makine Müh. Seçilmiş K. I",
+            "Makine Müh. Seçilmiş K. 1",
             6,
             2,
             0,
@@ -10491,7 +10492,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC035",
-            "ME Selected Topics II / Makine Müh. Seçilmiş K. II",
+            "Makine Müh. Seçilmiş K. 2",
             3,
             1,
             0,
@@ -10499,7 +10500,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC036",
-            "Embedded Systems / Gömülü Sistemler",
+            "Gömülü Sistemler",
             6,
             2,
             0,
@@ -10507,7 +10508,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MEC037",
-            "Mechatronics Topics II / Mekatronik Seçilmiş K. II",
+            "Mekatronik Seçilmiş K. 2",
             3,
             1,
             0,
@@ -10515,7 +10516,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE439",
-            "Power Electronics / Güç Elektroniği",
+            "Güç Elektroniği",
             6,
             2,
             2,
@@ -10523,7 +10524,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB310",
-            "Materials Technology II / Malzeme Teknolojisi II",
+            "Malzeme Teknolojisi 2",
             6,
             3,
             1,
@@ -10531,7 +10532,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "WIN406",
-            "Ind. Info Tech / End. Enf. Tek. ve Sanal Ürün Gel.",
+            "End. Enf. Tek. ve Sanal Ürün Gel.",
             6,
             2,
             1,
@@ -10539,7 +10540,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "WIN314",
-            "Quality Management / Kalite Yönetimi",
+            "Kalite Yönetimi",
             6,
             3,
             1,
@@ -10547,7 +10548,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "WIN408",
-            "Assembly Tech / Montaj Teknolojisi Temelleri",
+            "Montaj Teknolojisi Temelleri",
             6,
             2,
             2,
@@ -10555,7 +10556,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB309",
-            "Fluid Mechanics / Akışkanlar Mekaniği",
+            "Akışkanlar Mekaniği",
             6,
             3,
             1,
@@ -10563,7 +10564,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB312",
-            "Heat Transfer / Isı Transferi",
+            "Isı Transferi",
             6,
             3,
             1,
@@ -10571,7 +10572,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE441",
-            "FPGA Programming / FPGA Programlama",
+            "FPGA Programlama",
             6,
             3,
             1,
@@ -10579,7 +10580,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ETE448",
-            "Intro to VLSI Design / VLSI Tasarımına Giriş",
+            "VLSI Tasarımına Giriş",
             6,
             3,
             1,
@@ -10587,7 +10588,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF501",
-            "Intelligent Systems / Akıllı Sistemler",
+            "Akıllı Sistemler",
             6,
             2,
             0,
@@ -10595,7 +10596,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF503",
-            "Neural Networks / Yapay Sinir Ağları",
+            "Yapay Sinir Ağları",
             6,
             2,
             0,
@@ -10603,7 +10604,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF513",
-            "Deep Learning / Derin Öğrenme",
+            "Derin Öğrenme",
             6,
             2,
             0,
@@ -10611,7 +10612,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF701",
-            "Artificial Intelligence / Yapay Zeka",
+            "Artificial Intelligence",
             6,
             2,
             0,
@@ -10633,7 +10634,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "CHE111",
-            "Kimya I",
+            "Kimya 1",
             6,
             2,
             1,
@@ -10641,7 +10642,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU121",
-            "Teknik Almanca I",
+            "Teknik Almanca 1",
             2,
             2,
             0,
@@ -10649,7 +10650,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG101",
-            "İngilizce I",
+            "İngilizce 1",
             2,
             3,
             0,
@@ -10657,7 +10658,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT103",
-            "Analiz I",
+            "Analiz 1",
             6,
             3,
             2,
@@ -10673,7 +10674,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "PHY111",
-            "Fizik I",
+            "Fizik 1",
             6,
             2,
             1,
@@ -10683,7 +10684,7 @@ DEPARTMENTS_DATA = {
     "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "CHE112",
-            "Kimya II",
+            "Kimya 2",
             6,
             2,
             1,
@@ -10691,7 +10692,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU122",
-            "Teknik Almanca II",
+            "Teknik Almanca 2",
             2,
             2,
             0,
@@ -10699,7 +10700,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG102",
-            "İngilizce II",
+            "İngilizce 2",
             2,
             3,
             0,
@@ -10707,7 +10708,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT112",
-            "Analiz II ve Lineer Cebir",
+            "Analiz 2 ve Lineer Cebir",
             6,
             3,
             2,
@@ -10731,7 +10732,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "PHY112",
-            "Fizik II",
+            "Fizik 2",
             6,
             2,
             1,
@@ -10741,7 +10742,7 @@ DEPARTMENTS_DATA = {
     "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "AIT001",
-            "Atatürk İlkeleri ve İnkılap Tarihi I",
+            "Atatürk İlkeleri ve İnkılap Tarihi 1",
             2,
             2,
             0,
@@ -10749,7 +10750,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG201",
-            "İngilizce III",
+            "İngilizce 3",
             2,
             3,
             0,
@@ -10773,7 +10774,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MBT211",
-            "Biyokimya I",
+            "Biyokimya 1",
             6,
             2,
             1,
@@ -10781,7 +10782,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "NWI201",
-            "Fiziksel Kimya I",
+            "Fiziksel Kimya 1",
             6,
             3,
             1,
@@ -10789,7 +10790,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR001",
-            "Türkçe I",
+            "Türkçe 1",
             2,
             2,
             0,
@@ -10799,7 +10800,7 @@ DEPARTMENTS_DATA = {
     "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "AIT002",
-            "Atatürk İlkeleri ve İnkılap Tarihi II",
+            "Atatürk İlkeleri ve İnkılap Tarihi 2",
             2,
             2,
             0,
@@ -10807,7 +10808,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG202",
-            "İngilizce IV",
+            "İngilizce 4",
             2,
             3,
             0,
@@ -10815,7 +10816,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MBT204",
-            "Mikrobiyoloji I",
+            "Mikrobiyoloji 1",
             6,
             2,
             1,
@@ -10831,7 +10832,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MBT212",
-            "Biyokimya II",
+            "Biyokimya 2",
             6,
             3,
             0,
@@ -10839,7 +10840,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MBT222",
-            "Moleküler Biyoteknoloji I",
+            "Moleküler Biyoteknoloji 1",
             6,
             2,
             1,
@@ -10847,7 +10848,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR002",
-            "Türkçe II",
+            "Türkçe 2",
             2,
             2,
             0,
@@ -10857,7 +10858,7 @@ DEPARTMENTS_DATA = {
     "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "ENG301",
-            "İleri İngilizce I",
+            "İleri İngilizce 1",
             2,
             3,
             0,
@@ -10865,7 +10866,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG001",
-            "İş Sağlığı ve Güvenliği I",
+            "İş Sağlığı ve Güvenliği 1",
             2,
             2,
             0,
@@ -10873,7 +10874,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MBT323",
-            "Moleküler Biyoteknoloji II",
+            "Moleküler Biyoteknoloji 2",
             6,
             2,
             1,
@@ -10881,7 +10882,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SDBIOI",
-            "Seçmeli Dersler-BIO I",
+            "Seçmeli Dersler-BIO 1",
             18,
             0,
             0,
@@ -10899,7 +10900,7 @@ DEPARTMENTS_DATA = {
     "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "ENG302",
-            "İleri İngilizce II",
+            "İleri İngilizce 2",
             2,
             3,
             0,
@@ -10907,7 +10908,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG002",
-            "İş Sağlığı ve İş Güvenliği II",
+            "İş Sağlığı ve İş Güvenliği 2",
             2,
             2,
             0,
@@ -10915,7 +10916,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MBT324",
-            "Moleküler Biyoteknoloji III",
+            "Moleküler Biyoteknoloji 3",
             5,
             2,
             0,
@@ -10923,7 +10924,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MBT332",
-            "Biyoteknoloji İşletmeleri Sist. Tek. I",
+            "Biyoteknoloji İşletmeleri Sist. Tek. 1",
             6,
             2,
             1,
@@ -10957,7 +10958,7 @@ DEPARTMENTS_DATA = {
     "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "MBT441",
-            "Proje I",
+            "Proje 1",
             6,
             0,
             4,
@@ -10991,7 +10992,7 @@ DEPARTMENTS_DATA = {
     "8. Dönem / 4. Yıl Bahar Dönemi": [
         [
             "MBT442",
-            "Proje II",
+            "Proje 2",
             12,
             0,
             0,
@@ -11021,10 +11022,10 @@ DEPARTMENTS_DATA = {
         "Biyofiziksel Kimya",
         "Biyoelektrokimya",
         "Biyokataliz",
-        "Fiziksel Kimya II"
+        "Fiziksel Kimya 2"
     ],
     "SDBIOIII": [
-        "Biyoteknoloji İşletmeleri için Sistem Teknikleri II",
+        "Biyoteknoloji İşletmeleri için Sistem Teknikleri 2",
         "Hücre-Malzeme Etkileşimleri",
         "Doku Mühendisliği",
         "Biyosensörler",
@@ -11052,7 +11053,7 @@ DEPARTMENTS_DATA = {
         "Biyobilimler için MATLAB"
     ],
     "ÜSD": [
-        "Mikrobiyoloji II",
+        "Mikrobiyoloji 2",
         "İmmünoloji",
         "Ekoloji",
         "Evrim Biyolojisi",
@@ -11065,7 +11066,7 @@ DEPARTMENTS_DATA = {
         "Nesnel Programlama",
         "Makine Mühendisliğine Giriş",
         "Statik",
-        "Malzeme Teknolojisi I",
+        "Malzeme Teknolojisi 1",
         "İktisadi Tarih",
         "Endüstri Mühendisliğine Giriş",
         "Muhasebe ve Bilanço"
@@ -11077,7 +11078,7 @@ DEPARTMENTS_DATA = {
     "ÜSD": [
         [
             "MBT361",
-            "Mikrobiyoloji II",
+            "Mikrobiyoloji 2",
             6,
             3,
             0,
@@ -11181,7 +11182,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB207",
-            "Malzeme Teknolojisi I",
+            "Malzeme Teknolojisi 1",
             6,
             3,
             2,
@@ -11239,7 +11240,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "NWI202",
-            "Fiziksel Kimya II",
+            "Fiziksel Kimya 2",
             6,
             3,
             1,
@@ -11249,7 +11250,7 @@ DEPARTMENTS_DATA = {
     "SDBIOIII": [
         [
             "MBT433",
-            "Biyoteknoloji İşletmeleri için Sistem Teknikleri II",
+            "Biyoteknoloji İşletmeleri için Sistem Teknikleri 2",
             6,
             3,
             0,
@@ -11413,7 +11414,7 @@ DEPARTMENTS_DATA = {
     "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "AIT001",
-            "Atatürk İlkeleri ve İnkılap Tarihi I",
+            "Atatürk İlkeleri ve İnkılap Tarihi 1",
             2,
             0,
             0,
@@ -11421,7 +11422,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU121",
-            "Siyaset Bilimi için Almanca I",
+            "Siyaset Bilimi için Almanca 1",
             3,
             0,
             0,
@@ -11429,7 +11430,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG103",
-            "İngilizce I",
+            "İngilizce 1",
             3,
             0,
             0,
@@ -11461,7 +11462,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR001",
-            "Türkçe I",
+            "Türkçe 1",
             2,
             0,
             0,
@@ -11469,7 +11470,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "VWL191",
-            "İktisada Giriş I",
+            "İktisada Giriş 1",
             5,
             0,
             0,
@@ -11479,7 +11480,7 @@ DEPARTMENTS_DATA = {
     "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "AIT002",
-            "Atatürk İlkeleri ve İnkılap Tarihi II",
+            "Atatürk İlkeleri ve İnkılap Tarihi 2",
             2,
             0,
             0,
@@ -11487,7 +11488,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU122",
-            "Siyaset Bilimi için Almanca II",
+            "Siyaset Bilimi için Almanca 2",
             3,
             0,
             0,
@@ -11495,7 +11496,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG104",
-            "İngilizce II",
+            "İngilizce 2",
             3,
             0,
             0,
@@ -11527,7 +11528,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR002",
-            "Türkçe II",
+            "Türkçe 2",
             2,
             0,
             0,
@@ -11535,7 +11536,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "VWL192",
-            "İktisada Giriş II",
+            "İktisada Giriş 2",
             5,
             0,
             0,
@@ -11545,7 +11546,7 @@ DEPARTMENTS_DATA = {
     "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "ENG203",
-            "İngilizce III",
+            "İngilizce 3",
             3,
             0,
             0,
@@ -11585,7 +11586,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "POLSDI",
-            "Seçmeli Ders Alanı I",
+            "Seçmeli Ders Alanı 1",
             8,
             0,
             0,
@@ -11595,7 +11596,7 @@ DEPARTMENTS_DATA = {
     "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "ENG204",
-            "İngilizce IV",
+            "İngilizce 4",
             2,
             0,
             0,
@@ -11627,7 +11628,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "POLSDII",
-            "Seçmeli Ders Alanı II",
+            "Seçmeli Ders Alanı 2",
             13,
             0,
             0,
@@ -11637,7 +11638,7 @@ DEPARTMENTS_DATA = {
     "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "ENG301",
-            "İleri İngilizce I",
+            "İleri İngilizce 1",
             2,
             0,
             0,
@@ -11669,7 +11670,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "POL313",
-            "Türk Dış Politikası I",
+            "Türk Dış Politikası 1",
             5,
             0,
             0,
@@ -11677,7 +11678,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "POLSDIII",
-            "Seçmeli Ders Alanı III",
+            "Seçmeli Ders Alanı 3",
             5,
             0,
             0,
@@ -11695,7 +11696,7 @@ DEPARTMENTS_DATA = {
     "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "ENG302",
-            "İleri İngilizce II",
+            "İleri İngilizce 2",
             2,
             0,
             0,
@@ -11735,7 +11736,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "POL314",
-            "Türk Dış Politikası II",
+            "Türk Dış Politikası 2",
             5,
             0,
             0,
@@ -11769,7 +11770,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "POLSDIV",
-            "Seçmeli Ders Alanı IV",
+            "Seçmeli Ders Alanı 4",
             20,
             0,
             0,
@@ -11803,7 +11804,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "POLSDV",
-            "Seçmeli Ders Alanı V",
+            "Seçmeli Ders Alanı 5",
             10,
             0,
             0,
@@ -11825,16 +11826,16 @@ DEPARTMENTS_DATA = {
         "Stratejik Pazarlama",
         "E-İş",
         "İş Etiği",
-        "Anayasa Hukuku II",
-        "Anayasa Hukuku I",
+        "Anayasa Hukuku 2",
+        "Anayasa Hukuku 1",
         "Anayasa Hukukunun Temel Prensipleri",
-        "Uluslararası Hukuk II",
-        "İdare Hukuku I",
-        "Uluslararası Hukuk I",
-        "İdare Hukuku II",
+        "Uluslararası Hukuk 2",
+        "İdare Hukuku 1",
+        "Uluslararası Hukuk 1",
+        "İdare Hukuku 2",
         "Avrupa Hukuku",
         "Alman İdare Hukuku - Temel Kavramlar",
-        "Devletler Özel Hukuku I",
+        "Devletler Özel Hukuku 1",
         "Borçlar Hukuku",
         "İş Hukuku",
         "Ticaret Hukuku",
@@ -11873,7 +11874,7 @@ DEPARTMENTS_DATA = {
         "Siyaset Teorisinde Meseleler",
         "Değişen Küresel Sistemde Bölgesel Güçler",
         "Türk-Alman Diplomatik İlişkiler Tarihi",
-        "Osmanlı Siyasi Tarihi II",
+        "Osmanlı Siyasi Tarihi 2",
         "Türk Tarihi",
         "Siyaset Psikolojisi",
         "Türk Devletleri Teşkilatı ve Türk Devletleri Bütünleşmesi",
@@ -11887,8 +11888,8 @@ DEPARTMENTS_DATA = {
         "Kamu Yönetiminde Güncel Meseleler",
         "Yerel Yönetimler",
         "Kentleşme ve Çevre Sorunları",
-        "Uluslararası İktisat I",
-        "Uluslararası İktisat II",
+        "Uluslararası İktisat 1",
+        "Uluslararası İktisat 2",
         "İktisadi Düşünceler Tarihi",
         "Türkiye Ekonomisinin Gelişimi",
         "Dünya Ekonomisinin Güncel Sorunları",
@@ -11908,16 +11909,16 @@ DEPARTMENTS_DATA = {
         "Stratejik Pazarlama",
         "E-İş",
         "İş Etiği",
-        "Anayasa Hukuku II",
-        "Anayasa Hukuku I",
+        "Anayasa Hukuku 2",
+        "Anayasa Hukuku 1",
         "Anayasa Hukukunun Temel Prensipleri",
-        "Uluslararası Hukuk II",
-        "İdare Hukuku I",
-        "Uluslararası Hukuk I",
-        "İdare Hukuku II",
+        "Uluslararası Hukuk 2",
+        "İdare Hukuku 1",
+        "Uluslararası Hukuk 1",
+        "İdare Hukuku 2",
         "Avrupa Hukuku",
         "Alman İdare Hukuku - Temel Kavramlar",
-        "Devletler Özel Hukuku I",
+        "Devletler Özel Hukuku 1",
         "Borçlar Hukuku",
         "İş Hukuku",
         "Ticaret Hukuku",
@@ -11956,7 +11957,7 @@ DEPARTMENTS_DATA = {
         "Siyaset Teorisinde Meseleler",
         "Değişen Küresel Sistemde Bölgesel Güçler",
         "Türk-Alman Diplomatik İlişkiler Tarihi",
-        "Osmanlı Siyasi Tarihi II",
+        "Osmanlı Siyasi Tarihi 2",
         "Türk Tarihi",
         "Siyaset Psikolojisi",
         "Türk Devletleri Teşkilatı ve Türk Devletleri Bütünleşmesi",
@@ -11970,8 +11971,8 @@ DEPARTMENTS_DATA = {
         "Kamu Yönetiminde Güncel Meseleler",
         "Yerel Yönetimler",
         "Kentleşme ve Çevre Sorunları",
-        "Uluslararası İktisat I",
-        "Uluslararası İktisat II",
+        "Uluslararası İktisat 1",
+        "Uluslararası İktisat 2",
         "İktisadi Düşünceler Tarihi",
         "Türkiye Ekonomisinin Gelişimi",
         "Dünya Ekonomisinin Güncel Sorunları",
@@ -12079,7 +12080,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK150",
-            "Anayasa Hukuku II",
+            "Anayasa Hukuku 2",
             4,
             3,
             0,
@@ -12087,7 +12088,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK153",
-            "Anayasa Hukuku I",
+            "Anayasa Hukuku 1",
             3,
             2,
             0,
@@ -12103,7 +12104,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK252",
-            "Uluslararası Hukuk II",
+            "Uluslararası Hukuk 2",
             5,
             3,
             0,
@@ -12111,7 +12112,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK253",
-            "İdare Hukuku I",
+            "İdare Hukuku 1",
             5,
             3,
             1,
@@ -12119,7 +12120,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK255",
-            "Uluslararası Hukuk I",
+            "Uluslararası Hukuk 1",
             3,
             2,
             0,
@@ -12127,7 +12128,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK256",
-            "İdare Hukuku II",
+            "İdare Hukuku 2",
             5,
             3,
             0,
@@ -12151,7 +12152,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK453",
-            "Devletler Özel Hukuku I",
+            "Devletler Özel Hukuku 1",
             4,
             3,
             0,
@@ -12463,7 +12464,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "POL553",
-            "Osmanlı Siyasi Tarihi II",
+            "Osmanlı Siyasi Tarihi 2",
             5,
             3,
             0,
@@ -12575,7 +12576,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "VWL301",
-            "Uluslararası İktisat I",
+            "Uluslararası İktisat 1",
             6,
             3,
             1,
@@ -12583,7 +12584,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "VWL302",
-            "Uluslararası İktisat II",
+            "Uluslararası İktisat 2",
             6,
             3,
             1,
@@ -12729,7 +12730,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK150",
-            "Anayasa Hukuku II",
+            "Anayasa Hukuku 2",
             4,
             3,
             0,
@@ -12737,7 +12738,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK153",
-            "Anayasa Hukuku I",
+            "Anayasa Hukuku 1",
             3,
             2,
             0,
@@ -12753,7 +12754,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK252",
-            "Uluslararası Hukuk II",
+            "Uluslararası Hukuk 2",
             5,
             3,
             0,
@@ -12761,7 +12762,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK253",
-            "İdare Hukuku I",
+            "İdare Hukuku 1",
             5,
             3,
             1,
@@ -12769,7 +12770,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK255",
-            "Uluslararası Hukuk I",
+            "Uluslararası Hukuk 1",
             3,
             2,
             0,
@@ -12777,7 +12778,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK256",
-            "İdare Hukuku II",
+            "İdare Hukuku 2",
             5,
             3,
             0,
@@ -12801,7 +12802,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "HUK453",
-            "Devletler Özel Hukuku I",
+            "Devletler Özel Hukuku 1",
             4,
             3,
             0,
@@ -13113,7 +13114,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "POL553",
-            "Osmanlı Siyasi Tarihi II",
+            "Osmanlı Siyasi Tarihi 2",
             5,
             3,
             0,
@@ -13225,7 +13226,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "VWL301",
-            "Uluslararası İktisat I",
+            "Uluslararası İktisat 1",
             6,
             3,
             1,
@@ -13233,7 +13234,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "VWL302",
-            "Uluslararası İktisat II",
+            "Uluslararası İktisat 2",
             6,
             3,
             1,
@@ -13287,7 +13288,7 @@ DEPARTMENTS_DATA = {
     "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "SOZ101",
-            "Sosyolojiye Giriş I",
+            "Sosyolojiye Giriş 1",
             6,
             0,
             0,
@@ -13319,7 +13320,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SOZ161",
-            "Mesleki Almanca I",
+            "Mesleki Almanca 1",
             2,
             0,
             0,
@@ -13327,7 +13328,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT001",
-            "Atatürk İlkeleri ve İnkılap Tarihi I",
+            "Atatürk İlkeleri ve İnkılap Tarihi 1",
             2,
             0,
             0,
@@ -13335,7 +13336,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR001",
-            "Türkçe I",
+            "Türkçe 1",
             2,
             0,
             0,
@@ -13343,7 +13344,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG101",
-            "İngilizce I",
+            "İngilizce 1",
             2,
             0,
             0,
@@ -13353,7 +13354,7 @@ DEPARTMENTS_DATA = {
     "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "SOZ102",
-            "Sosyolojiye Giriş II",
+            "Sosyolojiye Giriş 2",
             6,
             0,
             0,
@@ -13385,7 +13386,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SOZ162",
-            "Mesleki Almanca II",
+            "Mesleki Almanca 2",
             2,
             0,
             0,
@@ -13393,7 +13394,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT002",
-            "Atatürk İlkeleri ve İnkılap Tarihi II",
+            "Atatürk İlkeleri ve İnkılap Tarihi 2",
             2,
             0,
             0,
@@ -13401,7 +13402,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR002",
-            "Türkçe II",
+            "Türkçe 2",
             2,
             0,
             0,
@@ -13409,7 +13410,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG102",
-            "İngilizce II",
+            "İngilizce 2",
             2,
             0,
             0,
@@ -13419,7 +13420,7 @@ DEPARTMENTS_DATA = {
     "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "SOZ201",
-            "Sosyoloji Kuramları I",
+            "Sosyoloji Kuramları 1",
             6,
             0,
             0,
@@ -13459,7 +13460,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SOZ261",
-            "Mesleki Almanca III",
+            "Mesleki Almanca 3",
             2,
             0,
             0,
@@ -13467,7 +13468,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG201",
-            "İngilizce III",
+            "İngilizce 3",
             2,
             0,
             0,
@@ -13477,7 +13478,7 @@ DEPARTMENTS_DATA = {
     "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "SOZ202",
-            "Sosyoloji Kuramları II",
+            "Sosyoloji Kuramları 2",
             6,
             0,
             0,
@@ -13509,7 +13510,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SOZ262",
-            "Mesleki Almanca IV",
+            "Mesleki Almanca 4",
             2,
             0,
             0,
@@ -13517,7 +13518,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG202",
-            "İngilizce IV",
+            "İngilizce 4",
             2,
             0,
             0,
@@ -13535,7 +13536,7 @@ DEPARTMENTS_DATA = {
     "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "SOZ311",
-            "İleri Araştırma Yöntemleri I",
+            "İleri Araştırma Yöntemleri 1",
             6,
             0,
             0,
@@ -13543,7 +13544,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SOZ361",
-            "Mesleki Almanca V",
+            "Mesleki Almanca 5",
             2,
             0,
             0,
@@ -13551,7 +13552,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG301",
-            "İleri İngilizce I",
+            "İleri İngilizce 1",
             2,
             0,
             0,
@@ -13559,7 +13560,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ÜSD001",
-            "Üniversite Seçmeli Ders Havuzu I",
+            "Üniversite Seçmeli Ders Havuzu 1",
             2,
             0,
             0,
@@ -13593,7 +13594,7 @@ DEPARTMENTS_DATA = {
     "6. Dönem / 3. Yıl Bahar Dönemi": [
         [
             "SOZ312",
-            "İleri Araştırma Yöntemleri II",
+            "İleri Araştırma Yöntemleri 2",
             6,
             0,
             0,
@@ -13601,7 +13602,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "SOZ362",
-            "Mesleki Almanca VI",
+            "Mesleki Almanca 6",
             2,
             0,
             0,
@@ -13609,7 +13610,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG302",
-            "İleri İngilizce II",
+            "İleri İngilizce 2",
             2,
             0,
             0,
@@ -13617,7 +13618,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ÜSD002",
-            "Üniversite Seçmeli Ders Havuzu II",
+            "Üniversite Seçmeli Ders Havuzu 2",
             2,
             0,
             0,
@@ -14875,7 +14876,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "VWL205",
-            "Ekonometri I",
+            "Ekonometri 1",
             6,
             0,
             0,
@@ -14917,7 +14918,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "VWL206",
-            "Ekonometri II",
+            "Ekonometri 2",
             6,
             0,
             0,
@@ -14951,7 +14952,7 @@ DEPARTMENTS_DATA = {
     "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "VWL301",
-            "Uluslararası İktisat I",
+            "Uluslararası İktisat 1",
             6,
             0,
             0,
@@ -14983,7 +14984,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "VWLSD5",
-            "Seçimlik Ders I",
+            "Seçimlik Ders 1",
             15,
             0,
             0,
@@ -15051,7 +15052,7 @@ DEPARTMENTS_DATA = {
     "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "VWLSD7",
-            "Seçimlik Ders VII",
+            "Seçimlik Ders 7",
             24,
             0,
             0,
@@ -15085,7 +15086,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT002",
-            "Atatürk İlkeleri ve İnkılapları Tarihi II",
+            "Atatürk İlkeleri ve İnkılapları Tarihi 2",
             2,
             0,
             0,
@@ -15103,7 +15104,7 @@ DEPARTMENTS_DATA = {
 },
         "pool_codes": {
     "VWLSD": [
-        "Uluslararası İktisat II",
+        "Uluslararası İktisat 2",
         "Davranışsal İktisat",
         "SAP Uygulamaları",
         "Para Teorisi ve Politikası",
@@ -15189,14 +15190,14 @@ DEPARTMENTS_DATA = {
         "Akademik İngilizce",
         "İngilizce Etkili İletişim Becerileri",
         "Türkiye'de Gündelik Hayatın Tarihi",
-        "Yabancılar İçin Türkçe I",
-        "Yabancılar İçin Akademik Türkçe I",
+        "Yabancılar İçin Türkçe 1",
+        "Yabancılar İçin Akademik Türkçe 1",
         "Kariyer Planlama",
         "Fikri Mülkiyet Hukuku",
         "Etik",
         "Felsefe Tarihi",
         "İktisadi Tarih",
-        "Osmanlıca I",
+        "Osmanlıca 1",
         "Pazarlamanın Temelleri",
         "Stratejik Yönetim",
         "Bilgisayar Bilimine ve Programlamaya Giriş",
@@ -15206,7 +15207,7 @@ DEPARTMENTS_DATA = {
         "İnşaat Mühendisliğine Giriş",
         "Makine Mühendisliğine Giriş",
         "Statik",
-        "Malzeme Teknolojisi I",
+        "Malzeme Teknolojisi 1",
         "Doğal Afetler",
         "Doğa Bilimlerinde Girişimcilik",
         "Kuantum Enerjisi Sistemlerine Giriş",
@@ -15217,7 +15218,7 @@ DEPARTMENTS_DATA = {
     "VWLSD": [
         [
             "VWL302",
-            "Uluslararası İktisat II",
+            "Uluslararası İktisat 2",
             6,
             3,
             1,
@@ -15891,7 +15892,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ÜSDTUR111",
-            "Yabancılar İçin Türkçe I",
+            "Yabancılar İçin Türkçe 1",
             2,
             2,
             0,
@@ -15899,7 +15900,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ÜSDTUR009",
-            "Yabancılar İçin Akademik Türkçe I",
+            "Yabancılar İçin Akademik Türkçe 1",
             2,
             2,
             0,
@@ -15947,7 +15948,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "POL550",
-            "Osmanlıca I",
+            "Osmanlıca 1",
             3,
             3,
             0,
@@ -16027,7 +16028,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAB207",
-            "Malzeme Teknolojisi I",
+            "Malzeme Teknolojisi 1",
             5,
             6,
             0,
@@ -16073,7 +16074,7 @@ DEPARTMENTS_DATA = {
     "1. Dönem / 1. Yıl Güz Dönemi": [
         [
             "MAT103",
-            "Analiz I / Calculus I",
+            "Analiz 1",
             6,
             3,
             2,
@@ -16081,7 +16082,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU109",
-            "Statik / Statics",
+            "Statik",
             6,
             3,
             2,
@@ -16089,7 +16090,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU121",
-            "Teknik Almanca I / Technical German I",
+            "Teknik Almanca 1",
             2,
             2,
             0,
@@ -16097,7 +16098,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU107",
-            "Tasarım Teknikleri / Design Techniques",
+            "Tasarım Teknikleri",
             6,
             1,
             2,
@@ -16105,7 +16106,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "PHY103",
-            "Modern Fizik / Modern Physics",
+            "Modern Fizik",
             6,
             3,
             1,
@@ -16113,7 +16114,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG101",
-            "İngilizce I / English I",
+            "İngilizce 1",
             2,
             3,
             0,
@@ -16121,7 +16122,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU091",
-            "İnşaat Mühendisliğine Giriş / Intro to Civil Engineering",
+            "İnşaat Mühendisliğine Giriş",
             2,
             2,
             0,
@@ -16131,7 +16132,7 @@ DEPARTMENTS_DATA = {
     "2. Dönem / 1. Yıl Bahar Dönemi": [
         [
             "MAT108",
-            "Analiz II / Calculus II",
+            "Analiz 2",
             6,
             3,
             2,
@@ -16139,7 +16140,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "MAT106",
-            "Lineer Cebir / Linear Algebra",
+            "Lineer Cebir",
             6,
             2,
             2,
@@ -16147,7 +16148,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "DEU122",
-            "Teknik Almanca II / Technical German II",
+            "Teknik Almanca 2",
             2,
             2,
             0,
@@ -16163,7 +16164,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU092",
-            "Bilimsel Çalışma Yöntemleri / Scientific Research Methods",
+            "Bilimsel Çalışma Yöntemleri",
             2,
             2,
             0,
@@ -16171,7 +16172,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG102",
-            "İngilizce II / English II",
+            "İngilizce 2",
             2,
             3,
             0,
@@ -16179,7 +16180,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU112",
-            "Mukavemet / Strength of Materials",
+            "Mukavemet",
             6,
             3,
             2,
@@ -16189,7 +16190,7 @@ DEPARTMENTS_DATA = {
     "3. Dönem / 2. Yıl Güz Dönemi": [
         [
             "MAT201",
-            "Diferansiyel Denklemler / Differential Equations",
+            "Diferansiyel Denklemler",
             6,
             2,
             1,
@@ -16197,7 +16198,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU209",
-            "Kinematik ve Dinamik / Kinematics and Dynamics",
+            "Kinematik ve Dinamik",
             6,
             3,
             1,
@@ -16205,7 +16206,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG201",
-            "İngilizce III / English III",
+            "İngilizce 3",
             2,
             3,
             0,
@@ -16213,7 +16214,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "AIT001",
-            "Atatürk İlkeleri ve İnkılap Tarihi I",
+            "Atatürk İlkeleri ve İnkılap Tarihi 1",
             2,
             2,
             0,
@@ -16221,7 +16222,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU201",
-            "Yapı Malzemesi ve Kimyası I / Const. Chemicals & Materials",
+            "Yapı Malzemesi ve Kimyası 1",
             6,
             2,
             1,
@@ -16229,7 +16230,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU202",
-            "Yapı Statiği I / Structural Analysis I",
+            "Yapı Statiği 1",
             6,
             3,
             1,
@@ -16237,7 +16238,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR001",
-            "Türkçe I / Turkish I",
+            "Türkçe 1",
             2,
             2,
             0,
@@ -16247,7 +16248,7 @@ DEPARTMENTS_DATA = {
     "4. Dönem / 2. Yıl Bahar Dönemi": [
         [
             "AIT002",
-            "Atatürk İlkeleri ve İnkılap Tarihi II",
+            "Atatürk İlkeleri ve İnkılap Tarihi 2",
             2,
             2,
             0,
@@ -16255,7 +16256,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG202",
-            "İngilizce IV / English IV",
+            "İngilizce 4",
             2,
             3,
             0,
@@ -16263,7 +16264,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU203",
-            "Yapı İnşaatı I / Building Construction I",
+            "Yapı İnşaatı 1",
             6,
             3,
             1,
@@ -16271,7 +16272,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU204",
-            "Yapı Statiği II / Structural Analysis II",
+            "Yapı Statiği 2",
             6,
             3,
             1,
@@ -16279,7 +16280,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU205",
-            "Akışkanlar Mekaniği / Fluid Mechanics",
+            "Akışkanlar Mekaniği",
             6,
             2,
             2,
@@ -16287,7 +16288,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU206",
-            "Yapı Malzemesi ve Kimyası II / Const. Chem. & Materials II",
+            "Yapı Malzemesi ve Kimyası 2",
             2,
             2,
             1,
@@ -16305,7 +16306,7 @@ DEPARTMENTS_DATA = {
     "5. Dönem / 3. Yıl Güz Dönemi": [
         [
             "BAU301",
-            "Yapı İnşaatı II / Construction Engineering II",
+            "Yapı İnşaatı 2",
             6,
             4,
             2,
@@ -16313,7 +16314,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU303",
-            "Ulaştırma / Transportation",
+            "Ulaştırma",
             6,
             2,
             2,
@@ -16339,7 +16340,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU302",
-            "Zemin Mekaniği ve Temel İnşaatı I / Soil Mechanics I",
+            "Zemin Mekaniği ve Temel İnşaatı 1",
             6,
             2,
             2,
@@ -16349,7 +16350,7 @@ DEPARTMENTS_DATA = {
     "7. Dönem / 4. Yıl Güz Dönemi": [
         [
             "ENG301",
-            "İleri İngilizce I / Advanced English I",
+            "İleri İngilizce 1",
             2,
             3,
             0,
@@ -16357,7 +16358,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BSP201",
-            "Şantiye Stajı / Internship in Site",
+            "Şantiye Stajı",
             4,
             0,
             0,
@@ -16365,7 +16366,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG001",
-            "İş Sağlığı ve Güvenliği I / OHS I",
+            "İş Sağlığı ve Güvenliği 1",
             2,
             2,
             0,
@@ -16373,7 +16374,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BUP403",
-            "Büro Stajı / Internship in Office",
+            "Büro Stajı",
             4,
             0,
             0,
@@ -16397,7 +16398,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU304",
-            "Zemin Mekaniği ve Temel İnşaatı II / Soil Mechanics II",
+            "Zemin Mekaniği ve Temel İnşaatı 2",
             6,
             2,
             2,
@@ -16415,7 +16416,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "TUR002",
-            "Türkçe II / Turkish II",
+            "Türkçe 2",
             2,
             2,
             0,
@@ -16423,7 +16424,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ISG002",
-            "İş Sağlığı ve Güvenliği II / OHS II",
+            "İş Sağlığı ve Güvenliği 2",
             2,
             2,
             0,
@@ -16431,7 +16432,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU492",
-            "Lisans Bitirme Çalışması / Bachelor Thesis",
+            "Lisans Bitirme Çalışması",
             12,
             0,
             0,
@@ -16439,7 +16440,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ENG302",
-            "İleri İngilizce II / Advanced English II",
+            "İleri İngilizce 2",
             2,
             3,
             0,
@@ -16449,47 +16450,47 @@ DEPARTMENTS_DATA = {
 },
         "pool_codes": {
     "ZSD": [
-        "İnşaat Müh. Nümerik Metotlar / Numerical Methods",
-        "Yapı Fiziği / Building Physics",
+        "İnşaat Müh. Nümerik Metotlar",
+        "Yapı Fiziği",
         "Veri Analizinin İstatistiksel Yöntemleri",
-        "Stokastik Sistemler / Stochastic Systems",
-        "İnşaat Mühendisliği Projesi I / Civil Eng. Projects I",
-        "Sistem Tekniği / System Technics",
-        "Bilg. Bil. ve Prog. Giriş / Intro to CS and Programming",
-        "Nesnel Programlama / OOP",
-        "Yapı İşletmesi I / Construction Management I",
-        "İnşaat Hukuku / Construction Law",
-        "Yapı Statiği III / Structural Analysis III",
-        "Geodezi ve Geoinformatik / Geodasy and Geoinformatics",
-        "İnş. Müh. için Jeoloji / Geology for Civil Engineers",
-        "İnşaat Bilişimi / Computer Applications in Civil Eng.",
-        "Su Kaynakları / Water Resources",
+        "Stokastik Sistemler",
+        "İnşaat Mühendisliği Projesi 1",
+        "Sistem Tekniği",
+        "Bilg. Bil. ve Prog. Giriş",
+        "Nesnel Programlama",
+        "Yapı İşletmesi 1",
+        "İnşaat Hukuku",
+        "Yapı Statiği 3",
+        "Geodezi ve Geoinformatik",
+        "İnş. Müh. için Jeoloji",
+        "İnşaat Bilişimi",
+        "Su Kaynakları",
         "Kentsel Su Yönetiminin Temelleri",
-        "İnş. Müh. 3D Hesaplamalar / 3D Calculations in CE",
-        "Yapı İnşaatı III / Structural Engineering III",
-        "Yapı İşletmesi II / Construction Management II",
+        "İnş. Müh. 3D Hesaplamalar",
+        "Yapı İnşaatı 3",
+        "Yapı İşletmesi 2",
         "Yapı Kimyası ve Malzeme Testi",
-        "Yapı Dinamiği I / Building Dynamics I",
-        "Demiryolu Ulaşımının Temelleri / Rail Transport",
-        "Yapı Bilgi Modellemesi / Building Information Modeling",
-        "Mühendisler İçin Hukuk / Law for Engineering",
-        "İnşaat Mühendisliği Projesi II / Civil Eng. Project II",
-        "Deneysel Zemin Mekaniği / Experimental Soil Mechanics",
-        "Yığma Yapı İnşaatı / Masonry Construction",
-        "Beton ve Kalıp İnşaatı / Concrete and Formwork Const.",
-        "Taşkın Koruma ve Yönetimi / Flood Protection & Mgmt",
-        "Liman Tasarımı / Port Design",
-        "Kıyı Mühendisliğine Giriş / Intro to Coastal Engineering",
-        "Kaya Mekaniği / Rock Mechanics",
-        "İşletmede Mesleki Eğitim / Cooperative Education",
-        "Girişimcilik / Entrepreneurship"
+        "Yapı Dinamiği 1",
+        "Demiryolu Ulaşımının Temelleri",
+        "Yapı Bilgi Modellemesi",
+        "Mühendisler İçin Hukuk",
+        "İnşaat Mühendisliği Projesi 2",
+        "Deneysel Zemin Mekaniği",
+        "Yığma Yapı İnşaatı",
+        "Beton ve Kalıp İnşaatı",
+        "Taşkın Koruma ve Yönetimi",
+        "Liman Tasarımı",
+        "Kıyı Mühendisliğine Giriş",
+        "Kaya Mekaniği",
+        "İşletmede Mesleki Eğitim",
+        "Girişimcilik"
     ]
 },
         "pools": {
     "ZSD": [
         [
             "BAU251",
-            "İnşaat Müh. Nümerik Metotlar / Numerical Methods",
+            "İnşaat Müh. Nümerik Metotlar",
             6,
             2,
             1,
@@ -16497,7 +16498,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU252",
-            "Yapı Fiziği / Building Physics",
+            "Yapı Fiziği",
             6,
             3,
             1,
@@ -16513,7 +16514,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU305",
-            "Stokastik Sistemler / Stochastic Systems",
+            "Stokastik Sistemler",
             6,
             3,
             2,
@@ -16521,7 +16522,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU350",
-            "İnşaat Mühendisliği Projesi I / Civil Eng. Projects I",
+            "İnşaat Mühendisliği Projesi 1",
             6,
             2,
             2,
@@ -16529,7 +16530,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU351",
-            "Sistem Tekniği / System Technics",
+            "Sistem Tekniği",
             6,
             2,
             2,
@@ -16537,7 +16538,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF101",
-            "Bilg. Bil. ve Prog. Giriş / Intro to CS and Programming",
+            "Bilg. Bil. ve Prog. Giriş",
             6,
             2,
             1,
@@ -16545,7 +16546,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "INF102",
-            "Nesnel Programlama / OOP",
+            "Nesnel Programlama",
             6,
             2,
             0,
@@ -16553,7 +16554,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU352",
-            "Yapı İşletmesi I / Construction Management I",
+            "Yapı İşletmesi 1",
             6,
             3,
             1,
@@ -16561,7 +16562,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU353",
-            "İnşaat Hukuku / Construction Law",
+            "İnşaat Hukuku",
             6,
             2,
             1,
@@ -16569,7 +16570,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU354",
-            "Yapı Statiği III / Structural Analysis III",
+            "Yapı Statiği 3",
             6,
             3,
             1,
@@ -16577,7 +16578,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU355",
-            "Geodezi ve Geoinformatik / Geodasy and Geoinformatics",
+            "Geodezi ve Geoinformatik",
             6,
             3,
             1,
@@ -16585,7 +16586,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU356",
-            "İnş. Müh. için Jeoloji / Geology for Civil Engineers",
+            "İnş. Müh. için Jeoloji",
             6,
             3,
             1,
@@ -16593,7 +16594,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU357",
-            "İnşaat Bilişimi / Computer Applications in Civil Eng.",
+            "İnşaat Bilişimi",
             6,
             3,
             1,
@@ -16601,7 +16602,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU451",
-            "Su Kaynakları / Water Resources",
+            "Su Kaynakları",
             6,
             3,
             2,
@@ -16617,7 +16618,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU453",
-            "İnş. Müh. 3D Hesaplamalar / 3D Calculations in CE",
+            "İnş. Müh. 3D Hesaplamalar",
             6,
             1,
             2,
@@ -16625,7 +16626,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU454",
-            "Yapı İnşaatı III / Structural Engineering III",
+            "Yapı İnşaatı 3",
             6,
             3,
             1,
@@ -16633,7 +16634,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU456",
-            "Yapı İşletmesi II / Construction Management II",
+            "Yapı İşletmesi 2",
             6,
             3,
             1,
@@ -16649,7 +16650,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU458",
-            "Yapı Dinamiği I / Building Dynamics I",
+            "Yapı Dinamiği 1",
             6,
             3,
             1,
@@ -16657,7 +16658,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU459",
-            "Demiryolu Ulaşımının Temelleri / Rail Transport",
+            "Demiryolu Ulaşımının Temelleri",
             6,
             2,
             2,
@@ -16665,7 +16666,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU460",
-            "Yapı Bilgi Modellemesi / Building Information Modeling",
+            "Yapı Bilgi Modellemesi",
             6,
             2,
             2,
@@ -16673,7 +16674,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ING406",
-            "Mühendisler İçin Hukuk / Law for Engineering",
+            "Mühendisler İçin Hukuk",
             6,
             3,
             1,
@@ -16681,7 +16682,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU402",
-            "İnşaat Mühendisliği Projesi II / Civil Eng. Project II",
+            "İnşaat Mühendisliği Projesi 2",
             4,
             2,
             2,
@@ -16689,7 +16690,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU425",
-            "Deneysel Zemin Mekaniği / Experimental Soil Mechanics",
+            "Deneysel Zemin Mekaniği",
             2,
             0,
             0,
@@ -16697,7 +16698,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU461",
-            "Yığma Yapı İnşaatı / Masonry Construction",
+            "Yığma Yapı İnşaatı",
             6,
             3,
             2,
@@ -16705,7 +16706,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU463",
-            "Beton ve Kalıp İnşaatı / Concrete and Formwork Const.",
+            "Beton ve Kalıp İnşaatı",
             6,
             2,
             3,
@@ -16713,7 +16714,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU462",
-            "Taşkın Koruma ve Yönetimi / Flood Protection & Mgmt",
+            "Taşkın Koruma ve Yönetimi",
             6,
             3,
             2,
@@ -16721,7 +16722,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU464",
-            "Liman Tasarımı / Port Design",
+            "Liman Tasarımı",
             6,
             3,
             2,
@@ -16729,7 +16730,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU465",
-            "Kıyı Mühendisliğine Giriş / Intro to Coastal Engineering",
+            "Kıyı Mühendisliğine Giriş",
             6,
             3,
             2,
@@ -16737,7 +16738,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU466",
-            "Kaya Mekaniği / Rock Mechanics",
+            "Kaya Mekaniği",
             6,
             3,
             2,
@@ -16745,7 +16746,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "BAU490",
-            "İşletmede Mesleki Eğitim / Cooperative Education",
+            "İşletmede Mesleki Eğitim",
             6,
             3,
             2,
@@ -16753,7 +16754,7 @@ DEPARTMENTS_DATA = {
         ],
         [
             "ING404",
-            "Girişimcilik / Entrepreneurship",
+            "Girişimcilik",
             2,
             2,
             0,

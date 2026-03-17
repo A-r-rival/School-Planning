@@ -1,0 +1,31 @@
+﻿[MIGRATION] Adding curriculum view indexes...
+Database initialization error: 'charmap' codec can't encode character '\u2705' in position 12: character maps to <undefined>
+python : Traceback (most recent call last):
+At line:1 char:130
++ ... School-Planning"; python scripts/isolated_demand_test.py 2>&1 | Tee-O ...
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteExceptio 
+   n
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "D:\Git_Projects\School-Planning\scripts\isolated_demand_test.py", line 91, in <module>
+    isolated_test()
+  File "D:\Git_Projects\School-Planning\scripts\isolated_demand_test.py", line 7, in isolated_test
+    model = ScheduleModel()
+            ^^^^^^^^^^^^^^^
+  File "d:\Git_Projects\School-Planning\models\schedule_model.py", line 63, in __init__
+    self.initialize_connection()
+  File "d:\Git_Projects\School-Planning\models\schedule_model.py", line 122, in initialize_connection
+    migration.run_all()
+  File "d:\Git_Projects\School-Planning\models\repositories\migration.py", line 27, in run_all
+    migration()
+  File "d:\Git_Projects\School-Planning\models\repositories\migration.py", line 123, in _004_add_curriculum
+_indexes
+    self._log("\u2705 Curriculum indexes created")
+  File "d:\Git_Projects\School-Planning\models\repositories\migration.py", line 69, in _log
+    print(f"[MIGRATION] {message}")
+  File "C:\Users\taha_\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1254.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 12: character maps to <unde
+fined>

@@ -24,7 +24,7 @@ class CourseRole(Enum):
 
 @dataclass
 class RawCourseRow:
-    """Represents a single row from the database join (Course + StudentGroup)."""
+    """Represents a flat, unmerged row from the database join."""
     name: str
     instance: int
     t: int
@@ -38,7 +38,8 @@ class RawCourseRow:
     group_id: int
     t_room: Optional[int]
     l_room: Optional[int]
-    teacher_ids: Set[int] = field(default_factory=set)
+    teacher_ids: List[int]
+    is_from_pool: bool = False
 
 @dataclass(frozen=True)
 class ProgramCourseContext:
@@ -109,7 +110,7 @@ class CourseRepository:
                 key = (d_name.strip(), d_inst)
                 teacher_map[key].add(t_id)
 
-        # 2. Fetch Raw Course Rows
+        # 2. Fetch Raw Course Rows (Core + Pool)
         query = '''
             SELECT d.ders_adi, d.ders_instance, d.teori_saati, d.uygulama_saati, d.lab_saati, d.akts,
                    d.teori_odasi, d.lab_odasi,
@@ -117,19 +118,36 @@ class CourseRepository:
                    f.fakulte_adi,
                    d.ders_kodu,
                    b.bolum_adi,
-                   od.sinif_duzeyi
+                   od.sinif_duzeyi,
+                   0 AS is_from_pool
             FROM Dersler d
             JOIN Ders_Sinif_Iliskisi dsi ON d.ders_instance = dsi.ders_instance AND d.ders_adi = dsi.ders_adi
             JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
             JOIN Bolumler b ON od.bolum_num = b.bolum_id
             JOIN Fakulteler f ON b.fakulte_num = f.fakulte_num
+
+            UNION ALL
+
+            SELECT d.ders_adi, d.ders_instance, d.teori_saati, d.uygulama_saati, d.lab_saati, d.akts,
+                   d.teori_odasi, d.lab_odasi,
+                   od.donem_sinif_num,
+                   f.fakulte_adi,
+                   d.ders_kodu,
+                   b.bolum_adi,
+                   od.sinif_duzeyi,
+                   1 AS is_from_pool
+            FROM Dersler d
+            JOIN Ders_Havuz_Iliskisi dhi ON d.ders_instance = dhi.ders_instance AND d.ders_adi = dhi.ders_adi
+            JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
+            JOIN Fakulteler f ON b.fakulte_num = f.fakulte_num
+            JOIN Ogrenci_Donemleri od ON od.bolum_num = b.bolum_id
         '''
         self.db_model.c.execute(query)
         rows = self.db_model.c.fetchall()
 
         result_rows = []
         for r in rows:
-            name, instance, t, u, l, akts, t_room, l_room, group_id, fac_name, code, dept_name, class_year = r
+            name, instance, t, u, l, akts, t_room, l_room, group_id, fac_name, code, dept_name, class_year, is_from_pool = r
             
             # Normalize
             name = name.strip() if name else ""
@@ -156,7 +174,8 @@ class CourseRepository:
                 group_id=group_id,
                 t_room=t_room,
                 l_room=l_room,
-                teacher_ids=t_ids
+                teacher_ids=list(t_ids),
+                is_from_pool=bool(is_from_pool)
             ))
             
         print(f"DEBUG: Repository fetched {len(result_rows)} raw rows.")
@@ -172,43 +191,33 @@ class CurriculumResolver:
         # or we could pass it in. For now, direct import.
         self.dept_data = curriculum_data.DEPARTMENTS_DATA
 
-    def resolve_context(self, row: RawCourseRow) -> ProgramCourseContext:
+    def resolve_context(self, row: RawCourseRow) -> Optional[ProgramCourseContext]:
         """
         Determines the role of the course for the row's Department + Year.
         Strict logic:
         - If explicitly in a pool for this Dept -> ELECTIVE
-        - Else -> CORE
+        - If is_from_pool is true but not found in pool_codes -> Ignore (return None)
+        - Else (from Ders_Sinif_Iliskisi) -> CORE
         """
         dept_info = self.dept_data.get(row.department)
         role = CourseRole.CORE
         pool_code = None
 
         if dept_info and 'pool_codes' in dept_info:
-             # Wait, structure is dept_info['pool_codes']? No, verify structure.
-             # scripts/curriculum_data.py: 
-             # DEPARTMENTS_DATA = { 
-             #    "Bilgisayar Müh": { 
-             #        "curriculum": {...}, 
-             #        "pool_codes": { "SDIII": ["Name1", ...] } 
-             #    } 
-             # }
-             
              # Reverse lookup: Check if row.name is in any pool list
              target_name = row.name.lower()
              
-             # Check strict string match (case-insensitive)
-             # Note: In real data, names might tricky.
-             # We assume strict match or substring? 
-             # Data file uses full names.
-             # NOTE:
-             # This resolver intentionally uses STRICT name matching.
-             # If a course is not found in pool definitions, it is treated as CORE.
-             # This avoids accidental elective classification.
              for p_code, p_courses in dept_info.get('pool_codes', {}).items():
                  if any(c_name.strip().lower() == target_name for c_name in p_courses):
                      role = CourseRole.ELECTIVE
                      pool_code = p_code
                      break
+                     
+        if row.is_from_pool:
+            if role == CourseRole.ELECTIVE:
+                pass # Valid pool course
+            else:
+                return None # Ignore pool rows that don't match the year's definition
         
         return ProgramCourseContext(
             department=row.department,
@@ -229,7 +238,9 @@ class CourseMerger:
         for row in rows:
             # 1. Resolve Context
             context = resolver.resolve_context(row)
-            
+            if not context:
+                continue # Skip ignored pool rows
+
             # 2. Merge Key
             # (Name, Teachers, T, U, L, Instance)
             # Fix: Include instance in unique key to prevent merging distinct instances of same course

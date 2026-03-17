@@ -1,2 +1,22 @@
-PyQt5
-ortools
+# ──────────────────────────────────────────────────────────────────────────────
+# School Planning – requirements.txt
+# Copyright (c) 2026 Taha. All Rights Reserved.
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ── Runtime dependencies ──────────────────────────────────────────────────────
+
+# GUI framework — NOTE: PyQt5 is GPL v3 / Commercial dual-licensed.
+# If this application is distributed externally without releasing source code
+# you must purchase a commercial PyQt5 license from Riverbank Computing, OR
+# migrate to PySide6 (LGPL v3) which is compatible with proprietary software.
+# See THIRD_PARTY_LICENSES.md for full details.
+PyQt5==5.15.11
+
+# Constraint-programming / SAT solver — Apache License 2.0 (permissive).
+# Attribution required; see NOTICE and THIRD_PARTY_LICENSES.md.
+ortools==9.14.6206
+
+# ── Development / testing dependencies (not shipped to end users) ─────────────
+
+# Test runner — MIT License (no end-user obligations).
+pytest>=7.0

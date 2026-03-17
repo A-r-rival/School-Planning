@@ -713,10 +713,12 @@ class ScheduleController:
 
     def _on_run_setup_requested(self):
         """Run initial setup scripts (Reset DB, Seed, Populate, Assign)"""
-        reply = QMessageBox.question(
-            self.view,
-            "Otomatik Kurulum / Veri Sıfırlama",
-            "⚠️ DİKKAT: Bu işlem mevcut veritabanını SİLECEK ve sıfırdan kuracaktır.\n\n"
+        from PyQt5.QtWidgets import QMessageBox, QCheckBox, QApplication
+        from PyQt5.QtCore import Qt
+        
+        msg_box = QMessageBox(self.view)
+        msg_box.setWindowTitle("Otomatik Kurulum / Veri Sıfırlama")
+        msg_box.setText("⚠️ DİKKAT: Bu işlem mevcut veritabanını SİLECEK ve sıfırdan kuracaktır.\n\n"
             "Yapılacak işlemler:\n"
             "1. Veritabanının temizlenmesi\n"
             "2. Fakülte ve Bölümlerin yüklenmesi\n"
@@ -725,16 +727,21 @@ class ScheduleController:
             "5. Odaların oluşturulması\n"
             "6. Öğretmenlerin eklenmesi\n"
             "7. Ders atamalarının yapılması\n\n"
-            "Bu işlem biraz zaman alabilir. Devam etmek istiyor musunuz?",
-            QMessageBox.Yes | QMessageBox.No
-        )
+            "Bu işlem biraz zaman alabilir. Devam etmek istiyor musunuz?")
+        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        
+        cb = QCheckBox("Kurulumdan sonra isim temizleme scriptini de çalıştır (Roma rakamlarını arabik yap, sadece Türkçe isimleri tut)")
+        cb.setChecked(True) # Checked by default
+        msg_box.setCheckBox(cb)
+        
+        reply = msg_box.exec_()
 
         if reply != QMessageBox.Yes:
             return
+            
+        run_sanitize = cb.isChecked()
 
         # Show wait cursor
-        from PyQt5.QtWidgets import QApplication
-        from PyQt5.QtCore import Qt
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.view.setEnabled(False) # Disable UI
 
@@ -743,6 +750,17 @@ class ScheduleController:
             from scripts.populate_students import populate as populate_students_and_courses
             print("Running populate_students...")
             populate_students_and_courses()
+
+            # 1.5. Run Sanitization if requested (do it now so future relationships use clean names)
+            if run_sanitize:
+                import subprocess
+                import os
+                print("Running sanitize_course_names...")
+                script_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts", "sanitize_course_names.py")
+                try:
+                    subprocess.run(["python", script_path], capture_output=True, text=True)
+                except Exception as e:
+                    print(f"Sanitize script failed to execute: {e}")
 
             # 2. Populate Rooms
             from scripts.populate_rooms import populate_rooms
@@ -759,19 +777,23 @@ class ScheduleController:
             print("Running assign_teachers...")
             assign_teachers()
 
-            # 4. Refresh View
+            # 5. Refresh View
             self.refresh_data()
             
             # Refresh Filters (Faculties might have changed)
             facs = self.model.get_faculties()
             self.view.update_filter_combo("faculty", facs)
             
-            self.view.show_success_message(
+            success_msg = (
                 "Kurulum tamamlandı!\n"
                 "- Veritabanı sıfırlandı ve yeniden oluşturuldu.\n"
                 "- Fakülteler, Bölümler, Dersler ve Öğrenciler yüklendi.\n"
                 "- Öğretmenler atandı."
             )
+            if run_sanitize:
+                success_msg += "\n- Müfredat isimleri başarıyla temizlendi."
+                
+            self.view.show_success_message(success_msg)
 
         except Exception as e:
             QMessageBox.critical(self.view, "Hata", f"Kurulum sırasında hata oluştu: {str(e)}")

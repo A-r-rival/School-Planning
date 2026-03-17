@@ -14,7 +14,7 @@ class CurriculumViewDialog(QDialog):
         self.controller = controller
         self.enable_delete_mode = enable_delete_mode # Store initial state
         self.setWindowTitle("Müfredat Görüntüleme")
-        self.setGeometry(200, 200, 1150, 750) # Increased Size (+150px)
+        self.setGeometry(200, 200, 1250, 750) # Increased Size (+150px)
         
         # Fix for dropdowns appearing as separate windows
         self.setStyleSheet("""
@@ -58,6 +58,12 @@ class CurriculumViewDialog(QDialog):
         self.combo_year.currentIndexChanged.connect(self._on_filter_changed)
         row1_layout.addWidget(QLabel("Sınıf / Havuz:"))
         row1_layout.addWidget(self.combo_year, 1) # Stretch factor 1
+        
+        # Script runner button
+        self.btn_run_script = QPushButton("Müfredat İsimlerini Temizle")
+        self.btn_run_script.setStyleSheet("background-color: #ff9800; color: white; font-weight: bold;")
+        self.btn_run_script.clicked.connect(self._run_sanitize_script)
+        row1_layout.addWidget(self.btn_run_script)
         
         # row1_layout.addStretch() # REMOVED: Filters now fill the row
         layout.addLayout(row1_layout)
@@ -109,7 +115,7 @@ class CurriculumViewDialog(QDialog):
         self.rb_all = QRadioButton("Hepsi")
         self.rb_all.setChecked(True)
         self.rb_core = QRadioButton("Sadece Zorunlu")
-        self.rb_elective = QRadioButton("Sadece Seçmeli (Havuz)")
+        self.rb_elective = QRadioButton("Sadece Havuz")
         
         self.type_group.addButton(self.rb_all)
         self.type_group.addButton(self.rb_core)
@@ -125,7 +131,7 @@ class CurriculumViewDialog(QDialog):
         row2_layout.addWidget(self.rb_core)
         row2_layout.addWidget(self.rb_elective)
         
-        # Delete Mode Checkbox
+        # Delete Mode Checkbox (Restored)
         row2_layout.addSpacing(20)
         self.chk_delete_mode = QCheckBox("Ders Silme Modu")
         self.chk_delete_mode.setStyleSheet("color: red; font-weight: bold;")
@@ -133,8 +139,33 @@ class CurriculumViewDialog(QDialog):
         self.chk_delete_mode.stateChanged.connect(self._toggle_delete_mode) 
         row2_layout.addWidget(self.chk_delete_mode)
         
+        # Group Courses Checkbox (NEW)
+        row2_layout.addSpacing(20)
+        self.chk_group_courses = QCheckBox("Benzer İsimleri Grupla")
+        self.chk_group_courses.setStyleSheet("color: #2196F3; font-weight: bold;")
+        self.chk_group_courses.setChecked(False) # Default OFF
+        self.chk_group_courses.stateChanged.connect(self._on_group_toggle_changed) # NEW handler
+        row2_layout.addWidget(self.chk_group_courses)
+
         # row2_layout.addStretch() # REMOVED: Search input expands instead
         layout.addLayout(row2_layout)
+        
+        # --- Filter Row 3: Group Specific (NEW) ---
+        self.group_filter_container = QFrame()
+        self.group_filter_container.setFrameShape(QFrame.NoFrame)
+        self.group_filter_container.setVisible(False) # Hidden by default
+        
+        row3_layout = QHBoxLayout(self.group_filter_container)
+        row3_layout.setContentsMargins(5, 5, 5, 5)
+        
+        self.chk_hide_single = QCheckBox("Tek Girdili Grupları Gösterme")
+        self.chk_hide_single.setStyleSheet("color: #673AB7; font-weight: bold;")
+        self.chk_hide_single.setChecked(True) # Enabled by default
+        self.chk_hide_single.stateChanged.connect(self._on_filter_changed)
+        row3_layout.addWidget(self.chk_hide_single)
+        row3_layout.addStretch()
+        
+        layout.addWidget(self.group_filter_container)
         
         # --- Dynamic Pool Filter Row (Row 3 - Hidden by default) ---
         self.pool_filter_container = QFrame()
@@ -182,7 +213,7 @@ class CurriculumViewDialog(QDialog):
         
         # Halve width of Type (Index 7)
         header.setSectionResizeMode(7, QHeaderView.Fixed) 
-        self.table.setColumnWidth(7, 70) 
+        self.table.setColumnWidth(7, 100) 
 
         header.setSectionResizeMode(9, QHeaderView.Fixed) 
         self.table.setColumnWidth(9, 80) 
@@ -198,6 +229,23 @@ class CurriculumViewDialog(QDialog):
              for f_id, f_name in faculties:
                  self.combo_faculty.addItem(f_name, f_id)
         self._refresh_table()
+
+    def _run_sanitize_script(self):
+        msg = "Curriculum isimlerini yabancı dilden arındırıp, roma rakamlarını düzeltmek ister misiniz?\n\nBu işlem veri tabanını (curriculum_data.py) doğrudan güncelleyecektir."
+        reply = QMessageBox.question(self, "İsimleri Temizle", msg, QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        
+        if reply == QMessageBox.Yes:
+            import subprocess
+            import os
+            script_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts", "sanitize_course_names.py")
+            try:
+                result = subprocess.run(["python", script_path], capture_output=True, text=True)
+                if result.returncode == 0:
+                    QMessageBox.information(self, "Başarılı", "Müfredat isimleri başarıyla temizlendi!\n\nDeğişikliklerin ekrana yansıması için programı yeniden başlatmanız gerekebilir.")
+                else:
+                    QMessageBox.warning(self, "Hata", f"Betik çalışırken bir hata oluştu:\n{result.stderr}")
+            except Exception as e:
+                QMessageBox.critical(self, "Hata", f"Betik çalıştırılamadı:\n{str(e)}")
 
     def _on_dept_changed(self):
         # Trigger general refresh, which handles visibility
@@ -222,6 +270,12 @@ class CurriculumViewDialog(QDialog):
                     
         self._refresh_table()
 
+    def _on_group_toggle_changed(self, state):
+        """Handle 'Benzer İsimleri Grupla' toggle"""
+        is_active = (state == Qt.Checked)
+        self.group_filter_container.setVisible(is_active)
+        self._on_filter_changed()
+
     def _refresh_table(self):
         # Gather filters
         dept_id = self.combo_dept.currentData()
@@ -229,9 +283,10 @@ class CurriculumViewDialog(QDialog):
         faculty_id = self.combo_faculty.currentData()
 
         # Update Pool Filter Visibility Logic
-        # Show ONLY IF: Dept is selected AND (Year is None/All OR Year is Havuz/99)
+        # Show ONLY IF: Dept is selected AND (Year is None/All OR Year is Havuz/99) AND NOT Grouped
         should_show_pools = False
-        if dept_id:
+        is_grouped = self.chk_group_courses.isChecked()
+        if dept_id and not is_grouped:
             if year_filter is None or year_filter == 99:
                  should_show_pools = True
         
@@ -287,12 +342,14 @@ class CurriculumViewDialog(QDialog):
                      chk.deleteLater()
                  self.pool_checkboxes.clear()
 
-            # --- 2. Filter Client-Side (Search & Pools & Type) ---
+            # --- 2. Filter Client-Side (Search & Pools & Type & Grouping Mode) ---
             visible_pools = []
             if dept_id and self.pool_filter_container.isVisible():
                  for code, cb in self.pool_checkboxes.items():
                      if cb.isChecked():
                          visible_pools.append(code)
+
+            is_grouped = self.chk_group_courses.isChecked()
 
             filtered = []
             for c in courses:
@@ -310,6 +367,9 @@ class CurriculumViewDialog(QDialog):
                 if self.rb_core.isChecked() and is_pool == 1: continue
                 if self.rb_elective.isChecked() and is_pool == 0: continue
                 
+                # Filter out ALL pools if we are currently Grouping
+                if is_grouped and is_pool == 1: continue
+                
                 # Dynamic Pool Filter
                 if self.pool_filter_container.isVisible():
                      if is_pool == 1 and pool_code:
@@ -318,7 +378,61 @@ class CurriculumViewDialog(QDialog):
 
                 filtered.append(c)
             
-            self._populate_table(filtered)
+            # --- 3. Apply Grouping if enabled ---
+            is_grouped = self.chk_group_courses.isChecked()
+            
+            if is_grouped:
+                import re
+                
+                def get_base_name(course_tuple):
+                    # Index 10 is is_pool, 11 is pool_code
+                    is_pool = course_tuple[10]
+                    pool_code = course_tuple[11]
+                    
+                    if is_pool == 1:
+                        # Keep pools grouped together by their pool code
+                        pc = str(pool_code).strip().upper() if pool_code else "GENEL"
+                        return f"~HAVUZ_{pc}" # Prefix ~ forces it to the bottom of the sort list conceptually, or keeps them clustered
+                    
+                    # Index 1 is the course name (ders_adi)
+                    name = str(course_tuple[1])
+                    
+                    # Split logic: ignore after ':' or '(Benzer delimiter)' or "-"
+                    # Priority: Colon, then Dash. 
+                    if ':' in name:
+                        base = name.split(':')[0]
+                    elif '-' in name:
+                        base = name.split('-')[0]
+                    else:
+                        base = name
+                        
+                    # Clean up trailing spaces and convert to a comparable format
+                    base = base.strip().upper()
+                    
+                    # Normalizing numbers (Analiz 1 vs Analiz 2) to ensure they are NOT grouped together.
+                    # This happens automatically because "Analiz 1" and "Analiz 2" don't have colons, so base names differ.
+                    return base
+
+                # Sort by Base Name, then by original Name to keep related ones together
+                filtered.sort(key=lambda x: (get_base_name(x), str(x[1])))
+                
+                # Filter out single-entry groups if requested
+                if self.chk_hide_single.isChecked():
+                    from collections import defaultdict
+                    group_counts = defaultdict(int)
+                    # First pass: count entries in each group
+                    for c in filtered:
+                        group_counts[get_base_name(c)] += 1
+                    
+                    # Second pass: filter (but always keep pools)
+                    final_filtered = []
+                    for c in filtered:
+                        gn = get_base_name(c)
+                        if gn.startswith("~HAVUZ_") or group_counts[gn] > 1:
+                            final_filtered.append(c)
+                    filtered = final_filtered
+                    
+            self._populate_table(filtered, is_grouped=is_grouped)
 
     def _display_only_refresh(self): # Helper for search box
          self._refresh_table()
@@ -356,7 +470,7 @@ class CurriculumViewDialog(QDialog):
 
     # ... (Rest of methods) ...
 
-    def _populate_table(self, data):
+    def _populate_table(self, data, is_grouped=False):
         self.table.setUpdatesEnabled(False) # Optimize performance
         from PyQt5.QtGui import QColor
         self.table.setRowCount(0)
@@ -365,8 +479,9 @@ class CurriculumViewDialog(QDialog):
         
         current_header = None
         
-        # Predefined colors for Core
+        # Predefined colors
         CORE_COLOR = "#cfe2f3" # Light Blue
+        GROUP_COLOR = "#fffbd7" # Light Yellow for Name Groups
         
         # Pool colors generator (simple consistent hash)
         def get_pool_color(code):
@@ -382,21 +497,37 @@ class CurriculumViewDialog(QDialog):
             sort_year = row_data[9]
             is_pool = row_data[10]
             _raw_pool_code = row_data[11] 
+            course_name = str(row_data[1])
             
-            # Normalize Pool Code for Grouping
+            # Normalize Pool Code
             pool_code = str(_raw_pool_code).strip().upper() if _raw_pool_code else ""
             
-            # Determine Header Title
+            # Determine Header Title based on Grouping Mode
             header_title = ""
             banner_color = Qt.gray # Default
             
-            if is_pool == 1:
-                # Group by Pool Code
-                header_title = f"{pool_code} Havuzu" if pool_code else "Genel Havuz"
-                banner_color = get_pool_color(pool_code)
+            if is_grouped:
+                if is_pool == 1:
+                    # Keep Pool Header behavior even in grouped mode
+                    header_title = f"{pool_code} Havuzu" if pool_code else "Genel Havuz"
+                    banner_color = get_pool_color(pool_code)
+                else:
+                    if ':' in course_name:
+                        base = course_name.split(':')[0]
+                    elif '-' in course_name:
+                        base = course_name.split('-')[0]
+                    else:
+                        base = course_name
+                    base = base.strip()
+                    header_title = f"Grup: {base}"
+                    banner_color = GROUP_COLOR
             else:
-                header_title = f"{sort_year}. Sınıf"
-                banner_color = CORE_COLOR
+                if is_pool == 1:
+                    header_title = f"{pool_code} Havuzu" if pool_code else "Genel Havuz"
+                    banner_color = get_pool_color(pool_code)
+                else:
+                    header_title = f"{sort_year}. Sınıf"
+                    banner_color = CORE_COLOR
                 
             # Insert Header if changed
             if header_title != current_header:

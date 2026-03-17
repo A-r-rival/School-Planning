@@ -91,21 +91,26 @@ class ScheduleModel(QObject):
             for dept, details in data.items():
                 curr = details.get('curriculum', {})
                 for sem_key, courses in curr.items():
-                    # sem_key: "1. Dönem / 1. Yıl Güz Dönemi" or legacy "1"
+                    # sem_key format is like "1. Dönem / 1. Yıl Güz Dönemi" or "1"
                     try:
-                        sem_num = int(sem_key.split('.')[0])
-                        is_odd = (sem_num % 2 != 0)
-                        semester = "Güz" if is_odd else "Bahar"
-                        
-                        for course in courses:
-                            # course: [Code, Name, T, U, L, AKTS]
-                            if len(course) >= 2:
-                                code = str(course[0]).strip()
-                                
-                                if code not in self.semester_lookup:
-                                    self.semester_lookup[code] = set()
-                                self.semester_lookup[code].add(semester)
-                    except:
+                        # Extract the first number from the string
+                        import re
+                        match = re.search(r'\d+', sem_key)
+                        if match:
+                            sem_num = int(match.group())
+                            is_odd = (sem_num % 2 != 0)
+                            semester = "Güz" if is_odd else "Bahar"
+                            
+                            for course in courses:
+                                # course: [Code, Name, T, U, L, AKTS]
+                                if len(course) >= 2:
+                                    code = str(course[0]).strip()
+                                    if code:
+                                        if code not in self.semester_lookup:
+                                            self.semester_lookup[code] = set()
+                                        self.semester_lookup[code].add(semester)
+                    except Exception as parse_e:
+                        print(f"Warning: Failed to parse semester key '{sem_key}': {parse_e}")
                         continue
         except Exception as e:
             print(f"Warning: Could not build semester lookup: {e}")
