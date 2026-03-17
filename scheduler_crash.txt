@@ -1,6 +1,0 @@
-CRASH IN PHASE 1 SOLVER: 'ORToolsScheduler' object has no attribute '_run_solver'
-Traceback (most recent call last):
-  File "d:\Git_Projects\School-Planning\controllers\scheduler.py", line 1174, in generate_schedule
-    if not self._run_solver("PHASE1_CORE", timeout=400.0, save_to_db=False):
-           ^^^^^^^^^^^^^^^^
-AttributeError: 'ORToolsScheduler' object has no attribute '_run_solver'
