@@ -997,7 +997,7 @@ class ScheduleModel(QObject):
             return global_bolum_id
     
     # Öğrenci Sinifı ekle (otomatik donem_sinif_num hesaplaması)
-    def ogrenci_sinifi_ekle(self, bolum_id: int, sinif_duzeyi: int) -> int:
+    def ogrenci_sinifi_ekle(self, bolum_id: int, sinif_duzeyi: int, ogrenci_sayisi: int = 0) -> int:
         with self.conn:
             self.c.execute('SELECT fakulte_num, bolum_num FROM Bolumler WHERE bolum_id = ?', (bolum_id,))
             result = self.c.fetchone()
@@ -1008,10 +1008,18 @@ class ScheduleModel(QObject):
             donem_sinif_num = int(f"{fakulte_num}{bolum_num}0{sinif_duzeyi}")
 
             self.c.execute('''
-                INSERT INTO Ogrenci_Donemleri (donem_sinif_num, sinif_duzeyi, bolum_num) 
-                VALUES (?, ?, ?)
-            ''', (donem_sinif_num, sinif_duzeyi, bolum_id))
+                INSERT INTO Ogrenci_Donemleri (donem_sinif_num, sinif_duzeyi, bolum_num, ogrenci_sayisi) 
+                VALUES (?, ?, ?, ?)
+            ''', (donem_sinif_num, sinif_duzeyi, bolum_id, ogrenci_sayisi))
             return donem_sinif_num
+
+    def sinif_ogrenci_sayisini_guncelle(self, donem_sinif_num: str, ogrenci_sayisi: int):
+        with self.conn:
+            self.c.execute('''
+                UPDATE Ogrenci_Donemleri 
+                SET ogrenci_sayisi = ? 
+                WHERE donem_sinif_num = ?
+            ''', (ogrenci_sayisi, donem_sinif_num))
     
     # Ders ekle (ders_instance otomatik atanır)
     def ders_ekle(self, ders_adi, ders_kodu=None, teori_odasi=None, lab_odasi=None, teori_saati=0, uygulama_saati=0, lab_saati=0):
@@ -1730,7 +1738,8 @@ class ScheduleModel(QObject):
         try:
             query = '''
                 SELECT DISTINCT d.ders_adi, d.ders_instance, d.teori_saati, d.uygulama_saati, d.lab_saati,
-                       GROUP_CONCAT(DISTINCT COALESCE(b.bolum_adi, b2.bolum_adi)) as bolumler
+                       GROUP_CONCAT(DISTINCT COALESCE(b.bolum_adi, b2.bolum_adi)) as bolumler,
+                       og.grup_id
                 FROM Dersler d
                 LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
                 LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
@@ -1739,8 +1748,10 @@ class ScheduleModel(QObject):
                 LEFT JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
                 LEFT JOIN Bolumler b2 ON dhi.bolum_id = b2.bolum_id
                 
+                LEFT JOIN Ortak_Ders_Gruplari og ON d.ders_adi = og.ders_adi AND d.ders_instance = og.ders_instance
+                
                 WHERE d.ders_adi = ?
-                GROUP BY d.ders_adi, d.ders_instance, d.teori_saati, d.uygulama_saati, d.lab_saati
+                GROUP BY d.ders_adi, d.ders_instance, d.teori_saati, d.uygulama_saati, d.lab_saati, og.grup_id
             '''
             self.c.execute(query, (base_name,))
             rows = self.c.fetchall()
@@ -1751,7 +1762,8 @@ class ScheduleModel(QObject):
                     'ders_adi': r[0],
                     'ders_instance': r[1],
                     't': r[2], 'u': r[3], 'l': r[4],
-                    'bolumler': r[5] if r[5] else 'Bölüm Ataması Yok'
+                    'bolumler': r[5] if r[5] else 'Bölüm Ataması Yok',
+                    'grup_id': r[6]
                 })
             return results
         except Exception as e:
@@ -1787,6 +1799,81 @@ class ScheduleModel(QObject):
             print(f"Error saving common course group: {e}")
             self.error_occurred.emit(f"Ortak ders grubu kaydedilirken hata: {str(e)}")
             return False
+
+    def auto_group_all_common_courses(self) -> dict:
+        """
+        Automatically groups all identical-named courses into their own groups,
+        provided they share the exact same T, U, and L hours.
+        """
+        try:
+            with self.conn:
+                # Bul: Birden fazla instance'ı olan ders isimleri
+                self.c.execute('''
+                    SELECT d.ders_adi
+                    FROM Dersler d
+                    GROUP BY d.ders_adi
+                    HAVING COUNT(d.ders_instance) > 1
+                ''')
+                duplicate_names = [row[0] for row in self.c.fetchall()]
+                
+                if not duplicate_names:
+                    return {"success": True, "message": "Gruplanacak ders bulunamadı."}
+                
+                self.c.execute('SELECT MAX(grup_id) FROM Ortak_Ders_Gruplari')
+                row = self.c.fetchone()
+                current_grup_id = row[0] if row[0] is not None else 0
+                
+                grouped_count = 0
+                
+                for ders_adi in duplicate_names:
+                    # Get all instances and their T/U/L
+                    self.c.execute('''
+                        SELECT ders_instance, teori_saati, uygulama_saati, lab_saati 
+                        FROM Dersler WHERE ders_adi = ?
+                    ''', (ders_adi,))
+                    instances = self.c.fetchall()
+                    
+                    if not instances: continue
+                    
+                    # Ensure they all have identical T, U, L
+                    first_t = instances[0][1]
+                    first_u = instances[0][2]
+                    first_l = instances[0][3]
+                    
+                    is_identical = all(r[1] == first_t and r[2] == first_u and r[3] == first_l for r in instances)
+                    if not is_identical:
+                        # Skip this course as it has mismatched hours
+                        continue
+                        
+                    # Find if already grouped
+                    self.c.execute('SELECT ders_instance, grup_id FROM Ortak_Ders_Gruplari WHERE ders_adi = ?', (ders_adi,))
+                    existing = self.c.fetchall()
+                    existing_instances = {r[0] for r in existing}
+                    
+                    # Instances to add
+                    to_add = [r[0] for r in instances if r[0] not in existing_instances]
+                    
+                    if len(to_add) > 1 or (len(to_add) == 1 and existing_instances):
+                        # Find existing grup_id or mint new one
+                        if existing:
+                            grup_id = existing[0][1]
+                        else:
+                            current_grup_id += 1
+                            grup_id = current_grup_id
+                            
+                        # Insert
+                        for inst in to_add:
+                            self.c.execute('''
+                                INSERT INTO Ortak_Ders_Gruplari (grup_id, ders_adi, ders_instance)
+                                VALUES (?, ?, ?)
+                            ''', (grup_id, ders_adi, inst))
+                        
+                        grouped_count += 1
+                        
+            return {"success": True, "message": f"Tüm aynı isimli dersler tarandı. Toplam {grouped_count} yeni ders grubu oluşturuldu veya güncellendi."}
+        except Exception as e:
+            print(f"Error in auto grouping: {e}")
+            return {"success": False, "message": str(e)}
 
     def get_common_course_groups(self) -> List[dict]:
         """

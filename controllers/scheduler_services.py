@@ -41,6 +41,7 @@ class RawCourseRow:
     teacher_ids: List[int]
     is_from_pool: bool = False
     common_group_id: Optional[int] = None
+    student_count: int = 0
 
 @dataclass(frozen=True)
 class ProgramCourseContext:
@@ -72,6 +73,7 @@ class PhysicalCourse:
     group_ids: Set[int] = field(default_factory=set) # Raw group IDs
     contexts: Set[ProgramCourseContext] = field(default_factory=set) # Semantic Contexts
     instance: int = 1 # Default to 1 if not specified
+    student_count: int = 0
 
 
     @property
@@ -120,7 +122,8 @@ class CourseRepository:
                    d.ders_kodu,
                    b.bolum_adi,
                    od.sinif_duzeyi,
-                   0 AS is_from_pool
+                   0 AS is_from_pool,
+                   od.ogrenci_sayisi
             FROM Dersler d
             JOIN Ders_Sinif_Iliskisi dsi ON d.ders_instance = dsi.ders_instance AND d.ders_adi = dsi.ders_adi
             JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
@@ -136,7 +139,8 @@ class CourseRepository:
                    d.ders_kodu,
                    b.bolum_adi,
                    od.sinif_duzeyi,
-                   1 AS is_from_pool
+                   1 AS is_from_pool,
+                   od.ogrenci_sayisi
             FROM Dersler d
             JOIN Ders_Havuz_Iliskisi dhi ON d.ders_instance = dhi.ders_instance AND d.ders_adi = dhi.ders_adi
             JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
@@ -155,7 +159,7 @@ class CourseRepository:
 
         result_rows = []
         for r in rows:
-            name, instance, t, u, l, akts, t_room, l_room, group_id, fac_name, code, dept_name, class_year, is_from_pool = r
+            name, instance, t, u, l, akts, t_room, l_room, group_id, fac_name, code, dept_name, class_year, is_from_pool, student_count = r
             
             # Normalize
             name = name.strip() if name else ""
@@ -186,7 +190,8 @@ class CourseRepository:
                 l_room=l_room,
                 teacher_ids=list(t_ids),
                 is_from_pool=bool(is_from_pool),
-                common_group_id=c_group_id
+                common_group_id=c_group_id,
+                student_count=student_count if student_count else 0
             ))
             
         print(f"DEBUG: Repository fetched {len(result_rows)} raw rows.")
@@ -252,6 +257,11 @@ class CourseMerger:
             if not context:
                 continue # Skip ignored pool rows
 
+            # Calculate effective student count
+            row_student_count = row.student_count
+            if context.role == CourseRole.ELECTIVE:
+                row_student_count = int(row_student_count * 0.25)
+
             # 2. Merge Key
             # If manually grouped, force them into the same key (ignoring exact name, instance, dept, teachers)
             # The UI logic enforces that T/U/L are identical before allowing the grouping.
@@ -273,10 +283,12 @@ class CourseMerger:
                     faculties={row.faculty} if row.faculty else set(),
                     group_ids={row.group_id},
                     contexts={context},
-                    instance=row.instance
+                    instance=row.instance,
+                    student_count=row_student_count
                 )
             else:
                 existing = merged_map[key]
+                existing.student_count += row_student_count
                 existing.group_ids.add(row.group_id)
                 existing.contexts.add(context)
                 if row.faculty:
@@ -346,7 +358,8 @@ class SchedulableCourseBuilder:
                 'faculties': list(pc.faculties),
 
                 'parent_key': (pc.name, pc.instance), # Standardized for DB Update usage
-                'instance': pc.instance
+                'instance': pc.instance,
+                'student_count': pc.student_count
             }
             
             # Generate Sub-blocks (Theory, Practice, Lab)

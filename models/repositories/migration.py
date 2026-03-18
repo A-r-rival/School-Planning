@@ -44,11 +44,17 @@ class DatabaseMigration:
             self._008_add_schedule_snapshots_table,
             self._009_add_room_notes,
             self._010_add_common_course_groups,
+            self._011_add_group_size,
         ]
 
     def _009_add_room_notes(self) -> None:
         """Adds notlar column to Derslikler table."""
         from .migrations.migration_009_add_room_notes import up
+        up(self._conn)
+
+    def _011_add_group_size(self) -> None:
+        """Adds ogrenci_sayisi column to Ogrenci_Donemleri table."""
+        from .migrations.migration_011_add_group_size import up
         up(self._conn)
 
     # ---------- helpers ----------

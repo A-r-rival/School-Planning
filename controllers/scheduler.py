@@ -254,6 +254,7 @@ class ORToolsScheduler:
             # 1. Create Room Variables
             possible_rooms = []
             viable_rooms_count = 0
+            capacity_filtered_count = 0
             # Determine if fixed_room is actually a valid room in our current list
             is_fixed_room_valid = False
             if not ignore_fixed_rooms and course['fixed_room']:
@@ -383,7 +384,12 @@ class ORToolsScheduler:
                      course_name = self.courses[c_idx]['name']
                      if course_depts:
                           course_name = f"{course_name} ({course_depts})"
-                     msg = f"CRITICAL WARNING: Course {course_name} (ID {c_idx}) has NO VIABLE ROOMS (Duration/Slot Issue)! Duration: {self.courses[c_idx]['duration']}. Slots Per Day: {self.slots_per_day}\n"
+                     
+                     reason = f"Duration ({self.courses[c_idx]['duration']}) > Slots Per Day ({self.slots_per_day})"
+                     if capacity_filtered_count > 0 and capacity_filtered_count >= len(self.rooms):
+                         reason = f"Kapasite Sorunu: Dersi alacak öğrenci sayısı ({course.get('student_count', 0)}) okulun en büyük dersliğinden daha büyük!"
+                     
+                     msg = f"CRITICAL WARNING: Course {course_name} (ID {c_idx}) has NO VIABLE ROOMS! Reason: {reason}\n"
                      print(msg, flush=True)
                      with open("debug_infeasibility_report.txt", "a", encoding="utf-8") as f:
                          f.write(msg)
@@ -1444,6 +1450,14 @@ class ORToolsScheduler:
                 if not start_slot:
                     print(f"WARNING: Invalid start slot ID {s_id} for course {course['name']}, skipping")
                     continue
+                
+                # Capacity Filter (for logging/debugging purposes during commit, though filtering should happen earlier)
+                room_data = room_by_id.get(r_id)
+                if room_data:
+                    r_capacity = room_data.get('capacity', 0)
+                    course_size = course.get('student_count', 0)
+                    if course_size > 0 and r_capacity > 0 and r_capacity < course_size:
+                        print(f"WARNING: Course '{course['name']}' (size {course_size}) assigned to room '{room_data.get('name', r_id)}' (capacity {r_capacity}) which is too small. This assignment might be infeasible due to capacity.")
                 
                 # Defensive: Ensure end index is valid
                 end_idx = s_id + duration - 1

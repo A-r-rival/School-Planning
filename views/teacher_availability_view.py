@@ -8,9 +8,11 @@ from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QComboBox, 
     QTableWidget, QTableWidgetItem, QPushButton, 
     QLabel, QTimeEdit, QMessageBox, QHeaderView,
-    QLineEdit, QCheckBox, QTabWidget, QWidget, QCompleter, QSpinBox, QFrame # Added QCompleter, QFrame
+    QLineEdit, QCheckBox, QTabWidget, QWidget, QCompleter, QSpinBox, QFrame, # Added QCompleter, QFrame
+    QListWidget, QListWidgetItem
 )
 from PyQt5.QtCore import Qt, QTime
+from PyQt5.QtGui import QColor
 
 class AddUnavailabilityDialog(QDialog):
     def __init__(self, teachers, controller, parent=None):
@@ -342,11 +344,16 @@ class TeacherAvailabilityView(QDialog):
         self.chk_hide_single_common.stateChanged.connect(lambda: self._filter_common_groups(self.search_common_groups.text()))
         left_panel.addWidget(self.chk_hide_single_common)
         
-        from PyQt5.QtWidgets import QListWidget, QListWidgetItem
+        # QListWidget is now globally imported
         self.list_common_groups = QListWidget()
         self.list_common_groups.setMinimumWidth(220)
         self.list_common_groups.itemClicked.connect(self._on_common_group_clicked)
         left_panel.addWidget(self.list_common_groups)
+        # QPushButton and QMessageBox are now globally imported
+        
+        self.btn_auto_group_all = QPushButton("Tüm Aynı İsimlileri Grupla")
+        self.btn_auto_group_all.clicked.connect(self._auto_group_all_common_courses)
+        left_panel.addWidget(self.btn_auto_group_all)
         
         cc_layout.addLayout(left_panel)
         
@@ -493,7 +500,7 @@ class TeacherAvailabilityView(QDialog):
                 else:
                      self.assign_table.setItem(row, 4, QTableWidgetItem("-"))
 
-            from PyQt5.QtGui import QColor
+            # QColor is now globally imported
 
             # --- Section 1: Assigned ---
             if self.chk_show_assigned.isChecked() and assigned:
@@ -773,7 +780,7 @@ class TeacherAvailabilityView(QDialog):
         self.list_common_groups.clear()
         if hasattr(self.controller.model, 'get_similar_course_groups'):
             similar_groups = self.controller.model.get_similar_course_groups()
-            from PyQt5.QtWidgets import QListWidgetItem
+            # QListWidgetItem is globally imported
             for base_name, count in similar_groups:
                 item = QListWidgetItem(f"{base_name} ({count} Seçenek)")
                 item.setData(Qt.UserRole, count)
@@ -795,22 +802,45 @@ class TeacherAvailabilityView(QDialog):
                 
                 # Format courses display
                 course_strs = []
+                all_bolumler = set()
                 for c in courses:
                     course_strs.append(f"{c['ders_adi']} (Şube {c['ders_instance']}, Bölüm: {c['bolumler']})")
+                    all_bolumler.add(c['bolumler'])
                 
                 self.table_common_groups.setItem(row_idx, 0, QTableWidgetItem(str(g_id)))
                 
                 joined_item = QTableWidgetItem(" | ".join(course_strs))
                 joined_item.setToolTip("\\n".join(course_strs))
                 self.table_common_groups.setItem(row_idx, 1, joined_item)
+
+                # Display departments for the group
+                bolum_text = ", ".join(sorted(list(all_bolumler)))
+                self.table_common_groups.setItem(row_idx, 2, QTableWidgetItem(bolum_text))
                 
-                delete_btn = QPushButton("Grup Sil")
-                delete_btn.setStyleSheet("color: red;")
-                delete_btn.clicked.connect(lambda checked, gid=g_id: self._on_delete_common_group_clicked(gid))
-                self.table_common_groups.setCellWidget(row_idx, 2, delete_btn)
+                # Delete Group Button
+                btn_delete = QPushButton("Grup Sil")
+                btn_delete.setStyleSheet("color: red;")
+                btn_delete.clicked.connect(lambda checked, gid=g_id: self._on_delete_common_group_clicked(gid))
+                self.table_common_groups.setCellWidget(row_idx, 3, btn_delete)
                 
         # 3. Apply filter using current search text to hide single-variation courses correctly on load
         self._filter_common_groups(self.search_common_groups.text())
+
+    def _auto_group_all_common_courses(self):
+        # QMessageBox is globally imported
+        reply = QMessageBox.question(self, 'Otomatik Gruplama', 
+            "Mevcut sistemde birden fazla şubesi olan (aynı isim ve krediye sahip) TÜM DERSLER kendi adıyla oluşturulacak ortak gruplara otomatik olarak EKLENECEKTİR.\\n\\nBu işlemi onaylıyor musunuz?",
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            
+        if reply == QMessageBox.Yes:
+            result = self.controller.model.auto_group_all_common_courses()
+            if result.get("success"):
+                QMessageBox.information(self, "Başarılı", result.get("message", "İşlem başarılı."))
+                self._load_common_course_groups()
+                # Clear lists to prevent stale selection
+                self.list_common_instances.clear()
+            else:
+                QMessageBox.warning(self, "Hata", result.get("message", "Bir hata oluştu."))
 
     def _filter_common_groups(self, text):
         """Filter the left panel list of common groups"""
@@ -837,10 +867,11 @@ class TeacherAvailabilityView(QDialog):
         if hasattr(self, 'controller') and hasattr(self.controller.model, 'get_courses_by_base_name'):
             instances = self.controller.model.get_courses_by_base_name(base_name)
             
-            from PyQt5.QtWidgets import QListWidgetItem # Ensure imported
+            # QListWidgetItem is globally imported
             for inst in instances:
                 # Add checkbox item
-                list_item = QListWidgetItem(f"{inst['ders_adi']} (Şube {inst['ders_instance']} - {inst['bolumler']})")
+                grup_info = f" [Grup: {inst['grup_id']}]" if inst.get('grup_id') else ""
+                list_item = QListWidgetItem(f"{inst['ders_adi']} (Şube {inst['ders_instance']} - {inst['bolumler']}){grup_info}")
                 list_item.setFlags(list_item.flags() | Qt.ItemIsUserCheckable)
                 list_item.setCheckState(Qt.Unchecked)
                 

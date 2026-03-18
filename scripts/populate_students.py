@@ -228,8 +228,9 @@ def populate():
             entry_year = 2024 - year + 1
             
             donem_sinif_num = f"{entry_year}_{bolum_num}_{year}"
-            model.c.execute("INSERT OR IGNORE INTO Ogrenci_Donemleri (donem_sinif_num, baslangic_yili, bolum_num, sinif_duzeyi) VALUES (?, ?, ?, ?)",
-                           (donem_sinif_num, entry_year, bolum_id, year))
+            # Varsayılan sınıf mevcudu (kapasitesi) 25 olarak ayarlandı
+            model.c.execute("INSERT OR IGNORE INTO Ogrenci_Donemleri (donem_sinif_num, baslangic_yili, bolum_num, sinif_duzeyi, ogrenci_sayisi) VALUES (?, ?, ?, ?, ?)",
+                           (donem_sinif_num, entry_year, bolum_id, year, 25))
             
             # --- Regular Students (35) ---
             students_in_year = []

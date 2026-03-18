@@ -42,7 +42,7 @@ def populate_rooms():
             # Scheduler checks for "Lab" in name/type, so standard "Laboratuvar" is safe + name has "Lab".
             # User said "lab türü kur" (establish lab type). Let's start with "Laboratuvar" type but distinct names.
             
-            rooms.append((room_name, "Laboratuvar", 40, floor))
+            rooms.append((room_name, "Laboratuvar", 300, floor))
             lab_counter += 1
         
     # 4 Amfis (Capacity 70) 
@@ -50,7 +50,7 @@ def populate_rooms():
     # 3-4: Floor 2
     for i in range(1, 5):
         floor = 0 if i <= 2 else 2
-        rooms.append((f"Amfi-{i}", "Amfi", 70, floor))
+        rooms.append((f"Amfi-{i}", "Amfi", 200, floor))
         
     # 64 Classrooms (Capacity 40)
     # Distribution:
@@ -64,7 +64,10 @@ def populate_rooms():
         elif i > 40:
             floor = 2
             
-        rooms.append((f"Derslik-{i}", "Derslik", 40, floor))
+        if i <= 32:
+            rooms.append((f"Büyük Derslik-{i}", "Derslik", 60, floor))
+        else:
+            rooms.append((f"Küçük Derslik-{i-32}", "Derslik", 30, floor))
 
     print(f"Inserting {len(rooms)} rooms...")
     # Update query to include floor
