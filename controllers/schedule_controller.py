@@ -802,3 +802,22 @@ class ScheduleController:
         finally:
             QApplication.restoreOverrideCursor()
             self.view.setEnabled(True)
+
+    # ════════════════════════════════════════════════════════════════
+    # COMMON COURSE GROUPS
+    # ════════════════════════════════════════════════════════════════
+
+    def open_common_courses_tab(self):
+        """Open teacher availability dialog and switch to Common Courses tab"""
+        self.open_teacher_availability_view()
+        if hasattr(self, 'availability_view') and self.availability_view is not None:
+            # The tabs are: 0: Availability, 1: Assignments, 2: Common Courses
+            self.availability_view.tabs.setCurrentIndex(2)
+
+    def save_common_course_group(self, courses: List[tuple]) -> bool:
+        """Saves a group of courses as a common single scheduling block"""
+        return self.model.save_common_course_group(courses)
+
+    def delete_common_course_group(self, grup_id: int) -> bool:
+        """Deletes a common scheduling block group"""
+        return self.model.delete_common_course_group(grup_id)

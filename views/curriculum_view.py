@@ -131,7 +131,7 @@ class CurriculumViewDialog(QDialog):
         row2_layout.addWidget(self.rb_core)
         row2_layout.addWidget(self.rb_elective)
         
-        # Delete Mode Checkbox (Restored)
+        # Delete Mode Checkbox
         row2_layout.addSpacing(20)
         self.chk_delete_mode = QCheckBox("Ders Silme Modu")
         self.chk_delete_mode.setStyleSheet("color: red; font-weight: bold;")
@@ -163,6 +163,13 @@ class CurriculumViewDialog(QDialog):
         self.chk_hide_single.setChecked(True) # Enabled by default
         self.chk_hide_single.stateChanged.connect(self._on_filter_changed)
         row3_layout.addWidget(self.chk_hide_single)
+        
+        row3_layout.addSpacing(20)
+        self.btn_edit_common_courses = QPushButton("Ortak Dersleri Düzenle")
+        self.btn_edit_common_courses.setStyleSheet("background-color: #2196F3; color: white; font-weight: bold; padding: 5px 15px;")
+        self.btn_edit_common_courses.clicked.connect(self._on_edit_common_courses_clicked)
+        row3_layout.addWidget(self.btn_edit_common_courses)
+
         row3_layout.addStretch()
         
         layout.addWidget(self.group_filter_container)
@@ -275,6 +282,12 @@ class CurriculumViewDialog(QDialog):
         is_active = (state == Qt.Checked)
         self.group_filter_container.setVisible(is_active)
         self._on_filter_changed()
+
+    def _on_edit_common_courses_clicked(self):
+        if hasattr(self.controller, 'open_common_courses_tab'):
+            self.controller.open_common_courses_tab()
+        else:
+            QMessageBox.warning(self, "Bilgi", "Controller 'open_common_courses_tab' metodu henüz uygulanmadı.")
 
     def _refresh_table(self):
         # Gather filters

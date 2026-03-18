@@ -43,6 +43,7 @@ class DatabaseMigration:
             self._007_add_teacher_room_preferences,
             self._008_add_schedule_snapshots_table,
             self._009_add_room_notes,
+            self._010_add_common_course_groups,
         ]
 
     def _009_add_room_notes(self) -> None:
@@ -157,3 +158,15 @@ class DatabaseMigration:
         from models.repositories.migrations.migration_008_schedule_snapshots import create_schedule_snapshots_table
         create_schedule_snapshots_table(self._conn)
         self._log("✅ schedule_snapshots table created")
+
+    def _010_add_common_course_groups(self) -> None:
+        """
+        Creates Ortak_Ders_Gruplari table.
+        """
+        if self._table_exists("Ortak_Ders_Gruplari"):
+            return
+
+        self._log("Creating Ortak_Ders_Gruplari table")
+        from .migrations.migration_010_common_course_groups import up
+        up(self._conn)
+        self._log("✅ Ortak_Ders_Gruplari table created")

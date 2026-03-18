@@ -40,6 +40,7 @@ class RawCourseRow:
     l_room: Optional[int]
     teacher_ids: List[int]
     is_from_pool: bool = False
+    common_group_id: Optional[int] = None
 
 @dataclass(frozen=True)
 class ProgramCourseContext:
@@ -145,6 +146,13 @@ class CourseRepository:
         self.db_model.c.execute(query)
         rows = self.db_model.c.fetchall()
 
+        # 3. Fetch Common Course Groups Mapping
+        self.db_model.c.execute("SELECT grup_id, ders_adi, ders_instance FROM Ortak_Ders_Gruplari")
+        common_groups_map = {}
+        for row in self.db_model.c.fetchall():
+            if row[1]:
+                common_groups_map[(row[1].strip(), row[2])] = row[0]
+
         result_rows = []
         for r in rows:
             name, instance, t, u, l, akts, t_room, l_room, group_id, fac_name, code, dept_name, class_year, is_from_pool = r
@@ -159,6 +167,8 @@ class CourseRepository:
             # If no specific assignment found, we could potentially fall back to "global" assignment for that course name?
             # But "Strict" is better for the user's requirement.
             t_ids = teacher_map.get((name, instance), set())
+            
+            c_group_id = common_groups_map.get((name, instance))
             
             result_rows.append(RawCourseRow(
                 name=name,
@@ -175,7 +185,8 @@ class CourseRepository:
                 t_room=t_room,
                 l_room=l_room,
                 teacher_ids=list(t_ids),
-                is_from_pool=bool(is_from_pool)
+                is_from_pool=bool(is_from_pool),
+                common_group_id=c_group_id
             ))
             
         print(f"DEBUG: Repository fetched {len(result_rows)} raw rows.")
@@ -242,9 +253,13 @@ class CourseMerger:
                 continue # Skip ignored pool rows
 
             # 2. Merge Key
-            # (Name, Teachers, T, U, L, Instance)
-            # Fix: Include instance in unique key to prevent merging distinct instances of same course
-            key = (row.name, frozenset(row.teacher_ids), row.t, row.u, row.l, row.instance)
+            # If manually grouped, force them into the same key (ignoring exact name, instance, dept, teachers)
+            # The UI logic enforces that T/U/L are identical before allowing the grouping.
+            # We also union teachers below to ensure all assigned teachers are present.
+            if row.common_group_id is not None:
+                key = ("COMMON_GROUP", row.common_group_id)
+            else:
+                key = (row.name, frozenset(row.teacher_ids), row.t, row.u, row.l, row.instance, row.department)
             
             if key not in merged_map:
                 merged_map[key] = PhysicalCourse(
@@ -266,6 +281,17 @@ class CourseMerger:
                 existing.contexts.add(context)
                 if row.faculty:
                     existing.faculties.add(row.faculty)
+                    
+                # If this is a common group merge, combine their names for clarity (e.g. Analiz 1 | Analiz 2)
+                if row.common_group_id is not None and row.name not in existing.name:
+                    existing.name = f"{existing.name} | {row.name}"
+                    
+                # Union teachers (in case different teachers are assigned to parts of the same common group)
+                if row.common_group_id is not None:
+                    # PhysicalCourse.teacher_ids is a frozenset, need to recreate it
+                    combined_teachers = set(existing.teacher_ids).union(row.teacher_ids)
+                    existing.teacher_ids = frozenset(combined_teachers)
+                    
                 # Optimistic room assignment (if one has it, use it)
                 if row.t_room and not existing.fixed_t_room:
                     existing.fixed_t_room = row.t_room

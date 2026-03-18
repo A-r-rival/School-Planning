@@ -1,4 +1,5 @@
 # Auto-generated curriculum data
+# Sanitized by the script (sanitize_course_names.py)
 # Sanitized by the script
 
 # ==========================================

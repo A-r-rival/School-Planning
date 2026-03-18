@@ -255,7 +255,7 @@ class TeacherAvailabilityView(QDialog):
         self.course_combo = QComboBox()
         self.course_combo.setEditable(True)
         self.course_combo.addItem("Ders Seçiniz...", None)
-        self.course_combo.setMinimumWidth(250)
+        self.course_combo.setMinimumWidth(325)
         self.course_combo.completer().setCompletionMode(QCompleter.PopupCompletion)
         self.course_combo.completer().setFilterMode(Qt.MatchContains)
         form_layout.addWidget(QLabel("Ders:"))
@@ -323,6 +323,67 @@ class TeacherAvailabilityView(QDialog):
         self.tab_assignments.setLayout(as_layout)
         self.tabs.addTab(self.tab_assignments, "Ders Atamaları")
         
+        # TAB 3: Common Courses (Ortak Ders Grupları)
+        self.tab_common_courses = QWidget()
+        cc_layout = QHBoxLayout()
+        
+        # Left Panel: Groups list
+        left_panel = QVBoxLayout()
+        left_panel.addWidget(QLabel("Benzer İsimli Ders Grupları:"))
+        
+        self.search_common_groups = QLineEdit()
+        self.search_common_groups.setPlaceholderText("Ders Ara...")
+        self.search_common_groups.setMinimumWidth(220)
+        self.search_common_groups.textChanged.connect(self._filter_common_groups)
+        left_panel.addWidget(self.search_common_groups)
+        
+        self.chk_hide_single_common = QCheckBox("Tekil Dersleri Gizle")
+        self.chk_hide_single_common.setChecked(True)
+        self.chk_hide_single_common.stateChanged.connect(lambda: self._filter_common_groups(self.search_common_groups.text()))
+        left_panel.addWidget(self.chk_hide_single_common)
+        
+        from PyQt5.QtWidgets import QListWidget, QListWidgetItem
+        self.list_common_groups = QListWidget()
+        self.list_common_groups.setMinimumWidth(220)
+        self.list_common_groups.itemClicked.connect(self._on_common_group_clicked)
+        left_panel.addWidget(self.list_common_groups)
+        
+        cc_layout.addLayout(left_panel)
+        
+        # Right Panel: Selection & Validation
+        right_panel = QVBoxLayout()
+        right_panel.addWidget(QLabel("Gruptaki Dersler (Birleştirilecekleri Seçin):"))
+        
+        self.list_common_instances = QListWidget()
+        right_panel.addWidget(self.list_common_instances)
+        
+        # Action layout
+        cc_action_layout = QHBoxLayout()
+        self.btn_save_common_group = QPushButton("Seçilileri Ortak Ders Olarak Kaydet")
+        self.btn_save_common_group.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
+        self.btn_save_common_group.clicked.connect(self._on_save_common_group_clicked)
+        cc_action_layout.addStretch()
+        cc_action_layout.addWidget(self.btn_save_common_group)
+        
+        right_panel.addLayout(cc_action_layout)
+        
+        # Bottom Panel: Existing configured groups
+        right_panel.addWidget(QLabel("Mevcut Ortak Ders Grupları:"))
+        self.table_common_groups = QTableWidget()
+        self.table_common_groups.setColumnCount(3)
+        self.table_common_groups.setHorizontalHeaderLabels(["Grup No", "Birleşik Dersler (Şubeler)", "İşlem"])
+        header_cc = self.table_common_groups.horizontalHeader()
+        header_cc.setSectionResizeMode(1, QHeaderView.Stretch)
+        header_cc.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header_cc.setSectionResizeMode(2, QHeaderView.Fixed)
+        self.table_common_groups.setColumnWidth(2, 60)
+        right_panel.addWidget(self.table_common_groups)
+        
+        cc_layout.addLayout(right_panel)
+        
+        self.tab_common_courses.setLayout(cc_layout)
+        self.tabs.addTab(self.tab_common_courses, "Ortak Ders Grupları")
+        
         layout.addWidget(self.tabs)
         
         self.setLayout(layout)
@@ -338,6 +399,10 @@ class TeacherAvailabilityView(QDialog):
         if hasattr(self.controller.model, 'get_curriculum_courses'):
             courses = self.controller.model.get_curriculum_courses()
             self._update_course_combo(courses)
+            
+        # Load Common Course Groups Data
+        if hasattr(self, '_load_common_course_groups'):
+            self._load_common_course_groups()
         
     def _on_teacher_changed(self, index):
         """Handle filter change"""
@@ -694,3 +759,139 @@ class TeacherAvailabilityView(QDialog):
             import traceback
             traceback.print_exc()
             QMessageBox.critical(self, "Hata", f"Silme işlemi sırasında hata: {e}")
+
+    # ════════════════════════════════════════════════════════════════
+    # COMMON COURSE GROUPS TAB LOGIC
+    # ════════════════════════════════════════════════════════════════
+
+    def _load_common_course_groups(self):
+        """Load common course groups into list and table"""
+        if not hasattr(self, 'controller') or not hasattr(self.controller, 'model'):
+            return
+            
+        # 1. Load left panel (similar name groups)
+        self.list_common_groups.clear()
+        if hasattr(self.controller.model, 'get_similar_course_groups'):
+            similar_groups = self.controller.model.get_similar_course_groups()
+            from PyQt5.QtWidgets import QListWidgetItem
+            for base_name, count in similar_groups:
+                item = QListWidgetItem(f"{base_name} ({count} Seçenek)")
+                item.setData(Qt.UserRole, count)
+                item.setData(Qt.UserRole + 1, base_name)
+                self.list_common_groups.addItem(item)
+                
+        # 2. Load bottom panel (configured groups)
+        self.table_common_groups.setRowCount(0)
+        self.list_common_instances.clear() # Clear selection panel just in case
+        
+        if hasattr(self.controller.model, 'get_common_course_groups'):
+            configured_groups = self.controller.model.get_common_course_groups()
+            
+            for row_idx, grp_data in enumerate(configured_groups):
+                self.table_common_groups.insertRow(row_idx)
+                
+                g_id = grp_data['grup_id']
+                courses = grp_data['courses']
+                
+                # Format courses display
+                course_strs = []
+                for c in courses:
+                    course_strs.append(f"{c['ders_adi']} (Şube {c['ders_instance']}, Bölüm: {c['bolumler']})")
+                
+                self.table_common_groups.setItem(row_idx, 0, QTableWidgetItem(str(g_id)))
+                
+                joined_item = QTableWidgetItem(" | ".join(course_strs))
+                joined_item.setToolTip("\\n".join(course_strs))
+                self.table_common_groups.setItem(row_idx, 1, joined_item)
+                
+                delete_btn = QPushButton("Grup Sil")
+                delete_btn.setStyleSheet("color: red;")
+                delete_btn.clicked.connect(lambda checked, gid=g_id: self._on_delete_common_group_clicked(gid))
+                self.table_common_groups.setCellWidget(row_idx, 2, delete_btn)
+                
+        # 3. Apply filter using current search text to hide single-variation courses correctly on load
+        self._filter_common_groups(self.search_common_groups.text())
+
+    def _filter_common_groups(self, text):
+        """Filter the left panel list of common groups"""
+        search_text = text.lower()
+        hide_single = self.chk_hide_single_common.isChecked()
+        for i in range(self.list_common_groups.count()):
+            item = self.list_common_groups.item(i)
+            count = item.data(Qt.UserRole)
+            base_name = item.data(Qt.UserRole + 1).lower()
+            
+            should_hide = False
+            if hide_single and count <= 1:
+                should_hide = True
+            elif search_text not in base_name:
+                should_hide = True
+                
+            item.setHidden(should_hide)
+
+    def _on_common_group_clicked(self, item):
+        """Populate the middle panel with instances of the selected base name"""
+        base_name = item.data(Qt.UserRole + 1)
+        self.list_common_instances.clear()
+        
+        if hasattr(self, 'controller') and hasattr(self.controller.model, 'get_courses_by_base_name'):
+            instances = self.controller.model.get_courses_by_base_name(base_name)
+            
+            from PyQt5.QtWidgets import QListWidgetItem # Ensure imported
+            for inst in instances:
+                # Add checkbox item
+                list_item = QListWidgetItem(f"{inst['ders_adi']} (Şube {inst['ders_instance']} - {inst['bolumler']})")
+                list_item.setFlags(list_item.flags() | Qt.ItemIsUserCheckable)
+                list_item.setCheckState(Qt.Unchecked)
+                
+                # Store tuple data
+                list_item.setData(Qt.UserRole, (inst['ders_adi'], inst['ders_instance'], inst['t'], inst['u'], inst['l']))
+                self.list_common_instances.addItem(list_item)
+
+
+    def _on_save_common_group_clicked(self):
+        """Save checked items as a new common group"""
+        selected_courses = []
+        ref_t, ref_u, ref_l = None, None, None
+        
+        for i in range(self.list_common_instances.count()):
+            item = self.list_common_instances.item(i)
+            if item.checkState() == Qt.Checked:
+                data = item.data(Qt.UserRole) # (ders_adi, ders_instance, t, u, l)
+                ders_adi, ders_instance, t, u, l = data
+                selected_courses.append((ders_adi, ders_instance))
+                
+                # Validation logic: Ensure T/U/L structure matches
+                if ref_t is None:
+                    ref_t, ref_u, ref_l = t, u, l
+                else:
+                    if ref_t != t or ref_u != u or ref_l != l:
+                        QMessageBox.warning(self, "Yapı Uyuşmazlığı", "Gruplanmak istenen derslerin Kredi/Saat yapıları (T/U/L) birbirinden farklı olamaz!")
+                        return
+        
+        if len(selected_courses) < 2:
+            QMessageBox.warning(self, "Eksik Seçim", "Ortak ders grubu oluşturmak için en az 2 ders seçmelisiniz.")
+            return
+            
+        msg = "Seçili dersler ortak ders grubu olarak birleştirilecek. Bu dersler scheduler'da tek blok gibi değerlendirilecektir.\nOnaylıyor musunuz?"
+        if QMessageBox.question(self, "Grup Onayı", msg, QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+            if hasattr(self.controller, 'save_common_course_group'):
+                success = self.controller.save_common_course_group(selected_courses)
+                if success:
+                    QMessageBox.information(self, "Başarılı", "Ortak ders grubu başarıyla kaydedildi.")
+                    self._load_common_course_groups()
+            else:
+                 QMessageBox.warning(self, "Hata", "Controller metodu bulunamadı.")
+
+
+    def _on_delete_common_group_clicked(self, grup_id):
+        """Delete an existing group"""
+        msg = f"Grup (ID: {grup_id}) silinecektir. Emin misiniz?"
+        if QMessageBox.question(self, "Silme Onayı", msg, QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+            if hasattr(self.controller, 'delete_common_course_group'):
+                success = self.controller.delete_common_course_group(grup_id)
+                if success:
+                    QMessageBox.information(self, "Başarılı", "Grup silindi.")
+                    self._load_common_course_groups()
+            else:
+                QMessageBox.warning(self, "Hata", "Controller metodu bulunamadı.")

@@ -1693,3 +1693,150 @@ class ScheduleModel(QObject):
         except Exception as e:
             self.error_occurred.emit(f"Program verisi alınırken hata: {str(e)}")
             return []
+
+    # ════════════════════════════════════════════════════════════════
+    # COMMON COURSE GROUPS (ORTAK DERSLER)
+    # ════════════════════════════════════════════════════════════════
+
+    def get_similar_course_groups(self) -> List[str]:
+        """
+        Returns a list of base course names that have multiple occurrences (potential common courses).
+        Base name logic: split by ':' or '-' and take the first part.
+        """
+        try:
+            # We don't use DISTINCT so we can count multiple instances of the exact same name
+            self.c.execute("SELECT ders_adi FROM Dersler")
+            names = [row[0] for row in self.c.fetchall() if row[0]]
+            
+            from collections import defaultdict
+            base_counts = defaultdict(int)
+            
+            def get_base(n):
+                return n.strip()
+                
+            for n in names:
+                base_counts[get_base(n)] += 1
+                
+            # Dönüş tipi: [(base_name, count), ...]
+            return sorted(list(base_counts.items()))
+        except Exception as e:
+            print(f"Error fetching similar course groups: {e}")
+            return []
+
+    def get_courses_by_base_name(self, base_name: str) -> List[dict]:
+        """
+        Returns specific course instances that match the base name.
+        """
+        try:
+            query = '''
+                SELECT DISTINCT d.ders_adi, d.ders_instance, d.teori_saati, d.uygulama_saati, d.lab_saati,
+                       GROUP_CONCAT(DISTINCT COALESCE(b.bolum_adi, b2.bolum_adi)) as bolumler
+                FROM Dersler d
+                LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
+                LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                LEFT JOIN Bolumler b ON od.bolum_num = b.bolum_id
+                
+                LEFT JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
+                LEFT JOIN Bolumler b2 ON dhi.bolum_id = b2.bolum_id
+                
+                WHERE d.ders_adi = ?
+                GROUP BY d.ders_adi, d.ders_instance, d.teori_saati, d.uygulama_saati, d.lab_saati
+            '''
+            self.c.execute(query, (base_name,))
+            rows = self.c.fetchall()
+            
+            results = []
+            for r in rows:
+                results.append({
+                    'ders_adi': r[0],
+                    'ders_instance': r[1],
+                    't': r[2], 'u': r[3], 'l': r[4],
+                    'bolumler': r[5] if r[5] else 'Bölüm Ataması Yok'
+                })
+            return results
+        except Exception as e:
+            print(f"Error fetching courses for base name '{base_name}': {e}")
+            return []
+
+    def save_common_course_group(self, courses: List[Tuple[str, int]]) -> bool:
+        """
+        Saves a cluster of courses together under a new group ID.
+        courses = [(ders_adi1, ders_instance1), (ders_adi2, ders_instance2), ...]
+        """
+        if not courses or len(courses) < 2:
+            return False
+            
+        try:
+            self.c.execute("SELECT MAX(grup_id) FROM Ortak_Ders_Gruplari")
+            row = self.c.fetchone()
+            new_grup_id = 1 if (not row or row[0] is None) else row[0] + 1
+            
+            with self.conn:
+                for ders_adi, ders_instance in courses:
+                    self.c.execute(
+                        "DELETE FROM Ortak_Ders_Gruplari WHERE ders_adi = ? AND ders_instance = ?",
+                        (ders_adi, ders_instance)
+                    )
+                    
+                    self.c.execute(
+                        "INSERT INTO Ortak_Ders_Gruplari (grup_id, ders_adi, ders_instance) VALUES (?, ?, ?)",
+                        (new_grup_id, ders_adi, ders_instance)
+                    )
+            return True
+        except Exception as e:
+            print(f"Error saving common course group: {e}")
+            self.error_occurred.emit(f"Ortak ders grubu kaydedilirken hata: {str(e)}")
+            return False
+
+    def get_common_course_groups(self) -> List[dict]:
+        """
+        Returns all configured common course groups.
+        """
+        try:
+            query = '''
+                SELECT o.grup_id, o.ders_adi, o.ders_instance,
+                       GROUP_CONCAT(DISTINCT b.bolum_adi) as bolumler
+                FROM Ortak_Ders_Gruplari o
+                LEFT JOIN Ders_Sinif_Iliskisi dsi ON o.ders_adi = dsi.ders_adi AND o.ders_instance = dsi.ders_instance
+                LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                LEFT JOIN Bolumler b ON od.bolum_num = b.bolum_id
+                GROUP BY o.grup_id, o.ders_adi, o.ders_instance
+                ORDER BY o.grup_id, o.ders_adi
+            '''
+            self.c.execute(query)
+            rows = self.c.fetchall()
+            
+            groups = {}
+            for r in rows:
+                g_id, d_adi, d_inst, bolumler = r
+                if g_id not in groups:
+                    groups[g_id] = []
+                groups[g_id].append({
+                    'ders_adi': d_adi,
+                    'ders_instance': d_inst,
+                    'bolumler': bolumler if bolumler else 'Bölüm Ataması Yok'
+                })
+            
+            results = []
+            for g_id, c_list in groups.items():
+                results.append({
+                    'grup_id': g_id,
+                    'courses': c_list
+                })
+            return results
+        except Exception as e:
+            print(f"Error fetching common course groups: {e}")
+            return []
+
+    def delete_common_course_group(self, grup_id: int) -> bool:
+        """
+        Deletes a specific common course group.
+        """
+        try:
+            with self.conn:
+                self.c.execute("DELETE FROM Ortak_Ders_Gruplari WHERE grup_id = ?", (grup_id,))
+            return True
+        except Exception as e:
+            print(f"Error deleting common course group {grup_id}: {e}")
+            self.error_occurred.emit(f"Ortak ders grubu silinirken hata: {str(e)}")
+            return False

@@ -20,20 +20,31 @@ from curriculum_data import DEPARTMENTS_DATA, COMMON_USD_POOL
 GRADES = ["AA", "BA", "BB", "CB", "CC", "DC", "DD", "FD", "FF"]
 PASSING_GRADES = ["AA", "BA", "BB", "CB", "CC", "DC", "DD"]
 
-def ensure_course_exists(model, code, name, ects, t=0, u=0, l=0):
+def ensure_course_exists(model, code, name, ects, t=0, u=0, l=0, bolum_id=None):
     """
     Ensures a course with the given properties exists.
     If a course with 'name' exists but has different code/ects, creates a new instance.
     Returns the assigned instance number.
     """
-    # Check if this exact course (code+name) already has an instance
-    model.c.execute("SELECT ders_instance, akts FROM Dersler WHERE ders_adi = ? AND ders_kodu = ?", (name, code))
-    rows = model.c.fetchall()
-    
-    if rows:
-        # It exists, check if any instance works (we return the first one)
-        # Verify AKTS if needed, but usually we just return the instance.
-        return rows[0][0]
+    if bolum_id is not None:
+        model.c.execute("""
+            SELECT d.ders_instance 
+            FROM Dersler d
+            LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
+            LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+            LEFT JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
+            WHERE d.ders_adi = ? AND d.ders_kodu = ? AND (od.bolum_num = ? OR dhi.bolum_id = ?)
+        """, (name, code, bolum_id, bolum_id))
+        rows = model.c.fetchall()
+        if rows:
+            return rows[0][0]
+    else:
+        # Check if this exact course (code+name) already has an instance globally
+        model.c.execute("SELECT ders_instance, akts FROM Dersler WHERE ders_adi = ? AND ders_kodu = ?", (name, code))
+        rows = model.c.fetchall()
+        
+        if rows:
+            return rows[0][0]
     
     # If not found by code+name, check if name exists to determine next instance
     model.c.execute("SELECT ders_instance FROM Dersler WHERE ders_adi = ?", (name,))
@@ -284,7 +295,7 @@ def populate():
                     t, u, l = course_data[3:6] if len(course_data) >= 6 else (0, 0, 0)
                     
                     # Ensure course exists
-                    instance = ensure_course_exists(model, code, name, ects, t, u, l)
+                    instance = ensure_course_exists(model, code, name, ects, t, u, l, bolum_id=bolum_id)
                     
                     # Add pool relationship
                     model.c.execute("""
@@ -383,7 +394,7 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
                     
                     
                     # Add to Dersler using helper
-                    instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l)
+                    instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l, bolum_id=bolum_id)
                     
                     # Add to Ogrenci_Notlari
                     status = "Geçti" if grade != "FF" else "Kaldı"
@@ -415,7 +426,7 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
                             grade = "FF"
                             status = "Kaldı"
                             # Record failure
-                            instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l)
+                            instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l, bolum_id=bolum_id)
                             model.c.execute("INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem) VALUES (?, ?, ?, ?, ?, ?)",
                                           (s_num, r_code, r_name, grade, status, term_str))
                             
@@ -433,7 +444,7 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
                             passed_courses.append(r_name)
                             taken_codes.add(r_code)
                             
-                            instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l)
+                            instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l, bolum_id=bolum_id)
                             model.c.execute("INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem) VALUES (?, ?, ?, ?, ?, ?)",
                                           (s_num, r_code, r_name, grade, status, term_str))
                             
@@ -450,7 +461,7 @@ def create_student(model, s_num, dept_name, year, entry_year, current_semester, 
                         passed_courses.append(r_name)
                         taken_codes.add(r_code)
                         
-                        instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l)
+                        instance = ensure_course_exists(model, r_code, r_name, r_ects, r_t, r_u, r_l, bolum_id=bolum_id)
                         model.c.execute("INSERT INTO Ogrenci_Notlari (ogrenci_num, ders_kodu, ders_adi, harf_notu, durum, donem) VALUES (?, ?, ?, ?, ?, ?)",
                                       (s_num, r_code, r_name, grade, status, term_str))
                         
