@@ -12,10 +12,28 @@ from views.calendar_view import CalendarView
 from views.student_view import StudentView
 from views.teacher_availability_view import TeacherAvailabilityView
 from controllers.scheduler import ORToolsScheduler
-from PyQt5.QtWidgets import QMessageBox, QInputDialog
+from PyQt5.QtWidgets import QMessageBox, QInputDialog, QApplication, QProgressDialog
 from PyQt5.QtCore import Qt
 from utils.schedule_merger import merge_schedule_items_dicts
 from services.calendar_schedule_builder import CalendarScheduleBuilder
+from PyQt5.QtCore import QThread, pyqtSignal
+
+class GenerateScheduleWorker(QThread):
+    finished = pyqtSignal(bool, str)
+    
+    def __init__(self, scheduler, semester):
+        super().__init__()
+        self.scheduler = scheduler
+        self.semester = semester
+        
+    def run(self):
+        try:
+            success = self.scheduler.generate_schedule(semester_filter=self.semester)
+            self.finished.emit(success, "")
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            self.finished.emit(False, str(e))
 
 
 class ScheduleController:
@@ -573,10 +591,20 @@ class ScheduleController:
     def handle_teacher_span_change(self, teacher_id: int, span: int):
         """Handle teacher span preference change"""
         self.model.update_teacher_span(teacher_id, span)
+        if hasattr(self, 'availability_view') and self.availability_view is not None:
+            if self.availability_view.teacher_combo.currentData() == -1:
+                self.load_all_teacher_availability()
+            else:
+                self.load_teacher_availability(self.availability_view.teacher_combo.currentData())
 
     def handle_teacher_room_pref_change(self, teacher_id: int, text: str):
         """Handle teacher room request change"""
         self.model.update_teacher_room_request(teacher_id, text)
+        if hasattr(self, 'availability_view') and self.availability_view is not None:
+            if self.availability_view.teacher_combo.currentData() == -1:
+                self.load_all_teacher_availability()
+            else:
+                self.load_teacher_availability(self.availability_view.teacher_combo.currentData())
 
     def load_all_teacher_availability(self):
         """Load availability for ALL teachers"""
@@ -585,9 +613,9 @@ class ScheduleController:
         self.availability_view.update_table(data)
 
         
-    def add_teacher_unavailability(self, teacher_id: int, day: str, start: str, end: str, description: str = ""):
+    def add_teacher_unavailability(self, teacher_id: int, day: str, start: str, end: str, yil: str = "Hepsi", donem: str = "Hepsi", description: str = ""):
         """Add unavailability slot"""
-        success = self.model.add_teacher_unavailability(teacher_id, day, start, end, description)
+        success = self.model.add_teacher_unavailability(teacher_id, day, start, end, yil, donem, description)
         if success:
             if self.availability_view.teacher_combo.currentData() == -1:
                  self.load_all_teacher_availability()
@@ -595,9 +623,9 @@ class ScheduleController:
                  self.load_teacher_availability(teacher_id)
             QMessageBox.information(self.availability_view, "Başarılı", "Müsaitlik eklendi.")
 
-    def update_teacher_unavailability(self, u_id: int, teacher_id: int, day: str, start: str, end: str, description: str = ""):
+    def update_teacher_unavailability(self, u_id: int, teacher_id: int, day: str, start: str, end: str, yil: str = "Hepsi", donem: str = "Hepsi", description: str = ""):
         """Update unavailability slot"""
-        success = self.model.update_teacher_unavailability(u_id, teacher_id, day, start, end, description)
+        success = self.model.update_teacher_unavailability(u_id, teacher_id, day, start, end, yil, donem, description)
         if success:
             if self.availability_view.teacher_combo.currentData() == -1:
                  self.load_all_teacher_availability()
@@ -686,28 +714,35 @@ class ScheduleController:
         if reply != QMessageBox.Yes:
             return
 
-        # Show wait cursor
-        from PyQt5.QtWidgets import QApplication
-        from PyQt5.QtCore import Qt
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        self.view.setEnabled(False) 
+        # Build Worker Thread to avoid GUI freeze
+        self._scheduler_inst = ORToolsScheduler(self.model)
+        self._worker = GenerateScheduleWorker(self._scheduler_inst, semester)
+        
+        # Show Progress Dialog to inform user
+        
+        # Show Progress Dialog to inform user
+        self.progress_dialog = QProgressDialog("Otomatik Ders Programı oluşturuluyor...\nLütfen Bekleyiniz. (Bu işlem 2-10 dakika sürebilir)", None, 0, 0, self.view)
+        self.progress_dialog.setWindowTitle("Program Hesaplanıyor")
+        self.progress_dialog.setWindowModality(Qt.WindowModal)
+        self.progress_dialog.setCancelButton(None) # Make uncancellable
+        self.progress_dialog.show()
 
-        try:
-            scheduler = ORToolsScheduler(self.model)
-            success = scheduler.generate_schedule(semester_filter=semester)
-            
+        def on_finished(success, error_msg):
+            self.progress_dialog.close()
+            self.view.setEnabled(True)
             if success:
                 QMessageBox.information(self.view, "Başarılı", "Ders programı başarıyla oluşturuldu!")
                 self.refresh_data()
             else:
-                QMessageBox.warning(self.view, "Başarısız", "Uygun bir program bulunamadı!\nKısıtlamaları kontrol edin.")
-        except Exception as e:
-            QMessageBox.critical(self.view, "Hata", f"Program oluşturulurken hata: {str(e)}")
-            import traceback
-            traceback.print_exc()
-        finally:
-            QApplication.restoreOverrideCursor()
-            self.view.setEnabled(True)
+                if error_msg:
+                    QMessageBox.critical(self.view, "Hata", f"Program oluşturulurken hata: {error_msg}")
+                else:
+                    QMessageBox.warning(self.view, "Başarısız", "Uygun bir program bulunamadı!\nKısıtlamaları kontrol edin.")
+            self._worker.deleteLater()
+            self._worker = None
+
+        self._worker.finished.connect(on_finished)
+        self._worker.start()
 
     # Merging utilities moved to utils/schedule_merger.py
 

@@ -40,8 +40,10 @@ class RawCourseRow:
     l_room: Optional[int]
     teacher_ids: List[int]
     is_from_pool: bool = False
+    pool_code: Optional[str] = None
     common_group_id: Optional[int] = None
     student_count: int = 0
+    semester_season: str = ""
 
 @dataclass(frozen=True)
 class ProgramCourseContext:
@@ -74,6 +76,7 @@ class PhysicalCourse:
     contexts: Set[ProgramCourseContext] = field(default_factory=set) # Semantic Contexts
     instance: int = 1 # Default to 1 if not specified
     student_count: int = 0
+    semester_season: str = ""
 
 
     @property
@@ -93,6 +96,34 @@ class CourseRepository:
     """
     def __init__(self, db_model):
         self.db_model = db_model
+        self._pool_year_map = self._build_pool_year_map()
+
+    def _build_pool_year_map(self) -> dict:
+        """
+        Builds a runtime mapping of (department, havuz_kodu) -> sinif_duzeyi
+        from curriculum_data.py. This avoids DB dependency and auto-updates
+        when the curriculum file changes.
+        """
+        pool_map = {}  # (dept_name, pool_code) -> sinif_duzeyi
+        for dept_name, dept_data in curriculum_data.DEPARTMENTS_DATA.items():
+            pool_codes_def = dept_data.get('pool_codes', {})
+            pools = dept_data.get('pools', {})
+            curriculum = dept_data.get('curriculum', {})
+            
+            for semester_key, semester_courses in curriculum.items():
+                # Extract year from "5. Dönem / 3. Yıl Güz Dönemi"
+                year_match = re.search(r'(\d+)\.\s*Y[ıi]l', semester_key)
+                if not year_match:
+                    continue
+                sinif_duzeyi = int(year_match.group(1))
+                
+                if isinstance(semester_courses, list):
+                    for course_entry in semester_courses:
+                        if isinstance(course_entry, list) and len(course_entry) >= 2:
+                            course_code = course_entry[0]
+                            if course_code in pool_codes_def or course_code in pools:
+                                pool_map[(dept_name, course_code)] = sinif_duzeyi
+        return pool_map
 
     def fetch_course_rows(self) -> List[RawCourseRow]:
         """
@@ -123,7 +154,8 @@ class CourseRepository:
                    b.bolum_adi,
                    od.sinif_duzeyi,
                    0 AS is_from_pool,
-                   od.ogrenci_sayisi
+                   od.ogrenci_sayisi,
+                   od.donem_sinif_num
             FROM Dersler d
             JOIN Ders_Sinif_Iliskisi dsi ON d.ders_instance = dsi.ders_instance AND d.ders_adi = dsi.ders_adi
             JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
@@ -140,15 +172,36 @@ class CourseRepository:
                    b.bolum_adi,
                    od.sinif_duzeyi,
                    1 AS is_from_pool,
-                   od.ogrenci_sayisi
+                   od.ogrenci_sayisi,
+                   od.donem_sinif_num
             FROM Dersler d
             JOIN Ders_Havuz_Iliskisi dhi ON d.ders_instance = dhi.ders_instance AND d.ders_adi = dhi.ders_adi
             JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
             JOIN Fakulteler f ON b.fakulte_num = f.fakulte_num
-            JOIN Ogrenci_Donemleri od ON od.bolum_num = b.bolum_id
+            JOIN Ogrenci_Donemleri od ON od.bolum_num = b.bolum_id AND od.sinif_duzeyi = dhi.sinif_duzeyi
         '''
+        # Also fetch havuz_kodu for pool rows to enable Python-side filtering
+        # We need a separate query for pool rows to get havuz_kodu
         self.db_model.c.execute(query)
-        rows = self.db_model.c.fetchall()
+        raw_rows = self.db_model.c.fetchall()
+        
+        # Build a lookup: (ders_adi, ders_instance, bolum_id) -> havuz_kodu
+        self.db_model.c.execute('SELECT ders_adi, ders_instance, bolum_id, havuz_kodu FROM Ders_Havuz_Iliskisi')
+        pool_code_lookup = {}
+        for prow in self.db_model.c.fetchall():
+            key = (prow[0].strip() if prow[0] else '', prow[1], prow[2])
+            pool_code_lookup[key] = prow[3]
+        
+        # Build bolum_adi -> bolum_id lookup for CurriculumResolver mapping
+        self.db_model.c.execute('SELECT bolum_id, bolum_adi FROM Bolumler')
+        bolum_id_lookup = {r[1].strip(): r[0] for r in self.db_model.c.fetchall()}
+        
+        # We now rely on the SQL join (od.sinif_duzeyi = dhi.sinif_duzeyi) for filtering.
+        rows = raw_rows
+        pool_filtered_count = 0
+        
+        if pool_filtered_count > 0:
+            print(f"DEBUG: Pool year filter removed {pool_filtered_count} unnecessary rows.")
 
         # 3. Fetch Common Course Groups Mapping
         self.db_model.c.execute("SELECT grup_id, ders_adi, ders_instance FROM Ortak_Ders_Gruplari")
@@ -159,7 +212,7 @@ class CourseRepository:
 
         result_rows = []
         for r in rows:
-            name, instance, t, u, l, akts, t_room, l_room, group_id, fac_name, code, dept_name, class_year, is_from_pool, student_count = r
+            name, instance, t, u, l, akts, t_room, l_room, group_id, fac_name, code, dept_name, class_year, is_from_pool, student_count, semester_season = r
             
             # Normalize
             name = name.strip() if name else ""
@@ -173,6 +226,12 @@ class CourseRepository:
             t_ids = teacher_map.get((name, instance), set())
             
             c_group_id = common_groups_map.get((name, instance))
+            
+            p_code = None
+            if is_from_pool:
+                d_id = bolum_id_lookup.get(dept_name)
+                if d_id is not None:
+                    p_code = pool_code_lookup.get((name, instance, d_id))
             
             result_rows.append(RawCourseRow(
                 name=name,
@@ -190,8 +249,10 @@ class CourseRepository:
                 l_room=l_room,
                 teacher_ids=list(t_ids),
                 is_from_pool=bool(is_from_pool),
+                pool_code=p_code,
                 common_group_id=c_group_id,
-                student_count=student_count if student_count else 0
+                student_count=student_count if student_count else 0,
+                semester_season=semester_season if semester_season else ""
             ))
             
         print(f"DEBUG: Repository fetched {len(result_rows)} raw rows.")
@@ -211,29 +272,15 @@ class CurriculumResolver:
         """
         Determines the role of the course for the row's Department + Year.
         Strict logic:
-        - If explicitly in a pool for this Dept -> ELECTIVE
-        - If is_from_pool is true but not found in pool_codes -> Ignore (return None)
+        - If from Ders_Havuz_Iliskisi (is_from_pool == True) -> ELECTIVE
         - Else (from Ders_Sinif_Iliskisi) -> CORE
         """
-        dept_info = self.dept_data.get(row.department)
-        role = CourseRole.CORE
-        pool_code = None
-
-        if dept_info and 'pool_codes' in dept_info:
-             # Reverse lookup: Check if row.name is in any pool list
-             target_name = row.name.lower()
-             
-             for p_code, p_courses in dept_info.get('pool_codes', {}).items():
-                 if any(c_name.strip().lower() == target_name for c_name in p_courses):
-                     role = CourseRole.ELECTIVE
-                     pool_code = p_code
-                     break
-                     
         if row.is_from_pool:
-            if role == CourseRole.ELECTIVE:
-                pass # Valid pool course
-            else:
-                return None # Ignore pool rows that don't match the year's definition
+            role = CourseRole.ELECTIVE
+            pool_code = row.pool_code
+        else:
+            role = CourseRole.CORE
+            pool_code = None
         
         return ProgramCourseContext(
             department=row.department,
@@ -284,7 +331,8 @@ class CourseMerger:
                     group_ids={row.group_id},
                     contexts={context},
                     instance=row.instance,
-                    student_count=row_student_count
+                    student_count=row_student_count,
+                    semester_season=row.semester_season
                 )
             else:
                 existing = merged_map[key]
@@ -359,7 +407,8 @@ class SchedulableCourseBuilder:
 
                 'parent_key': (pc.name, pc.instance), # Standardized for DB Update usage
                 'instance': pc.instance,
-                'student_count': pc.student_count
+                'student_count': pc.student_count,
+                'semester_season': pc.semester_season
             }
             
             # Generate Sub-blocks (Theory, Practice, Lab)

@@ -306,7 +306,7 @@ class CalendarView(QWidget):
                 
             # Check for excluded project courses (matching scheduler logic)
                 name_lower = name.lower()
-                if any(x in name_lower for x in ["proje", "project"]):
+                if any(x in name_lower for x in ["proje", "project", "tez"]):
                     project_courses.append((code, name, akts))
                     continue
                 
@@ -362,7 +362,9 @@ class CalendarView(QWidget):
             traceback.print_exc()
 
     def _on_pool_toggled(self, checked):
+        print(f"DEBUG: Checkbox toggled. State: {checked}")
         if self.last_schedule_data:
+            print("DEBUG: Calling display_schedule with last_schedule_data.")
             self.display_schedule(self.last_schedule_data)
     
     def _on_filter_1_changed(self):
@@ -543,6 +545,7 @@ class CalendarView(QWidget):
                 print(f"DEBUG: Error parsing time {start}-{end}: {e}")
                 continue
                 
+        print(f"DEBUG: _prepare_slots created {sum(len(v) for day in slots.values() for v in day.values())} total valid slots.")
         return slots
 
     def _filter_slots(self, slots):
@@ -575,6 +578,7 @@ class CalendarView(QWidget):
                             if not any(p in active_pools for p in pools):
                                 continue
                     
+                    
                     # Prepare colors for display
                     pool_colors = []
                     if data['pools_found']:
@@ -586,6 +590,7 @@ class CalendarView(QWidget):
                     data['pool_colors'] = pool_colors
                     visible_courses.append(data)
                 
+                print(f"DEBUG: _filter_slots -> Day {day} Hour {hour}: {len(visible_courses)} visible out of {len(course_list)}.")
                 if visible_courses:
                     filtered_slots[day][hour] = visible_courses
                     
@@ -678,7 +683,7 @@ class CalendarView(QWidget):
                         if len(next_courses) == 1:
                             next_data = next_courses[0]
                             # Check continuity and identity
-                            if (current_start + span == next_start and 
+                            if (row + span == self.time_labels.index(next_start) and 
                                 current_data['course'] == next_data['course'] and 
                                 str(current_data['extra']) == str(next_data['extra'])):
                                 span += 1

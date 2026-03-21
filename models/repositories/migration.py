@@ -45,6 +45,8 @@ class DatabaseMigration:
             self._009_add_room_notes,
             self._010_add_common_course_groups,
             self._011_add_group_size,
+            self._012_pool_sinif_duzeyi,
+            self._013_add_semester_to_unavailability,
         ]
 
     def _009_add_room_notes(self) -> None:
@@ -55,6 +57,16 @@ class DatabaseMigration:
     def _011_add_group_size(self) -> None:
         """Adds ogrenci_sayisi column to Ogrenci_Donemleri table."""
         from .migrations.migration_011_add_group_size import up
+        up(self._conn)
+
+    def _012_pool_sinif_duzeyi(self) -> None:
+        """Adds sinif_duzeyi column to Ders_Havuz_Iliskisi table."""
+        from .migrations.migration_012_pool_sinif_duzeyi import up
+        up(self._conn)
+
+    def _013_add_semester_to_unavailability(self) -> None:
+        """Adds yil and donem columns to Ogretmen_Musaitlik table."""
+        from .migrations.migration_013_add_semester_to_unavailability import up
         up(self._conn)
 
     # ---------- helpers ----------

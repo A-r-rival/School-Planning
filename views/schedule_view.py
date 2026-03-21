@@ -251,10 +251,43 @@ class ScheduleView(QWidget):
 
     def _create_course_list(self, layout: QVBoxLayout):
         """Create course list widget (Table)"""
-        # Course list label
+        # Course list header layout
+        header_layout = QHBoxLayout()
+        
         list_label = QLabel("Ders Listesi:")
         list_label.setStyleSheet("font-weight: bold; font-size: 14px; margin-top: 10px;")
-        layout.addWidget(list_label)
+        header_layout.addWidget(list_label)
+        
+        header_layout.addStretch()
+        
+        from datetime import datetime
+        now = datetime.now()
+        current_date_str = now.strftime("%d.%m.%Y")
+        
+        # Calculate Academic Term
+        month = now.month
+        year = now.year
+        
+        # Academic year starts in September
+        if month >= 9:
+            academic_year = f"{year}-{year+1}"
+            if month >= 9 and month <= 1: # 1 is Jan next year (Wait, Jan is < 9. Let's simplify)
+                pass # Handled below
+        else:
+            academic_year = f"{year-1}-{year}"
+            
+        if month in [9, 10, 11, 12, 1]:
+            current_term = "Güz"
+        elif month in [2, 3, 4, 5, 6]:
+            current_term = "Bahar"
+        else:
+            current_term = "Yaz"
+            
+        info_label = QLabel(f"Güncel Tarih: {current_date_str}   Güncel Dönem: {academic_year} {current_term}")
+        info_label.setStyleSheet("font-weight: bold; font-size: 13px; color: #555; margin-top: 10px; padding-right: 15px;")
+        header_layout.addWidget(info_label)
+        
+        layout.addLayout(header_layout)
         
         # --- Filter Section ---
         filter_layout = QHBoxLayout()
@@ -308,7 +341,7 @@ class ScheduleView(QWidget):
 
         # --- NEW: Semester Selection Logic moved here ---
         semester_layout = QHBoxLayout()
-        semester_label = QLabel("Dönem:")
+        semester_label = QLabel("Görüntülenen Dönemi Değiştir:")
         semester_label.setStyleSheet("font-weight: bold;")
         
         self.radio_guz = QRadioButton("Güz")
@@ -325,12 +358,16 @@ class ScheduleView(QWidget):
         # Yaz: 7, 8
         if current_month in [9, 10, 11, 12, 1]:
             self.radio_guz.setChecked(True)
+            default_sem = "Güz"
         elif current_month in [2, 3, 4, 5, 6]:
             self.radio_bahar.setChecked(True)
+            default_sem = "Bahar"
         elif current_month in [7, 8]:
             self.radio_yaz.setChecked(True)
+            default_sem = "Yaz"
         else:
              self.radio_guz.setChecked(True) # Fallback
+             default_sem = "Güz"
         
         # Connect signals
         self.radio_guz.toggled.connect(self.trigger_filter_update)
@@ -341,6 +378,11 @@ class ScheduleView(QWidget):
         semester_layout.addWidget(self.radio_guz)
         semester_layout.addWidget(self.radio_bahar)
         semester_layout.addWidget(self.radio_yaz)
+        
+        self.current_semester_display = QLabel(f"Şu an Görüntülenen Dönem: {default_sem}")
+        self.current_semester_display.setStyleSheet("font-weight: bold; color: #E64A19; padding-left: 20px;")
+        semester_layout.addWidget(self.current_semester_display)
+        
         semester_layout.addSpacing(20)
         
         # Add separator line
@@ -459,10 +501,16 @@ class ScheduleView(QWidget):
         self.filter_dept.blockSignals(False)
         
         # Now trigger the general update
-        self._on_filter_changed()
+        self.trigger_filter_update()
 
     def trigger_filter_update(self):
         """Handle filter changes and emit signal"""
+        
+        # Determine and update semester display
+        selected_sem = "Güz" if self.radio_guz.isChecked() else ("Bahar" if self.radio_bahar.isChecked() else "Yaz")
+        if hasattr(self, 'current_semester_display'):
+            self.current_semester_display.setText(f"Şu an Görüntülenen Dönem: {selected_sem}")
+
         # Determine course type filter from radio buttons
         only_elective = self.filter_only_elective.isChecked()
         only_core = self.filter_only_core.isChecked()

@@ -334,56 +334,31 @@ class CalendarScheduleBuilder:
         self, course_name: str, course_code: str, dept_name: Optional[str] = None
     ) -> Tuple[bool, List[str]]:
         """
-        Detect if course is elective and determine pool codes.
-        
-        Args:
-            course_name: Course name
-            course_code: Course code
-            dept_name: Department name for curriculum lookup
-        
-        Returns:
-            (is_elective, pool_codes) tuple
+        Detect if course is elective and determine pool codes based on prefix and name.
         """
         pool_codes = []
         is_elective = False
         
-        # 1. Look up in curriculum_data (truth source)
-        if dept_name:
-            dept_data = curriculum_data.DEPARTMENTS_DATA.get(dept_name)
-            if dept_data and 'pool_codes' in dept_data:
-                clean_name = course_name.split(" (S")[0].strip()
-                
-                for p_code_key, p_course_names in dept_data['pool_codes'].items():
-                    for db_name in p_course_names:
-                        # Robust case-insensitive match
-                        if (db_name.lower().strip() == clean_name.lower().strip() or
-                            db_name.lower().strip() in clean_name.lower().strip() or
-                            clean_name.lower().strip() in db_name.lower().strip()):
-                            pool_codes.append(p_code_key)
-                            is_elective = True
-                            break
+        upper_code = str(course_code).upper().strip()
+        lower_name = str(course_name).lower().strip()
         
-        # 2. Fallback: Regex/Name detection
-        if not is_elective:
-            pool_code_match = Regexes.pool_code.search(course_code)
-            if pool_code_match:
-                is_elective = True
-                upper_code = course_code.upper()
-                if upper_code.startswith("ZSD"):
-                    pool_codes.append("ZSD")
-                elif upper_code.startswith("ÜSD") or upper_code.startswith("USD"):
-                    pool_codes.append("ÜSD")
-                elif upper_code.startswith("GSD"):
-                    pool_codes.append("GSD")
-                elif "SD" in upper_code:
-                    pool_codes.append("SD")
-            elif "seçmeli" in course_name.lower() or "sdi" in course_code.lower() or "gsd" in course_code.lower():
-                is_elective = True
-        
-        # Deduplicate
-        pool_codes = sorted(list(set(pool_codes)))
-        
-        return is_elective, pool_codes
+        if upper_code.startswith("ZSD"):
+            pool_codes.append("ZSD")
+            is_elective = True
+        elif upper_code.startswith("USD") or upper_code.startswith("ÜSD"):
+            pool_codes.append("ÜSD")
+            is_elective = True
+        elif upper_code.startswith("GSD"):
+            pool_codes.append("GSD")
+            is_elective = True
+        elif upper_code.startswith("SD"):
+            pool_codes.append(upper_code) # Capture specific SD logic like SDI, SDII
+            is_elective = True
+        elif "seçmeli" in lower_name:
+            pool_codes.append("SD")
+            is_elective = True
+            
+        return is_elective, sorted(list(set(pool_codes)))
     
     def _post_process_student_view(
         self, schedule_data: List[Tuple], data: Dict[str, Any]

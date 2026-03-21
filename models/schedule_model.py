@@ -81,10 +81,63 @@ class ScheduleModel(QObject):
             self.course_repo,
             self.schedule_repo
         )
+        
+        # Auto-patch Ders_Havuz_Iliskisi sinif_duzeyi if missing from old migration
+        self._patch_pool_sinif_duzeyi()
+
+    def _patch_pool_sinif_duzeyi(self):
+        """Fix for migration 012 where sinif_duzeyi might be 0 for existing pool courses.
+        Updates them to the correct value based on curriculum_data."""
+        try:
+            self.c.execute("SELECT COUNT(*) FROM Ders_Havuz_Iliskisi WHERE sinif_duzeyi = 0")
+            count = self.c.fetchone()[0]
+            if count == 0:
+                return
+
+            print(f"[DB Patch] Found {count} pool courses with missing sinif_duzeyi. Patching...")
+            import re
+            from database import curriculum_data
+            data = getattr(curriculum_data, 'DEPARTMENTS_DATA', {})
+            
+            # Map (bolum_adi, havuz_kodu) -> sinif_duzeyi
+            pool_map = {}
+            for dept_name, details in data.items():
+                curr = details.get('curriculum', {})
+                for sem_key, courses in curr.items():
+                    year_match = re.search(r'(\d+)\.\s*Y[ıi]l', sem_key)
+                    if not year_match: continue
+                    sinif_duzeyi = int(year_match.group(1))
+                    
+                    if isinstance(courses, list):
+                        for course in courses:
+                            if isinstance(course, list) and len(course) >= 2:
+                                pool_map[(dept_name, course[0])] = sinif_duzeyi
+
+            # Get bolum_id dictionary
+            self.c.execute("SELECT bolum_id, bolum_adi FROM Bolumler")
+            bolum_dict = {row[1]: row[0] for row in self.c.fetchall()}
+
+            # Now update
+            for key, sinif in pool_map.items():
+                dept_name, pool_code = key
+                if dept_name in bolum_dict:
+                    bolum_id = bolum_dict[dept_name]
+                    self.c.execute('''
+                        UPDATE Ders_Havuz_Iliskisi 
+                        SET sinif_duzeyi = ? 
+                        WHERE bolum_id = ? AND havuz_kodu = ? AND sinif_duzeyi = 0
+                    ''', (sinif, bolum_id, pool_code))
+            
+            self.conn.commit()
+            print("[DB Patch] Successfully updated Ders_Havuz_Iliskisi.")
+        except Exception as e:
+            print(f"[DB Patch] Error patching pool courses: {e}")
 
     def _build_semester_lookup(self):
         """Builds a lookup map for course semesters from curriculum_data.py"""
         try:
+            self.semester_lookup = {}
+            self.semester_lookup_by_dept = {} # NEW: Keep track per department
             from database import curriculum_data
             data = getattr(curriculum_data, 'DEPARTMENTS_DATA', {})
             
@@ -105,10 +158,51 @@ class ScheduleModel(QObject):
                                 # course: [Code, Name, T, U, L, AKTS]
                                 if len(course) >= 2:
                                     code = str(course[0]).strip()
+                                    name = str(course[1]).strip()
+                                    
                                     if code:
                                         if code not in self.semester_lookup:
                                             self.semester_lookup[code] = set()
+                                        if (dept, code) not in self.semester_lookup_by_dept:
+                                            self.semester_lookup_by_dept[(dept, code)] = set()
+                                            
                                         self.semester_lookup[code].add(semester)
+                                        self.semester_lookup_by_dept[(dept, code)].add(semester)
+                                        
+                                    if name:
+                                        if name not in self.semester_lookup:
+                                            self.semester_lookup[name] = set()
+                                        if (dept, name) not in self.semester_lookup_by_dept:
+                                            self.semester_lookup_by_dept[(dept, name)] = set()
+                                            
+                                        self.semester_lookup[name].add(semester)
+                                        self.semester_lookup_by_dept[(dept, name)].add(semester)
+                                        
+                                        # If this code is a pool reference, expand all pool sub-courses
+                                        pools = details.get('pools', {})
+                                        if code in pools:
+                                            for pool_course in pools[code]:
+                                                if len(pool_course) >= 2:
+                                                    pool_code = str(pool_course[0]).strip()
+                                                    pool_name = str(pool_course[1]).strip()
+                                                    
+                                                    if pool_code:
+                                                        if pool_code not in self.semester_lookup:
+                                                            self.semester_lookup[pool_code] = set()
+                                                        if (dept, pool_code) not in self.semester_lookup_by_dept:
+                                                            self.semester_lookup_by_dept[(dept, pool_code)] = set()
+                                                            
+                                                        self.semester_lookup[pool_code].add(semester)
+                                                        self.semester_lookup_by_dept[(dept, pool_code)].add(semester)
+                                                        
+                                                    if pool_name:
+                                                        if pool_name not in self.semester_lookup:
+                                                            self.semester_lookup[pool_name] = set()
+                                                        if (dept, pool_name) not in self.semester_lookup_by_dept:
+                                                            self.semester_lookup_by_dept[(dept, pool_name)] = set()
+                                                            
+                                                        self.semester_lookup[pool_name].add(semester)
+                                                        self.semester_lookup_by_dept[(dept, pool_name)].add(semester)
                     except Exception as parse_e:
                         print(f"Warning: Failed to parse semester key '{sem_key}': {parse_e}")
                         continue
@@ -118,7 +212,8 @@ class ScheduleModel(QObject):
     def initialize_connection(self):
         """Initializes the database connection and runs migrations."""
         try:
-            self.conn = sqlite3.connect(self.db_path)
+            # Enable cross-thread usage for the solver background thread
+            self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
             self.c = self.conn.cursor()
             
             # Run migrations
@@ -481,6 +576,7 @@ class ScheduleModel(QObject):
             self.error_occurred.emit(f"Şablon ders eklenirken hata: {str(e)}")
             return False
 
+
     def get_schedule_by_classroom(self, classroom_id: int) -> List[tuple]:
         """Get schedule for a specific classroom"""
         try:
@@ -513,8 +609,20 @@ class ScheduleModel(QObject):
                 JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
                 JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
                 WHERE od.bolum_num = ? AND od.sinif_duzeyi = ?
+                
+                UNION ALL
+                
+                SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi,
+                       (SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = dp.ogretmen_id) as hoca,
+                       (SELECT derslik_adi FROM Derslikler WHERE derslik_num = dp.derslik_id) as oda,
+                       COALESCE(d.ders_kodu, 'CUSTOM') as ders_kodu, dp.ders_tipi
+                FROM Ders_Programi dp
+                LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                JOIN Ders_Havuz_Iliskisi dhi ON dp.ders_adi = dhi.ders_adi AND dp.ders_instance = dhi.ders_instance
+                JOIN Ogrenci_Donemleri od ON od.bolum_num = dhi.bolum_id AND od.sinif_duzeyi = dhi.sinif_duzeyi
+                WHERE od.bolum_num = ? AND od.sinif_duzeyi = ?
             '''
-            self.c.execute(query, (bolum_id, sinif_duzeyi))
+            self.c.execute(query, (bolum_id, sinif_duzeyi, bolum_id, sinif_duzeyi))
             return self.c.fetchall()
         except Exception as e:
             print(f"Error fetching student schedule: {e}")
@@ -610,12 +718,27 @@ class ScheduleModel(QObject):
                 code = row[0] # Fix: Define code
                 name = row[1]
                 code_str = str(code).strip()
+                detay = row[7] # Contains dept info e.g. "Makine Müh - 1. Sınıf"
                 
                 sem_str = "Belirsiz" # Default if unknown
                 
+                # Extract dept from detay string if it's a department course
+                bolum_adi = None
+                if detay and " - " in detay and not str(detay).startswith("Havuz:"):
+                    bolum_adi = str(detay).split(" - ")[0].strip()
+                    
                 # 1. Lookup from Curriculum Data (Strict Source of Truth)
-                if code_str and hasattr(self, 'semester_lookup') and code_str in self.semester_lookup:
+                sem_set = None
+                
+                # Prioritize department-specific timing over global timing
+                if bolum_adi and hasattr(self, 'semester_lookup_by_dept') and (bolum_adi, code_str) in self.semester_lookup_by_dept:
+                    sem_set = self.semester_lookup_by_dept[(bolum_adi, code_str)]
+                
+                # Fallback to global if unmapped or pool
+                if not sem_set and hasattr(self, 'semester_lookup') and code_str in self.semester_lookup:
                     sem_set = self.semester_lookup[code_str]
+                    
+                if sem_set:
                     if "Güz" in sem_set and "Bahar" in sem_set:
                         sem_str = "Güz / Bahar"
                     elif "Güz" in sem_set:
@@ -780,12 +903,14 @@ class ScheduleModel(QObject):
             return []
             
     def get_schedule_for_faculty_common(self, faculty_id: int, year: int) -> List[Tuple]:
-        """Get schedule for Common Courses of a faculty."""
+        """Get schedule for Common Courses of a faculty, including pool courses."""
         try:
-            # We group by the schedule slot (day, time, course, teacher) to avoid duplicates
-            q2 = """
+            query = """
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, 
-                       (o.ad || ' ' || o.soyad), d.teori_odasi, GROUP_CONCAT(DISTINCT d.ders_kodu)
+                       (o.ad || ' ' || o.soyad) as hoca, 
+                       (SELECT derslik_adi FROM Derslikler WHERE derslik_num = dp.derslik_id) as oda,
+                       GROUP_CONCAT(DISTINCT d.ders_kodu) as ders_kodu,
+                       dp.ders_tipi
                 FROM Ders_Programi dp
                 JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 LEFT JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
@@ -793,19 +918,33 @@ class ScheduleModel(QObject):
                 JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
                 JOIN Bolumler b ON od.bolum_num = b.bolum_id
                 WHERE b.fakulte_num = ? AND od.sinif_duzeyi = ?
-                GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, o.ad, o.soyad, d.teori_odasi
+                GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, o.ad, o.soyad, dp.derslik_id, dp.ders_tipi
+                
+                UNION ALL
+                
+                SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, 
+                       (o.ad || ' ' || o.soyad) as hoca, 
+                       (SELECT derslik_adi FROM Derslikler WHERE derslik_num = dp.derslik_id) as oda,
+                       GROUP_CONCAT(DISTINCT d.ders_kodu) as ders_kodu,
+                       dp.ders_tipi
+                FROM Ders_Programi dp
+                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                LEFT JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
+                JOIN Ders_Havuz_Iliskisi dhi ON dhi.ders_instance = d.ders_instance AND dhi.ders_adi = d.ders_adi
+                JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
+                JOIN Ogrenci_Donemleri od ON od.bolum_num = dhi.bolum_id AND od.sinif_duzeyi = dhi.sinif_duzeyi
+                WHERE b.fakulte_num = ? AND od.sinif_duzeyi = ?
+                GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, o.ad, o.soyad, dp.derslik_id, dp.ders_tipi
             """
-            self.c.execute(q2, (faculty_id, year))
+            self.c.execute(query, (faculty_id, year, faculty_id, year))
             rows = self.c.fetchall()
+            
             result = []
             for r in rows:
-                gun, start, end, ders, hoca, room_id, codes = r
-                room_name = "Belirsiz"
-                if room_id:
-                    self.c.execute("SELECT derslik_adi FROM Derslikler WHERE derslik_num=?", (room_id,))
-                    rr = self.c.fetchone()
-                    if rr: room_name = rr[0]
-                result.append((gun, start, end, ders, hoca, room_name, codes))
+                gun, start, end, ders, hoca, oda, codes, ders_tipi = r
+                if not oda:
+                    oda = "Belirsiz"
+                result.append((gun, start, end, ders, hoca, oda, codes, ders_tipi))
             return result
         except Exception as e:
             print(f"Error fetching common schedule: {e}")
@@ -1217,44 +1356,56 @@ class ScheduleModel(QObject):
     # TEACHER AVAILABILITY & UNAVAILABILITY
     # ════════════════════════════════════════════════════════════════
 
-    def add_teacher_unavailability(self, teacher_id: int, day: str, start_time: str, end_time: str, description: str = "") -> bool:
+    def add_teacher_unavailability(self, teacher_id: int, day: str, start_time: str, end_time: str, yil: str = "Hepsi", donem: str = "Hepsi", description: str = "") -> bool:
         """
         Add a time slot where the teacher is NOT available.
         """
         try:
-            # Check for existing overlap for this teacher
+            # Check for existing overlap for this teacher within the same year/semester scope
             self.c.execute('''
                 SELECT id FROM Ogretmen_Musaitlik 
-                WHERE ogretmen_id = ? AND gun = ? 
+                WHERE ogretmen_id = ? AND gun = ? AND yil = ? AND donem = ?
                 AND (
                     (baslangic <= ? AND bitis >= ?) OR
                     (baslangic <= ? AND bitis >= ?) OR
                     (baslangic >= ? AND bitis <= ?)
                 )
-            ''', (teacher_id, day, start_time, start_time, end_time, end_time, start_time, end_time))
+            ''', (teacher_id, day, yil, donem, start_time, start_time, end_time, end_time, start_time, end_time))
             
             if self.c.fetchone():
                 return False # Already marked as unavailable
-
+            
             self.c.execute('''
-                INSERT INTO Ogretmen_Musaitlik (ogretmen_id, gun, baslangic, bitis, description)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (teacher_id, day, start_time, end_time, description))
+                INSERT INTO Ogretmen_Musaitlik (ogretmen_id, gun, baslangic, bitis, yil, donem, description)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (teacher_id, day, start_time, end_time, yil, donem, description))
             self.conn.commit()
             return True
         except Exception as e:
             self.error_occurred.emit(f"Müsaitlik eklenirken hata: {str(e)}")
             return False
 
-    def get_teacher_unavailability(self, teacher_id: int) -> List[tuple]:
+    def get_teacher_unavailability(self, teacher_id: int, yil: str = None, donem: str = None) -> List[tuple]:
         """Get all unavailable slots for a teacher"""
         try:
-            # Controller expects: (day, start, end, id, description)
-            self.c.execute('''
-                SELECT om.gun, om.baslangic, om.bitis, om.id, om.description, o.preferred_day_span
+            # Controller expects: (day, start, end, id, description, ...)
+            query = '''
+                SELECT om.gun, om.baslangic, om.bitis, om.id, om.description, o.preferred_day_span, om.yil, om.donem
                 FROM Ogretmen_Musaitlik om
                 JOIN Ogretmenler o ON om.ogretmen_id = o.ogretmen_num
                 WHERE om.ogretmen_id = ? 
+            '''
+            params = [teacher_id]
+            
+            if yil:
+                query += " AND (om.yil = 'Hepsi' OR om.yil = ?)"
+                params.append(yil)
+                
+            if donem:
+                query += " AND (om.donem = 'Hepsi' OR om.donem = ?)"
+                params.append(donem)
+                
+            query += '''
                 ORDER BY 
                     CASE om.gun 
                         WHEN 'Pazartesi' THEN 1 
@@ -1265,7 +1416,8 @@ class ScheduleModel(QObject):
                         WHEN 'Cumartesi' THEN 6 
                         WHEN 'Pazar' THEN 7 
                     END, om.baslangic
-            ''', (teacher_id,))
+            '''
+            self.c.execute(query, tuple(params))
             return self.c.fetchall()
         except Exception as e:
             print(f"Error fetching unavailability: {e}")
@@ -1286,6 +1438,8 @@ class ScheduleModel(QObject):
             'day': str,
             'start': str,
             'end': str,
+            'yil': str,
+            'donem': str,
             'description': str
         }
         """
@@ -1293,28 +1447,29 @@ class ScheduleModel(QObject):
         try:
             # 1. Fetch Teachers (Filtered or All)
             if teacher_id:
-                self.c.execute("SELECT ogretmen_num, ad, soyad, preferred_day_span FROM Ogretmenler WHERE ogretmen_num = ?", (teacher_id,))
+                self.c.execute("SELECT ogretmen_num, ad, soyad, preferred_day_span, room_request FROM Ogretmenler WHERE ogretmen_num = ?", (teacher_id,))
             else:
-                self.c.execute("SELECT ogretmen_num, ad, soyad, preferred_day_span FROM Ogretmenler ORDER BY ad, soyad")
+                self.c.execute("SELECT ogretmen_num, ad, soyad, preferred_day_span, room_request FROM Ogretmenler ORDER BY ad, soyad")
             
             teachers = self.c.fetchall()
             
             for t in teachers:
-                t_num, t_ad, t_soyad, t_span = t
+                t_num, t_ad, t_soyad, t_span, t_room = t
                 t_name = f"{t_ad} {t_soyad}"
                 
-                # Add Span Entry if exists
-                if t_span and t_span > 0:
+                # Add Span Entry if exists or if we need to pass room_pref to UI
+                if (t_span and t_span > 0) or t_room:
                     results.append({
                         'type': 'span',
                         'teacher_id': t_num,
                         'teacher_name': t_name,
-                        'span_value': t_span
+                        'span_value': t_span or 0,
+                        'room_pref': t_room or ""
                     })
                 
                 # 2. Fetch Slots for this teacher
                 self.c.execute('''
-                    SELECT id, gun, baslangic, bitis, description 
+                    SELECT id, gun, baslangic, bitis, yil, donem, description 
                     FROM Ogretmen_Musaitlik 
                     WHERE ogretmen_id = ?
                     ORDER BY 
@@ -1339,7 +1494,9 @@ class ScheduleModel(QObject):
                         'day': s[1],
                         'start': s[2],
                         'end': s[3],
-                        'description': s[4]
+                        'yil': s[4],
+                        'donem': s[5],
+                        'description': s[6]
                     })
                     
             return results
@@ -1358,28 +1515,28 @@ class ScheduleModel(QObject):
             self.error_occurred.emit(f"Müsaitlik silinirken hata: {str(e)}")
             return False
 
-    def update_teacher_unavailability(self, u_id: int, teacher_id: int, day: str, start: str, end: str, description: str = "") -> bool:
+    def update_teacher_unavailability(self, u_id: int, teacher_id: int, day: str, start: str, end: str, yil: str = "Hepsi", donem: str = "Hepsi", description: str = "") -> bool:
         """Update unavailability slot"""
         try:
             # Check for existing overlap (excluding self)
             self.c.execute('''
                 SELECT id FROM Ogretmen_Musaitlik 
-                WHERE ogretmen_id = ? AND gun = ? AND id != ?
+                WHERE ogretmen_id = ? AND gun = ? AND yil = ? AND donem = ? AND id != ?
                 AND (
                     (baslangic <= ? AND bitis >= ?) OR
                     (baslangic <= ? AND bitis >= ?) OR
                     (baslangic >= ? AND bitis <= ?)
                 )
-            ''', (teacher_id, day, u_id, start, start, end, end, start, end))
+            ''', (teacher_id, day, yil, donem, u_id, start, start, end, end, start, end))
             
             if self.c.fetchone():
                 return False # Overlap
             
             self.c.execute('''
                 UPDATE Ogretmen_Musaitlik 
-                SET gun = ?, baslangic = ?, bitis = ?, description = ?
+                SET gun = ?, baslangic = ?, bitis = ?, yil = ?, donem = ?, description = ?
                 WHERE id = ?
-            ''', (day, start, end, description, u_id))
+            ''', (day, start, end, yil, donem, description, u_id))
             self.conn.commit()
             return True
         except Exception as e:

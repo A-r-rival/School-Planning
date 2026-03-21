@@ -62,9 +62,11 @@ class ORToolsScheduler:
         self.solver = cp_model.CpSolver()
         self.vars = {}      # (c_idx, r_id, s_id) -> bool_var
         self.room_vars = {} # (c_idx, r_id) -> bool_var
+        self.semester_filter = "Güz" # Default
 
     def load_data(self, semester_filter: Optional[str] = None):
         """Load necessary data from database. Called once."""
+        self.semester_filter = semester_filter
         # 1. Load Rooms
         self.rooms = self.db_model.aktif_derslikleri_getir() 
         self.rooms.sort(key=lambda x: x[0]) # Deterministic Sort by ID
@@ -81,7 +83,7 @@ class ORToolsScheduler:
             
             if 'MEC319' in code or 'MEC319' in name.upper():
                 continue
-            if 'bitirme projesi' in name or 'tasarım projesi' in name or 'capstone' in name:
+            if 'bitirme projesi' in name or 'tasarım projesi' in name or 'capstone' in name or 'tez' in name:
                  continue
             filtered_courses.append(c)
             
@@ -95,17 +97,53 @@ class ORToolsScheduler:
             
             for c in self.courses:
                 code = str(c.get('code', '')).strip()
+                name = str(c.get('name', '')).strip()
                 
-                if code and code in lookup:
-                    sem_set = lookup[code]
-                    # Include if course matches the selected semester
-                    if semester_filter in sem_set:
-                        semester_courses.append(c)
-                    # Also include if course is in both semesters
-                    elif "Güz" in sem_set and "Bahar" in sem_set:
-                        semester_courses.append(c)
+                valid_groups = []
+                has_any_match = False
+                
+                lookup_by_dept = getattr(self.db_model, 'semester_lookup_by_dept', {})
+                lookup = getattr(self.db_model, 'semester_lookup', {})
+                
+                if 'program_contexts' in c and c['program_contexts']:
+                    for ctx in c['program_contexts']:
+                        dept = str(ctx.department).strip() if hasattr(ctx, 'department') else ""
+                        
+                        sem_set = set()
+                        if dept and (dept, code) in lookup_by_dept:
+                            sem_set = lookup_by_dept[(dept, code)]
+                        elif dept and (dept, name) in lookup_by_dept:
+                            sem_set = lookup_by_dept[(dept, name)]
+                        elif code and code in lookup:
+                            sem_set = lookup[code]
+                        elif name and name in lookup:
+                            sem_set = lookup[name]
+                            
+                        # Include if ONLY for selected semester OR if it explicitly spans BOTH
+                        if semester_filter in sem_set or ("Güz" in sem_set and "Bahar" in sem_set):
+                            if hasattr(ctx, 'group_id'):
+                                valid_groups.append(ctx.group_id)
+                            has_any_match = True
                 else:
-                    # Unknown semester — include to avoid losing courses
+                    # Fallback for old tests or edge cases without program_contexts
+                    dept = str(c.get('department', '')).strip()
+                    sem_set = set()
+                    if dept and (dept, code) in lookup_by_dept:
+                        sem_set = lookup_by_dept[(dept, code)]
+                    elif dept and (dept, name) in lookup_by_dept:
+                        sem_set = lookup_by_dept[(dept, name)]
+                    elif code and code in lookup:
+                        sem_set = lookup[code]
+                    elif name and name in lookup:
+                        sem_set = lookup[name]
+                        
+                    if semester_filter in sem_set or ("Güz" in sem_set and "Bahar" in sem_set):
+                        has_any_match = True
+                        valid_groups = c.get('groups', [])
+                        
+                if has_any_match:
+                    # PRUNE: Mathematically strip cohorts that do NOT belong to this semester
+                    c['groups'] = valid_groups
                     semester_courses.append(c)
             
             self.courses = semester_courses
@@ -216,7 +254,7 @@ class ORToolsScheduler:
             
         return self.courses
 
-    def create_variables(self, ignore_fixed_rooms=False, optional_indices=None, active_indices=None):
+    def create_variables(self, ignore_fixed_rooms=False, optional_indices=None, active_indices=None, fixed_assignments=None):
         """Create CP variables and initialize model logic with strict contiguity."""
         if optional_indices is None:
             optional_indices = set()
@@ -225,12 +263,19 @@ class ORToolsScheduler:
             
         if active_indices is not None:
             active_indices = set(active_indices)
+            
+        if fixed_assignments is None:
+            fixed_assignments = {}
 
         self.vars = {} 
         self.room_vars = {}
-        self.starts = {} # (c_idx, r_id, s_id) -> bool_var (Is this the START slot?)
+        self.starts = {} # (c_idx, r_id, s_id) -> bool_var
         
-        print(f"DEBUG: Creating variables for {len(self.courses)} courses...", flush=True)
+        capacity_filtered_count = 0
+        symmetry_filtered_count = 0
+        
+        active_count = len(active_indices) if active_indices is not None else len(self.courses)
+        print(f"DEBUG: Creating variables for {active_count} courses...", flush=True)
         if hasattr(self, 'cp_model') and self.cp_model:
              print("DEBUG: CP Model exists.", flush=True)
         else:
@@ -238,6 +283,8 @@ class ORToolsScheduler:
 
         count = 0
         for c_idx, course in enumerate(self.courses):
+            allowed_theory_pool_seed = None
+            
             # Optimization: Skip variable creation for courses not in active phase
             if active_indices is not None and c_idx not in active_indices:
                 continue
@@ -251,16 +298,48 @@ class ORToolsScheduler:
                  # Let's skip creating variables for it so it doesn't crash calculations
                  continue
 
+            # PHASE 2 OPTIMIZATION: If course was fixed in Phase 1, ONLY build the assigned path!
+            if c_idx in fixed_assignments:
+                r_assigned, s_assigned_start = fixed_assignments[c_idx]
+                r_var = self.cp_model.NewBoolVar(f'c{c_idx}_r{r_assigned}')
+                self.room_vars[(c_idx, r_assigned)] = r_var
+                self.cp_model.Add(r_var == 1)
+                
+                s_var = self.cp_model.NewBoolVar(f'start_c{c_idx}_r{r_assigned}_s{s_assigned_start}')
+                self.starts[(c_idx, r_assigned, s_assigned_start)] = s_var
+                self.cp_model.Add(s_var == 1)
+                
+                for t in self.time_slots:
+                    t_id = t['id']
+                    if s_assigned_start <= t_id < s_assigned_start + duration:
+                        occ_var = self.cp_model.NewBoolVar(f'c{c_idx}_r{r_assigned}_s{t_id}')
+                        self.vars[(c_idx, r_assigned, t_id)] = occ_var
+                        self.cp_model.Add(occ_var == 1)
+                continue
+
             # 1. Create Room Variables
             possible_rooms = []
             viable_rooms_count = 0
             capacity_filtered_count = 0
+            symmetry_filtered_count = 0
+            
             # Determine if fixed_room is actually a valid room in our current list
             is_fixed_room_valid = False
             if not ignore_fixed_rooms and course['fixed_room']:
                 is_fixed_room_valid = any(r[0] == course['fixed_room'] for r in self.rooms)
                 if not is_fixed_room_valid:
                     print(f"DEBUG WARNING: Course {course['name']} has invalid fixed_room ID {course['fixed_room']}. Ignoring fixed room constraint.")
+
+            # HASH POOLING: Determine course's allowed sub-pool (Symmetry breaking)
+            # Only apply generic sub-pooling if there are lots of rooms and no fixed room
+            allowed_theory_pool = None
+            if not is_fixed_room_valid and len(self.rooms) > 20: # If school has more than 20 rooms total
+                # Use Course Name + Instance to deterministically hash it to a chunk of 12 rooms
+                h_val = hash(course['name'] + str(course.get('instance', '1')))
+                pool_size = 12
+                # We will just modulo the room ID against a shift based on h_val, or use a list.
+                # Since we don't have a contiguous list of theory rooms here, we will filter below.
+                allowed_theory_pool_seed = h_val % max(1, len(self.rooms) // pool_size)
 
             for r in self.rooms:
                 r_id = r[0]
@@ -310,6 +389,25 @@ class ORToolsScheduler:
                 # (Unless strictly overridden by fixed_room, but that's handled above)
                 else:
                     if is_lab_room:
+                        continue
+                        
+                # Rule C: Capacity Pre-Filtering (RAM Optimization)
+                course_capacity = course.get('student_count', 0)
+                room_capacity = r[3] if len(r) > 3 else 0
+                if course_capacity > 0 and room_capacity > 0:
+                    if course_capacity > room_capacity * 1.20:
+                        capacity_filtered_count += 1
+                        continue
+                        
+                # Rule D: Symmetry Breaking Room Sub-Pooling (RAM Optimization)
+                # Severely limit identical generic room assignments to avoid 3.1 Million variable tree bloat
+                if allowed_theory_pool_seed is not None and not is_lab_course:
+                    # Deterministically distribute courses across rooms using their hash seed
+                    # e.g., allow room if its index modulo (TotalRooms / PoolSize) matches the seed
+                    # This guarantees every generic course gets exactly ~12 rooms to choose from.
+                    total_generic_chunks = max(1, len(self.rooms) // 12)
+                    if r_id % total_generic_chunks != allowed_theory_pool_seed:
+                        symmetry_filtered_count += 1
                         continue
                 
                 # Create Room Var
@@ -399,8 +497,10 @@ class ORToolsScheduler:
                      self.cp_model.Add(sum(possible_rooms) <= 1)
                 else:
                      self.cp_model.Add(sum(possible_rooms) == 1)
+            if not possible_rooms:
+                print(f"CRITICAL ERROR: No possible rooms found for course {course['name']} (duration {duration}). Capacity Filtered {capacity_filtered_count} rooms.", flush=True)
         
-        print(f"DEBUG: Created {len(self.starts)} start variables, {len(self.vars)} occupancy variables")
+        print(f"DEBUG: Created {len(self.starts)} start variables, {len(self.vars)} occupancy variables. Pruned {capacity_filtered_count} (Cap), {symmetry_filtered_count} (Symmetry).", flush=True)
 
     def add_hard_constraints(self, include_teacher_unavailability=True):
         """Add system-wide hard constraints."""
@@ -440,7 +540,7 @@ class ORToolsScheduler:
                 # Use DB Model service which handles mapping correctly
                 for t in self.teachers:
                     t_id = t[0]
-                    unavail = self.db_model.get_teacher_unavailability(t_id)
+                    unavail = self.db_model.get_teacher_unavailability(t_id, donem=self.semester_filter)
                     # unavail comes as list of (day, start, end, ...?)
                     # Assuming get_teacher_unavailability returns usable data or we fallback
                     
@@ -712,13 +812,22 @@ class ORToolsScheduler:
                     
         print(f"DEBUG_LUNCH: Applying constraints for {len(day_occupancy)} group-day combinations.", flush=True)
         
+        if not hasattr(self, 'soft_penalties'):
+            self.soft_penalties = []
+            
         for (g_dept, g_year, s_day), occ_vars in day_occupancy.items():
             lunch_slots_count = len(lunch_slots_by_day[s_day])
             max_allowed = lunch_slots_count - 1
             if occ_vars:
-                # Important: If a group has NO classes scheduled in some lunch slots, 
-                # those slots are implicitly empty, so the occupied count naturally starts lower.
-                self.cp_model.Add(sum(occ_vars) <= max_allowed)
+                # Add a slack variable to softly enforce max_allowed. 
+                # If they are scheduled for all lunch_slots_count slots, lunch_missed must be > 0.
+                lunch_missed = self.cp_model.NewIntVar(0, lunch_slots_count, f'lunch_missed_{safe_name(g_dept)}_{g_year}_d{s_day}')
+                
+                # sum(occ_vars) - max_allowed <= lunch_missed
+                self.cp_model.Add(sum(occ_vars) - max_allowed <= lunch_missed)
+                
+                # Severely penalize missing lunch (High Penalty like 200)
+                self.soft_penalties.append(lunch_missed * 200)
 
         
 
@@ -732,6 +841,8 @@ class ORToolsScheduler:
         """
         debug_log = []
         debug_log.append("=== ROOM PREFERENCE DEBUG LOG ===\n")
+        if not hasattr(self, 'soft_penalties'):
+            self.soft_penalties = []
         
         for t in self.teachers:
             t_id = t[0]
@@ -823,14 +934,25 @@ class ORToolsScheduler:
                             debug_log.append(f"    Skipping Floor Constraint for Course {c_idx} (Type: {course_type}, Fixed Room: {bool(course.get('fixed_room'))})\n")
                             continue
 
+                        # Check viability to prevent INFEASIBILITY
+                        viable_after = 0
                         for r in self.rooms:
-                            r_id = r[0]
                             r_floor = r[4] if len(r) > 4 else 0
-                            
-                            if r_floor != target_floor:
-                                if (c_idx, r_id) in self.room_vars:
-                                    self.cp_model.Add(self.room_vars[(c_idx, r_id)] == 0)
-                                    banned_rooms_count += 1
+                            if r_floor == target_floor:
+                                if (c_idx, r[0]) in self.room_vars:
+                                    viable_after += 1
+                        
+                        if viable_after > 0:
+                            for r in self.rooms:
+                                r_id = r[0]
+                                r_floor = r[4] if len(r) > 4 else 0
+                                
+                                if r_floor != target_floor:
+                                    if (c_idx, r_id) in self.room_vars:
+                                        self.soft_penalties.append(self.room_vars[(c_idx, r_id)] * 60)
+                                        banned_rooms_count += 1
+                        else:
+                            debug_log.append(f"    WARNING: Skipping Floor Constraint for Course {c_idx} because no viable rooms on Floor {target_floor}!\n")
                 
                 # Logic 2: Lab Constraint
                 # IMPORTANT: Teacher lab preference should ONLY apply to lab-type courses
@@ -853,14 +975,23 @@ class ORToolsScheduler:
                             continue
                         
                         # This IS a lab course - apply teacher's lab room preference
+                        viable_after = 0
                         for r in self.rooms:
-                            r_id = r[0]
-                            r_name = r[1].lower()
-                            is_lab_room = 'lab' in r_name
-                            if not is_lab_room:
-                                 if (c_idx, r_id) in self.room_vars:
-                                    self.cp_model.Add(self.room_vars[(c_idx, r_id)] == 0)
-                                    banned_rooms_count += 1
+                            if 'lab' in r[1].lower():
+                                if (c_idx, r[0]) in self.room_vars:
+                                    viable_after += 1
+                        
+                        if viable_after > 0:
+                            for r in self.rooms:
+                                r_id = r[0]
+                                r_name = r[1].lower()
+                                is_lab_room = 'lab' in r_name
+                                if not is_lab_room:
+                                     if (c_idx, r_id) in self.room_vars:
+                                        self.soft_penalties.append(self.room_vars[(c_idx, r_id)] * 80)
+                                        banned_rooms_count += 1
+                        else:
+                            debug_log.append(f"    WARNING: Skipping Lab Constraint for Course {c_idx} because no viable lab rooms available!\n")
 
                 # Logic 3: Specific Room Name
                 valid_room_ids = []
@@ -874,12 +1005,21 @@ class ORToolsScheduler:
                         if self.courses[c_idx].get('fixed_room'):
                             continue # Skip courses with fixed rooms
                             
-                        for r in self.rooms:
-                             r_id = r[0]
-                             if r_id not in valid_room_ids:
-                                 if (c_idx, r_id) in self.room_vars:
-                                     self.cp_model.Add(self.room_vars[(c_idx, r_id)] == 0)
-                                     banned_rooms_count += 1
+                        # Check viability
+                        viable_after = 0
+                        for r_id in valid_room_ids:
+                            if (c_idx, r_id) in self.room_vars:
+                                viable_after += 1
+                        
+                        if viable_after > 0:
+                            for r in self.rooms:
+                                 r_id = r[0]
+                                 if r_id not in valid_room_ids:
+                                     if (c_idx, r_id) in self.room_vars:
+                                         self.soft_penalties.append(self.room_vars[(c_idx, r_id)] * 100)
+                                         banned_rooms_count += 1
+                        else:
+                            debug_log.append(f"    WARNING: Skipping Specific Room Constraint for Course {c_idx} because valid rooms are too small or unavailable!\n")
 
                 debug_log.append(f"  Total room-course combinations banned: {banned_rooms_count}\n")
                 
@@ -991,12 +1131,32 @@ class ORToolsScheduler:
             if 'parent_key' in course:
                 course_parts[course['parent_key']].append(c_idx)
 
-        # Optimization: Pre-group vars by (course_idx, day_idx)
-        # This prevents looping over all slots and rooms millions of times.
-        course_day_vars = collections.defaultdict(list)
-        for (c_idx, r_id, s_id), var in self.vars.items():
-            d_idx = s_id // self.slots_per_day
-            course_day_vars[(c_idx, d_idx)].append(var)
+        # Optimization 1: Identify courses that ACTUALLY need day-separation checks (multi-part courses)
+        # Avoid generating 7.5 million SWIG constraints for single-block courses!
+        multi_part_c_indices = set()
+        for p_key, indices in course_parts.items():
+            if len(indices) >= 2:
+                multi_part_c_indices.update(indices)
+
+        if not multi_part_c_indices:
+            print("DEBUG: add_soft_constraints_consecutive skipped (No multi-part courses).", flush=True)
+            return
+
+        # Optimization 2: Pre-group vars by (course_idx, day_idx) ONLY for multi-part courses
+        course_day_starts = collections.defaultdict(list)
+        for (c_idx, r_id, s_id), s_var in self.starts.items():
+            if c_idx in multi_part_c_indices:
+                d_idx = s_id // self.slots_per_day
+                course_day_starts[(c_idx, d_idx)].append(s_var)
+
+        # Pre-calculate active day flag per course to avoid duplicate MaxEquality clauses
+        course_day_active = {}
+        for (c_idx, d_idx), start_vars in course_day_starts.items():
+            if start_vars:
+                # Use a single dedicated variable representing "does this course start on this day?"
+                active_var = self.cp_model.NewBoolVar(f'c_{c_idx}_day_{d_idx}_active')
+                self.cp_model.AddMaxEquality(active_var, start_vars)
+                course_day_active[(c_idx, d_idx)] = active_var
 
         penalty_count = 0
         for p_key, indices in course_parts.items():
@@ -1007,16 +1167,10 @@ class ORToolsScheduler:
                 for j in range(i + 1, len(indices)):
                     idx1, idx2 = indices[i], indices[j]
                     for d_idx in range(5):
-                        vars1 = course_day_vars.get((idx1, d_idx), [])
-                        vars2 = course_day_vars.get((idx2, d_idx), [])
+                        b1 = course_day_active.get((idx1, d_idx))
+                        b2 = course_day_active.get((idx2, d_idx))
 
-                        if vars1 and vars2:
-                            b1 = self.cp_model.NewBoolVar(f'dd_p{idx1}_d{d_idx}')
-                            self.cp_model.AddMaxEquality(b1, vars1)
-
-                            b2 = self.cp_model.NewBoolVar(f'dd_p{idx2}_d{d_idx}')
-                            self.cp_model.AddMaxEquality(b2, vars2)
-
+                        if b1 is not None and b2 is not None:
                             conflict = self.cp_model.NewBoolVar(f'dd_c_{idx1}_{idx2}_{d_idx}')
                             self.cp_model.AddBoolOr([b1.Not(), b2.Not(), conflict])
                             self.soft_penalties.append(conflict)
@@ -1177,7 +1331,7 @@ class ORToolsScheduler:
             print(f"DEBUG: Phase 1 objective: minimize soft penalties.", flush=True)
         
         try:
-            if not self._run_solver("PHASE1_CORE", timeout=400.0, save_to_db=False):
+            if not self._run_solver("PHASE1_CORE", timeout=120.0, save_to_db=False):
                 print("FAILED to schedule Core courses within time limit. Schedule is overconstrained. Aborting.")
                 return False
         except Exception as e:
@@ -1209,20 +1363,18 @@ class ORToolsScheduler:
         print("\n=== PHASE 2: ELECTIVES (Cores Fixed) ===")
         
         self.cp_model = cp_model.CpModel()
-        # MATCH Phase 1: Enforce fixed rooms
-        self.create_variables(ignore_fixed_rooms=False, optional_indices=elective_indices)
         
         # Re-Map Stable Keys to New Indices
         course_index_map = {}
-        for idx, course in enumerate(self.courses):
+        for c_idx, course in enumerate(self.courses):
             stable_key = (course['name'], course['instance'], course['type'])
-            course_index_map[stable_key] = idx
+            course_index_map[stable_key] = c_idx
             
-        # FIX core assignments from Phase 1
+        fixed_cores = {}
         for (stable_key, r_id, s_id) in core_assignments_stable:
             c_idx = course_index_map.get(stable_key)
-            if c_idx is not None and (c_idx, r_id, s_id) in self.starts:
-                self.cp_model.Add(self.starts[(c_idx, r_id, s_id)] == 1)
+            if c_idx is not None:
+                fixed_cores[c_idx] = (r_id, s_id)
             else:
                 msg = f"CRITICAL: Could not map Phase 1 core assignment {stable_key} in Phase 2! Variables missing. Falling back to Phase 1 schedule."
                 print(msg)
@@ -1236,6 +1388,9 @@ class ORToolsScheduler:
                     self.save_manual_assignments(fallback_assignments)
                     return True
                 return False
+
+        # MATCH Phase 1: Enforce fixed rooms + Only expand combinatorial arrays for electives!
+        self.create_variables(ignore_fixed_rooms=False, optional_indices=elective_indices, fixed_assignments=fixed_cores)
         
         self.soft_penalties = []  # Reset for Phase 2
         self.teacher_span_penalties = [] # Reset for Phase 2
@@ -1256,21 +1411,23 @@ class ORToolsScheduler:
             for (g_id, s_id), data in self.group_slot_data.items():
                 pools = list(data['pools'].keys())
                 
+                # OPTIMIZATION: Pre-calculate active flags for each pool to avoid duplicating MaxEquality
+                pool_active_vars = {}
+                for pool_key in pools:
+                    p_vars = data['pools'][pool_key]
+                    if p_vars:
+                        active_var = self.cp_model.NewBoolVar(f'penalty_g{g_id}_s{s_id}_{pool_key}')
+                        self.cp_model.AddMaxEquality(active_var, p_vars)
+                        pool_active_vars[pool_key] = active_var
+                
                 for i, pool_a in enumerate(pools):
                     for pool_b in pools[i+1:]:
-                        vars_a = data['pools'][pool_a]
-                        vars_b = data['pools'][pool_b]
+                        a_active = pool_active_vars.get(pool_a)
+                        b_active = pool_active_vars.get(pool_b)
                         
-                        if vars_a and vars_b:
-                            a_active = self.cp_model.NewBoolVar(f'penalty_g{g_id}_s{s_id}_{pool_a}')
-                            self.cp_model.AddMaxEquality(a_active, vars_a)
-                            
-                            b_active = self.cp_model.NewBoolVar(f'penalty_g{g_id}_s{s_id}_{pool_b}')
-                            self.cp_model.AddMaxEquality(b_active, vars_b)
-                            
+                        if a_active is not None and b_active is not None:
                             overlap = self.cp_model.NewBoolVar(f'overlap_{g_id}_{s_id}_{pool_a}_{pool_b}')
                             self.cp_model.AddBoolOr([a_active.Not(), b_active.Not(), overlap])
-                            
                             penalty_vars.append(overlap)
         
         if elective_vars:
@@ -1293,7 +1450,7 @@ class ORToolsScheduler:
             self.cp_model.Maximize(objective)
         
         # Solve Phase 2
-        if self._run_solver("PHASE2_ELECTIVES", timeout=300.0, save_to_db=True):
+        if self._run_solver("PHASE2_ELECTIVES", timeout=150.0, save_to_db=True):
             return True
         else:
             print("WARNING: Phase 2 failed. Saving Phase 1 (cores only) as fallback.")
@@ -1377,7 +1534,7 @@ class ORToolsScheduler:
             # print(f"DEBUG: Model Stats:\n{self.cp_model.ModelStats()}", flush=True) 
             
             # Dump Model for Debugging Infeasible states
-            DUMP_MODEL = False
+            DUMP_MODEL = True
             if DUMP_MODEL:
                 with open(f"model_dump_{mode_name}.txt", "w", encoding="utf-8") as f:
                     f.write(str(self.cp_model.Proto()))
@@ -1440,6 +1597,9 @@ class ORToolsScheduler:
             
             # Robust slot mapping to avoid index out of bounds
             slot_by_id = {s['id']: s for s in self.time_slots}
+            
+            # Build local room map to safely resolve Names and Capacities
+            room_by_id = {r[0]: {'name': r[1], 'capacity': r[3] if len(r) > 3 else 0} for r in self.rooms}
             
             for c_idx, r_id, s_id in assignments:
                 course = self.courses[c_idx]

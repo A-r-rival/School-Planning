@@ -285,11 +285,39 @@ def populate():
     # 3. Populate Pool Relationships (Ders_Havuz_Iliskisi)
     print("\nPopulating pool relationships...")
     pool_count = 0
+    
+    # Build pool_code -> sinif_duzeyi mapping from curriculum structure
+    # The curriculum keys look like "5. Dönem / 3. Yıl Güz Dönemi"
+    # and contain pool slot entries like ["SDIa", "Seçmeli 1...", 6, ...]
+    import re
+    
     for dept_name, dept_data in DEPARTMENTS_DATA.items():
         bolum_id, bolum_num, fac_id = dept_info_map[dept_name]
         pools = dept_data.get("pools", {})
+        pool_codes_def = dept_data.get("pool_codes", {})
+        curriculum = dept_data.get("curriculum", {})
         
+        # Step 1: Map pool_code -> sinif_duzeyi from curriculum semesters
+        pool_year_map = {}  # pool_code -> sinif_duzeyi
+        for semester_key, semester_courses in curriculum.items():
+            # Extract year from semester key like "5. Dönem / 3. Yıl Güz Dönemi"
+            year_match = re.search(r'(\d+)\.\s*Y[ıi]l', semester_key)
+            if not year_match:
+                continue
+            sinif_duzeyi = int(year_match.group(1))
+            
+            # Check if any course in this semester references a pool code
+            if isinstance(semester_courses, list):
+                for course_entry in semester_courses:
+                    if isinstance(course_entry, list) and len(course_entry) >= 2:
+                        course_code = course_entry[0]
+                        # If the course code matches a known pool code, map it
+                        if course_code in pool_codes_def or course_code in pools:
+                            pool_year_map[course_code] = sinif_duzeyi
+        
+        # Step 2: Insert pool relationships with sinif_duzeyi
         for pool_code, courses in pools.items():
+            sinif_duzeyi = pool_year_map.get(pool_code, 0)  # Default to 0 if not found
             for course_data in courses:
                 if len(course_data) >= 3:
                     code, name, ects = course_data[0], course_data[1], course_data[2]
@@ -298,11 +326,11 @@ def populate():
                     # Ensure course exists
                     instance = ensure_course_exists(model, code, name, ects, t, u, l, bolum_id=bolum_id)
                     
-                    # Add pool relationship
+                    # Add pool relationship with sinif_duzeyi
                     model.c.execute("""
-                        INSERT OR IGNORE INTO Ders_Havuz_Iliskisi (ders_instance, ders_adi, bolum_id, havuz_kodu)
-                        VALUES (?, ?, ?, ?)
-                    """, (instance, name, bolum_id, pool_code))
+                        INSERT OR IGNORE INTO Ders_Havuz_Iliskisi (ders_instance, ders_adi, bolum_id, havuz_kodu, sinif_duzeyi)
+                        VALUES (?, ?, ?, ?, ?)
+                    """, (instance, name, bolum_id, pool_code, sinif_duzeyi))
                     pool_count += 1
     
     print(f"✅ Successfully created {pool_count} pool relationships.")

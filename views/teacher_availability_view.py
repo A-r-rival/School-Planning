@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (
     QTableWidget, QTableWidgetItem, QPushButton, 
     QLabel, QTimeEdit, QMessageBox, QHeaderView,
     QLineEdit, QCheckBox, QTabWidget, QWidget, QCompleter, QSpinBox, QFrame, # Added QCompleter, QFrame
-    QListWidget, QListWidgetItem
+    QListWidget, QListWidgetItem, QGroupBox
 )
 from PyQt5.QtCore import Qt, QTime
 from PyQt5.QtGui import QColor
@@ -64,6 +64,19 @@ class AddUnavailabilityDialog(QDialog):
         slot_layout = QVBoxLayout()
         slot_layout.addWidget(QLabel("Öğretmenin MÜSAİT OLMADIĞI zamanı ekle:"))
         
+        # Year and Semester filter
+        term_layout = QHBoxLayout()
+        term_layout.addWidget(QLabel("Yıl:"))
+        self.yil_combo = QComboBox()
+        self.yil_combo.addItems(["Hepsi", "2023-2024", "2024-2025", "2025-2026", "2026-2027"])
+        term_layout.addWidget(self.yil_combo)
+        
+        term_layout.addWidget(QLabel("Dönem:"))
+        self.donem_combo = QComboBox()
+        self.donem_combo.addItems(["Hepsi", "Güz", "Bahar", "Yaz"])
+        term_layout.addWidget(self.donem_combo)
+        slot_layout.addLayout(term_layout)
+        
         # Day
         slot_layout.addWidget(QLabel("Gün:"))
         self.day_combo = QComboBox()
@@ -92,9 +105,21 @@ class AddUnavailabilityDialog(QDialog):
         slot_layout.addStretch()
         self.tab_slot.setLayout(slot_layout)
         
+        # Tab 3: Room Preference
+        self.tab_room = QWidget()
+        room_layout = QVBoxLayout()
+        room_layout.addWidget(QLabel("Bu öğretmenin hangi oda veya katta ders vermesini istiyorsunuz?"))
+        room_layout.addWidget(QLabel("(Örn: Zemin, A101, Lab)"))
+        self.room_input = QLineEdit()
+        self.room_input.setPlaceholderText("Örn: Zemin, Lab, A101")
+        room_layout.addWidget(self.room_input)
+        room_layout.addStretch()
+        self.tab_room.setLayout(room_layout)
+        
         # Add tabs
         self.tabs.addTab(self.tab_span, "Çalışma Bloğu Kısıtı")
         self.tabs.addTab(self.tab_slot, "Saat/Gün Kısıtı")
+        self.tabs.addTab(self.tab_room, "Oda/Kat Kısıtı")
         
         main_layout.addWidget(self.tabs)
         
@@ -143,15 +168,25 @@ class AddUnavailabilityDialog(QDialog):
             self.span_combo.setEnabled(False)
 
     def get_data(self):
-        is_span_tab = (self.tabs.currentIndex() == 0)
+        idx = self.tabs.currentIndex()
+        if idx == 0:
+            action_type = 'span'
+        elif idx == 1:
+            action_type = 'slot'
+        else:
+            action_type = 'room'
+            
         return {
             'teacher_id': self.teacher_combo.currentData(),
-            'action_type': 'span' if is_span_tab else 'slot',
+            'action_type': action_type,
             'span': self.span_combo.currentData(),
             'day': self.day_combo.currentText(),
             'start': self.start_time.time().toString("HH:mm"),
             'end': self.end_time.time().toString("HH:mm"),
-            'desc': self.desc_input.text()
+            'yil': getattr(self, 'yil_combo', None).currentText() if hasattr(self, 'yil_combo') else "Hepsi",
+            'donem': getattr(self, 'donem_combo', None).currentText() if hasattr(self, 'donem_combo') else "Hepsi",
+            'desc': self.desc_input.text(),
+            'room': getattr(self, 'room_input', None).text() if hasattr(self, 'room_input') else ""
         }
 
 class TeacherAvailabilityView(QDialog):
@@ -182,47 +217,26 @@ class TeacherAvailabilityView(QDialog):
         for t in self.teachers:
             if len(t) >= 2:
                  self.teacher_combo.addItem(t[1], t[0])
+        # Semester Filter
+        term_filter_layout = QHBoxLayout()
+        term_filter_layout.addWidget(QLabel("Tabloda Görüntülenen Dönem:"))
+        self.term_filter_combo = QComboBox()
+        self.term_filter_combo.addItems(["Tümü", "Güz", "Bahar", "Yaz"])
+        self.term_filter_combo.currentIndexChanged.connect(self._on_teacher_changed)
+        term_filter_layout.addWidget(self.term_filter_combo)
+        
         self.teacher_combo.currentIndexChanged.connect(self._on_teacher_changed)
         teacher_layout.addWidget(self.teacher_combo)
         
-
-        
         filter_group.addLayout(teacher_layout)
-        layout.addLayout(filter_group)
+        filter_group.addLayout(term_filter_layout)
         
-        # --- TABS ---
-        self.tabs = QTabWidget()
-        
-        # TAB 1: Unavailability (Existing functionality)
-        self.tab_availability = QWidget()
-        av_layout = QVBoxLayout()
-        
-        # List of Unavailability
-        self.table = QTableWidget()
-        self.table.setColumnCount(5) 
-        self.table.setHorizontalHeaderLabels(["Öğretmen", "Tip", "Kısıt", "Açıklama", "İşlem"])
-        header = self.table.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QHeaderView.Fixed)
-        self.table.setColumnWidth(1, 110)
-        header.setSectionResizeMode(2, QHeaderView.Fixed) # Kısıt fixed
-        self.table.setColumnWidth(2, 160) # Set to 160px
-        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
-        self.table.setAlternatingRowColors(True) # Enable zebra striping
-        av_layout.addWidget(self.table)
-        
-        # Add Button
-        self.add_button = QPushButton("Yeni Namüsaitlik Ekle")
-        self.add_button.setStyleSheet("font-weight: bold; font-size: 14px; padding: 10px;")
-        self.add_button.clicked.connect(self._on_add_clicked)
-        av_layout.addWidget(self.add_button)
+        # --- GLOBAL PREFERENCES GROUP ---
+        # Moved up here from the bottom of the tab so it is not confused with Adding a block
+        self.pref_group_box = QGroupBox("Öğretmen Genel Tercihleri (Otomatik Kaydedilir)")
+        self.pref_group_box.setVisible(False) # Hidden until a teacher is selected
+        pref_layout = QHBoxLayout(self.pref_group_box)
 
-        # SPAN and Room Preferences Group
-        pref_group = QFrame()
-        pref_group.setFrameShape(QFrame.StyledPanel)
-        pref_layout = QHBoxLayout(pref_group)
-
-        # Span
         pref_layout.addWidget(QLabel("Haftalık Max Gün:"))
         self.span_combo = QComboBox()
         self.span_combo.addItem("Serbest", 0)
@@ -234,14 +248,43 @@ class TeacherAvailabilityView(QDialog):
         
         pref_layout.addSpacing(20)
 
-        # Room Preference
         pref_layout.addWidget(QLabel("Oda/Kat Tercihi:"))
         self.room_pref_input = QLineEdit()
         self.room_pref_input.setPlaceholderText("Örn: Zemin, Lab, A101")
         self.room_pref_input.textChanged.connect(self._on_room_pref_changed)
         pref_layout.addWidget(self.room_pref_input)
-
-        av_layout.addWidget(pref_group)
+        
+        filter_group.addWidget(self.pref_group_box)
+        layout.addLayout(filter_group)
+        
+        # --- TABS ---
+        self.tabs = QTabWidget()
+        
+        # TAB 1: Unavailability (Existing functionality)
+        self.tab_availability = QWidget()
+        av_layout = QVBoxLayout()
+        
+        # List of Unavailability
+        self.table = QTableWidget()
+        self.table.setColumnCount(6) 
+        self.table.setHorizontalHeaderLabels(["Öğretmen", "Tip", "Dönem/Yıl", "Kısıt", "Açıklama", "İşlem"])
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QHeaderView.Fixed)
+        self.table.setColumnWidth(1, 110)
+        header.setSectionResizeMode(2, QHeaderView.Fixed)
+        self.table.setColumnWidth(2, 110)
+        header.setSectionResizeMode(3, QHeaderView.Fixed) # Kısıt fixed
+        self.table.setColumnWidth(3, 160) # Set to 160px
+        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        self.table.setAlternatingRowColors(True) # Enable zebra striping
+        av_layout.addWidget(self.table)
+        
+        # Add Button
+        self.add_button = QPushButton("Yeni Namüsaitlik Ekle")
+        self.add_button.setStyleSheet("font-weight: bold; font-size: 14px; padding: 10px;")
+        self.add_button.clicked.connect(self._on_add_clicked)
+        av_layout.addWidget(self.add_button)
         
         self.tab_availability.setLayout(av_layout)
         self.tabs.addTab(self.tab_availability, "Zamanlama ve Ders Blokları")
@@ -310,15 +353,16 @@ class TeacherAvailabilityView(QDialog):
         as_layout.addLayout(filter_layout)
 
         self.assign_table = QTableWidget()
-        self.assign_table.setColumnCount(5)
-        self.assign_table.setHorizontalHeaderLabels(["Ders Adı", "Şube / Not", "Öğretmen", "Durum", "İşlem"])
+        self.assign_table.setColumnCount(6)
+        self.assign_table.setHorizontalHeaderLabels(["Ders Adı", "Şube / Not", "Dönem", "Öğretmen", "Durum", "İşlem"])
         header = self.assign_table.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.Stretch)
-        # header.setSectionResizeMode(1, QHeaderView.ResizeToContents) # Changed to Stretch (default)
-        header.setSectionResizeMode(3, QHeaderView.Fixed) # Status -> Fixed 70px
-        self.assign_table.setColumnWidth(3, 80)
-        header.setSectionResizeMode(4, QHeaderView.Fixed) # Action
-        self.assign_table.setColumnWidth(4, 60)
+        header.setSectionResizeMode(0, QHeaderView.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.Fixed) # Dönem
+        self.assign_table.setColumnWidth(2, 90)
+        header.setSectionResizeMode(4, QHeaderView.Fixed) # Status 
+        self.assign_table.setColumnWidth(4, 80)
+        header.setSectionResizeMode(5, QHeaderView.Fixed) # Action
+        self.assign_table.setColumnWidth(5, 60)
         self.assign_table.setAlternatingRowColors(True) # Enable zebra striping
         as_layout.addWidget(self.assign_table)
         
@@ -471,10 +515,10 @@ class TeacherAvailabilityView(QDialog):
                 item.setTextAlignment(Qt.AlignCenter)
                 item.setFlags(Qt.ItemIsEnabled) # Not editable/selectable
                 self.assign_table.setItem(row, 0, item)
-                self.assign_table.setSpan(row, 0, 1, 5) # Span all 5 columns
+                self.assign_table.setSpan(row, 0, 1, 6) # Span all 6 columns
                 
             # Helper to add row
-            def add_row(name, detail, status_text, item_type, teacher_name=None, row_teacher_id=None):
+            def add_row(name, detail, semester_text, status_text, item_type, teacher_name=None, row_teacher_id=None):
                 row = self.assign_table.rowCount()
                 self.assign_table.insertRow(row)
                 
@@ -487,8 +531,9 @@ class TeacherAvailabilityView(QDialog):
                     
                 self.assign_table.setItem(row, 0, QTableWidgetItem(name))
                 self.assign_table.setItem(row, 1, QTableWidgetItem(detail))
-                self.assign_table.setItem(row, 2, QTableWidgetItem(final_teacher_name))
-                self.assign_table.setItem(row, 3, QTableWidgetItem(status_text))
+                self.assign_table.setItem(row, 2, QTableWidgetItem(semester_text))
+                self.assign_table.setItem(row, 3, QTableWidgetItem(final_teacher_name))
+                self.assign_table.setItem(row, 4, QTableWidgetItem(status_text))
                 
                 # Delete Button
                 if row_teacher_id is not None:
@@ -496,31 +541,46 @@ class TeacherAvailabilityView(QDialog):
                      del_btn.setStyleSheet("background-color: #E0E0E0; color: black;") # Gray
                      # Allow multiple args in lambda? Use partial
                      del_btn.clicked.connect(partial(self._on_delete_assignment_click, item_type, name, detail, row_teacher_id))
-                     self.assign_table.setCellWidget(row, 4, del_btn)
+                     self.assign_table.setCellWidget(row, 5, del_btn)
                 else:
-                     self.assign_table.setItem(row, 4, QTableWidgetItem("-"))
-
-            # QColor is now globally imported
+                     self.assign_table.setItem(row, 5, QTableWidgetItem("-"))
 
             # --- Section 1: Assigned ---
+            target_term = self.term_filter_combo.currentText()
+            lookup = getattr(self.controller.model, 'semester_lookup', {})
+            
             if self.chk_show_assigned.isChecked() and assigned:
-                # Only show banner if there are assignments
                 if is_all:
                      add_banner("Tüm Atamalar", "#B3E5FC")
                 
                 for item in assigned:
+                    # Resolve semester strings
+                    course_name = item[0]
+                    sem_set = lookup.get(course_name, set())
+                    if not sem_set:
+                        # try base name split
+                        base_name = course_name.split(' (')[0]
+                        sem_set = lookup.get(base_name, set())
+                        
+                    sem_str = ", ".join(sorted(list(sem_set))) if sem_set else "?"
+                    
+                    if target_term != "Tümü" and target_term not in sem_set:
+                        # Skip if it doesn't match the selected filter
+                        if target_term == "Bahar" and "Bahar" not in sem_set and "Güz" in sem_set:
+                            continue
+                        if target_term == "Güz" and "Güz" not in sem_set and "Bahar" in sem_set:
+                            continue
+                
                     if is_all:
                         # item: (ders, instance, hoca, teacher_id)
                         try:
                             # Safe unpacking with debug
                             if len(item) == 4:
-                                course_name = item[0]
                                 instance = item[1]
                                 hoca = item[2]
                                 t_id = item[3]
                             elif len(item) == 3:
                                 # Legacy/Fallback: Missing teacher ID
-                                course_name = item[0]
                                 instance = item[1]
                                 hoca = item[2]
                                 t_id = None # No delete button for these
@@ -528,13 +588,13 @@ class TeacherAvailabilityView(QDialog):
                                 print(f"ERROR: Invalid item shape in assigned list: {item}")
                                 continue
                                 
-                            add_row(course_name, f"Şube {instance}", "Atandı", "ASSIGNMENT", teacher_name=hoca, row_teacher_id=t_id)
+                            add_row(course_name, f"Şube {instance}", sem_str, "Atandı", "ASSIGNMENT", teacher_name=hoca, row_teacher_id=t_id)
                         except IndexError as e:
                             print(f"IndexError unpacking item: {item}. Error: {e}")
                             continue
                     else:
                         course_name, instance = item
-                        add_row(course_name, f"Şube {instance}", "Atandı", "ASSIGNMENT")
+                        add_row(course_name, f"Şube {instance}", sem_str, "Atandı", "ASSIGNMENT")
             
         except Exception as e:
             print(f"Error loading assignments: {e}")
@@ -679,6 +739,10 @@ class TeacherAvailabilityView(QDialog):
                         # Update Span Preference Only
                         self.controller.handle_teacher_span_change(data['teacher_id'], data['span'])
                         QMessageBox.information(self, "Bilgi", "Çalışma bloğu tercihi güncellendi.")
+                    elif data['action_type'] == 'room':
+                        # Update Room/Floor Preference
+                        self.controller.handle_teacher_room_pref_change(data['teacher_id'], data['room'])
+                        QMessageBox.information(self, "Bilgi", "Oda/Kat kısıtı güncellendi.")
                     else:
                         # Add Unavailability Slot Only
                         self.controller.add_teacher_unavailability(
@@ -686,6 +750,8 @@ class TeacherAvailabilityView(QDialog):
                             data['day'], 
                             data['start'], 
                             data['end'],
+                            data['yil'],
+                            data['donem'],
                             data['desc']
                         )
         except Exception as e:
@@ -708,7 +774,35 @@ class TeacherAvailabilityView(QDialog):
         """Update table with availability data (Slots + Spans)"""
         self.table.setRowCount(0)
         
-        for row_idx, item in enumerate(data):
+        # Get selected filter
+        target_term = self.term_filter_combo.currentText() # "Tümü", "Güz", "Bahar", "Yaz"
+        
+        filtered_data = []
+        for item in data:
+            if item.get('type') == 'span':
+                # Populate global pref fields
+                span_val = item.get('span_value', 0)
+                room_txt = item.get('room_pref', '')
+                
+                # Update but block signals temporarily to avoid triggering save loops
+                self.span_combo.blockSignals(True)
+                idx = self.span_combo.findData(span_val)
+                if idx >= 0:
+                    self.span_combo.setCurrentIndex(idx)
+                self.span_combo.blockSignals(False)
+                
+                self.room_pref_input.blockSignals(True)
+                self.room_pref_input.setText(room_txt)
+                self.room_pref_input.blockSignals(False)
+                
+            elif item.get('type') == 'slot':
+                donem = item.get('donem', 'Hepsi')
+                if target_term != "Tümü" and donem != "Hepsi" and donem != target_term:
+                    continue # Skip this slot if it doesn't match the table filter
+                    
+            filtered_data.append(item)
+            
+        for item in filtered_data:
             # item is a dict now
             teacher_name = item.get('teacher_name', '-')
             item_type = item.get('type')
@@ -720,10 +814,13 @@ class TeacherAvailabilityView(QDialog):
             del_id = -1
             
             if item_type == 'span':
+                val = item.get('span_value', 0)
+                if val == 0:
+                    continue # Do not show "0 Günlük Blok" in the Unavailability table
                 type_text = "Blok Kısıtı"
-                val = item.get('span_value')
                 detail_text = f"{val} Günlük Blok"
                 desc_text = "-"
+                term_text = "-"
                 del_type = 'span'
                 del_id = item.get('teacher_id')
                 
@@ -734,19 +831,31 @@ class TeacherAvailabilityView(QDialog):
                 end = item.get('end')
                 detail_text = f"{day} {start}-{end}"
                 desc_text = item.get('description', '')
+                yil = item.get('yil', 'Hepsi')
+                donem = item.get('donem', 'Hepsi')
+                if yil == 'Hepsi' and donem == 'Hepsi':
+                    term_text = 'Hepsi'
+                elif yil == 'Hepsi':
+                    term_text = donem
+                elif donem == 'Hepsi':
+                    term_text = yil
+                else:
+                    term_text = f"{yil} {donem}"
                 del_type = 'slot'
                 del_id = item.get('id')
 
-            self.table.insertRow(row_idx)
+            current_row = self.table.rowCount()
+            self.table.insertRow(current_row)
             
-            self.table.setItem(row_idx, 0, QTableWidgetItem(teacher_name))
-            self.table.setItem(row_idx, 1, QTableWidgetItem(type_text))
-            self.table.setItem(row_idx, 2, QTableWidgetItem(detail_text))
-            self.table.setItem(row_idx, 3, QTableWidgetItem(desc_text))
+            self.table.setItem(current_row, 0, QTableWidgetItem(teacher_name))
+            self.table.setItem(current_row, 1, QTableWidgetItem(type_text))
+            self.table.setItem(current_row, 2, QTableWidgetItem(term_text))
+            self.table.setItem(current_row, 3, QTableWidgetItem(detail_text))
+            self.table.setItem(current_row, 4, QTableWidgetItem(desc_text))
             
             delete_btn = QPushButton("Sil")
             delete_btn.clicked.connect(partial(self._on_delete_clicked, del_type, del_id))
-            self.table.setCellWidget(row_idx, 4, delete_btn)
+            self.table.setCellWidget(current_row, 5, delete_btn)
 
     def _on_delete_clicked(self, item_type, item_id):
         """Confirm before deleting"""
