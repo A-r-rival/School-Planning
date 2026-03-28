@@ -44,6 +44,7 @@ class RawCourseRow:
     common_group_id: Optional[int] = None
     student_count: int = 0
     semester_season: str = ""
+    host_department: str = ""
 
 @dataclass(frozen=True)
 class ProgramCourseContext:
@@ -100,11 +101,11 @@ class CourseRepository:
 
     def _build_pool_year_map(self) -> dict:
         """
-        Builds a runtime mapping of (department, havuz_kodu) -> sinif_duzeyi
+        Builds a runtime mapping of (department, havuz_kodu) -> set(sinif_duzeyi)
         from curriculum_data.py. This avoids DB dependency and auto-updates
         when the curriculum file changes.
         """
-        pool_map = {}  # (dept_name, pool_code) -> sinif_duzeyi
+        pool_map = collections.defaultdict(set)  # (dept_name, pool_code) -> set(sinif_duzeyi)
         for dept_name, dept_data in curriculum_data.DEPARTMENTS_DATA.items():
             pool_codes_def = dept_data.get('pool_codes', {})
             pools = dept_data.get('pools', {})
@@ -122,8 +123,8 @@ class CourseRepository:
                         if isinstance(course_entry, list) and len(course_entry) >= 2:
                             course_code = course_entry[0]
                             if course_code in pool_codes_def or course_code in pools:
-                                pool_map[(dept_name, course_code)] = sinif_duzeyi
-        return pool_map
+                                pool_map[(dept_name, course_code)].add(sinif_duzeyi)
+        return dict(pool_map)
 
     def fetch_course_rows(self) -> List[RawCourseRow]:
         """
@@ -155,7 +156,8 @@ class CourseRepository:
                    od.sinif_duzeyi,
                    0 AS is_from_pool,
                    od.ogrenci_sayisi,
-                   od.donem_sinif_num
+                   od.donem_sinif_num,
+                   NULL AS pool_dhi_year
             FROM Dersler d
             JOIN Ders_Sinif_Iliskisi dsi ON d.ders_instance = dsi.ders_instance AND d.ders_adi = dsi.ders_adi
             JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
@@ -173,12 +175,13 @@ class CourseRepository:
                    od.sinif_duzeyi,
                    1 AS is_from_pool,
                    od.ogrenci_sayisi,
-                   od.donem_sinif_num
+                   od.donem_sinif_num,
+                   dhi.sinif_duzeyi AS pool_dhi_year
             FROM Dersler d
             JOIN Ders_Havuz_Iliskisi dhi ON d.ders_instance = dhi.ders_instance AND d.ders_adi = dhi.ders_adi
             JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
             JOIN Fakulteler f ON b.fakulte_num = f.fakulte_num
-            JOIN Ogrenci_Donemleri od ON od.bolum_num = b.bolum_id AND od.sinif_duzeyi = dhi.sinif_duzeyi
+            JOIN Ogrenci_Donemleri od ON od.bolum_num = b.bolum_id AND (od.sinif_duzeyi = dhi.sinif_duzeyi OR dhi.sinif_duzeyi = 0)
         '''
         # Also fetch havuz_kodu for pool rows to enable Python-side filtering
         # We need a separate query for pool rows to get havuz_kodu
@@ -210,9 +213,26 @@ class CourseRepository:
             if row[1]:
                 common_groups_map[(row[1].strip(), row[2])] = row[0]
 
+        # 4. Fetch Host Department Mapping
+        self.db_model.c.execute('''
+            SELECT dsi.ders_adi, dsi.ders_instance, b.bolum_adi
+            FROM Ders_Sinif_Iliskisi dsi
+            JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+            JOIN Bolumler b ON od.bolum_num = b.bolum_id
+        ''')
+        host_map = {}
+        for h_row in self.db_model.c.fetchall():
+            h_name = h_row[0].strip() if h_row[0] else ''
+            h_inst = h_row[1]
+            h_dept = h_row[2].strip() if h_row[2] else ''
+            if (h_name, h_inst) not in host_map:
+                host_map[(h_name, h_inst)] = h_dept
+
         result_rows = []
         for r in rows:
-            name, instance, t, u, l, akts, t_room, l_room, group_id, fac_name, code, dept_name, class_year, is_from_pool, student_count, semester_season = r
+            # First element has 16 columns for non-pool, 17 for pool. Handle flexibly:
+            name, instance, t, u, l, akts, t_room, l_room, group_id, fac_name, code, dept_name, class_year, is_from_pool, student_count, semester_season = r[:16]
+            pool_dhi_year = r[16] if len(r) > 16 else None
             
             # Normalize
             name = name.strip() if name else ""
@@ -232,14 +252,23 @@ class CourseRepository:
                 d_id = bolum_id_lookup.get(dept_name)
                 if d_id is not None:
                     p_code = pool_code_lookup.get((name, instance, d_id))
+                    
+                # Python-level pool year validation to prevent over-constraining (genel havuz -> all years)
+                if pool_dhi_year == 0 and p_code:
+                    allowed_years = self._pool_year_map.get((dept_name, p_code))
+                    if allowed_years and class_year not in allowed_years:
+                        pool_filtered_count += 1
+                        continue # Skip this row (e.g. Makine 1st year for ZSD if ZSD is only 3rd/4th year)
             
+            host_dept = host_map.get((name, instance), dept_name)
+
             result_rows.append(RawCourseRow(
                 name=name,
                 instance=instance,
                 t=t if t is not None else 0,
                 u=u if u is not None else 0,
                 l=l if l is not None else 0,
-                akts=akts,
+                akts=akts if akts is not None else 0,
                 code=code,
                 department=dept_name,
                 class_year=class_year,
@@ -252,7 +281,8 @@ class CourseRepository:
                 pool_code=p_code,
                 common_group_id=c_group_id,
                 student_count=student_count if student_count else 0,
-                semester_season=semester_season if semester_season else ""
+                semester_season=semester_season if semester_season else "",
+                host_department=host_dept
             ))
             
         print(f"DEBUG: Repository fetched {len(result_rows)} raw rows.")
@@ -310,12 +340,15 @@ class CourseMerger:
                 row_student_count = int(row_student_count * 0.25)
 
             # 2. Merge Key
-            # If manually grouped, force them into the same key (ignoring exact name, instance, dept, teachers)
-            # The UI logic enforces that T/U/L are identical before allowing the grouping.
-            # We also union teachers below to ensure all assigned teachers are present.
+            # If manually grouped, force them into the same key
             if row.common_group_id is not None:
                 key = ("COMMON_GROUP", row.common_group_id)
+            elif row.is_from_pool:
+                # Pool courses MUST merge with their host core course
+                key = (row.name, frozenset(row.teacher_ids), row.t, row.u, row.l, row.instance, row.host_department)
             else:
+                # Core courses use their own department in the key to prevent accidental merging 
+                # (which preserves the user's manual "Ortak Ders Grupları" override feature)
                 key = (row.name, frozenset(row.teacher_ids), row.t, row.u, row.l, row.instance, row.department)
             
             if key not in merged_map:
@@ -371,17 +404,28 @@ class CourseMerger:
     def _validate_contexts(self, course: PhysicalCourse):
         """
         Ensures a single (Dept, Year) pair does not have conflicting roles.
+        If a course is scheduled as both CORE and ELECTIVE for the same group, 
+        CORE takes precedence and the ELECTIVE context is removed.
         """
-        seen = {} # (Dept, Year) -> Role
+        seen = {} # (Dept, Year) -> ctx
+        to_remove = set()
+        
         for ctx in course.contexts:
             key = (ctx.department, ctx.year)
-            if key in seen and seen[key] != ctx.role:
-                # Conflict!
-                # STRICT VALIDATION: Raise error to prevent ambiguous scheduling.
-                error_msg = f"CRITICAL DATA ERROR: Conflicting roles for course '{course.name}' in context {key}. Found: {seen[key]} vs {ctx.role}. A student group cannot have the same course as both Core and Elective."
-                print(error_msg)
-                raise ValueError(error_msg)
-            seen[key] = ctx.role
+            if key in seen:
+                existing_ctx = seen[key]
+                if existing_ctx.role != ctx.role:
+                    # Conflict! Let Core win.
+                    if existing_ctx.role == CourseRole.CORE:
+                        to_remove.add(ctx)
+                    else:
+                        to_remove.add(existing_ctx)
+                        seen[key] = ctx
+            else:
+                seen[key] = ctx
+                
+        for ctx in to_remove:
+            course.contexts.remove(ctx)
 
 
 class SchedulableCourseBuilder:

@@ -468,6 +468,27 @@ class ScheduleModel(QObject):
             print(f"Error fetching all assigned: {e}")
             return []
 
+    def get_unassigned_courses(self) -> List[tuple]:
+        """
+        Get all course instances that do NOT have any teacher assigned in Ders_Ogretmen_Iliskisi.
+        Returns: List of (ders_adi, ders_instance)
+        """
+        try:
+            query = """
+                SELECT DISTINCT d.ders_adi, d.ders_instance
+                FROM Dersler d
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM Ders_Ogretmen_Iliskisi doi
+                    WHERE doi.ders_adi = d.ders_adi AND doi.ders_instance = d.ders_instance
+                )
+                ORDER BY d.ders_adi, d.ders_instance
+            """
+            self.c.execute(query)
+            return self.c.fetchall()
+        except Exception as e:
+            print(f"Error fetching unassigned courses: {e}")
+            return []
+
     # ════════════════════════════════════════════════════════════════
     # CURRICULUM MANAGEMENT
     # ════════════════════════════════════════════════════════════════
@@ -603,7 +624,9 @@ class ScheduleModel(QObject):
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi,
                        (SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = dp.ogretmen_id) as hoca,
                        (SELECT derslik_adi FROM Derslikler WHERE derslik_num = dp.derslik_id) as oda,
-                       COALESCE(d.ders_kodu, 'CUSTOM') as ders_kodu, dp.ders_tipi
+                       COALESCE(d.ders_kodu, 'CUSTOM') as ders_kodu, dp.ders_tipi,
+                       NULL as havuz_kodu,
+                       0 as is_pool
                 FROM Ders_Programi dp
                 LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
@@ -615,14 +638,19 @@ class ScheduleModel(QObject):
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi,
                        (SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = dp.ogretmen_id) as hoca,
                        (SELECT derslik_adi FROM Derslikler WHERE derslik_num = dp.derslik_id) as oda,
-                       COALESCE(d.ders_kodu, 'CUSTOM') as ders_kodu, dp.ders_tipi
+                       COALESCE(d.ders_kodu, 'CUSTOM') as ders_kodu, dp.ders_tipi,
+                       (SELECT dhi2.havuz_kodu FROM Ders_Havuz_Iliskisi dhi2 WHERE dhi2.ders_adi = dp.ders_adi AND dhi2.bolum_id = ? LIMIT 1) as havuz_kodu,
+                       1 as is_pool
                 FROM Ders_Programi dp
                 LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
-                JOIN Ders_Havuz_Iliskisi dhi ON dp.ders_adi = dhi.ders_adi AND dp.ders_instance = dhi.ders_instance
-                JOIN Ogrenci_Donemleri od ON od.bolum_num = dhi.bolum_id AND od.sinif_duzeyi = dhi.sinif_duzeyi
-                WHERE od.bolum_num = ? AND od.sinif_duzeyi = ?
+                WHERE EXISTS (
+                    SELECT 1 FROM Ders_Havuz_Iliskisi dhi
+                    WHERE dhi.ders_adi = dp.ders_adi
+                    AND dhi.bolum_id = ?
+                    AND (dhi.sinif_duzeyi = ? OR dhi.sinif_duzeyi = 0)
+                )
             '''
-            self.c.execute(query, (bolum_id, sinif_duzeyi, bolum_id, sinif_duzeyi))
+            self.c.execute(query, (bolum_id, sinif_duzeyi, bolum_id, bolum_id, sinif_duzeyi))
             return self.c.fetchall()
         except Exception as e:
             print(f"Error fetching student schedule: {e}")
@@ -910,7 +938,9 @@ class ScheduleModel(QObject):
                        (o.ad || ' ' || o.soyad) as hoca, 
                        (SELECT derslik_adi FROM Derslikler WHERE derslik_num = dp.derslik_id) as oda,
                        GROUP_CONCAT(DISTINCT d.ders_kodu) as ders_kodu,
-                       dp.ders_tipi
+                       dp.ders_tipi,
+                       NULL as havuz_kodu,
+                       0 as is_pool
                 FROM Ders_Programi dp
                 JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 LEFT JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
@@ -925,26 +955,33 @@ class ScheduleModel(QObject):
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, 
                        (o.ad || ' ' || o.soyad) as hoca, 
                        (SELECT derslik_adi FROM Derslikler WHERE derslik_num = dp.derslik_id) as oda,
-                       GROUP_CONCAT(DISTINCT d.ders_kodu) as ders_kodu,
-                       dp.ders_tipi
+                       COALESCE(d.ders_kodu, 'CUSTOM') as ders_kodu,
+                       dp.ders_tipi,
+                       (SELECT dhi2.havuz_kodu FROM Ders_Havuz_Iliskisi dhi2
+                        JOIN Bolumler b2 ON dhi2.bolum_id = b2.bolum_id
+                        WHERE dhi2.ders_adi = dp.ders_adi AND b2.fakulte_num = ? LIMIT 1) as havuz_kodu,
+                       1 as is_pool
                 FROM Ders_Programi dp
-                JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
+                LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 LEFT JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
-                JOIN Ders_Havuz_Iliskisi dhi ON dhi.ders_instance = d.ders_instance AND dhi.ders_adi = d.ders_adi
-                JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
-                JOIN Ogrenci_Donemleri od ON od.bolum_num = dhi.bolum_id AND od.sinif_duzeyi = dhi.sinif_duzeyi
-                WHERE b.fakulte_num = ? AND od.sinif_duzeyi = ?
+                WHERE EXISTS (
+                    SELECT 1 FROM Ders_Havuz_Iliskisi dhi
+                    JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
+                    WHERE dhi.ders_adi = dp.ders_adi
+                    AND b.fakulte_num = ?
+                    AND (dhi.sinif_duzeyi = ? OR dhi.sinif_duzeyi = 0)
+                )
                 GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, o.ad, o.soyad, dp.derslik_id, dp.ders_tipi
             """
-            self.c.execute(query, (faculty_id, year, faculty_id, year))
+            self.c.execute(query, (faculty_id, year, faculty_id, faculty_id, year))
             rows = self.c.fetchall()
             
             result = []
             for r in rows:
-                gun, start, end, ders, hoca, oda, codes, ders_tipi = r
+                gun, start, end, ders, hoca, oda, codes, ders_tipi, havuz_kodu, is_pool = r
                 if not oda:
                     oda = "Belirsiz"
-                result.append((gun, start, end, ders, hoca, oda, codes, ders_tipi))
+                result.append((gun, start, end, ders, hoca, oda, codes, ders_tipi, havuz_kodu, is_pool))
             return result
         except Exception as e:
             print(f"Error fetching common schedule: {e}")

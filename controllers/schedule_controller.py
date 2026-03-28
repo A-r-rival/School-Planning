@@ -621,7 +621,7 @@ class ScheduleController:
                  self.load_all_teacher_availability()
             else:
                  self.load_teacher_availability(teacher_id)
-            QMessageBox.information(self.availability_view, "Başarılı", "Müsaitlik eklendi.")
+            QMessageBox.information(self.availability_view, "Başarılı", "Saat kısıtı eklendi.")
 
     def update_teacher_unavailability(self, u_id: int, teacher_id: int, day: str, start: str, end: str, yil: str = "Hepsi", donem: str = "Hepsi", description: str = ""):
         """Update unavailability slot"""

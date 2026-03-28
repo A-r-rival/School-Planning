@@ -230,8 +230,6 @@ class CalendarView(QWidget):
             data["year"] = self.filter_widget_3.currentText()
             data["selected_pools"] = [name for name, chk in self.pool_checkboxes.items() if chk.isChecked()]
             
-            self.update_pool_checkboxes()
-            
         self.filter_changed.emit("filter_selected", data)
     
     def _clear_pool_checkboxes(self):
@@ -243,9 +241,12 @@ class CalendarView(QWidget):
         self.pool_checkboxes = {}
     
     def update_pool_checkboxes(self):
-        """Create color-coded checkboxes for each elective pool in current semester"""
+        """Create color-coded checkboxes for each elective pool found in actual schedule data.
+        
+        Uses DB truth (havuz_kodu from schedule data) instead of curriculum_data
+        to guarantee checkbox names match filter keys exactly.
+        """
         try:
-            print("DEBUG: update_pool_checkboxes started")
             if self.view_type_combo.currentText() != "Öğrenci Grubu":
                 return
 
@@ -257,105 +258,88 @@ class CalendarView(QWidget):
                 self._clear_pool_checkboxes()
                 return
 
-            # Clean dept name
+            # Extract unique pool codes from actual schedule data (DB truth)
+            found_pools = set()
+            for item in self.last_schedule_data:
+                if len(item) > 8 and item[5]:  # is_elective = True
+                    pool_codes = item[8]  # list of pool codes
+                    if pool_codes:
+                        for pc in pool_codes:
+                            if pc:
+                                found_pools.add(pc)
+
+            # Get internship/project info from curriculum_data
             dept_name = dept_text.split('(')[0].strip()
-            print(f"DEBUG: Processing pool checkboxes for Dept: {dept_name}, Year: {year_text}")
-            
-            try:
-                year = int(year_text)
-            except ValueError:
-                return
-
-            # Get curriculum data
-            dept_data = curriculum_data.DEPARTMENTS_DATA.get(dept_name)
-            if not dept_data or 'curriculum' not in dept_data:
-                print(f"DEBUG: No curriculum data found for {dept_name}")
-                return
-
-            # Auto-detect Semester
-            from datetime import datetime
-            current_month = datetime.now().month
-            
-            # User Request: "assume its bahar dönemi"
-            # Current logic: Feb (2) is NOT in [8..1] so it is Spring (Bahar).
-            is_fall = current_month in [8, 9, 10, 11, 12, 1]
-            
-            semester_num = (year - 1) * 2 + (1 if is_fall else 2)
-            semester_name = "Güz" if is_fall else "Bahar"
-            
-            # Build descriptive key matching curriculum_data format
-            sem_year = (semester_num + 1) // 2
-            sem_season = "Güz" if semester_num % 2 != 0 else "Bahar"
-            sem_key = f"{semester_num}. Dönem / {sem_year}. Yıl {sem_season} Dönemi"
-            
-            sem_courses = dept_data['curriculum'].get(sem_key, [])
-            print(f"DEBUG: Found {len(sem_courses)} courses in curriculum for {sem_key}")
-            
-            required_pools = {}
             internship_akts = 0
             project_courses = []
+            try:
+                year = int(year_text)
+                dept_data = curriculum_data.DEPARTMENTS_DATA.get(dept_name)
+                if dept_data and 'curriculum' in dept_data:
+                    from datetime import datetime
+                    current_month = datetime.now().month
+                    is_fall = current_month in [8, 9, 10, 11, 12, 1]
+                    semester_num = (year - 1) * 2 + (1 if is_fall else 2)
+                    sem_year = (semester_num + 1) // 2
+                    sem_season = "Güz" if semester_num % 2 != 0 else "Bahar"
+                    sem_key = f"{semester_num}. Dönem / {sem_year}. Yıl {sem_season} Dönemi"
+                    for course in dept_data['curriculum'].get(sem_key, []):
+                        if len(course) < 3: continue
+                        code, name, akts = course[0], course[1], course[2]
+                        if code.startswith("PRK") or "Staj" in name or "Internship" in name:
+                            internship_akts += akts
+                        elif any(x in name.lower() for x in ["proje", "project", "tez"]):
+                            project_courses.append((code, name, akts))
+            except (ValueError, Exception):
+                pass
+
+            # If checkboxes already exist for the same set of pools, preserve their state
+            existing_states = {code: chk.isChecked() for code, chk in self.pool_checkboxes.items()}
             
-            for course in sem_courses:
-                if len(course) < 3: continue
-                code, name, akts = course[0], course[1], course[2]
-                
-            # Check for internship first
-                if code.startswith("PRK") or "Staj" in name or "Internship" in name:
-                    internship_akts += akts
-                    continue
-                
-            # Check for excluded project courses (matching scheduler logic)
-                name_lower = name.lower()
-                if any(x in name_lower for x in ["proje", "project", "tez"]):
-                    project_courses.append((code, name, akts))
-                    continue
-                
-                pool_type = None
-                if code.startswith("ZSD"): pool_type = "ZSD"
-                elif code.startswith("USD") or code.startswith("ÜSD"): pool_type = "ÜSD"
-                elif code.startswith("SD"): pool_type = code # Keep specific code
-                
-                if "Seçmeli Ders" in name and not pool_type: pool_type = "SD"
-                
-                if pool_type:
-                    required_pools[pool_type] = required_pools.get(pool_type, 0) + akts
+            if found_pools == set(existing_states.keys()):
+                # Same pools, no need to recreate — just ensure labels are there
+                return
 
             self._clear_pool_checkboxes()
-            
-            if not required_pools and internship_akts == 0 and not project_courses:
+
+            if not found_pools and internship_akts == 0 and not project_courses:
                 self.pool_checks_frame.hide()
                 return
-            
+
             self.pool_checks_frame.show()
+
+            # Auto-detect Semester for label
+            from datetime import datetime
+            current_month = datetime.now().month
+            is_fall = current_month in [8, 9, 10, 11, 12, 1]
+            semester_name = "Güz" if is_fall else "Bahar"
+
             label = QLabel(f"{semester_name} Seçmelileri:")
             label.setStyleSheet("font-weight: bold; margin-right: 5px;")
             self.pool_checks_layout.addWidget(label)
-            
-            print(f"DEBUG: Adding checkboxes for pools: {list(required_pools.keys())}")
-            for pool_type in sorted(required_pools.keys()):
-                akts = required_pools[pool_type]
-                color = self._generate_color(pool_type)
-                
-                chk = QCheckBox(f"{pool_type} ({akts} AKTS)")
+
+            for pool_code in sorted(found_pools):
+                color = self._generate_color(pool_code)
+                chk = QCheckBox(f"{pool_code}")
                 chk.setStyleSheet(f"font-weight: bold; color: {color.name()};")
-                # Block signals to prevent triggering toggle immediately
-                with  QSignalBlocker(chk):
-                     chk.setChecked(False)
+                # Preserve old state if existed, default True for new
+                old_state = existing_states.get(pool_code, True)
+                with QSignalBlocker(chk):
+                    chk.setChecked(old_state)
                 chk.toggled.connect(self._on_pool_toggled)
                 self.pool_checks_layout.addWidget(chk)
-                self.pool_checkboxes[pool_type] = chk
-            
+                self.pool_checkboxes[pool_code] = chk
+
             if internship_akts > 0:
                 lbl = QLabel(f"Staj ({internship_akts} AKTS)")
                 lbl.setStyleSheet("font-weight: bold; color: black; margin-left: 10px;")
                 self.pool_checks_layout.addWidget(lbl)
-        
+
             for code, name, akts in project_courses:
                 lbl = QLabel(f"  [{code}] {name} ({akts} AKTS)")
                 lbl.setStyleSheet("font-weight: bold; color: #444; margin-left: 10px; font-size: 9pt;")
                 self.pool_checks_layout.addWidget(lbl)
-                
-            print("DEBUG: update_pool_checkboxes complete")
+
         except Exception as e:
             print(f"ERROR in update_pool_checkboxes: {e}")
             import traceback
@@ -432,6 +416,9 @@ class CalendarView(QWidget):
             print(f"DEBUG: display_schedule started. Items: {len(schedule_data)}")
             # Store for client-side filtering when checkboxes change
             self.last_schedule_data = schedule_data
+            
+            # Update pool checkboxes from actual schedule data (DB truth)
+            self.update_pool_checkboxes()
             
             # Update metadata UI (Day Span)
             if 'day_span' in metadata and metadata['day_span'] > 0:
@@ -566,17 +553,19 @@ class CalendarView(QWidget):
                 for data in course_list:
                     
                     # Student View Filtering Logic
+                    # Default: show ALL courses (including electives)
+                    # When checkboxes exist and some are unchecked, hide those pools
                     if is_student_view and data['is_elective']:
                         pools = data['pools_found']
-                        if not pools:
-                            # If no pools identified but it is elective,
-                            # hide it if *any* filter is active (show if no filter active)
-                            if active_pools:
-                                continue
-                        else:
-                            # If pools identified, must match at least one active filter
-                            if not any(p in active_pools for p in pools):
-                                continue
+                        if self.pool_checkboxes:  # Only filter if checkboxes exist
+                            unchecked_pools = {name for name, chk in self.pool_checkboxes.items() if not chk.isChecked()}
+                            if pools:
+                                # If ALL of this course's pools are unchecked, hide it
+                                if pools.issubset(unchecked_pools) if isinstance(pools, set) else all(p in unchecked_pools for p in pools):
+                                    continue
+                            else:
+                                # Elective with no pool identified - show it always
+                                pass
                     
                     
                     # Prepare colors for display

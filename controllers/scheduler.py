@@ -75,16 +75,23 @@ class ORToolsScheduler:
         # 2. Load Courses 
         self.courses = self._fetch_all_course_instances()
         
-        # Filter: Project Courses (Existing)
+        # Filter: Project Courses (Existing + Expanded for SDP)
+        skip_keywords = [
+            'bitirme projesi', 'tasarım projesi', 'capstone', 'tez',
+            'seçmeli proje', 'elective project',
+            'robotik projesi', 'robotics project',
+            'üretim projesi', 'production auto. project',
+            'akıllı sis. proj.', 'intelligent sys. project',
+            'mekatronik projesi', 'mechatronics project'
+        ]
+        
         filtered_courses = []
         for c in self.courses:
             name = c.get('name', '').lower()
             code = str(c.get('code', '')).upper()
             
-            if 'MEC319' in code or 'MEC319' in name.upper():
+            if any(kw in name for kw in skip_keywords) or 'MEC319' in code:
                 continue
-            if 'bitirme projesi' in name or 'tasarım projesi' in name or 'capstone' in name or 'tez' in name:
-                 continue
             filtered_courses.append(c)
             
         self.courses = filtered_courses
@@ -1445,7 +1452,7 @@ class ORToolsScheduler:
                 
             # Teacher Day Span Penalty (User request: -15)
             if hasattr(self, 'teacher_span_penalties') and self.teacher_span_penalties:
-                objective = objective - 15 * sum(self.teacher_span_penalties)
+                objective = objective - 100 * sum(self.teacher_span_penalties)
             
             self.cp_model.Maximize(objective)
         

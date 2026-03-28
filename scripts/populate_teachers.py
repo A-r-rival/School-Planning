@@ -134,7 +134,37 @@ def populate_teachers():
                 constraint_count += 1
     
     print(f"Total constraints added: {constraint_count}")
-    # 3. Add Room Preferences (NEW)
+    
+    # 3. Add Day Span Preferences (NEW - requested by user)
+    print("Adding day span preferences...")
+    # Get all teachers again
+    model.c.execute("SELECT ogretmen_num, ad, soyad FROM Ogretmenler")
+    all_teachers = model.c.fetchall()
+    
+    span_count = 0
+    for t_id, t_name, t_surname in all_teachers:
+        # 15% chance to have a day span (subset of 10-20%)
+        if random.random() < 0.15:
+            preferred_span = random.choice([2, 3, 4])
+            
+            # Using model method if exists or direct SQL
+            if hasattr(model, 'update_teacher_span'):
+                success = model.update_teacher_span(t_id, preferred_span)
+            else:
+                try:
+                    model.c.execute("UPDATE Ogretmenler SET preferred_day_span = ? WHERE ogretmen_num = ?", (preferred_span, t_id))
+                    model.conn.commit()
+                    success = True
+                except:
+                    success = False
+                    
+            if success:
+                print(f"Added day span for {t_name} {t_surname}: {preferred_span} days")
+                span_count += 1
+                
+    print(f"Total day spans added: {span_count}")
+
+    # 4. Add Room Preferences
     print("Adding room preferences...")
     # Get all teachers again
     model.c.execute("SELECT ogretmen_num, ad, soyad FROM Ogretmenler")

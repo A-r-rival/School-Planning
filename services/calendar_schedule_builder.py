@@ -185,7 +185,8 @@ class CalendarScheduleBuilder:
         
         # 2. Add unavailability (restricted hours)
         unavailability = self.model.get_teacher_unavailability(teacher_id)
-        for gun, baslangic, bitis, u_id, desc, _span in unavailability:
+        # unavailability schema: (gun, baslangic, bitis, id, description, span, yil, donem)
+        for gun, baslangic, bitis, u_id, desc, *rest in unavailability:
             schedule_data.append((
                 gun, baslangic, bitis, "KISITLI / MÜSAİT DEĞİL", desc,
                 False, "UNAVAILABLE", "", []
@@ -272,7 +273,24 @@ class CalendarScheduleBuilder:
         
         for idx, item in enumerate(raw_schedule):
             try:
-                if len(item) == 8:  # New format with ders_tipi
+                if len(item) >= 10:  # Newest format with pool truth
+                    day, start, end, course, teacher, room, code, ders_tipi, havuz_kodu, is_pool = item[:10]
+                    tip_label = ders_tipi if ders_tipi else "?"
+                    display_course = f"[{code}] {course} ({tip_label})"
+                    room_label = room if room else "Belirsiz"
+                    teacher_label = teacher if teacher else "Belirsiz"
+                    extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
+                    
+                    is_elective = bool(is_pool)
+                    pool_codes = [havuz_kodu] if havuz_kodu else []
+                    
+                    # Normalized 9-tuple
+                    schedule_data.append((
+                        day, start, end, display_course, extra_info,
+                        is_elective, course, code, pool_codes
+                    ))
+                
+                elif len(item) == 8:  # Old format with ders_tipi
                     day, start, end, course, teacher, room, code, ders_tipi = item
                     tip_label = ders_tipi if ders_tipi else "?"
                     display_course = f"[{code}] {course} ({tip_label})"

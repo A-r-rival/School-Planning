@@ -62,7 +62,7 @@ class AddUnavailabilityDialog(QDialog):
         # Tab 2: Specific Unavailability (Time/Day)
         self.tab_slot = QWidget()
         slot_layout = QVBoxLayout()
-        slot_layout.addWidget(QLabel("Öğretmenin MÜSAİT OLMADIĞI zamanı ekle:"))
+        slot_layout.addWidget(QLabel("Öğretmenin saat kısıtını (müsait olmadığı zamanı) ekle:"))
         
         # Year and Semester filter
         term_layout = QHBoxLayout()
@@ -117,8 +117,8 @@ class AddUnavailabilityDialog(QDialog):
         self.tab_room.setLayout(room_layout)
         
         # Add tabs
-        self.tabs.addTab(self.tab_span, "Çalışma Bloğu Kısıtı")
-        self.tabs.addTab(self.tab_slot, "Saat/Gün Kısıtı")
+        self.tabs.addTab(self.tab_span, "Gün Kısıtı (Haftalık Max Gün)")
+        self.tabs.addTab(self.tab_slot, "Saat Kısıtı")
         self.tabs.addTab(self.tab_room, "Oda/Kat Kısıtı")
         
         main_layout.addWidget(self.tabs)
@@ -281,48 +281,20 @@ class TeacherAvailabilityView(QDialog):
         av_layout.addWidget(self.table)
         
         # Add Button
-        self.add_button = QPushButton("Yeni Namüsaitlik Ekle")
+        self.add_button = QPushButton("Yeni Saat Kısıtı Ekle")
         self.add_button.setStyleSheet("font-weight: bold; font-size: 14px; padding: 10px;")
         self.add_button.clicked.connect(self._on_add_clicked)
         av_layout.addWidget(self.add_button)
         
         self.tab_availability.setLayout(av_layout)
-        self.tabs.addTab(self.tab_availability, "Zamanlama ve Ders Blokları")
+        self.tabs.addTab(self.tab_availability, "Zaman ve Gün Kısıtları")
         
         # TAB 2: Course Assignments (New functionality from plan)
         self.tab_assignments = QWidget()
         as_layout = QVBoxLayout()
         
         # Add Assignment Form
-        form_layout = QHBoxLayout()
-        
-        # 1. Course Dropdown (Curriculum Courses)
-        self.course_combo = QComboBox()
-        self.course_combo.setEditable(True)
-        self.course_combo.addItem("Ders Seçiniz...", None)
-        self.course_combo.setMinimumWidth(325)
-        self.course_combo.completer().setCompletionMode(QCompleter.PopupCompletion)
-        self.course_combo.completer().setFilterMode(Qt.MatchContains)
-        form_layout.addWidget(QLabel("Ders:"))
-        form_layout.addWidget(self.course_combo)
-        
-        # Quick Add Template Button
-        self.btn_quick_template = QPushButton("Müfredata Bak")
-        self.btn_quick_template.setToolTip("Müfredat listesini görüntüle ve düzenle")
-        self.btn_quick_template.clicked.connect(self._open_curriculum_view)
-        form_layout.addWidget(self.btn_quick_template)
-        
-        # 2. Section (Instance)
-        # Instance is crucial for assignments.
-        
-        self.instance_spin = QSpinBox() 
-        self.instance_spin.setRange(1, 20)
-        self.instance_spin.setPrefix("Şube ")
-        self.instance_spin.setToolTip("Dersi Öğretmene Ata işlemi için geçerlidir")
-        form_layout.addWidget(QLabel("Şube:"))
-        form_layout.addWidget(self.instance_spin)
-        
-        # 3. Action Buttons Layout
+        # action_layout will now be the top layout
         action_layout = QHBoxLayout()
         
         # Assign Button
@@ -337,7 +309,6 @@ class TeacherAvailabilityView(QDialog):
         self.btn_unassign.clicked.connect(self._on_unassign_clicked)
         action_layout.addWidget(self.btn_unassign)
         
-        as_layout.addLayout(form_layout) # Added missing form layout
         as_layout.addLayout(action_layout)
         
         # Assignment List
@@ -347,23 +318,34 @@ class TeacherAvailabilityView(QDialog):
         self.chk_show_assigned.setChecked(True)
         self.chk_show_assigned.stateChanged.connect(lambda: self._load_assignments(self.teacher_combo.currentData()))
         filter_layout.addWidget(self.chk_show_assigned)
+
+        self.chk_show_unassigned = QCheckBox("Atanmamış Dersler")
+        self.chk_show_unassigned.setChecked(True)
+        self.chk_show_unassigned.stateChanged.connect(lambda: self._load_assignments(self.teacher_combo.currentData()))
+        filter_layout.addWidget(self.chk_show_unassigned)
         
         filter_layout.addStretch()
         
+        # Move Curriculum Button here and align right
+        self.btn_quick_template = QPushButton("Müfredatı Düzenle / Yeni Ders")
+        self.btn_quick_template.setToolTip("Müfredat listesini görüntüle ve düzenle")
+        self.btn_quick_template.clicked.connect(self._open_curriculum_view)
+        filter_layout.addWidget(self.btn_quick_template)
+
         as_layout.addLayout(filter_layout)
 
         self.assign_table = QTableWidget()
-        self.assign_table.setColumnCount(6)
-        self.assign_table.setHorizontalHeaderLabels(["Ders Adı", "Şube / Not", "Dönem", "Öğretmen", "Durum", "İşlem"])
+        self.assign_table.setColumnCount(5) # Reduced from 6
+        self.assign_table.setHorizontalHeaderLabels(["Ders Adı", "Şube / Not", "Dönem", "Öğretmen", "Durum"])
         header = self.assign_table.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(2, QHeaderView.Fixed) # Dönem
         self.assign_table.setColumnWidth(2, 90)
         header.setSectionResizeMode(4, QHeaderView.Fixed) # Status 
         self.assign_table.setColumnWidth(4, 80)
-        header.setSectionResizeMode(5, QHeaderView.Fixed) # Action
-        self.assign_table.setColumnWidth(5, 60)
         self.assign_table.setAlternatingRowColors(True) # Enable zebra striping
+        self.assign_table.setSelectionBehavior(QTableWidget.SelectRows) # Select full rows
+        self.assign_table.setSelectionMode(QTableWidget.SingleSelection)
         as_layout.addWidget(self.assign_table)
         
         self.tab_assignments.setLayout(as_layout)
@@ -448,8 +430,8 @@ class TeacherAvailabilityView(QDialog):
              
         # Load curriculum courses
         if hasattr(self.controller.model, 'get_curriculum_courses'):
-            courses = self.controller.model.get_curriculum_courses()
-            self._update_course_combo(courses)
+            # self.controller.model.get_curriculum_courses() # No longer used for combo
+            pass
             
         # Load Common Course Groups Data
         if hasattr(self, '_load_common_course_groups'):
@@ -484,10 +466,6 @@ class TeacherAvailabilityView(QDialog):
         except Exception as e:
             print(f"Error in _on_teacher_changed: {e}")
 
-    def _update_course_combo(self, courses):
-        self.course_combo.clear()
-        self.course_combo.addItem("Ders Seçiniz...", None)
-        self.course_combo.addItems(courses)
 
     def _load_assignments(self, teacher_id):
         """Load courses assigned for this teacher (or ALL)"""
@@ -535,15 +513,7 @@ class TeacherAvailabilityView(QDialog):
                 self.assign_table.setItem(row, 3, QTableWidgetItem(final_teacher_name))
                 self.assign_table.setItem(row, 4, QTableWidgetItem(status_text))
                 
-                # Delete Button
-                if row_teacher_id is not None:
-                     del_btn = QPushButton("Sil")
-                     del_btn.setStyleSheet("background-color: #E0E0E0; color: black;") # Gray
-                     # Allow multiple args in lambda? Use partial
-                     del_btn.clicked.connect(partial(self._on_delete_assignment_click, item_type, name, detail, row_teacher_id))
-                     self.assign_table.setCellWidget(row, 5, del_btn)
-                else:
-                     self.assign_table.setItem(row, 5, QTableWidgetItem("-"))
+                self.assign_table.item(row, 0).setData(Qt.UserRole, (item_type, name, detail, row_teacher_id))
 
             # --- Section 1: Assigned ---
             target_term = self.term_filter_combo.currentText()
@@ -595,126 +565,108 @@ class TeacherAvailabilityView(QDialog):
                     else:
                         course_name, instance = item
                         add_row(course_name, f"Şube {instance}", sem_str, "Atandı", "ASSIGNMENT")
+
+            # --- Section 2: Unassigned ---
+            unassigned = self.controller.model.get_unassigned_courses()
+            if unassigned and self.chk_show_unassigned.isChecked():
+                add_banner("Atanmamış Dersler", "#FFCDD2") # Light Red
+                for course_name, instance in unassigned:
+                     # Resolve semester
+                     sem_set = lookup.get(course_name, set())
+                     if not sem_set:
+                         base_name = course_name.split(' (')[0]
+                         sem_set = lookup.get(base_name, set())
+                     
+                     sem_str = ", ".join(sorted(list(sem_set))) if sem_set else "?"
+
+                     # Apply semester filter
+                     if target_term != "Tümü" and target_term not in sem_set:
+                         if target_term == "Bahar" and "Bahar" not in sem_set and "Güz" in sem_set:
+                             continue
+                         if target_term == "Güz" and "Güz" not in sem_set and "Bahar" in sem_set:
+                             continue
+
+                     add_row(course_name, f"Şube {instance}", sem_str, "Atanmamış", "UNASSIGNED", teacher_name="-", row_teacher_id=None)
             
         except Exception as e:
             print(f"Error loading assignments: {e}")
             import traceback
             traceback.print_exc()
 
-    def _on_delete_assignment_click(self, item_type, name, detail, teacher_id):
-        """Confirm and delete assignment/preference"""
-        try:
-            msg = f"'{name}' ({detail}) kaydını listeden silmek istediğinize emin misiniz?"
-            reply = QMessageBox.question(self, "Silme Onayı", msg, QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            
-            if reply == QMessageBox.Yes:
-                if item_type == "ASSIGNMENT":
-                    # detail is "Şube {instance}"
-                    instance = int(detail.replace("Şube ", "")) if "Şube" in detail else 1
-                    with self.controller.model.conn:
-                         self.controller.model.conn.execute(
-                             "DELETE FROM Ders_Ogretmen_Iliskisi WHERE ogretmen_id=? AND ders_adi=? AND ders_instance=?",
-                             (teacher_id, name, instance)
-                         )
-                
-                # Reload current view
-                current_filter = self.teacher_combo.currentData()
-                self._load_assignments(current_filter)
-                
-        except Exception as e:
-            QMessageBox.critical(self, "Hata", f"Silme işlemi başarısız: {e}")
-            print(f"Delete error: {e}")
 
-    def _on_assignment_table_dbl_click(self, row, col):
-        """Handle deletion request"""
-        try:
-            item = self.assign_table.item(row, 0)
-            if not item: return
-            
-            data = item.data(Qt.UserRole)
-            if not data: return # Likely banner
-            
-            item_type, name, detail = data
-            
-            msg = f"'{name}' ({detail}) kaydını listeden kaldırmak istiyor musunuz?"
-            if QMessageBox.question(self, "Silme Onayı", msg, QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-                teacher_id = self.teacher_combo.currentData()
-                
-                if item_type == "ASSIGNMENT":
-                    # detail is "Şube X", need to parse or store raw instance
-                    # Quick hack: detail is "Şube {instance}"
-                    instance = int(detail.replace("Şube ", ""))
-                    # Delete logic for assignment (Directly calling model/repo, assuming direct access is OK for now as per legacy code)
-                    # Ideally should be in controller
-                    with self.controller.model.conn:
-                         self.controller.model.conn.execute(
-                             "DELETE FROM Ders_Ogretmen_Iliskisi WHERE ogretmen_id=? AND ders_adi=? AND ders_instance=?",
-                             (teacher_id, name, instance)
-                         )
-                    
-                self._load_assignments(teacher_id)
-                
-        except Exception as e:
-            print(f"Delete error: {e}")
+    def _get_selected_assignment_data(self):
+        """Get metadata from the currently selected row in assign_table"""
+        row = self.assign_table.currentRow()
+        if row < 0: return None
+        item = self.assign_table.item(row, 0)
+        if not item: return None
+        return item.data(Qt.UserRole)
 
     def _on_assign_clicked(self):
-        """Assign selected course to selected teacher"""
-        teacher_id = self.teacher_combo.currentData()
-        course_name = self.course_combo.currentText()
-        instance = self.instance_spin.value()
-        
-        self._validate_and_execute(teacher_id, course_name, lambda: 
-            self.controller.model.assign_teacher_to_course(teacher_id, course_name, instance)
-        )
-
-    def _on_unassign_clicked(self):
-        """Remove assignment for selected course/teacher"""
-        teacher_id = self.teacher_combo.currentData()
-        course_name = self.course_combo.currentText()
-        instance = self.instance_spin.value()
-
-        if teacher_id is None or teacher_id == -1:
-             QMessageBox.warning(self, "Hata", "Lütfen bir öğretmen seçiniz.")
+        """Assign selected course from table to the teacher currently in filter"""
+        data = self._get_selected_assignment_data()
+        if not data:
+             QMessageBox.warning(self, "Uyarı", "Lütfen listeden (Atanmamış Dersler kısmından) bir ders seçiniz.")
              return
              
-        if not course_name or self.course_combo.currentIndex() <= 0:
-             QMessageBox.warning(self, "Hata", "Lütfen bir ders seçiniz.")
+        item_type, course_name, detail, current_tid = data
+        target_teacher_id = self.teacher_combo.currentData()
+        target_teacher_name = self.teacher_combo.currentText()
+        
+        if target_teacher_id is None or target_teacher_id == -1:
+             QMessageBox.warning(self, "Hata", "Lütfen dersi atamak istediğiniz öğretmeni üstten seçiniz.")
              return
 
+        # detail is "Şube {instance}"
+        instance = int(detail.replace("Şube ", "")) if "Şube" in detail else 1
+
+        # Confirmation
+        msg = f"'{course_name}' (Şube {instance}) dersini {target_teacher_name} öğretmenine atamak istediğinize emin misiniz?"
+        if QMessageBox.question(self, "Atama Onayı", msg, QMessageBox.Yes | QMessageBox.No) == QMessageBox.No:
+             return
+
+        try:
+            success = self.controller.model.assign_teacher_to_course(target_teacher_id, course_name, instance)
+            if success:
+                self._load_assignments(target_teacher_id)
+        except Exception as e:
+            QMessageBox.critical(self, "Hata", f"Atama başarısız: {e}")
+
+    def _on_unassign_clicked(self):
+        """Remove assignment for selected course in table"""
+        data = self._get_selected_assignment_data()
+        if not data:
+             QMessageBox.warning(self, "Uyarı", "Lütfen listeden atamasını kaldırmak istediğiniz dersi seçiniz.")
+             return
+             
+        item_type, course_name, detail, teacher_id = data
+        
+        if item_type != "ASSIGNMENT" or teacher_id is None:
+             QMessageBox.warning(self, "Uyarı", "Bu ders zaten atanmamış veya silinebilir bir ataması yok.")
+             return
+
+        # detail is "Şube {instance}"
+        instance = int(detail.replace("Şube ", "")) if "Şube" in detail else 1
+
         # Confirm
-        msg = f"'{course_name}' (Şube {instance}) dersinin bu öğretmenden atamasını kaldırmak istediğinize emin misiniz?"
-        if QMessageBox.question(self, "Kaldırma Onayı", msg, QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-            
-            try:
-                # Direct delete (consistent with existing pattern here)
-                with self.controller.model.conn:
-                     self.controller.model.conn.execute(
-                         "DELETE FROM Ders_Ogretmen_Iliskisi WHERE ogretmen_id=? AND ders_adi=? AND ders_instance=?",
-                         (teacher_id, course_name, instance)
-                     )
-                self._load_assignments(teacher_id)
-                QMessageBox.information(self, "Bilgi", "Atama kaldırıldı.")
-            except Exception as e:
-                QMessageBox.critical(self, "Hata", f"Kaldırma işlemi başarısız: {e}")
+        msg = f"'{course_name}' (Şube {instance}) dersinin atamasını kaldırmak istediğinize emin misiniz?"
+        if QMessageBox.question(self, "Kaldırma Onayı", msg, QMessageBox.Yes | QMessageBox.No) == QMessageBox.No:
+             return
+
+        try:
+            with self.controller.model.conn:
+                 self.controller.model.conn.execute(
+                     "DELETE FROM Ders_Ogretmen_Iliskisi WHERE ogretmen_id=? AND ders_adi=? AND ders_instance=?",
+                     (teacher_id, course_name, instance)
+                 )
+            self._load_assignments(self.teacher_combo.currentData())
+        except Exception as e:
+            QMessageBox.critical(self, "Hata", f"Kaldırma işlemi başarısız: {e}")
+
+
             
     # Removed _on_want_clicked and _on_block_clicked
         
-    def _validate_and_execute(self, teacher_id, course_name, action_callback):
-        if teacher_id is None or teacher_id == -1:
-             QMessageBox.warning(self, "Hata", "Lütfen bir öğretmen seçiniz.")
-             return
-             
-        if not course_name or self.course_combo.currentIndex() <= 0:
-             QMessageBox.warning(self, "Hata", "Lütfen bir ders seçiniz.")
-             return
-             
-        # Execute
-        try:
-            success = action_callback()
-            if success:
-                self._load_assignments(teacher_id)
-        except Exception as e:
-            QMessageBox.critical(self, "Hata", f"İşlem başarısız: {e}")
             
     def _open_curriculum_view(self):
         """Open Curriculum View"""
@@ -723,9 +675,9 @@ class TeacherAvailabilityView(QDialog):
         # We don't necessarily wait for exec result to refresh unless we want to
         dialog.exec_()
         # Refresh course list in case changes happened
-        if hasattr(self.controller.model, 'get_curriculum_courses'):
-             courses = self.controller.model.get_curriculum_courses()
-             self._update_course_combo(courses)
+        # if hasattr(self.controller.model, 'get_curriculum_courses'):
+        #      courses = self.controller.model.get_curriculum_courses()
+        #      self._update_course_combo(courses)
 
     def _on_add_clicked(self):
         """Open Add Dialog"""
@@ -820,12 +772,12 @@ class TeacherAvailabilityView(QDialog):
                 type_text = "Blok Kısıtı"
                 detail_text = f"{val} Günlük Blok"
                 desc_text = "-"
-                term_text = "-"
+                term_text = "Hepsi"
                 del_type = 'span'
                 del_id = item.get('teacher_id')
                 
             elif item_type == 'slot':
-                type_text = "Namüsaitlik"
+                type_text = "Saat Kısıtı"
                 day = item.get('day')
                 start = item.get('start')
                 end = item.get('end')
@@ -860,7 +812,7 @@ class TeacherAvailabilityView(QDialog):
     def _on_delete_clicked(self, item_type, item_id):
         """Confirm before deleting"""
         try:
-            msg = "Bu namüsaitlik kaydını silmek istediğinize emin misiniz?"
+            msg = "Bu saat kısıtı kaydını silmek istediğinize emin misiniz?"
             if item_type == 'span':
                 msg = "Bu öğretmenin haftalık gün kısıtlamasını kaldırmak istediğinize emin misiniz?"
                 

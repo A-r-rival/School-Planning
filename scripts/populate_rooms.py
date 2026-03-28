@@ -50,7 +50,7 @@ def populate_rooms():
     # 3-4: Floor 2
     for i in range(1, 5):
         floor = 0 if i <= 2 else 2
-        rooms.append((f"Amfi-{i}", "Amfi", 200, floor))
+        rooms.append((f"Amfi-{i}", "Amfi", 444, floor))
         
     # 64 Classrooms (Capacity 40)
     # Distribution:
@@ -65,9 +65,9 @@ def populate_rooms():
             floor = 2
             
         if i <= 32:
-            rooms.append((f"Büyük Derslik-{i}", "Derslik", 60, floor))
+            rooms.append((f"Büyük Derslik-{i}", "Derslik", 150, floor))
         else:
-            rooms.append((f"Küçük Derslik-{i-32}", "Derslik", 30, floor))
+            rooms.append((f"Küçük Derslik-{i-32}", "Derslik", 69, floor))
 
     print(f"Inserting {len(rooms)} rooms...")
     # Update query to include floor
