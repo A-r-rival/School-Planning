@@ -1,0 +1,7 @@
+logs/diagnostics/
+venv/
+__pycache__/
+*.pyc
+logs/
+.vs/
+.vscode/

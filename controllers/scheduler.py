@@ -10,12 +10,16 @@ import re
 import sys
 import os
 # curriculum_data is in database/
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database"))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.join(BASE_DIR, "database"))
 import curriculum_data
 from controllers.scheduler_services import (
     CourseRepository, CurriculumResolver, CourseMerger, 
     SchedulableCourseBuilder, CourseRole
 )
+
+DIAG_DIR = os.path.join(BASE_DIR, "logs", "diagnostics")
+os.makedirs(DIAG_DIR, exist_ok=True)
 
 # Constants
 SLOTS_PER_DAY = 18  # 30-min slots from 08:30 to 17:30
@@ -496,7 +500,7 @@ class ORToolsScheduler:
                      
                      msg = f"CRITICAL WARNING: Course {course_name} (ID {c_idx}) has NO VIABLE ROOMS! Reason: {reason}\n"
                      print(msg, flush=True)
-                     with open("debug_infeasibility_report.txt", "a", encoding="utf-8") as f:
+                     with open(os.path.join(DIAG_DIR, "debug_infeasibility_report.txt"), "a", encoding="utf-8") as f:
                          f.write(msg)
             
             if possible_rooms:
@@ -1074,10 +1078,10 @@ class ORToolsScheduler:
                 debug_log.append(traceback.format_exc())
         
         # Write debug log to file
-        with open("room_preference_debug.txt", "w", encoding="utf-8") as f:
+        with open(os.path.join(DIAG_DIR, "room_preference_debug.txt"), "w", encoding="utf-8") as f:
             f.writelines(debug_log)
         
-        print("DEBUG: Room preference constraints applied. Log written to room_preference_debug.txt", flush=True)
+        print("DEBUG: Room preference constraints applied. Log written to logs/diagnostics/room_preference_debug.txt", flush=True)
 
 
 
@@ -1343,7 +1347,7 @@ class ORToolsScheduler:
                 return False
         except Exception as e:
             import traceback
-            with open("scheduler_crash.txt", "w", encoding="utf-8") as f:
+            with open(os.path.join(DIAG_DIR, "scheduler_crash.txt"), "w", encoding="utf-8") as f:
                 f.write(f"CRASH IN PHASE 1 SOLVER: {e}\n")
                 traceback.print_exc(file=f)
             print(f"CRASH IN PHASE 1 SOLVER: {e}")
@@ -1543,9 +1547,9 @@ class ORToolsScheduler:
             # Dump Model for Debugging Infeasible states
             DUMP_MODEL = True
             if DUMP_MODEL:
-                with open(f"model_dump_{mode_name}.txt", "w", encoding="utf-8") as f:
+                with open(os.path.join(DIAG_DIR, f"model_dump_{mode_name}.txt"), "w", encoding="utf-8") as f:
                     f.write(str(self.cp_model.Proto()))
-                print(f"DEBUG: Model dumped to model_dump_{mode_name}.txt", flush=True)
+                print(f"DEBUG: Model dumped to logs/diagnostics/model_dump_{mode_name}.txt", flush=True)
             
             solution_printer = SolutionPrinter()
             status = self.solver.Solve(self.cp_model, solution_printer)

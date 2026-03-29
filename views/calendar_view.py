@@ -622,6 +622,30 @@ class CalendarView(QWidget):
                     i += 1
                     continue
                 
+                # Unified Merge Logic
+                def get_sig(c_list):
+                    return tuple(sorted((c['course'], str(c['extra']).strip()) for c in c_list))
+                
+                curr_sig = get_sig(courses_in_slot)
+                
+                span = 1
+                next_check_idx = i + 1
+                
+                while next_check_idx < len(start_hours):
+                    next_start = start_hours[next_check_idx]
+                    if next_start not in day_slots: break
+                    next_courses = day_slots[next_start]
+                    
+                    next_sig = get_sig(next_courses)
+                    
+                    if (row + span < self.calendar_table.rowCount() and
+                        row + span == self.time_labels.index(next_start) and 
+                        curr_sig == next_sig):
+                        span += 1
+                        next_check_idx += 1
+                    else:
+                        break
+                
                 # RENDER STRATEGY
                 # 1. Multiple Courses -> Horizontal Container
                 if len(courses_in_slot) > 1:
@@ -631,15 +655,24 @@ class CalendarView(QWidget):
                     hlayout.setSpacing(2)
                     
                     for course_data in courses_in_slot:
+                        # Find the final end string for this specific course in the last slot of the span
+                        final_end_str = course_data['end_str']
+                        if span > 1:
+                            last_slot_courses = day_slots[start_hours[i + span - 1]]
+                            for lsc in last_slot_courses:
+                                if lsc['course'] == course_data['course'] and str(lsc['extra']).strip() == str(course_data['extra']).strip():
+                                    final_end_str = lsc['end_str']
+                                    break
+                                    
                         text = f"{course_data['course']}"
                         if course_data['start_str']:
-                            text += f"\n{course_data['start_str']}-{course_data['end_str']}"
+                            text += f"\n{course_data['start_str']}-{final_end_str}"
                         
                         lbl = QLabel(text)
                         lbl.setAlignment(Qt.AlignCenter)
                         lbl.setWordWrap(True)
                         
-                        full_tooltip = f"{course_data['course']}\n{course_data['extra']}\n{course_data['start_str']}-{course_data['end_str']}"
+                        full_tooltip = f"{course_data['course']}\n{course_data['extra']}\n{course_data['start_str']}-{final_end_str}"
                         lbl.setToolTip(full_tooltip)
                         
                         p_colors = course_data['pool_colors']
@@ -654,33 +687,12 @@ class CalendarView(QWidget):
                         hlayout.addWidget(lbl)
                     
                     self.calendar_table.setCellWidget(row, col, container)
-                    i += 1
+                    if span > 1:
+                        self.calendar_table.setSpan(row, col, span, 1)
                     
-                # 2. Single Course -> Standard Item (with Merge Check)
+                # 2. Single Course -> Standard Item
                 else:
                     current_data = courses_in_slot[0]
-                    
-                    # Merge Logic
-                    span = 1
-                    next_check_idx = i + 1
-                    
-                    while next_check_idx < len(start_hours):
-                        next_start = start_hours[next_check_idx]
-                        if next_start not in day_slots: break # Should not happen if in keys
-                        next_courses = day_slots[next_start]
-                        
-                        if len(next_courses) == 1:
-                            next_data = next_courses[0]
-                            # Check continuity and identity
-                            if (row + span == self.time_labels.index(next_start) and 
-                                current_data['course'] == next_data['course'] and 
-                                str(current_data['extra']) == str(next_data['extra'])):
-                                span += 1
-                                next_check_idx += 1
-                            else:
-                                break
-                        else:
-                            break
                     
                     # Determination of End Time
                     if span > 1:
@@ -713,7 +725,7 @@ class CalendarView(QWidget):
                     if span > 1:
                         self.calendar_table.setSpan(row, col, span, 1)
                     
-                    i += span
+                i += span
 
         self.legend.update_legend(seen_pools)
         
