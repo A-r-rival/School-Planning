@@ -74,6 +74,17 @@ def main():
     app.setOrganizationName("Schedule Management")
     # app.setStyle("Fusion") # Fusion removed to force native Windows style
     
+    # Global styles for the entire application interface
+    app.setStyleSheet("""
+        QToolTip { 
+            background-color: #444444; 
+            color: #ffffff; 
+            border: 1px solid #777777; 
+            padding: 5px;
+            font-size: 13px;
+        }
+    """)
+    
     try:
         # Create and show main application
         schedule_app = ScheduleApplication()

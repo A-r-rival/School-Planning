@@ -1,15 +1,39 @@
 # -*- coding: utf-8 -*-
 """
-Calendar View - MVC Pattern
-Displays weekly schedule grid with filtering options
+📅 CALENDAR VIEW ARCHITECTURE & IMPLEMENTATION LOGIC
+====================================================
+MVC Pattern - Weekly Schedule Visualization
+
+1. HIERARCHICAL FLOWING TEXT ENGINE:
+   - Optimized for L-profiles (Manhattan geometry). Blocks are divided into 
+     Manhattan rectangles, and text flows like fluid from one to the next.
+   - Coordinate Synchronization: Prevents drift and overlap by updating the 
+     painter state based on the ACTUAL last rendered line.
+
+2. ATOMIC TITLE GROUPING:
+   - Course titles ([CODE] + Name) are marked 'atomic'. 
+   - They MUST fit within a single rectangle segment to preserve identity.
+   - If a title would be split across segments, it jumps to the next availablelobe.
+
+3. NARROW SLOT FALLBACK:
+   - For extremely narrow columns (e.g., Fridays), a regex-based fallback is triggered.
+   - If the full title doesn't fit, it extracts and renders ONLY the [CODE].
+
+4. VISUAL POLISH:
+   - Smart Separators: '|' hides automatically if Room/Time wraps onto new lines.
+   - Premium Gradients: Linear subtle gradients (5-8% contrast) for 3D depth.
+   - Cosmetic Pens: Width=0 pens utilize single-pixel hardware lines for crisp borders.
+
+🔗 DOCUMENTATION SHORTCUT:
+   - DETAILED WALKTHROUGH: docs/walkthrough_calendar_modernization_04.04.26.md
 """
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QComboBox, QLabel, 
     QTableWidget, QTableWidgetItem, QHeaderView, QFrame, QCheckBox,
-    QListView
+    QListView, QScrollArea
 )
-from PyQt5.QtCore import Qt, pyqtSignal, QSignalBlocker
-from PyQt5.QtGui import QColor, QBrush
+from PyQt5.QtCore import Qt, pyqtSignal, QSignalBlocker, QRect, QRectF
+from PyQt5.QtGui import QColor, QBrush, QPainter, QPen
 import hashlib
 import sys
 import os
@@ -53,6 +77,661 @@ class LegendWidget(QWidget):
             
         self.layout.addStretch()
 
+class TimeCanvas(QFrame):
+    def __init__(self, time_labels):
+        super().__init__()
+        self.time_labels = time_labels
+        self.setMinimumHeight(len(time_labels) * 20)
+        
+    def paintEvent(self, event):
+        super().paintEvent(event)
+        from PyQt5.QtGui import QPainter, QFont, QColor, QPen
+        from PyQt5.QtCore import Qt, QRectF
+        
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        
+        slot_height = max(20.0, self.height() / len(self.time_labels))
+        w = self.width()
+        
+        # 1. Background Grid (connects seamlessly to DayCanvas grid)
+        for i in range(len(self.time_labels) + 1):
+            y = i * slot_height
+            pen = QPen(QColor("#bbbbbb") if i % 2 == 0 else QColor("#eeeeee"))
+            painter.setPen(pen)
+            painter.drawLine(0, int(y), int(w), int(y))
+            
+        # 2. Hourly Overlays (connects seamlessly to DayCanvas dashed lines)
+        dash_pen = QPen(QColor(0, 0, 0, 40))
+        dash_pen.setWidth(1)
+        dash_pen.setStyle(Qt.CustomDashLine)
+        dash_pen.setDashPattern([1, 5])
+        painter.setPen(dash_pen)
+        for i in range(1, len(self.time_labels), 2):
+            y = i * slot_height
+            painter.drawLine(0, int(y), int(w), int(y))
+        
+        font = painter.font()
+        font.setPointSize(9)
+        painter.setFont(font)
+        painter.setPen(QColor("#666"))
+        
+        for i, t in enumerate(self.time_labels):
+            y = i * slot_height
+            rect = QRectF(0, y, self.width() - 5, slot_height)
+            # Align perfectly in the vertical center of its bounding box lines
+            painter.drawText(rect, Qt.AlignVCenter | Qt.AlignRight, t)
+
+
+class DayCanvas(QFrame):
+    """A custom widget for drawing SVG/Polygon calendar events and background grid."""
+    def __init__(self, day_name, time_labels):
+        super().__init__()
+        self.day_name = day_name
+        self.time_labels = time_labels
+        self.events = [] 
+        self.setMinimumWidth(100)
+        self.setMinimumHeight(len(time_labels) * 20)
+        self.setMouseTracking(True)
+        self.hovered_sig = None
+        
+    def get_slot_height(self):
+        return max(20.0, self.height() / len(self.time_labels))
+        
+    def set_events(self, events):
+        self.events = events
+        
+        # 1. Cluster Pack Algorithm (Google Calendar style base centers)
+        events_sorted = sorted(self.events, key=lambda x: (x['start_slot'], -(x['end_slot'] - x['start_slot'])))
+        clusters = []
+        current_cluster = []
+        cluster_end = -1
+        
+        for e in events_sorted:
+            if e['start_slot'] >= cluster_end and current_cluster:
+                clusters.append(current_cluster)
+                current_cluster = [e]
+                cluster_end = e['end_slot']
+            else:
+                current_cluster.append(e)
+                cluster_end = max(cluster_end, e['end_slot'])
+        if current_cluster:
+            clusters.append(current_cluster)
+            
+        for cluster in clusters:
+            columns = [] 
+            for e in cluster:
+                placed = False
+                for c_idx, col_events in enumerate(columns):
+                    if col_events[-1]['end_slot'] <= e['start_slot']:
+                        col_events.append(e)
+                        e['col_idx'] = c_idx
+                        placed = True
+                        break
+                if not placed:
+                    e['col_idx'] = len(columns)
+                    columns.append([e])
+                    
+            max_cols = len(columns)
+            for e in cluster:
+                e['base_center'] = (e['col_idx'] + 0.5) / max_cols
+                
+        self.update() # trigger paintEvent
+        
+    def clear_events(self):
+        self.events = []
+        self.update()
+        
+    def mouseMoveEvent(self, event):
+        if not hasattr(self, 'drawn_paths'):
+            return
+            
+        found = False
+        for sig, data_dict in self.drawn_paths.items():
+            if data_dict['path'].contains(event.pos()):
+                found = True
+                if self.hovered_sig != sig:
+                    self.hovered_sig = sig
+                    from PyQt5.QtWidgets import QToolTip
+                    QToolTip.showText(event.globalPos(), data_dict['tooltip'], self)
+                    self.update() # redraw hover state
+                break
+                
+        if not found and self.hovered_sig is not None:
+            self.hovered_sig = None
+            from PyQt5.QtWidgets import QToolTip
+            QToolTip.showText(event.globalPos(), "", self)
+            QToolTip.hideText()
+            self.update()
+            
+    def leaveEvent(self, event):
+        if hasattr(self, 'hovered_sig') and self.hovered_sig is not None:
+            self.hovered_sig = None
+            from PyQt5.QtWidgets import QToolTip
+            # Aggressively kill the tooltip by showing empty string to bypass OS fade animation
+            from PyQt5.QtGui import QCursor
+            QToolTip.showText(QCursor.pos(), "", self)
+            QToolTip.hideText()
+            self.update()
+        super().leaveEvent(event)
+            
+    def paintEvent(self, event):
+        super().paintEvent(event)
+        from PyQt5.QtGui import QPainter, QPen, QColor, QPainterPath, QFont
+        from PyQt5.QtCore import Qt, QRectF
+        
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        
+        slot_height = self.get_slot_height()
+        w = self.width()
+        
+        # 1. Background Grid
+        pen = QPen(QColor("#dddddd"))
+        pen.setWidth(1)
+        for i in range(len(self.time_labels) + 1): 
+            y = i * slot_height
+            if i % 2 == 0:
+                pen.setColor(QColor("#bbbbbb"))
+            else:
+                pen.setColor(QColor("#eeeeee"))
+            painter.setPen(pen)
+            painter.drawLine(0, int(y), w, int(y))
+            
+        # 2. Assign horizontal slices per slot
+        slot_occupants = {i: [] for i in range(18)}
+        
+        def get_sig(e):
+            d = e['course_data']
+            return (d['course'], str(d['extra']).strip(), d['start_str'], d['end_str'])
+            
+        for e in self.events:
+            start_i = int(e['start_slot'])
+            end_i = int(e['end_slot'])
+            for i in range(start_i, end_i):
+                if 0 <= i < 18:
+                    slot_occupants[i].append(e)
+                    
+        # 3. Build geometry rects based on dynamic clustering and expansion boundaries
+        self.drawn_paths = {}
+        event_rects = {}
+        
+        for i in range(18):
+            occupants = slot_occupants[i]
+            if not occupants: continue
+            
+            # Sort by deterministic base center assigned perfectly during packing phase
+            occupants.sort(key=lambda x: x['base_center'])
+            K = len(occupants)
+            
+            for j, e in enumerate(occupants):
+                sig = get_sig(e)
+                if sig not in event_rects:
+                    event_rects[sig] = []
+                    
+                left_bound = 0.0 if j == 0 else (occupants[j-1]['base_center'] + e['base_center']) / 2.0
+                right_bound = 1.0 if j == K - 1 else (e['base_center'] + occupants[j+1]['base_center']) / 2.0
+                
+                # Inset by 0.5px so pen stroke doesn't fall completely outside the widget, giving crisp solid borders
+                x = left_bound * (w - 1) + 0.5
+                slice_w = (right_bound - left_bound) * (w - 1)
+                y = i * slot_height
+                
+                # We heavily rely on exact rectangle math! 
+                rect = QRectF(x, y, slice_w, slot_height)
+                event_rects[sig].append((rect, QRectF(rect))) # tuple (geom, original_for_text)
+                
+        # 4. Paint Polygons (L-Profiles)
+        for e in self.events:
+            sig = get_sig(e)
+            if sig not in event_rects: continue
+            if sig in self.drawn_paths: continue
+            
+            rect_data = event_rects[sig]
+            
+            # Form contiguous vertical strips to prevent inner horizontal "brick" lines
+            merged_rects = []
+            curr_rect = QRectF(rect_data[0][1])
+            for _, orig_r in rect_data[1:]:
+                # If they have same horizontal footprint and are adjacent vertically
+                if abs(orig_r.x() - curr_rect.x()) < 1.0 and abs(orig_r.width() - curr_rect.width()) < 1.0:
+                    curr_rect = curr_rect.united(orig_r)
+                else:
+                    merged_rects.append(curr_rect)
+                    curr_rect = QRectF(orig_r)
+            merged_rects.append(curr_rect)
+            
+            path = QPainterPath()
+            for r in merged_rects:
+                # Minimal inflation (0.1px) just enough for Boolean union intersection without ruining border crispness
+                inflated_r = r.adjusted(-0.1, -0.1, 0.1, 0.1)
+                
+                # Create discrete paths and union them properly
+                p = QPainterPath()
+                p.addRect(inflated_r)
+                if path.isEmpty():
+                    path = p
+                else:
+                    path = path.united(p)
+            
+            path = path.simplified()
+            
+            data = e['course_data']
+            p_colors = data['pool_colors']
+            
+            if data.get('is_unavailability'):
+                bg_color = QColor("#FFC8C8")
+            elif p_colors:
+                bg_color = p_colors[0]
+            else:
+                bg_color = QColor("#e3f2fd")
+                
+            widths = [r.width() for r in merged_rects]
+            is_extreme = False
+            # Detect multi-lobed shapes with extreme width differentials (fat belly vs thin edges)
+            if len(widths) > 1 and max(widths) / max(1.0, min(widths)) >= 1.8:
+                is_extreme = True
+                
+            from PyQt5.QtGui import QLinearGradient, QBrush
+            bounds = path.boundingRect()
+            gradient = QLinearGradient(bounds.topLeft(), bounds.bottomRight())
+            
+            if self.hovered_sig == sig:
+                gradient.setColorAt(0.0, bg_color.lighter(115))
+                gradient.setColorAt(1.0, bg_color.darker(125))
+                border_pen = QPen(QColor(0, 0, 0, 180))
+                border_pen.setWidth(2)
+            else:
+                if is_extreme:
+                    # Unify extreme profiles visually with a stronger gradient
+                    gradient.setColorAt(0.0, bg_color.lighter(120))
+                    gradient.setColorAt(1.0, bg_color.darker(120))
+                    border_pen = QPen(QColor(0, 0, 0, 140))
+                else:
+                    gradient.setColorAt(0.0, bg_color.lighter(110))
+                    gradient.setColorAt(1.0, bg_color.darker(110))
+                    border_pen = QPen(QColor(0, 0, 0, 50))
+                border_pen.setWidth(1)
+                
+            painter.fillPath(path, QBrush(gradient))
+            painter.setPen(border_pen)
+            painter.drawPath(path)
+            
+            # 5. Draw Target Text (Dynamically wrapping across L-Profile Lobes)
+            formatted_tooltip = f"{data['course']}\n{data['extra']}\n{data['start_str']}-{data['end_str']}"
+            
+            self.drawn_paths[sig] = {
+                'path': path,
+                'tooltip': formatted_tooltip,
+            }
+            
+            painter.save()
+            painter.setClipPath(path)
+            
+            font = painter.font()
+            # Base font size for the course title
+            avg_width = sum(r.width() for r in merged_rects) / len(merged_rects) if merged_rects else 40
+            if avg_width < 60:
+                title_pt = 6
+            elif avg_width < 70:
+                title_pt = 7
+            else:
+                title_pt = 8
+            detail_pt = max(5, title_pt - 2)  # Details are always 2pt smaller
+            
+            is_bold = self.hovered_sig == sig
+            painter.setPen(QColor("#111111"))
+            
+            max_w = merged_rects[0].width() if len(merged_rects) == 1 else max([r.width() for r in merged_rects])
+            
+            # Define fonts once for the unified rendering
+            from PyQt5.QtGui import QFontMetrics, QFont
+            
+            title_font = QFont(font)
+            title_font.setPointSize(title_pt)
+            title_font.setBold(is_bold)
+            
+            detail_font = QFont(font)
+            detail_font.setPointSize(detail_pt)
+            detail_font.setBold(False)
+            
+            # 1. Build hierarchical font blocks (text, QFont)
+            # This ensures consistent categorization for both single-rect and L-profiles
+            font_blocks = [(f"{data['course']}", title_font)]
+            
+            extra_lines = [l.strip() for l in str(data.get('extra', '')).split('\n') if l.strip()]
+            time_str = f"{data['start_str']}-{data['end_str']}"
+            
+            if extra_lines:
+                # Add all except the last line
+                for line in extra_lines[:-1]:
+                    font_blocks.append((line, detail_font))
+                # Merge the last line (Oda) with the time using a separator
+                # Our wrapping engine will naturally put them on the same line if they fit
+                merged_info = f"{extra_lines[-1]}  |  {time_str}"
+                font_blocks.append((merged_info, detail_font))
+            else:
+                # Fallback if no extra info is present
+                font_blocks.append((time_str, detail_font))
+
+            if len(merged_rects) == 1:
+                # Still use the flowing engine for single rects to ensure uniform line spacing
+                # and to benefit from the same wrap/atomic logic as L-profiles
+                self._draw_flowing_text_hier(painter, merged_rects, font_blocks)
+            else:
+                # L-profile: prioritize single-block rendering in the best rectangle if possible
+                # Find the best rectangle for the single-block attempt: prioritize WIDTH
+                best_rect = max(merged_rects, key=lambda r: (r.width() ** 1.5) * r.height())
+                best_text_rect = best_rect.adjusted(3, 3, -3, -3)
+                
+                # Simulation: Does EVERYTHING fit in the best_rect?
+                total_needed_h = 0
+                title_metrics = QFontMetrics(title_font)
+                title_br = title_metrics.boundingRect(best_text_rect.toRect(), Qt.AlignTop | Qt.AlignHCenter | Qt.TextWordWrap, data['course'])
+                total_needed_h += title_br.height() + 2
+                
+                detail_metrics = QFontMetrics(detail_font)
+                fits_all = True
+                for block_text, _f in font_blocks[1:]:
+                    block_br = detail_metrics.boundingRect(best_text_rect.toRect(), Qt.AlignTop | Qt.AlignHCenter | Qt.TextWordWrap, block_text)
+                    total_needed_h += block_br.height()
+                    if total_needed_h > best_text_rect.height():
+                        fits_all = False
+                        break
+                
+                if fits_all:
+                    # Content fits in best_rect. Render it there using the engine for consistency.
+                    self._draw_flowing_text_hier(painter, [best_rect], font_blocks)
+                else:
+                    # Content is too large for any single rect, use the flowing engine across all
+                    self._draw_flowing_text_hier(painter, merged_rects, font_blocks)
+                
+            painter.restore()
+            
+        # 6. Draw Horizontal Hour Alignments (Overlay layer on top of all blocks)
+        dash_pen = QPen(QColor(0, 0, 0, 40)) # Very subtle dotted black line
+        dash_pen.setWidth(1)
+        dash_pen.setStyle(Qt.CustomDashLine)
+        dash_pen.setDashPattern([1, 5])
+        painter.setPen(dash_pen)
+        
+        # 1 corresponds to 09:00, 3 to 10:00, 5 to 11:00 etc in our 18 slot grid starting at 08:30
+        for i in range(1, 18, 2):
+            y = i * slot_height
+            painter.drawLine(0, int(y), int(w), int(y))
+            
+        # 7. Draw ultra-thin jet black boundary for the Day Column
+        # We use setWidth(0) to create a 'cosmetic pen' which is exactly 1 hardware pixel, bypassing High-DPI scaling thickness
+        edge_pen = QPen(QColor("#000000"))
+        edge_pen.setWidth(0)
+        painter.setPen(edge_pen)
+        painter.drawLine(int(w) - 1, 0, int(w) - 1, self.height())
+
+    def _draw_flowing_text(self, painter, merged_rects, blocks):
+        from PyQt5.QtGui import QFontMetrics
+        metrics = QFontMetrics(painter.font())
+        line_height = metrics.lineSpacing()
+        
+        if not merged_rects: return
+        
+        # Don't squeeze text into a tiny top notch if the L-shape has a huge belly below!
+        start_idx = 0
+        for i, r in enumerate(merged_rects):
+            if r.width() >= 50:
+                start_idx = i
+                break
+                
+        current_rect_idx = start_idx
+        current_y = merged_rects[current_rect_idx].y() + 4
+        
+        def paint_line(line_words, r, y):
+            line_text = " ".join(line_words).strip()
+            if not line_text: return
+            if hasattr(metrics, 'horizontalAdvance'):
+                text_w = metrics.horizontalAdvance(line_text)
+            else:
+                text_w = metrics.width(line_text)
+            text_x = r.x() + (r.width() - text_w) / 2.0
+            painter.drawText(int(text_x), int(y + metrics.ascent()), line_text)
+            
+        def layout_block(text, r_idx, y, commit=False):
+            words = []
+            for token in text.split(' '):
+                if '\n' in token:
+                    parts = token.split('\n')
+                    for i, p in enumerate(parts):
+                        if p: words.append(p)
+                        if i < len(parts) - 1: words.append('\n')
+                else:
+                    if token: words.append(token)
+                    
+            curr_line = []
+            i = 0
+            while i < len(words):
+                if r_idx >= len(merged_rects): return False, r_idx, y
+                r = merged_rects[r_idx]
+                
+                if y + line_height > r.y() + r.height() - 4:
+                    if curr_line:
+                        if commit: paint_line(curr_line, r, y)
+                        curr_line = []
+                        y += line_height
+                        continue
+                    else:
+                        r_idx += 1
+                        if r_idx >= len(merged_rects): return False, r_idx, y
+                        y = merged_rects[r_idx].y() + 4
+                        continue
+                        
+                word = words[i]
+                if word == '\n':
+                    if curr_line:
+                        if commit: paint_line(curr_line, r, y)
+                        curr_line = []
+                    y += line_height
+                    i += 1
+                    continue
+                    
+                test_line = " ".join(curr_line + [word])
+                if hasattr(metrics, 'horizontalAdvance'):
+                    w = metrics.horizontalAdvance(test_line)
+                else:
+                    w = metrics.width(test_line)
+                    
+                if w <= r.width() - 8 or not curr_line:
+                    curr_line.append(word)
+                    i += 1
+                else:
+                    if commit: paint_line(curr_line, r, y)
+                    curr_line = []
+                    y += line_height
+                    
+            if curr_line:
+                if y + line_height > merged_rects[r_idx].y() + merged_rects[r_idx].height() - 4:
+                    r_idx += 1
+                    if r_idx >= len(merged_rects): return False, r_idx, y
+                    y = merged_rects[r_idx].y() + 4
+                    if commit: paint_line(curr_line, merged_rects[r_idx], y)
+                    return True, r_idx, y + line_height
+                else:
+                    if commit: paint_line(curr_line, merged_rects[r_idx], y)
+                    y += line_height
+            return True, r_idx, y
+
+        for block in blocks:
+            # Lookahead simulation: does this logical block of info fully fit?
+            fits, next_idx, next_y = layout_block(block, current_rect_idx, current_y, commit=False)
+            if fits:
+                # Actually draw it
+                layout_block(block, current_rect_idx, current_y, commit=True)
+                current_rect_idx, current_y = next_idx, next_y
+            else:
+                # Insufficient space for this block. Stop adding further text to maintain clean look.
+                break
+
+    def _draw_flowing_text_hier(self, painter, merged_rects, font_blocks):
+        """
+        Hierarchical flowing text engine.
+        font_blocks: list of (text, QFont) tuples.
+        Each block flows across merged_rects with its own font size.
+        Blocks are tested with lookahead: if a block doesn't fully fit, it's skipped entirely.
+        """
+        from PyQt5.QtGui import QFontMetrics
+        
+        if not merged_rects: return
+        
+        # Start at the first reasonably wide section
+        start_idx = 0
+        for i, r in enumerate(merged_rects):
+            if r.width() >= 50:
+                start_idx = i
+                break
+                
+        current_rect_idx = start_idx
+        current_y = merged_rects[current_rect_idx].y() + 2
+        
+        def paint_line(line_words, r, y, metrics):
+            """
+            Draws a single line of centered text, handling smart separator hiding.
+            The separator '|' is hidden if it wraps to the start or end of a line.
+            """
+            clean_words = [w for w in line_words if w.strip()]
+            if not clean_words: return
+            
+            # Smart Separator: Hide '|' if it's the first or last word of a wrapped line
+            if clean_words[0] == "|":
+                clean_words = clean_words[1:]
+            if clean_words and clean_words[-1] == "|":
+                clean_words = clean_words[:-1]
+                
+            line_text = " ".join(clean_words).strip()
+            if not line_text: return
+            
+            # Horizontal centering
+            if hasattr(metrics, 'horizontalAdvance'):
+                text_w = metrics.horizontalAdvance(line_text)
+            else:
+                text_w = metrics.width(line_text)
+            text_x = r.x() + (r.width() - text_w) / 2.0
+            painter.drawText(int(text_x), int(y + metrics.ascent()), line_text)
+            
+        def layout_block(text, block_font, r_idx, y, commit=False, atomic=False):
+            metrics = QFontMetrics(block_font)
+            line_height = metrics.lineSpacing()
+            
+            # ATOMIC BLOCK CHECK: If the entire block doesn't fit in the CURRENT rectangle's remaining space,
+            # but COULD fit fully in the NEXT rectangle, jump to the next rectangle first.
+            while r_idx + 1 < len(merged_rects):
+                r_current = merged_rects[r_idx]
+                remaining_h = r_current.bottom() - y
+                
+                # Measure height needed for this block's text at current width
+                # Use a slightly smaller width check to be safe (-8 for padding)
+                needed_br = metrics.boundingRect(
+                    QRect(0, 0, int(r_current.width() - 8), 1000),
+                    Qt.AlignTop | Qt.AlignHCenter | Qt.TextWordWrap,
+                    text
+                )
+                
+                if needed_br.height() > remaining_h:
+                    # It doesn't fit here. Check if it fits better in the next rectangle
+                    r_next = merged_rects[r_idx + 1]
+                    next_needed_br = metrics.boundingRect(
+                        QRect(0, 0, int(r_next.width() - 8), 1000),
+                        Qt.AlignTop | Qt.AlignHCenter | Qt.TextWordWrap,
+                        text
+                    )
+                    if next_needed_br.height() <= r_next.height():
+                        r_idx += 1
+                        y = merged_rects[r_idx].y()
+                        continue
+                break
+
+            # Smart split: keep '|' as its own word so we can hide it if it wraps
+            words = []
+            for t in text.split(' '):
+                if not t.strip(): continue
+                if t == "|":
+                    words.append("|")
+                elif "|" in t:
+                    parts = t.split("|")
+                    for k, p in enumerate(parts):
+                        if p: words.append(p)
+                        if k < len(parts) - 1: words.append("|")
+                else:
+                    words.append(t)
+            if commit:
+                painter.setFont(block_font)
+                    
+            curr_line = []
+            word_idx = 0
+            while word_idx < len(words):
+                if r_idx >= len(merged_rects): return False, r_idx, y
+                r = merged_rects[r_idx]
+                
+                # Check if current line fits in this rect
+                if y + line_height > r.y() + r.height():
+                    if atomic: return False, r_idx, y # Atomic block MUST fit in one rect
+                    
+                    if curr_line:
+                        if commit: paint_line(curr_line, r, y, metrics)
+                        curr_line = []
+                        y += line_height
+                        continue
+                    else:
+                        r_idx += 1
+                        if r_idx >= len(merged_rects): return False, r_idx, y
+                        next_top = merged_rects[r_idx].y()
+                        if next_top > y:
+                            y = next_top
+                        continue
+                        
+                word = words[word_idx]
+                test_line = " ".join(curr_line + [word])
+                w_line = metrics.horizontalAdvance(test_line) if hasattr(metrics, 'horizontalAdvance') else metrics.width(test_line)
+                    
+                if w_line <= r.width() - 8 or not curr_line:
+                    curr_line.append(word)
+                    word_idx += 1
+                else:
+                    if commit: paint_line(curr_line, r, y, metrics)
+                    curr_line = []
+                    y += line_height
+                    
+            if curr_line:
+                if y + line_height > merged_rects[r_idx].bottom():
+                    if atomic: return False, r_idx, y
+                    r_idx += 1
+                    if r_idx >= len(merged_rects): return False, r_idx, y
+                    y = merged_rects[r_idx].y()
+                    if commit: paint_line(curr_line, merged_rects[r_idx], y, metrics)
+                    return True, r_idx, y + line_height
+                else:
+                    if commit: paint_line(curr_line, merged_rects[r_idx], y, metrics)
+                    y += line_height
+            return True, r_idx, y
+
+        import re
+        for i, (block_text, block_font) in enumerate(font_blocks):
+            # Title (index 0) is atomic to keep Code+Name together
+            is_title = (i == 0)
+            fits, sim_idx, sim_y = layout_block(block_text, block_font, current_rect_idx, current_y, commit=False, atomic=is_title)
+            
+            if not fits and is_title:
+                # FALLBACK: Try rendering only the course code (e.g. [ETE414])
+                code_match = re.search(r'\[.*?\]', block_text)
+                if code_match:
+                    code_only = code_match.group(0)
+                    fits_code, sim_idx, sim_y = layout_block(code_only, block_font, current_rect_idx, current_y, commit=False, atomic=True)
+                    if fits_code:
+                        _, current_rect_idx, current_y = layout_block(code_only, block_font, current_rect_idx, current_y, commit=True, atomic=True)
+                        continue
+            
+            if fits:
+                _, current_rect_idx, current_y = layout_block(block_text, block_font, current_rect_idx, current_y, commit=True, atomic=is_title)
+            else:
+                if is_title: break # If title (or code fallback) failed, skip block
+                break # If detail failed, just stop adding details
 class CalendarView(QWidget):
     """
     Weekly Calendar View Widget
@@ -146,9 +825,19 @@ class CalendarView(QWidget):
         layout.addWidget(filter_frame)
         
         # Calendar Grid
-        self.calendar_table = QTableWidget()
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setStyleSheet("background-color: transparent; border: none;")
+        
+        self.calendar_container = QWidget()
+        self.calendar_container.setStyleSheet("background-color: white;")
+        self.calendar_layout = QHBoxLayout(self.calendar_container)
+        self.calendar_layout.setContentsMargins(0, 0, 0, 0)
+        self.calendar_layout.setSpacing(0)
+        
         self._setup_calendar_grid()
-        layout.addWidget(self.calendar_table)
+        self.scroll_area.setWidget(self.calendar_container)
+        layout.addWidget(self.scroll_area)
         
         # Legend Widget
         self.legend = LegendWidget()
@@ -163,10 +852,9 @@ class CalendarView(QWidget):
         self.last_schedule_data = []
         
     def _setup_calendar_grid(self):
-        """Setup the table widget as a calendar"""
+        """Setup the custom absolute-positioned calendar grid."""
         days = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma"]
         
-        # New Standard: 30-minute slots from 08:30 to 17:30 (18 slots)
         self.time_labels = []
         start_h, start_m = 8, 30
         for _ in range(18):
@@ -175,18 +863,47 @@ class CalendarView(QWidget):
             if start_m >= 60:
                 start_m -= 60
                 start_h += 1 
+                
+        self.day_columns = {}
         
-        self.calendar_table.setColumnCount(len(days))
-        self.calendar_table.setRowCount(len(self.time_labels))
+        # 1. Time Column
+        time_container = QWidget()
+        time_container.setFixedWidth(60)
+        time_layout = QVBoxLayout(time_container)
+        time_layout.setContentsMargins(0, 0, 5, 0) 
+        time_layout.setSpacing(0)
         
-        self.calendar_table.setHorizontalHeaderLabels(days)
-        self.calendar_table.setVerticalHeaderLabels(self.time_labels)
+        header_spacer = QLabel()
+        header_spacer.setFixedHeight(30)
+        time_layout.addWidget(header_spacer)
         
-        # Styling
-        self.calendar_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.calendar_table.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.calendar_table.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.calendar_table.setSelectionMode(QTableWidget.NoSelection)
+        self.time_canvas = TimeCanvas(self.time_labels)
+        time_layout.addWidget(self.time_canvas)
+        # Note: No addStretch() so it fills naturally matching DayCanvas!
+        self.calendar_layout.addWidget(time_container)
+        
+        # 2. Day Columns
+        for day in days:
+            day_widget = QWidget()
+            day_layout = QVBoxLayout(day_widget)
+            day_layout.setContentsMargins(0, 0, 0, 0)
+            day_layout.setSpacing(0)
+            
+            header = QLabel(day)
+            header.setAlignment(Qt.AlignCenter)
+            header.setStyleSheet("font-weight: bold; background-color: #f5f5f5; border-bottom: 2px solid #000; border-right: 1px solid #000; color: #333;")
+            header.setFixedHeight(30)
+            day_layout.addWidget(header)
+            
+            canvas = DayCanvas(day, self.time_labels)
+            # Remove thick CSS border, handled by ultra-thin QPainter line in canvas
+            canvas.setStyleSheet("background-color: transparent;")
+            
+            day_layout.addWidget(canvas)
+            # Note: No addStretch() so DayCanvas dynamically fills the vertical space!
+            
+            self.calendar_layout.addWidget(day_widget)
+            self.day_columns[day] = canvas
 
     def _on_view_type_changed(self, idx=None):
         """Handle view type change"""
@@ -587,145 +1304,43 @@ class CalendarView(QWidget):
 
     def _render_grid(self, slots, seen_pools):
         """
-        Phase 3: Render widgets to QTableWidget.
+        Phase 3: Dispatch events to the custom Polygon renderer (DayCanvas).
         """
-        self.calendar_table.clearContents()
-        self.calendar_table.clearSpans()
-        
-        day_map = {
-            "Pazartesi": 0, "Salı": 1, "Çarşamba": 2, "Perşembe": 3, "Cuma": 4
-        }
-        
-        from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel
-        
-        for day_name, day_slots in slots.items():
-            if day_name not in day_map: continue 
-            col = day_map[day_name]
+        for canvas in self.day_columns.values():
+            canvas.clear_events()
             
-            start_hours = sorted(day_slots.keys())
-            if not start_hours:
-                continue
-            
-            i = 0
-            while i < len(start_hours):
-                current_start = start_hours[i]
-                courses_in_slot = day_slots[current_start] 
-                
-                row = -1
-                try:
-                    row = self.time_labels.index(current_start)
-                except ValueError:
-                    i += 1
-                    continue
+        def time_to_slot(t_str):
+            h, m = map(int, t_str.split(':'))
+            return ((h * 60 + m) - 510) / 30.0 # 510 is 08:30
 
-                if row < 0 or row >= self.calendar_table.rowCount():
-                    i += 1
-                    continue
-                
-                # Unified Merge Logic
-                def get_sig(c_list):
-                    return tuple(sorted((c['course'], str(c['extra']).strip()) for c in c_list))
-                
-                curr_sig = get_sig(courses_in_slot)
-                
-                span = 1
-                next_check_idx = i + 1
-                
-                while next_check_idx < len(start_hours):
-                    next_start = start_hours[next_check_idx]
-                    if next_start not in day_slots: break
-                    next_courses = day_slots[next_start]
-                    
-                    next_sig = get_sig(next_courses)
-                    
-                    if (row + span < self.calendar_table.rowCount() and
-                        row + span == self.time_labels.index(next_start) and 
-                        curr_sig == next_sig):
-                        span += 1
-                        next_check_idx += 1
-                    else:
-                        break
-                
-                # RENDER STRATEGY
-                # 1. Multiple Courses -> Horizontal Container
-                if len(courses_in_slot) > 1:
-                    container = QWidget()
-                    hlayout = QHBoxLayout(container)
-                    hlayout.setContentsMargins(1, 1, 1, 1)
-                    hlayout.setSpacing(2)
-                    
-                    for course_data in courses_in_slot:
-                        # Find the final end string for this specific course in the last slot of the span
-                        final_end_str = course_data['end_str']
-                        if span > 1:
-                            last_slot_courses = day_slots[start_hours[i + span - 1]]
-                            for lsc in last_slot_courses:
-                                if lsc['course'] == course_data['course'] and str(lsc['extra']).strip() == str(course_data['extra']).strip():
-                                    final_end_str = lsc['end_str']
-                                    break
-                                    
-                        text = f"{course_data['course']}"
-                        if course_data['start_str']:
-                            text += f"\n{course_data['start_str']}-{final_end_str}"
+        for day_name, day_slots in slots.items():
+            if day_name not in self.day_columns: continue
+            canvas = self.day_columns[day_name]
+            
+            # Extract unique blocks to prevent duplication across 30-min slots
+            unique_blocks = {}
+            for start_str, courses in day_slots.items():
+                for c in courses:
+                    # A block is uniquely defined by its name, extra details, and exact start/end time.
+                    sig = (c['course'], str(c['extra']).strip(), c['start_str'], c['end_str'])
+                    if sig not in unique_blocks:
+                        unique_blocks[sig] = c
                         
-                        lbl = QLabel(text)
-                        lbl.setAlignment(Qt.AlignCenter)
-                        lbl.setWordWrap(True)
-                        
-                        full_tooltip = f"{course_data['course']}\n{course_data['extra']}\n{course_data['start_str']}-{final_end_str}"
-                        lbl.setToolTip(full_tooltip)
-                        
-                        p_colors = course_data['pool_colors']
-                        if course_data.get('is_unavailability'):
-                            bg_color = "#FFC8C8" # Light Red
-                        elif p_colors:
-                            bg_color = p_colors[0].name()
-                        else:
-                            bg_color = "#E3F2FD"
-                        
-                        lbl.setStyleSheet(f"background-color: {bg_color}; border: 1px solid #aaa; padding: 2px; font-size: 8pt;")
-                        hlayout.addWidget(lbl)
+            events_flat = []
+            for sig, data in unique_blocks.items():
+                start_slot = time_to_slot(data['start_str'])
+                end_slot = time_to_slot(data['end_str'])
+                if end_slot <= start_slot:
+                    end_slot = start_slot + 1 # fallback safe duration
                     
-                    self.calendar_table.setCellWidget(row, col, container)
-                    if span > 1:
-                        self.calendar_table.setSpan(row, col, span, 1)
-                    
-                # 2. Single Course -> Standard Item
-                else:
-                    current_data = courses_in_slot[0]
-                    
-                    # Determination of End Time
-                    if span > 1:
-                        final_end_str = day_slots[start_hours[i + span - 1]][0]['end_str']
-                    else:
-                        final_end_str = current_data['end_str']
-                    
-                    text = f"{current_data['course']}\n{current_data['extra']}"
-                    if current_data['start_str']:
-                        text += f"\n{current_data['start_str']}-{final_end_str}"
-                    
-                    item = QTableWidgetItem(text)
-                    item.setTextAlignment(Qt.AlignCenter)
-                    item.setToolTip(text.replace('\n', '<br>'))
-                    
-                    # Coloring
-                    p_colors = current_data['pool_colors']
-                    if current_data.get('is_unavailability'):
-                        item.setBackground(QColor(255, 200, 200)) # Light Red (#FFC8C8)
-                    elif p_colors:
-                        if len(p_colors) == 1:
-                            item.setBackground(p_colors[0])
-                        else:
-                            brush = QBrush(p_colors[0], Qt.FDiagPattern)
-                            item.setBackground(brush)
-                    else:
-                        item.setBackground(QColor(227, 242, 253))
-                    
-                    self.calendar_table.setItem(row, col, item)
-                    if span > 1:
-                        self.calendar_table.setSpan(row, col, span, 1)
-                    
-                i += span
+                events_flat.append({
+                    'course_data': data,
+                    'start_slot': start_slot,
+                    'end_slot': end_slot
+                })
+                
+            # Render using Polygon Architecture natively!
+            canvas.set_events(events_flat)
 
         self.legend.update_legend(seen_pools)
         
