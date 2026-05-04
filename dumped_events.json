@@ -1,0 +1,146 @@
+[
+  {
+    "course": "[MAT108] Analiz 2 (Teori)",
+    "extra": "Öğretmen: Ömer Arslan\nOda: Küçük Derslik-17",
+    "start_str": "09:00",
+    "end_str": "12:00",
+    "start_slot": 1.0,
+    "end_slot": 7.0,
+    "base_center": 0.07142857142857142
+  },
+  {
+    "course": "[EBT306] Isı Transferi (Uygulama)",
+    "extra": "Öğretmen: Fadime Keskin\nOda: Amfi-2",
+    "start_str": "09:30",
+    "end_str": "11:30",
+    "start_slot": 2.0,
+    "end_slot": 6.0,
+    "base_center": 0.21428571428571427
+  },
+  {
+    "course": "[INF502] Makine Öğrenmesi (Teori)",
+    "extra": "Öğretmen: Halil Demir\nOda: Küçük Derslik-28",
+    "start_str": "11:00",
+    "end_str": "13:00",
+    "start_slot": 5.0,
+    "end_slot": 9.0,
+    "base_center": 0.35714285714285715
+  },
+  {
+    "course": "[INF503] Yapay Sinir Ağları (Lab)",
+    "extra": "Öğretmen: Özlem Demir\nOda: Mekatronik Lab-1",
+    "start_str": "11:00",
+    "end_str": "13:00",
+    "start_slot": 5.0,
+    "end_slot": 9.0,
+    "base_center": 0.5
+  },
+  {
+    "course": "[WIN320] Makine Öğrenmesi (Teori)",
+    "extra": "Öğretmen: Recep Özhan\nOda: Küçük Derslik-31",
+    "start_str": "11:30",
+    "end_str": "13:30",
+    "start_slot": 6.0,
+    "end_slot": 10.0,
+    "base_center": 0.21428571428571427
+  },
+  {
+    "course": "[EBT306] Isı Transferi (Teori)",
+    "extra": "Öğretmen: Fadime Keskin\nOda: Büyük Derslik-5",
+    "start_str": "12:00",
+    "end_str": "15:00",
+    "start_slot": 7.0,
+    "end_slot": 13.0,
+    "base_center": 0.07142857142857142
+  },
+  {
+    "course": "[INF202] Yazılım Mühendisliği (Lab)",
+    "extra": "Öğretmen: Mustafa Öztürk\nOda: Elektrik_Elektronik Lab-1",
+    "start_str": "12:00",
+    "end_str": "15:00",
+    "start_slot": 7.0,
+    "end_slot": 13.0,
+    "base_center": 0.6428571428571429
+  },
+  {
+    "course": "[BAU205] Akışkanlar Mekaniği (Uygulama)",
+    "extra": "Öğretmen: Zeynep Çelik\nOda: Büyük Derslik-9",
+    "start_str": "12:30",
+    "end_str": "14:30",
+    "start_slot": 8.0,
+    "end_slot": 12.0,
+    "base_center": 0.7857142857142857
+  },
+  {
+    "course": "[VWL474] Makine Öğrenmesi (Teori)",
+    "extra": "Öğretmen: Yasemin Demir\nOda: Küçük Derslik-3",
+    "start_str": "13:00",
+    "end_str": "15:00",
+    "start_slot": 9.0,
+    "end_slot": 13.0,
+    "base_center": 0.35714285714285715
+  },
+  {
+    "course": "[ETE464] Yapay Sinir Ağları (Teori)",
+    "extra": "Öğretmen: Hanife Özkan\nOda: Küçük Derslik-16",
+    "start_str": "13:00",
+    "end_str": "15:00",
+    "start_slot": 9.0,
+    "end_slot": 13.0,
+    "base_center": 0.5
+  },
+  {
+    "course": "[MEC421] Endüstriyel Robotik 2 (Lab)",
+    "extra": "Öğretmen: Zeynep Erdoğan\nOda: Moleküler Lab-1",
+    "start_str": "13:30",
+    "end_str": "15:30",
+    "start_slot": 10.0,
+    "end_slot": 14.0,
+    "base_center": 0.21428571428571427
+  },
+  {
+    "course": "[MAB314] Akışkanlar Mekaniği (Teori)",
+    "extra": "Öğretmen: Zeynep Yıldırım\nOda: Büyük Derslik-30",
+    "start_str": "14:30",
+    "end_str": "17:30",
+    "start_slot": 12.0,
+    "end_slot": 18.0,
+    "base_center": 0.7857142857142857
+  },
+  {
+    "course": "[INF502] Makine Öğrenmesi (Lab)",
+    "extra": "Öğretmen: Ahmet Doğan\nOda: Endüstri Lab-1",
+    "start_str": "14:30",
+    "end_str": "16:30",
+    "start_slot": 12.0,
+    "end_slot": 16.0,
+    "base_center": 0.9285714285714286
+  },
+  {
+    "course": "[ETE441] FPGA Programlama (Uygulama)",
+    "extra": "Öğretmen: Murat Polat\nOda: Küçük Derslik-6",
+    "start_str": "15:00",
+    "end_str": "16:00",
+    "start_slot": 13.0,
+    "end_slot": 15.0,
+    "base_center": 0.07142857142857142
+  },
+  {
+    "course": "[ETE442] Gömülü Sistemler (Lab)",
+    "extra": "Öğretmen: Mahmut Şahin\nOda: Moleküler Lab-1",
+    "start_str": "15:30",
+    "end_str": "16:30",
+    "start_slot": 14.0,
+    "end_slot": 16.0,
+    "base_center": 0.21428571428571427
+  },
+  {
+    "course": "[PHY102] Elektrik ve Manyetizma (Lab)",
+    "extra": "Öğretmen: Zehra Taş\nOda: Malzeme Lab-1",
+    "start_str": "16:00",
+    "end_str": "17:00",
+    "start_slot": 15.0,
+    "end_slot": 17.0,
+    "base_center": 0.07142857142857142
+  }
+]

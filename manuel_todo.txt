@@ -1,0 +1,1 @@
+ayrı branch aç ve tek phase ile çözmeye çalış

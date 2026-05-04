@@ -175,6 +175,41 @@ class DayCanvas(QFrame):
             max_cols = len(columns)
             for e in cluster:
                 e['base_center'] = (e['col_idx'] + 0.5) / max_cols
+        
+        # 2. Solve optimal layout via CP-SAT (if available)
+        try:
+            from utils.layout_solver import solve_layout
+            _slot_occ = {i: [] for i in range(18)}
+            for e in self.events:
+                for i in range(int(e['start_slot']), int(e['end_slot'])):
+                    if 0 <= i < 18:
+                        _slot_occ[i].append(e)
+            
+            import json
+            try:
+                with open("dumped_events.json", "w", encoding="utf-8") as f:
+                    # e contains non-serializable objects (like course_data might have weird stuff)?
+                    # Just dump a simplified version
+                    simple_events = []
+                    for ev in self.events:
+                        d = ev['course_data']
+                        simple_events.append({
+                            'course': d['course'],
+                            'extra': d.get('extra', ''),
+                            'start_str': d['start_str'],
+                            'end_str': d['end_str'],
+                            'start_slot': ev['start_slot'],
+                            'end_slot': ev['end_slot'],
+                            'base_center': ev.get('base_center', 0)
+                        })
+                    json.dump(simple_events, f, indent=2, ensure_ascii=False)
+            except Exception as e:
+                print("DUMP ERROR:", e)
+                
+            self._solved_layout = solve_layout(self.events, _slot_occ)
+        except Exception as ex:
+            print(f"[LayoutSolver] Error: {ex}")
+            self._solved_layout = None
                 
         self.update() # trigger paintEvent
         
@@ -269,8 +304,12 @@ class DayCanvas(QFrame):
                 if sig not in event_rects:
                     event_rects[sig] = []
                     
-                left_bound = 0.0 if j == 0 else (occupants[j-1]['base_center'] + e['base_center']) / 2.0
-                right_bound = 1.0 if j == K - 1 else (e['base_center'] + occupants[j+1]['base_center']) / 2.0
+                # Use CP-SAT solved positions if available, else midpoint heuristic
+                if hasattr(self, '_solved_layout') and self._solved_layout and sig in self._solved_layout and i in self._solved_layout[sig]:
+                    left_bound, right_bound = self._solved_layout[sig][i]
+                else:
+                    left_bound = 0.0 if j == 0 else (occupants[j-1]['base_center'] + e['base_center']) / 2.0
+                    right_bound = 1.0 if j == K - 1 else (e['base_center'] + occupants[j+1]['base_center']) / 2.0
                 
                 # Inset by 0.5px so pen stroke doesn't fall completely outside the widget, giving crisp solid borders
                 x = left_bound * (w - 1) + 0.5
@@ -399,7 +438,18 @@ class DayCanvas(QFrame):
             # This ensures consistent categorization for both single-rect and L-profiles
             font_blocks = [(f"{data['course']}", title_font)]
             
-            extra_lines = [l.strip() for l in str(data.get('extra', '')).split('\n') if l.strip()]
+            # Clean prefixes just for the calendar block, tooltip keeps them
+            clean_extra_lines = []
+            for l in str(data.get('extra', '')).split('\n'):
+                line = l.strip()
+                if not line: continue
+                if line.startswith("Öğretmen: "):
+                    line = line.replace("Öğretmen: ", "", 1)
+                elif line.startswith("Oda: "):
+                    line = line.replace("Oda: ", "", 1)
+                clean_extra_lines.append(line)
+                
+            extra_lines = clean_extra_lines
             time_str = f"{data['start_str']}-{data['end_str']}"
             
             if extra_lines:
