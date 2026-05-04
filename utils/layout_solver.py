@@ -262,7 +262,24 @@ def solve_layout(events, slot_occupants):
             model.AddMinEquality(stair_l, [lml, rml])
             model.Add(stair_l == 0) # Forbid left staircase
             
-            vc += 10
+            # ──────────────────────────────────────────────────────────────
+            # SOFT Rule 12: Visual Edge Misalignment Penalty (Rectangularity)
+            # ──────────────────────────────────────────────────────────────
+            # A perfect rectangle has 4 edges. Any shift creates extra edges.
+            # We strongly penalize any shift to squash 1-5px misalignments.
+            # Using 5000 weight to overpower up to 50 units of fairness or 10 units of overlap.
+            is_l_diff = model.NewBoolVar(f'ldiff_{vc}')
+            model.Add(lc != lp).OnlyEnforceIf(is_l_diff)
+            model.Add(lc == lp).OnlyEnforceIf(is_l_diff.Not())
+            
+            is_r_diff = model.NewBoolVar(f'rdiff_{vc}')
+            model.Add(rc != rp).OnlyEnforceIf(is_r_diff)
+            model.Add(rc == rp).OnlyEnforceIf(is_r_diff.Not())
+            
+            objective_terms.append(-5000 * is_l_diff)
+            objective_terms.append(-5000 * is_r_diff)
+            
+            vc += 14
     
     # ──────────────────────────────────────────────────────────────
     # STEP 4: Objective terms
