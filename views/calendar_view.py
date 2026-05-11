@@ -32,15 +32,20 @@ from PyQt5.QtWidgets import (
     QTableWidget, QTableWidgetItem, QHeaderView, QFrame, QCheckBox,
     QListView, QScrollArea
 )
-from PyQt5.QtCore import Qt, pyqtSignal, QSignalBlocker, QRect, QRectF
-from PyQt5.QtGui import QColor, QBrush, QPainter, QPen
+from PyQt5.QtCore import Qt, pyqtSignal, QSignalBlocker, QRect, QRectF, QTimer
+from PyQt5.QtGui import QColor, QBrush, QPainter, QPen, QFont, QFontMetrics
 import hashlib
 import sys
+import re
 import os
 # curriculum_data is in database/
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database"))
 import curriculum_data
 from scripts.curriculum_helpers import identify_pools
+
+# Fixed font sizes — chosen at max column width; never change dynamically
+TITLE_PT  = 8   # Course code + full name
+DETAIL_PT = 6   # Teacher, room, time
 
 class LegendWidget(QWidget):
     """Dynamic Legend Widget for Elective Pools"""
@@ -134,6 +139,11 @@ class DayCanvas(QFrame):
         self.setMinimumHeight(len(time_labels) * 20)
         self.setMouseTracking(True)
         self.hovered_sig = None
+        self._solved_layout = None
+        # Debounce timer: re-solve 400 ms after the last resize
+        self._resize_timer = QTimer(self)
+        self._resize_timer.setSingleShot(True)
+        self._resize_timer.timeout.connect(self._run_solver)
         
     def get_slot_height(self):
         return max(20.0, self.height() / len(self.time_labels))
@@ -176,7 +186,88 @@ class DayCanvas(QFrame):
             for e in cluster:
                 e['base_center'] = (e['col_idx'] + 0.5) / max_cols
         
-        # 2. Solve optimal layout via CP-SAT (if available)
+        # 2. Solve optimal layout via CP-SAT
+        self._run_solver()
+                
+        self.update() # trigger paintEvent
+        
+    def clear_events(self):
+        self.events = []
+        self._solved_layout = None
+        self.update()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if self.events:
+            self._resize_timer.start(400)  # re-solve 400 ms after last resize
+
+    # ──────────────────────────────────────────────────────────────
+    # Pixel requirement computation & solver runner
+    # ──────────────────────────────────────────────────────────────
+    @staticmethod
+    def _max_word_px(text, fm):
+        """Pixel width of the widest single word in *text* at font metrics *fm*."""
+        words = text.replace('\n', ' ').split()
+        if not words:
+            return 0
+        adv = fm.horizontalAdvance if hasattr(fm, 'horizontalAdvance') else fm.width
+        return max(adv(w) for w in words)
+
+    def _compute_px_reqs(self):
+        """Return {sig: {'code': {'min': X, 'max': Y}, ...}} in pixels."""
+        title_font = QFont(self.font())
+        title_font.setPointSize(TITLE_PT)
+        title_font.setBold(True)
+        title_fm = QFontMetrics(title_font)
+
+        detail_font = QFont(self.font())
+        detail_font.setPointSize(DETAIL_PT)
+        detail_fm = QFontMetrics(detail_font)
+
+        PAD = 8  # left+right padding inside block
+        px_reqs = {}
+        
+        def _adv(text, fm):
+            return fm.horizontalAdvance(text) if hasattr(fm, 'horizontalAdvance') else fm.width(text)
+
+        for e in self.events:
+            d = e['course_data']
+            sig = (d['course'], str(d['extra']).strip(), d['start_str'], d['end_str'])
+            if sig in px_reqs:
+                continue
+
+            course = str(d.get('course', ''))
+            code_match = re.search(r'\[.*?\]', course)
+            code_only  = code_match.group(0) if code_match else (course.split()[0] if course.split() else course)
+
+            t_min = r_min = 0
+            t_max = r_max = 0
+            
+            for line in str(d.get('extra', '')).split('\n'):
+                line = line.strip()
+                if not line: continue
+                if line.startswith('Öğretmen: '):
+                    val = line.replace('Öğretmen: ', '', 1)
+                    t_min = max(t_min, self._max_word_px(val, detail_fm))
+                    t_max = max(t_max, _adv(val, detail_fm))
+                elif line.startswith('Oda: '):
+                    val = line.replace('Oda: ', '', 1)
+                    r_min = max(r_min, self._max_word_px(val, detail_fm))
+                    r_max = max(r_max, _adv(val, detail_fm))
+                elif not t_max:
+                    t_min = self._max_word_px(line, detail_fm)
+                    t_max = _adv(line, detail_fm)
+
+            px_reqs[sig] = {
+                'code':    {'min': self._max_word_px(code_only, title_fm) + PAD, 'max': _adv(code_only, title_fm) + PAD},
+                'name':    {'min': self._max_word_px(course,    title_fm) + PAD, 'max': _adv(course,    title_fm) + PAD},
+                'teacher': {'min': t_min + PAD, 'max': t_max + PAD} if t_max else None,
+                'room':    {'min': r_min + PAD, 'max': r_max + PAD} if r_max else None,
+            }
+        return px_reqs
+
+    def _run_solver(self):
+        """Compute px requirements and run the CP-SAT layout solver."""
         try:
             from utils.layout_solver import solve_layout
             _slot_occ = {i: [] for i in range(18)}
@@ -184,37 +275,17 @@ class DayCanvas(QFrame):
                 for i in range(int(e['start_slot']), int(e['end_slot'])):
                     if 0 <= i < 18:
                         _slot_occ[i].append(e)
-            
-            import json
-            try:
-                with open("dumped_events.json", "w", encoding="utf-8") as f:
-                    # e contains non-serializable objects (like course_data might have weird stuff)?
-                    # Just dump a simplified version
-                    simple_events = []
-                    for ev in self.events:
-                        d = ev['course_data']
-                        simple_events.append({
-                            'course': d['course'],
-                            'extra': d.get('extra', ''),
-                            'start_str': d['start_str'],
-                            'end_str': d['end_str'],
-                            'start_slot': ev['start_slot'],
-                            'end_slot': ev['end_slot'],
-                            'base_center': ev.get('base_center', 0)
-                        })
-                    json.dump(simple_events, f, indent=2, ensure_ascii=False)
-            except Exception as e:
-                print("DUMP ERROR:", e)
-                
-            self._solved_layout = solve_layout(self.events, _slot_occ)
+
+            widget_width = self.width()
+            px_reqs = self._compute_px_reqs()
+            self._solved_layout = solve_layout(
+                self.events, _slot_occ,
+                widget_width=widget_width,
+                px_reqs=px_reqs
+            )
         except Exception as ex:
             print(f"[LayoutSolver] Error: {ex}")
             self._solved_layout = None
-                
-        self.update() # trigger paintEvent
-        
-    def clear_events(self):
-        self.events = []
         self.update()
         
     def mouseMoveEvent(self, event):
@@ -408,30 +479,16 @@ class DayCanvas(QFrame):
             painter.setClipPath(path)
             
             font = painter.font()
-            # Base font size for the course title
-            avg_width = sum(r.width() for r in merged_rects) / len(merged_rects) if merged_rects else 40
-            if avg_width < 60:
-                title_pt = 6
-            elif avg_width < 70:
-                title_pt = 7
-            else:
-                title_pt = 8
-            detail_pt = max(5, title_pt - 2)  # Details are always 2pt smaller
-            
             is_bold = self.hovered_sig == sig
             painter.setPen(QColor("#111111"))
             
-            max_w = merged_rects[0].width() if len(merged_rects) == 1 else max([r.width() for r in merged_rects])
-            
-            # Define fonts once for the unified rendering
-            from PyQt5.QtGui import QFontMetrics, QFont
-            
+            # Fixed font sizes (TITLE_PT / DETAIL_PT defined at module level)
             title_font = QFont(font)
-            title_font.setPointSize(title_pt)
+            title_font.setPointSize(TITLE_PT)
             title_font.setBold(is_bold)
             
             detail_font = QFont(font)
-            detail_font.setPointSize(detail_pt)
+            detail_font.setPointSize(DETAIL_PT)
             detail_font.setBold(False)
             
             # 1. Build hierarchical font blocks (text, QFont)
@@ -766,16 +823,6 @@ class DayCanvas(QFrame):
             # Title (index 0) is atomic to keep Code+Name together
             is_title = (i == 0)
             fits, sim_idx, sim_y = layout_block(block_text, block_font, current_rect_idx, current_y, commit=False, atomic=is_title)
-            
-            if not fits and is_title:
-                # FALLBACK: Try rendering only the course code (e.g. [ETE414])
-                code_match = re.search(r'\[.*?\]', block_text)
-                if code_match:
-                    code_only = code_match.group(0)
-                    fits_code, sim_idx, sim_y = layout_block(code_only, block_font, current_rect_idx, current_y, commit=False, atomic=True)
-                    if fits_code:
-                        _, current_rect_idx, current_y = layout_block(code_only, block_font, current_rect_idx, current_y, commit=True, atomic=True)
-                        continue
             
             if fits:
                 _, current_rect_idx, current_y = layout_block(block_text, block_font, current_rect_idx, current_y, commit=True, atomic=is_title)

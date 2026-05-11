@@ -1,21 +1,12 @@
 [
   {
-    "course": "[MAT108] Analiz 2 (Teori)",
-    "extra": "Öğretmen: Ömer Arslan\nOda: Küçük Derslik-17",
-    "start_str": "09:00",
-    "end_str": "12:00",
-    "start_slot": 1.0,
-    "end_slot": 7.0,
-    "base_center": 0.07142857142857142
-  },
-  {
     "course": "[EBT306] Isı Transferi (Uygulama)",
     "extra": "Öğretmen: Fadime Keskin\nOda: Amfi-2",
     "start_str": "09:30",
     "end_str": "11:30",
     "start_slot": 2.0,
     "end_slot": 6.0,
-    "base_center": 0.21428571428571427
+    "base_center": 0.0625
   },
   {
     "course": "[INF502] Makine Öğrenmesi (Teori)",
@@ -24,7 +15,7 @@
     "end_str": "13:00",
     "start_slot": 5.0,
     "end_slot": 9.0,
-    "base_center": 0.35714285714285715
+    "base_center": 0.1875
   },
   {
     "course": "[INF503] Yapay Sinir Ağları (Lab)",
@@ -33,7 +24,7 @@
     "end_str": "13:00",
     "start_slot": 5.0,
     "end_slot": 9.0,
-    "base_center": 0.5
+    "base_center": 0.3125
   },
   {
     "course": "[WIN320] Makine Öğrenmesi (Teori)",
@@ -42,7 +33,16 @@
     "end_str": "13:30",
     "start_slot": 6.0,
     "end_slot": 10.0,
-    "base_center": 0.21428571428571427
+    "base_center": 0.0625
+  },
+  {
+    "course": "[MAT204] İstatistik (Teori)",
+    "extra": "Öğretmen: Murat Çelik\nOda: Büyük Derslik-14",
+    "start_str": "12:00",
+    "end_str": "14:00",
+    "start_slot": 7.0,
+    "end_slot": 11.0,
+    "base_center": 0.6875
   },
   {
     "course": "[EBT306] Isı Transferi (Teori)",
@@ -51,7 +51,7 @@
     "end_str": "15:00",
     "start_slot": 7.0,
     "end_slot": 13.0,
-    "base_center": 0.07142857142857142
+    "base_center": 0.4375
   },
   {
     "course": "[INF202] Yazılım Mühendisliği (Lab)",
@@ -60,7 +60,7 @@
     "end_str": "15:00",
     "start_slot": 7.0,
     "end_slot": 13.0,
-    "base_center": 0.6428571428571429
+    "base_center": 0.5625
   },
   {
     "course": "[BAU205] Akışkanlar Mekaniği (Uygulama)",
@@ -69,7 +69,7 @@
     "end_str": "14:30",
     "start_slot": 8.0,
     "end_slot": 12.0,
-    "base_center": 0.7857142857142857
+    "base_center": 0.8125
   },
   {
     "course": "[VWL474] Makine Öğrenmesi (Teori)",
@@ -78,7 +78,7 @@
     "end_str": "15:00",
     "start_slot": 9.0,
     "end_slot": 13.0,
-    "base_center": 0.35714285714285715
+    "base_center": 0.1875
   },
   {
     "course": "[ETE464] Yapay Sinir Ağları (Teori)",
@@ -87,7 +87,7 @@
     "end_str": "15:00",
     "start_slot": 9.0,
     "end_slot": 13.0,
-    "base_center": 0.5
+    "base_center": 0.3125
   },
   {
     "course": "[MEC421] Endüstriyel Robotik 2 (Lab)",
@@ -96,7 +96,16 @@
     "end_str": "15:30",
     "start_slot": 10.0,
     "end_slot": 14.0,
-    "base_center": 0.21428571428571427
+    "base_center": 0.0625
+  },
+  {
+    "course": "[MAT204] İstatistik (Uygulama)",
+    "extra": "Öğretmen: Murat Çelik\nOda: Büyük Derslik-14",
+    "start_str": "14:00",
+    "end_str": "16:00",
+    "start_slot": 11.0,
+    "end_slot": 15.0,
+    "base_center": 0.6875
   },
   {
     "course": "[MAB314] Akışkanlar Mekaniği (Teori)",
@@ -105,7 +114,7 @@
     "end_str": "17:30",
     "start_slot": 12.0,
     "end_slot": 18.0,
-    "base_center": 0.7857142857142857
+    "base_center": 0.8125
   },
   {
     "course": "[INF502] Makine Öğrenmesi (Lab)",
@@ -114,7 +123,7 @@
     "end_str": "16:30",
     "start_slot": 12.0,
     "end_slot": 16.0,
-    "base_center": 0.9285714285714286
+    "base_center": 0.9375
   },
   {
     "course": "[ETE441] FPGA Programlama (Uygulama)",
@@ -123,7 +132,7 @@
     "end_str": "16:00",
     "start_slot": 13.0,
     "end_slot": 15.0,
-    "base_center": 0.07142857142857142
+    "base_center": 0.1875
   },
   {
     "course": "[ETE442] Gömülü Sistemler (Lab)",
@@ -132,15 +141,15 @@
     "end_str": "16:30",
     "start_slot": 14.0,
     "end_slot": 16.0,
-    "base_center": 0.21428571428571427
+    "base_center": 0.0625
   },
   {
-    "course": "[PHY102] Elektrik ve Manyetizma (Lab)",
-    "extra": "Öğretmen: Zehra Taş\nOda: Malzeme Lab-1",
-    "start_str": "16:00",
-    "end_str": "17:00",
-    "start_slot": 15.0,
-    "end_slot": 17.0,
-    "base_center": 0.07142857142857142
+    "course": "[MEC214] Elektrik Devreleri 2 (Uygulama)",
+    "extra": "Öğretmen: Sultan Kurt\nOda: Büyük Derslik-26",
+    "start_str": "16:30",
+    "end_str": "17:30",
+    "start_slot": 16.0,
+    "end_slot": 18.0,
+    "base_center": 0.0625
   }
 ]

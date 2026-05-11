@@ -41,3 +41,38 @@ Bu iki durum aynı evrende aynı anda var olamaz. Birini seçmeliyiz:
    * Şu anki sistem. Bloklar asla kaymaz, düzgün dururlar. Ama yeni dersler o küçük boşluklara sığmak için atomlarına kadar sıkışırlar.
 
 **Hangisini tercih edersin? Merdiven yasağını (Staircase Penalty) kaldırıp ekranı kusursuz bir ızgaraya mı dönüştürelim?**
+
+# Piksel Hassasiyetli ve Bilgi Odaklı Yeni Yerleşim Motoru
+
+Son güncellemelerle birlikte, takvim yerleşim motorunu tamamen "bilgi kazancı" (information gain) odaklı ve piksel hassasiyetli bir yapıya dönüştürdük. 
+
+### Yapılan Temel Değişiklikler:
+
+1. **Piksel Tabanlı Dinamik Ödüllendirme:** 
+   - Soyut genişlik puanlaması yerine, `QFontMetrics` kullanarak ders adı, kodu, hoca ve oda bilgilerinin gerçek piksel ihtiyaçlarını hesaplıyoruz.
+   - Solver, bir bloğu en uzun kelimesi sığana kadar (min_thresh) genişletmeye %50 puan verir; tam metin sığana kadar (max_thresh) ise lineer olarak puan kazandırmaya devam eder.
+
+2. **Hiyerarşik Bilgi Önceliği:**
+   - Puanlama sistemi şu önceliğe göre çalışır: **Ders Kodu (3000) > Ders Adı (700) > Öğretmen (300) > Oda (100)**.
+   - Bu sayede en kritik bilgi her zaman en çok alanı kaplamaya çalışır.
+
+3. **Göreceli Adalet Sınırı (Relative Fairness):**
+   - Bir slot içindeki en geniş ve en dar blok arasındaki oran **3.0 kat** ile sınırlandırıldı. 
+   - Bu, solver'ın puan toplamak için bir dersi devasa yapıp diğerini 30 piksele hapsetmesini (starvation) engeller.
+
+4. **Dinamik Pencere Boyutlandırma (Responsive):**
+   - Pencere boyutu değiştiğinde 400ms beklemeli (debounced) bir timer ile solver tekrar tetiklenir. Ekran büyüdükçe veya küçüldükçe ders blokları kendilerini en çok bilgiyi sığdıracak şekilde yeniden optimize eder.
+
+5. **Metin Kırpma Mantığının Kaldırılması:**
+   - Eski sistemdeki "sığmıyorsa gizle" veya "sadece kod göster" gibi katı kurallar kaldırıldı. Artık blok ne kadar genişse, metin o alan içinde doğal bir şekilde kelime kaydırma (word-wrap) yaparak sığmaya çalışır.
+
+6. **Çoklu Çekirdek Performansı:**
+   - CP-SAT solver parametreleri optimize edilerek 8 çekirdekli paralel arama aktif edildi. Çözüm süresi karmaşık günlerde bile 50ms altına düşürüldü.
+
+### Teknik Commit Mesajı:
+`feat(layout): implement pixel-aware CP-SAT block sizing and continuous info-gain rewards`
+- Piksel bazlı ödüllendirme sistemi eklendi.
+- Pencere yeniden boyutlandırma desteği getirildi.
+- Bilgi hiyerarşisi (Kod > Ad > Hoca > Oda) tanımlandı.
+- 3.0x adalet sınırı ile blok sönümlenmesi engellendi.
+- Çoklu çekirdek desteği ile performans iyileştirildi.

@@ -14,17 +14,22 @@ RULES (in priority order):
   4. HARD: Symmetry breaking — leftmost event in each slot anchored to x=0.
   5. HARD: Once slot of a lesson starts to shrink, slots after that can't exceed boundaries of their one prior slot
   6. SOFT (+500):    Overlap reward — reward large overlap between adjacent slots.
-  7. SOFT (-100):   Fairness — penalize deviation from equal_share width.
-  8. SOFT (+3000):    Every event should be able to write its lesson code
-  9. SOFT (+700):     Every event should be able to write its lesson name
-  10. SOFT (+300):    Every event should be able to write its teacher
-  11. SOFT (+100):    Every event should be able to write its room
+  7. SOFT (+3000):   Every event should be able to write its lesson code  [CODE only]
+  8. SOFT (+700):    Every event should be able to write its full lesson title [word-wrappable]
+  9. SOFT (+300):    Every event should be able to write its teacher
+  10. SOFT (+100):   Every event should be able to write its room
 
-  Also calender doent need to write "teacher" or "room" or "lesson name" just the values. However hovertip should write in that manner. 
+  Rewards 7-10 are BOOLEAN: the block earns the reward when its pixel width
+  (= w_var * widget_width / PRECISION) meets the per-event minimum pixel width
+  for that info piece measured by QFontMetrics at fixed font sizes (TITLE_PT / DETAIL_PT).
+  Fallback: continuous capped_w proxy when px_reqs is not supplied.
+
+  Also calendar doesn't need to write "teacher" or "room" or "lesson name" just the values.
+  However hovertip should write in that manner.
 
 
 RETURNS: Fractional positions {sig: {slot_idx: (left_frac, right_frac)}}
-         Resolution-independent — only needs to run when events change.
+         Re-run on every resize (widget_width changes).
 """
 from ortools.sat.python import cp_model
 import time
@@ -39,7 +44,7 @@ def _get_sig(e):
     return (d['course'], str(d['extra']).strip(), d['start_str'], d['end_str'])
 
 
-def solve_layout(events, slot_occupants):
+def solve_layout(events, slot_occupants, widget_width=None, px_reqs=None):
     """
     Solve optimal horizontal positions for calendar events using CP-SAT.
     """
@@ -69,7 +74,6 @@ def solve_layout(events, slot_occupants):
                 unique_occs.append(e)
         
         K = len(unique_occs)
-        equal_share = PRECISION // K
         
         for j, e in enumerate(unique_occs):
             sig = _get_sig(e)
@@ -96,18 +100,63 @@ def solve_layout(events, slot_occupants):
             # HARD Rule 2: Minimum width
             model.Add(w_var >= MIN_WIDTH_BRANCH)
             
-            # SOFT Rule 7 (-100): Fairness
-            diff_var = model.NewIntVar(0, PRECISION, f'fd{vc}')
-            model.AddAbsEquality(diff_var, w_var - equal_share)
-            objective_terms.append(-100 * diff_var)
-            vc += 1
-            
-            # SOFT Rules 8-11: Text fitting rewards
-            # Max reward at width 300 (30%) is 14 * 300 = 4200.
-            capped_w = model.NewIntVar(0, 300, f'cw{vc}')
-            model.AddMinEquality(capped_w, [w_var, 300])
-            objective_terms.append(14 * capped_w)
-            vc += 1
+            # SOFT Rules 7-10: Pixel-based boolean text-fitting rewards
+            if widget_width and widget_width > 0 and px_reqs and sig in px_reqs:
+                req = px_reqs[sig]
+                def _t(px):  # pixel → PRECISION units (clamped)
+                    return min(PRECISION, max(MIN_WIDTH_BRANCH,
+                               int(px * PRECISION / widget_width) + 1))
+                
+                for reward, field in [(3000, 'code'), (700, 'name'),
+                                      (300, 'teacher'), (100, 'room')]:
+                    req = px_reqs[sig].get(field)
+                    if not req or req['max'] == 0:
+                        continue
+                        
+                    min_thresh = _t(req['min'])
+                    max_thresh = _t(req['max'])
+                    
+                    if min_thresh <= MIN_WIDTH_BRANCH:
+                        min_thresh = MIN_WIDTH_BRANCH
+                    
+                    if max_thresh <= min_thresh:
+                        # Just a boolean reward if min and max are the same
+                        bv = model.NewBoolVar(f'b_{field}_{vc}')
+                        model.Add(w_var >= min_thresh).OnlyEnforceIf(bv)
+                        model.Add(w_var < min_thresh).OnlyEnforceIf(bv.Not())
+                        objective_terms.append(reward * bv)
+                        vc += 1
+                    else:
+                        # Base reward for reaching min_thresh (50% of the points)
+                        base_reward = reward // 2
+                        
+                        bv = model.NewBoolVar(f'b_{field}_{vc}')
+                        model.Add(w_var >= min_thresh).OnlyEnforceIf(bv)
+                        model.Add(w_var < min_thresh).OnlyEnforceIf(bv.Not())
+                        objective_terms.append(base_reward * bv)
+                        vc += 1
+                        
+                        # Continuous reward for expanding up to max_thresh
+                        capped_w = model.NewIntVar(0, PRECISION, f'cw_{field}_{vc}')
+                        model.AddMinEquality(capped_w, [w_var, max_thresh])
+                        vc += 1
+                        
+                        earned_w = model.NewIntVar(0, PRECISION, f'ew_{field}_{vc}')
+                        model.Add(earned_w == capped_w).OnlyEnforceIf(bv)
+                        model.Add(earned_w == 0).OnlyEnforceIf(bv.Not())
+                        vc += 1
+                        
+                        scaled_reward = model.NewIntVar(0, reward, f'sr_{field}_{vc}')
+                        # scaled_reward = floor(earned_w * (reward - base_reward) / max_thresh)
+                        model.Add(max_thresh * scaled_reward <= earned_w * (reward - base_reward))
+                        objective_terms.append(scaled_reward)
+                        vc += 1
+            else:
+                # Fallback: continuous proxy (no pixel info available)
+                capped_w = model.NewIntVar(0, 300, f'cw{vc}')
+                model.AddMinEquality(capped_w, [w_var, 300])
+                objective_terms.append(14 * capped_w)
+                vc += 1
     
     if not left_vars:
         return None
@@ -146,20 +195,19 @@ def solve_layout(events, slot_occupants):
             # HARD Rule 1: NoOverlap
             model.AddNoOverlap(intervals)
             
+            # HARD Rule 1.5: Relative Fairness Pruning
+            # Prevent solver from starving blocks to 30px to feed others.
+            # Max width can be at most 3.0x the min width in the same slot.
+            if len(total_width) > 1:
+                for w1 in total_width:
+                    for w2 in total_width:
+                        model.Add(10 * w1 <= 30 * w2)
+            
             # Single slack = unused space in this slot
             slack = model.NewIntVar(0, PRECISION, f'sk{vc}')
             vc += 1
             model.Add(sum(total_width) + slack == PRECISION)
             objective_terms.append(-1000 * slack)
-            
-            # HARD Rule: Relative Fairness Pruning
-            # Prevent solver from exploring highly unbalanced branches (e.g. 97% and 3%)
-            # Max width can be at most 2.5x the min width in the same slot.
-            if len(total_width) > 1:
-                for w1 in total_width:
-                    for w2 in total_width:
-                        # 10 * w1 <= 25 * w2  =>  w1 <= 2.5 * w2
-                        model.Add(10 * w1 <= 25 * w2)
             
             # HARD Rule 4: Symmetry breaking
             first_key = (sigs[0], slot_idx)
@@ -296,10 +344,15 @@ def solve_layout(events, slot_occupants):
     
     solver = cp_model.CpSolver()
     solver.parameters.max_time_in_seconds = 2.0
-    solver.parameters.num_workers = 4
+    solver.parameters.log_search_progress = False
+    solver.parameters.linearization_level = 0 
+    solver.parameters.num_search_workers = 8
     
     status = solver.Solve(model)
     elapsed = (time.perf_counter() - t0) * 1000
+    
+    if status == cp_model.MODEL_INVALID:
+        print("Validation Error:", model.Validate())
     
     if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
         result = {}
