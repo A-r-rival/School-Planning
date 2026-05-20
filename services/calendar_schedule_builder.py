@@ -13,14 +13,13 @@ All schedule data within this service uses a single 9-tuple format:
 This prevents tuple-shape explosion and makes future dataclass migration trivial.
 """
 from typing import Dict, List, Optional, Tuple, Any
-from scripts.parse_curriculum import Regexes
 import sys
 import os
+
 # curriculum_data is in database/
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database"))
 import curriculum_data
 from utils.schedule_merger import merge_consecutive_blocks
-import collections
 
 
 class CalendarScheduleBuilder:
@@ -33,10 +32,6 @@ class CalendarScheduleBuilder:
     - Format data for calendar display
     - Merge consecutive blocks
     - Group and post-process for student views
-    
-    TODO (post-model-refactor):
-    - Extract ElectiveDetector as separate service
-    - Extract StudentScheduleGrouper as separate service
     """
     
     def __init__(self, model):
@@ -114,7 +109,7 @@ class CalendarScheduleBuilder:
                 # Regular view (Teacher/Room) - strip to display format
                 # Keep 9-tuple for Teacher view if it contains UNAVAILABLE tag
                 schedule_data = [
-                    self._strip_for_regular_view(x) if x[6] != "UNAVAILABLE" else x 
+                    self._strip_for_regular_view(x) if not (len(x) > 6 and x[6] == "UNAVAILABLE") else x 
                     for x in schedule_data
                 ]
         
@@ -126,15 +121,11 @@ class CalendarScheduleBuilder:
     def get_departments_for_faculty(self, faculty_id: int) -> List[Tuple[int, str]]:
         """
         Get departments for a faculty, including "Ortak Dersler".
-        
-        Args:
-            faculty_id: Faculty ID
-        
-        Returns:
-            List of (dept_id, dept_name) tuples
         """
         items = self.model.get_departments_by_faculty(faculty_id)
-        items.append((-1, "Ortak Dersler"))
+        # Ensure Ortak Dersler is added only if not present
+        if not any(it[0] == -1 for it in items):
+            items.append((-1, "Ortak Dersler"))
         return items
     
     # ==================== Internal Tuple Format Helpers ====================
@@ -235,24 +226,30 @@ class CalendarScheduleBuilder:
         Build schedule for student group view.
         Returns normalized 9-tuples with full elective detection.
         """
-        # Check if we have dept and year
-        if not (data.get("dept_id") and data.get("year")):
-            return []
+        department_id = data.get("dept_id")
+        year = data.get("year")
+        faculty_id = data.get("faculty_id")
         
-        # Validation: Ensure year is digits
-        if not str(data["year"]).isdigit():
+        # Validation: Ensure we have at least dept and year
+        if department_id is None or year is None:
             return []
-        
-        department_id = int(data["dept_id"])
+            
+        # Ensure year is digits
+        if not str(year).isdigit():
+            return []
+            
+        department_id = int(department_id)
         
         # Fetch schedule (common courses or department-specific)
         if department_id == -1:
+            if faculty_id is None:
+                return []
             raw_schedule = self.model.get_schedule_for_faculty_common(
-                data["faculty_id"], int(data["year"])
+                faculty_id, int(year)
             )
         else:
             raw_schedule = self.model.get_schedule_by_student_group(
-                department_id, int(data["year"])
+                department_id, int(year)
             )
         
         return self._process_student_schedule(raw_schedule, data)
@@ -273,23 +270,20 @@ class CalendarScheduleBuilder:
         
         for idx, item in enumerate(raw_schedule):
             try:
-                if len(item) >= 10:  # Newest format with pool truth
-                    day, start, end, course, teacher, room, code, ders_tipi, havuz_kodu, is_pool = item[:10]
-                    tip_label = ders_tipi if ders_tipi else "?"
-                    display_course = f"[{code}] {course} ({tip_label})"
-                    room_label = room if room else "Belirsiz"
-                    teacher_label = teacher if teacher else "Belirsiz"
-                    extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
+                # Normalize various tuple lengths to 9-tuple format
+                if len(item) >= 9:
+                    day, start, end, course_disp, extra, is_elec, course_name, code, pool_data = item[:9]
                     
-                    is_elective = bool(is_pool)
-                    pool_codes = [havuz_kodu] if havuz_kodu else []
-                    
-                    # Normalized 9-tuple
-                    schedule_data.append((
-                        day, start, end, display_course, extra_info,
-                        is_elective, course, code, pool_codes
-                    ))
-                
+                    # Robust pool_data handling: ensure it's a list
+                    if isinstance(pool_data, list):
+                        p_list = pool_data
+                    elif pool_data:
+                        # Split string or single value to list
+                        p_list = [x.strip() for x in str(pool_data).split(',') if x.strip()]
+                    else:
+                        p_list = []
+                        
+                    schedule_data.append((day, start, end, course_disp, extra, bool(is_elec), course_name, code, p_list))
                 elif len(item) == 8:  # Old format with ders_tipi
                     day, start, end, course, teacher, room, code, ders_tipi = item
                     tip_label = ders_tipi if ders_tipi else "?"
@@ -317,12 +311,12 @@ class CalendarScheduleBuilder:
                     extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
                     
                     # Simple elective detection (fallback)
-                    is_elective = "seçmeli" in course.lower() or "sdi" in code.lower() or "gsd" in code.lower()
+                    is_elective, pool_codes = self._detect_elective(course, code, dept_name_for_lookup)
                     
                     # Normalized 9-tuple
                     schedule_data.append((
                         day, start, end, display_course, extra_info,
-                        is_elective, course, code, []
+                        is_elective, course, code, pool_codes
                     ))
                 
                 elif len(item) == 6:  # Legacy
@@ -358,25 +352,34 @@ class CalendarScheduleBuilder:
         is_elective = False
         
         upper_code = str(course_code).upper().strip()
-        lower_name = str(course_name).lower().strip()
+        upper_name = str(course_name).upper().strip()
         
-        if upper_code.startswith("ZSD"):
+        # 1. Check for USD/ÜSD (University Elective)
+        if upper_code.startswith("USD") or upper_code.startswith("ÜSD") or "ÜNİVERSİTE SEÇMELİ" in upper_name:
+            pool_codes.append("USD") # Normalize to USD
+            return True, pool_codes
+
+        # 2. Check for ZSD (Mandatory Elective)
+        if upper_code.startswith("ZSD") or "BÖLÜM SEÇMELİ" in upper_name or "ZORUNLU SEÇMELİ" in upper_name:
+            # Normalize ZSDI, ZSDII -> ZSD
             pool_codes.append("ZSD")
-            is_elective = True
-        elif upper_code.startswith("USD") or upper_code.startswith("ÜSD"):
-            pool_codes.append("ÜSD")
-            is_elective = True
-        elif upper_code.startswith("GSD"):
-            pool_codes.append("GSD")
-            is_elective = True
-        elif upper_code.startswith("SD"):
-            pool_codes.append(upper_code) # Capture specific SD logic like SDI, SDII
-            is_elective = True
-        elif "seçmeli" in lower_name:
-            pool_codes.append("SD")
-            is_elective = True
+            return True, pool_codes
             
-        return is_elective, sorted(list(set(pool_codes)))
+        # 3. Check for GSD (General Elective)
+        if upper_code.startswith("GSD") or "GENEL SEÇMELİ" in upper_name:
+            pool_codes.append("GSD")
+            return True, pool_codes
+
+        # 4. Check for general SD prefix (Normal Elective)
+        if upper_code.startswith("SD"):
+            # Normalize SDI, SDII -> SD
+            pool_codes.append("SD")
+            return True, pool_codes
+        elif "SEÇMELİ" in upper_name:
+            pool_codes.append("SD")
+            return True, pool_codes
+            
+        return False, []
     
     def _post_process_student_view(
         self, schedule_data: List[Tuple], data: Dict[str, Any]
@@ -387,25 +390,18 @@ class CalendarScheduleBuilder:
         Output: Mixed 5-tuples (cores) and 9-tuples (electives)
         """
         final_data = []
-        grouped = collections.defaultdict(list)
         
-        # Group by time slot
         for item in schedule_data:
-            # All items are now 9-tuples
-            key = (item[0], item[1], item[2])  # day, start, end
-            grouped[key].append(item)
-        
-        for key, items in grouped.items():
-            # Separate electives (is_elective=True at index 5)
-            electives = [x for x in items if x[5]]
-            cores = [x for x in items if not x[5]]
+            if len(item) < 6: continue
             
-            # Add cores (strip to 5-tuple)
-            for c in cores:
-                final_data.append(self._strip_for_core_student(c))
-            
-            # Add electives (keep full 9-tuple for view filtering)
-            for e in electives:
-                final_data.append(e)  # Full 9-tuple
+            is_elective = item[5]
+            if is_elective:
+                # Electives MUST be preserved as 9-tuples for the UI checkboxes to work
+                # UI truth relies on indices 5 (is_elec) and 8 (pool_codes)
+                final_data.append(item)
+            else:
+                # Cores are stripped to 5-tuple for simpler rendering logic
+                # (day, start, end, display, extra)
+                final_data.append(self._strip_for_core_student(item))
         
         return final_data

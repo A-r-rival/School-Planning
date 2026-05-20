@@ -87,20 +87,20 @@ class ScheduleModel(QObject):
 
     def _patch_pool_sinif_duzeyi(self):
         """Fix for migration 012 where sinif_duzeyi might be 0 for existing pool courses.
-        Updates them to the correct value based on curriculum_data."""
+        Updates them to the correct value based on curriculum_data.
+        
+        Key fix: If a pool code (e.g. 'ZSD') appears in multiple years for the same
+        department, sinif_duzeyi stays 0 (= universal/all years). The query uses
+        'sinif_duzeyi = ? OR sinif_duzeyi = 0' so 0 means 'show to all years'.
+        Single-year pools get their specific year value set.
+        """
         try:
-            self.c.execute("SELECT COUNT(*) FROM Ders_Havuz_Iliskisi WHERE sinif_duzeyi = 0")
-            count = self.c.fetchone()[0]
-            if count == 0:
-                return
-
-            print(f"[DB Patch] Found {count} pool courses with missing sinif_duzeyi. Patching...")
             import re
             from database import curriculum_data
             data = getattr(curriculum_data, 'DEPARTMENTS_DATA', {})
             
-            # Map (bolum_adi, havuz_kodu) -> sinif_duzeyi
-            pool_map = {}
+            # Map (bolum_adi, havuz_kodu) -> SET of years it appears in
+            pool_years: dict = {}  # (dept_name, pool_code) -> set of int years
             for dept_name, details in data.items():
                 curr = details.get('curriculum', {})
                 for sem_key, courses in curr.items():
@@ -111,15 +111,40 @@ class ScheduleModel(QObject):
                     if isinstance(courses, list):
                         for course in courses:
                             if isinstance(course, list) and len(course) >= 2:
-                                pool_map[(dept_name, course[0])] = sinif_duzeyi
+                                key = (dept_name, course[0])
+                                pool_years.setdefault(key, set()).add(sinif_duzeyi)
+
+            # Resolve: single year -> use it; multiple years -> 0 (universal, skip update)
+            # Build map of ONLY single-year pools that need updating (target: nonzero)
+            single_year_map = {}  # (dept_name, pool_code) -> specific_year
+            for key, years in pool_years.items():
+                if len(years) == 1:
+                    single_year_map[key] = min(years)
+            # Multi-year pools intentionally stay at 0, no update needed.
 
             # Get bolum_id dictionary
             self.c.execute("SELECT bolum_id, bolum_adi FROM Bolumler")
             bolum_dict = {row[1]: row[0] for row in self.c.fetchall()}
 
-            # Now update
-            for key, sinif in pool_map.items():
-                dept_name, pool_code = key
+            # Count only the single-year pool entries that still have sinif_duzeyi = 0
+            # (multi-year = 0 is intentional and should not trigger the patch)
+            count = 0
+            for (dept_name, pool_code), sinif in single_year_map.items():
+                if dept_name in bolum_dict:
+                    bolum_id = bolum_dict[dept_name]
+                    self.c.execute(
+                        "SELECT COUNT(*) FROM Ders_Havuz_Iliskisi WHERE bolum_id = ? AND havuz_kodu = ? AND sinif_duzeyi = 0",
+                        (bolum_id, pool_code)
+                    )
+                    count += self.c.fetchone()[0]
+
+            if count == 0:
+                return
+
+            print(f"[DB Patch] Found {count} pool courses with missing sinif_duzeyi. Patching...")
+
+            # Apply updates only for single-year pools
+            for (dept_name, pool_code), sinif in single_year_map.items():
                 if dept_name in bolum_dict:
                     bolum_id = bolum_dict[dept_name]
                     self.c.execute('''
@@ -639,7 +664,9 @@ class ScheduleModel(QObject):
                        (SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = dp.ogretmen_id) as hoca,
                        (SELECT derslik_adi FROM Derslikler WHERE derslik_num = dp.derslik_id) as oda,
                        COALESCE(d.ders_kodu, 'CUSTOM') as ders_kodu, dp.ders_tipi,
-                       (SELECT dhi2.havuz_kodu FROM Ders_Havuz_Iliskisi dhi2 WHERE dhi2.ders_adi = dp.ders_adi AND dhi2.bolum_id = ? LIMIT 1) as havuz_kodu,
+                       (SELECT GROUP_CONCAT(dhi2.havuz_kodu) FROM Ders_Havuz_Iliskisi dhi2 
+                        WHERE dhi2.ders_adi = dp.ders_adi AND dhi2.bolum_id = ? 
+                        AND (dhi2.sinif_duzeyi = ? OR dhi2.sinif_duzeyi = 0)) as havuz_kodu,
                        1 as is_pool
                 FROM Ders_Programi dp
                 LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
@@ -650,7 +677,7 @@ class ScheduleModel(QObject):
                     AND (dhi.sinif_duzeyi = ? OR dhi.sinif_duzeyi = 0)
                 )
             '''
-            self.c.execute(query, (bolum_id, sinif_duzeyi, bolum_id, bolum_id, sinif_duzeyi))
+            self.c.execute(query, (bolum_id, sinif_duzeyi, bolum_id, sinif_duzeyi, bolum_id, sinif_duzeyi))
             return self.c.fetchall()
         except Exception as e:
             print(f"Error fetching student schedule: {e}")

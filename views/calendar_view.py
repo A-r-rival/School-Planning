@@ -28,12 +28,97 @@ MVC Pattern - Weekly Schedule Visualization
    - DETAILED WALKTHROUGH: docs/walkthrough_calendar_modernization_04.04.26.md
 """
 from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QComboBox, QLabel, 
-    QTableWidget, QTableWidgetItem, QHeaderView, QFrame, QCheckBox,
-    QListView, QScrollArea
+    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, 
+    QFrame, QCheckBox, QScrollArea, QLayout, QSizePolicy, QListView, QApplication
 )
-from PyQt5.QtCore import Qt, pyqtSignal, QSignalBlocker, QRect, QRectF, QTimer
-from PyQt5.QtGui import QColor, QBrush, QPainter, QPen, QFont, QFontMetrics
+from PyQt5.QtCore import Qt, QRect, QPoint, QSize, QSignalBlocker, QTimer, pyqtSignal
+from PyQt5.QtGui import QPainter, QColor, QPen, QFont, QCursor, QPalette
+
+class FlowLayout(QLayout):
+    """
+    Standard FlowLayout implementation for PyQt5 to wrap widgets.
+    """
+    def __init__(self, parent=None, margin=0, spacing=-1):
+        super(FlowLayout, self).__init__(parent)
+        if parent is not None:
+            self.setContentsMargins(margin, margin, margin, margin)
+        self.setSpacing(spacing)
+        self.items = []
+
+    def __del__(self):
+        del self.items
+
+    def addItem(self, item):
+        self.items.append(item)
+
+    def count(self):
+        return len(self.items)
+
+    def itemAt(self, index):
+        if 0 <= index < len(self.items):
+            return self.items[index]
+        return None
+
+    def takeAt(self, index):
+        if 0 <= index < len(self.items):
+            return self.items.pop(index)
+        return None
+
+    def expandingDirections(self):
+        return Qt.Orientations(Qt.Horizontal)
+
+    def hasHeightForWidth(self):
+        return True
+
+    def heightForWidth(self, width):
+        height = self._do_layout(QRect(0, 0, width, 0), True)
+        return height
+
+    def setGeometry(self, rect):
+        super(FlowLayout, self).setGeometry(rect)
+        self._do_layout(rect, False)
+
+    def sizeHint(self):
+        return self.minimumSize()
+
+    def minimumSize(self):
+        size = QSize()
+        for item in self.items:
+            size = size.expandedTo(item.minimumSize())
+        margin = self.contentsMargins().left()
+        size += QSize(2 * margin, 2 * margin)
+        return size
+
+    def _do_layout(self, rect, test_only):
+        x = rect.x()
+        y = rect.y()
+        line_height = 0
+        margin = self.contentsMargins().left()
+
+        for item in self.items:
+            wid = item.widget()
+            space_x = max(0, self.spacing())
+            space_y = max(0, self.spacing())
+            if wid:
+                space_x += max(0, wid.style().layoutSpacing(QSizePolicy.PushButton, QSizePolicy.PushButton, Qt.Horizontal))
+                space_y += max(0, wid.style().layoutSpacing(QSizePolicy.PushButton, QSizePolicy.PushButton, Qt.Vertical))
+            
+            next_x = x + item.sizeHint().width() + space_x
+            if next_x - space_x > rect.right() and line_height > 0:
+                x = rect.x()
+                y = y + line_height + space_y
+                next_x = x + item.sizeHint().width() + space_x
+                line_height = 0
+
+            if not test_only:
+                item.setGeometry(QRect(QPoint(x, y), item.sizeHint()))
+
+            x = next_x
+            line_height = max(line_height, item.sizeHint().height())
+
+        return y + line_height - rect.y()
+
+from PyQt5.QtGui import QFontMetrics
 import hashlib
 import sys
 import re
@@ -99,15 +184,21 @@ class TimeCanvas(QFrame):
         slot_height = max(20.0, self.height() / len(self.time_labels))
         w = self.width()
         
+        is_dark = QApplication.palette().color(QPalette.Window).lightness() < 128
+        grid_color1 = QColor("#444444") if is_dark else QColor("#bbbbbb")
+        grid_color2 = QColor("#333333") if is_dark else QColor("#eeeeee")
+        dash_color = QColor(255, 255, 255, 60) if is_dark else QColor(0, 0, 0, 40)
+        text_color = QColor("#dddddd") if is_dark else QColor("#222222")
+
         # 1. Background Grid (connects seamlessly to DayCanvas grid)
         for i in range(len(self.time_labels) + 1):
             y = i * slot_height
-            pen = QPen(QColor("#bbbbbb") if i % 2 == 0 else QColor("#eeeeee"))
+            pen = QPen(grid_color1 if i % 2 == 0 else grid_color2)
             painter.setPen(pen)
             painter.drawLine(0, int(y), int(w), int(y))
             
         # 2. Hourly Overlays (connects seamlessly to DayCanvas dashed lines)
-        dash_pen = QPen(QColor(0, 0, 0, 40))
+        dash_pen = QPen(dash_color)
         dash_pen.setWidth(1)
         dash_pen.setStyle(Qt.CustomDashLine)
         dash_pen.setDashPattern([1, 5])
@@ -118,8 +209,9 @@ class TimeCanvas(QFrame):
         
         font = painter.font()
         font.setPointSize(9)
+        font.setBold(True)
         painter.setFont(font)
-        painter.setPen(QColor("#666"))
+        painter.setPen(text_color)
         
         for i, t in enumerate(self.time_labels):
             y = i * slot_height
@@ -140,10 +232,6 @@ class DayCanvas(QFrame):
         self.setMouseTracking(True)
         self.hovered_sig = None
         self._solved_layout = None
-        # Debounce timer: re-solve 400 ms after the last resize
-        self._resize_timer = QTimer(self)
-        self._resize_timer.setSingleShot(True)
-        self._resize_timer.timeout.connect(self._run_solver)
         
     def get_slot_height(self):
         return max(20.0, self.height() / len(self.time_labels))
@@ -198,94 +286,12 @@ class DayCanvas(QFrame):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        if self.events:
-            self._resize_timer.start(400)  # re-solve 400 ms after last resize
-
-    # ──────────────────────────────────────────────────────────────
-    # Pixel requirement computation & solver runner
-    # ──────────────────────────────────────────────────────────────
-    @staticmethod
-    def _max_word_px(text, fm):
-        """Pixel width of the widest single word in *text* at font metrics *fm*."""
-        words = text.replace('\n', ' ').split()
-        if not words:
-            return 0
-        adv = fm.horizontalAdvance if hasattr(fm, 'horizontalAdvance') else fm.width
-        return max(adv(w) for w in words)
-
-    def _compute_px_reqs(self):
-        """Return {sig: {'code': {'min': X, 'max': Y}, ...}} in pixels."""
-        title_font = QFont(self.font())
-        title_font.setPointSize(TITLE_PT)
-        title_font.setBold(True)
-        title_fm = QFontMetrics(title_font)
-
-        detail_font = QFont(self.font())
-        detail_font.setPointSize(DETAIL_PT)
-        detail_fm = QFontMetrics(detail_font)
-
-        PAD = 8  # left+right padding inside block
-        px_reqs = {}
-        
-        def _adv(text, fm):
-            return fm.horizontalAdvance(text) if hasattr(fm, 'horizontalAdvance') else fm.width(text)
-
-        for e in self.events:
-            d = e['course_data']
-            sig = (d['course'], str(d['extra']).strip(), d['start_str'], d['end_str'])
-            if sig in px_reqs:
-                continue
-
-            course = str(d.get('course', ''))
-            code_match = re.search(r'\[.*?\]', course)
-            code_only  = code_match.group(0) if code_match else (course.split()[0] if course.split() else course)
-
-            t_min = r_min = 0
-            t_max = r_max = 0
-            
-            for line in str(d.get('extra', '')).split('\n'):
-                line = line.strip()
-                if not line: continue
-                if line.startswith('Öğretmen: '):
-                    val = line.replace('Öğretmen: ', '', 1)
-                    t_min = max(t_min, self._max_word_px(val, detail_fm))
-                    t_max = max(t_max, _adv(val, detail_fm))
-                elif line.startswith('Oda: '):
-                    val = line.replace('Oda: ', '', 1)
-                    r_min = max(r_min, self._max_word_px(val, detail_fm))
-                    r_max = max(r_max, _adv(val, detail_fm))
-                elif not t_max:
-                    t_min = self._max_word_px(line, detail_fm)
-                    t_max = _adv(line, detail_fm)
-
-            px_reqs[sig] = {
-                'code':    {'min': self._max_word_px(code_only, title_fm) + PAD, 'max': _adv(code_only, title_fm) + PAD},
-                'name':    {'min': self._max_word_px(course,    title_fm) + PAD, 'max': _adv(course,    title_fm) + PAD},
-                'teacher': {'min': t_min + PAD, 'max': t_max + PAD} if t_max else None,
-                'room':    {'min': r_min + PAD, 'max': r_max + PAD} if r_max else None,
-            }
-        return px_reqs
+        # No re-solve needed for midpoint heuristic as it is percentage-based
+        self.update()
 
     def _run_solver(self):
-        """Compute px requirements and run the CP-SAT layout solver."""
-        try:
-            from utils.layout_solver import solve_layout
-            _slot_occ = {i: [] for i in range(18)}
-            for e in self.events:
-                for i in range(int(e['start_slot']), int(e['end_slot'])):
-                    if 0 <= i < 18:
-                        _slot_occ[i].append(e)
-
-            widget_width = self.width()
-            px_reqs = self._compute_px_reqs()
-            self._solved_layout = solve_layout(
-                self.events, _slot_occ,
-                widget_width=widget_width,
-                px_reqs=px_reqs
-            )
-        except Exception as ex:
-            print(f"[LayoutSolver] Error: {ex}")
-            self._solved_layout = None
+        """CP-SAT solver disabled. Reverting to simple midpoint heuristic."""
+        self._solved_layout = None
         self.update()
         
     def mouseMoveEvent(self, event):
@@ -315,7 +321,6 @@ class DayCanvas(QFrame):
             self.hovered_sig = None
             from PyQt5.QtWidgets import QToolTip
             # Aggressively kill the tooltip by showing empty string to bypass OS fade animation
-            from PyQt5.QtGui import QCursor
             QToolTip.showText(QCursor.pos(), "", self)
             QToolTip.hideText()
             self.update()
@@ -332,15 +337,19 @@ class DayCanvas(QFrame):
         slot_height = self.get_slot_height()
         w = self.width()
         
+        is_dark = QApplication.palette().color(QPalette.Window).lightness() < 128
+        grid_color1 = QColor("#444444") if is_dark else QColor("#bbbbbb")
+        grid_color2 = QColor("#333333") if is_dark else QColor("#eeeeee")
+
         # 1. Background Grid
-        pen = QPen(QColor("#dddddd"))
+        pen = QPen()
         pen.setWidth(1)
         for i in range(len(self.time_labels) + 1): 
             y = i * slot_height
             if i % 2 == 0:
-                pen.setColor(QColor("#bbbbbb"))
+                pen.setColor(grid_color1)
             else:
-                pen.setColor(QColor("#eeeeee"))
+                pen.setColor(grid_color2)
             painter.setPen(pen)
             painter.drawLine(0, int(y), w, int(y))
             
@@ -434,7 +443,8 @@ class DayCanvas(QFrame):
             elif p_colors:
                 bg_color = p_colors[0]
             else:
-                bg_color = QColor("#e3f2fd")
+                is_dark = QApplication.palette().color(QPalette.Window).lightness() < 128
+                bg_color = QColor("#1565c0") if is_dark else QColor("#e3f2fd")
                 
             widths = [r.width() for r in merged_rects]
             is_extreme = False
@@ -480,7 +490,9 @@ class DayCanvas(QFrame):
             
             font = painter.font()
             is_bold = self.hovered_sig == sig
-            painter.setPen(QColor("#111111"))
+            # Dynamically choose text color based on background color lightness
+            text_fg = QColor("white") if bg_color.lightness() < 130 else QColor("#111111")
+            painter.setPen(text_fg)
             
             # Fixed font sizes (TITLE_PT / DETAIL_PT defined at module level)
             title_font = QFont(font)
@@ -574,108 +586,6 @@ class DayCanvas(QFrame):
         painter.setPen(edge_pen)
         painter.drawLine(int(w) - 1, 0, int(w) - 1, self.height())
 
-    def _draw_flowing_text(self, painter, merged_rects, blocks):
-        from PyQt5.QtGui import QFontMetrics
-        metrics = QFontMetrics(painter.font())
-        line_height = metrics.lineSpacing()
-        
-        if not merged_rects: return
-        
-        # Don't squeeze text into a tiny top notch if the L-shape has a huge belly below!
-        start_idx = 0
-        for i, r in enumerate(merged_rects):
-            if r.width() >= 50:
-                start_idx = i
-                break
-                
-        current_rect_idx = start_idx
-        current_y = merged_rects[current_rect_idx].y() + 4
-        
-        def paint_line(line_words, r, y):
-            line_text = " ".join(line_words).strip()
-            if not line_text: return
-            if hasattr(metrics, 'horizontalAdvance'):
-                text_w = metrics.horizontalAdvance(line_text)
-            else:
-                text_w = metrics.width(line_text)
-            text_x = r.x() + (r.width() - text_w) / 2.0
-            painter.drawText(int(text_x), int(y + metrics.ascent()), line_text)
-            
-        def layout_block(text, r_idx, y, commit=False):
-            words = []
-            for token in text.split(' '):
-                if '\n' in token:
-                    parts = token.split('\n')
-                    for i, p in enumerate(parts):
-                        if p: words.append(p)
-                        if i < len(parts) - 1: words.append('\n')
-                else:
-                    if token: words.append(token)
-                    
-            curr_line = []
-            i = 0
-            while i < len(words):
-                if r_idx >= len(merged_rects): return False, r_idx, y
-                r = merged_rects[r_idx]
-                
-                if y + line_height > r.y() + r.height() - 4:
-                    if curr_line:
-                        if commit: paint_line(curr_line, r, y)
-                        curr_line = []
-                        y += line_height
-                        continue
-                    else:
-                        r_idx += 1
-                        if r_idx >= len(merged_rects): return False, r_idx, y
-                        y = merged_rects[r_idx].y() + 4
-                        continue
-                        
-                word = words[i]
-                if word == '\n':
-                    if curr_line:
-                        if commit: paint_line(curr_line, r, y)
-                        curr_line = []
-                    y += line_height
-                    i += 1
-                    continue
-                    
-                test_line = " ".join(curr_line + [word])
-                if hasattr(metrics, 'horizontalAdvance'):
-                    w = metrics.horizontalAdvance(test_line)
-                else:
-                    w = metrics.width(test_line)
-                    
-                if w <= r.width() - 8 or not curr_line:
-                    curr_line.append(word)
-                    i += 1
-                else:
-                    if commit: paint_line(curr_line, r, y)
-                    curr_line = []
-                    y += line_height
-                    
-            if curr_line:
-                if y + line_height > merged_rects[r_idx].y() + merged_rects[r_idx].height() - 4:
-                    r_idx += 1
-                    if r_idx >= len(merged_rects): return False, r_idx, y
-                    y = merged_rects[r_idx].y() + 4
-                    if commit: paint_line(curr_line, merged_rects[r_idx], y)
-                    return True, r_idx, y + line_height
-                else:
-                    if commit: paint_line(curr_line, merged_rects[r_idx], y)
-                    y += line_height
-            return True, r_idx, y
-
-        for block in blocks:
-            # Lookahead simulation: does this logical block of info fully fit?
-            fits, next_idx, next_y = layout_block(block, current_rect_idx, current_y, commit=False)
-            if fits:
-                # Actually draw it
-                layout_block(block, current_rect_idx, current_y, commit=True)
-                current_rect_idx, current_y = next_idx, next_y
-            else:
-                # Insufficient space for this block. Stop adding further text to maintain clean look.
-                break
-
     def _draw_flowing_text_hier(self, painter, merged_rects, font_blocks):
         """
         Hierarchical flowing text engine.
@@ -692,7 +602,7 @@ class DayCanvas(QFrame):
         for i, r in enumerate(merged_rects):
             if r.width() >= 50:
                 start_idx = i
-                break
+                break  # Use the FIRST wide rect, not the last
                 
         current_rect_idx = start_idx
         current_y = merged_rects[current_rect_idx].y() + 2
@@ -720,7 +630,12 @@ class DayCanvas(QFrame):
             else:
                 text_w = metrics.width(line_text)
             text_x = r.x() + (r.width() - text_w) / 2.0
+            
+            # Clip horizontal rendering to the rectangle bounds to prevent bleeding into adjacent blocks
+            painter.save()
+            painter.setClipRect(r.adjusted(2, 0, -2, 0)) # Slight padding
             painter.drawText(int(text_x), int(y + metrics.ascent()), line_text)
+            painter.restore()
             
         def layout_block(text, block_font, r_idx, y, commit=False, atomic=False):
             metrics = QFontMetrics(block_font)
@@ -818,17 +733,18 @@ class DayCanvas(QFrame):
                     y += line_height
             return True, r_idx, y
 
-        import re
         for i, (block_text, block_font) in enumerate(font_blocks):
-            # Title (index 0) is atomic to keep Code+Name together
+            # Title wraps within its rect but never jumps to another rect.
+            # Passing atomic=False lets word-wrap happen; the jump-prevention
+            # is handled by layout_block's pre-check loop (it only jumps when
+            # the whole block fits better in the next rect).
             is_title = (i == 0)
-            fits, sim_idx, sim_y = layout_block(block_text, block_font, current_rect_idx, current_y, commit=False, atomic=is_title)
+            fits, sim_idx, sim_y = layout_block(block_text, block_font, current_rect_idx, current_y, commit=False, atomic=False)
             
-            if fits:
-                _, current_rect_idx, current_y = layout_block(block_text, block_font, current_rect_idx, current_y, commit=True, atomic=is_title)
+            if fits or is_title:
+                _, current_rect_idx, current_y = layout_block(block_text, block_font, current_rect_idx, current_y, commit=True, atomic=False)
             else:
-                if is_title: break # If title (or code fallback) failed, skip block
-                break # If detail failed, just stop adding details
+                break  # Nothing left to render
 class CalendarView(QWidget):
     """
     Weekly Calendar View Widget
@@ -906,20 +822,26 @@ class CalendarView(QWidget):
         filter_layout.addWidget(self.filter_widget_2)
         filter_layout.addWidget(self.filter_widget_3)
         
-        # Dynamic Pool Checkboxes Container
-        self.pool_checks_frame = QFrame()
-        self.pool_checks_layout = QHBoxLayout(self.pool_checks_frame)
-        self.pool_checks_layout.setContentsMargins(0, 0, 0, 0)
-        self.pool_checks_layout.setSpacing(10)
-        self.pool_checks_frame.hide()  # Hidden by default
-        filter_layout.addWidget(self.pool_checks_frame)
-        # Constraint Label (for Teacher View metadata)
-        self.constraint_label = QLabel("")
-        self.constraint_label.setStyleSheet("color: #d32f2f; font-weight: bold; font-size: 11pt; margin-right: 15px;")
-        filter_layout.addWidget(self.constraint_label)
+        # Semester Info Label (e.g., "Bahar Dönemi")
+        self.semester_info_label = QLabel("")
+        self.semester_info_label.setStyleSheet("font-weight: bold; color: #1565c0; margin-left: 10px; font-size: 10pt;")
+        self.semester_info_label.hide()
+        filter_layout.addWidget(self.semester_info_label)
         
         filter_layout.addStretch()
         layout.addWidget(filter_frame)
+        
+        # Dynamic Pool Checkboxes Container (In a new row for proper wrap-around)
+        self.pool_checks_frame = QWidget()
+        self.pool_checks_frame.hide()
+        self.pool_checks_layout = FlowLayout(self.pool_checks_frame, margin=5, spacing=15)
+        layout.addWidget(self.pool_checks_frame)
+
+        # Constraint Label (for Teacher View metadata)
+        self.constraint_label = QLabel("")
+        self.constraint_label.setStyleSheet("color: #d32f2f; font-weight: bold; font-size: 11pt; margin-left: 15px; margin-bottom: 5px;")
+        self.constraint_label.hide() # Hide by default to save space
+        layout.addWidget(self.constraint_label)
         
         # Calendar Grid
         self.scroll_area = QScrollArea()
@@ -927,7 +849,6 @@ class CalendarView(QWidget):
         self.scroll_area.setStyleSheet("background-color: transparent; border: none;")
         
         self.calendar_container = QWidget()
-        self.calendar_container.setStyleSheet("background-color: white;")
         self.calendar_layout = QHBoxLayout(self.calendar_container)
         self.calendar_layout.setContentsMargins(0, 0, 0, 0)
         self.calendar_layout.setSpacing(0)
@@ -988,7 +909,7 @@ class CalendarView(QWidget):
             
             header = QLabel(day)
             header.setAlignment(Qt.AlignCenter)
-            header.setStyleSheet("font-weight: bold; background-color: #f5f5f5; border-bottom: 2px solid #000; border-right: 1px solid #000; color: #333;")
+            header.setStyleSheet("font-weight: bold; border-bottom: 2px solid #000; border-right: 1px solid #000;")
             header.setFixedHeight(30)
             day_layout.addWidget(header)
             
@@ -1006,25 +927,33 @@ class CalendarView(QWidget):
         """Handle view type change"""
         view_type = self.view_type_combo.currentText()
         
-        # Reset filters
+        # Reset filters with signal blocking
         self.filter_widget_1.blockSignals(True)
-        self.filter_widget_1.clear()
-        self.filter_widget_1.blockSignals(False)
-        self.filter_widget_1.show() # Ensure visible
+        self.filter_widget_2.blockSignals(True)
+        self.filter_widget_3.blockSignals(True)
         
+        self.filter_widget_1.clear()
         self.filter_widget_2.clear()
         self.filter_widget_3.clear()
+        
+        self.filter_widget_1.show() # Ensure visible
         
         if view_type == "Öğrenci Grubu":
             self.filter_widget_2.show()
             self.filter_widget_3.show()
+            self.filter_widget_3.addItem("Seçiniz...", None)
             self.filter_widget_3.addItems([str(i) for i in range(1, 5)]) # Years 1-4
         else:
             self.filter_widget_2.hide()
             self.filter_widget_3.hide()
+            self.semester_info_label.hide()
             self.pool_checks_frame.hide()
             self.constraint_label.setText("") # Clear constraint label
             self._clear_pool_checkboxes()
+            
+        self.filter_widget_1.blockSignals(False)
+        self.filter_widget_2.blockSignals(False)
+        self.filter_widget_3.blockSignals(False)
             
         # Emit signal to request data for filters
         self.filter_changed.emit("type_changed", {"type": view_type})
@@ -1069,6 +998,7 @@ class CalendarView(QWidget):
 
             if not dept_text or not year_text or year_text == "Seçiniz...":
                 self.pool_checks_frame.hide()
+                self.semester_info_label.hide()
                 self._clear_pool_checkboxes()
                 return
 
@@ -1080,12 +1010,18 @@ class CalendarView(QWidget):
                     if pool_codes:
                         for pc in pool_codes:
                             if pc:
-                                found_pools.add(pc)
+                                found_pools.add(pc.upper().strip())
 
-            # Get internship/project info from curriculum_data
+            # Get internship/project info from curriculum_data, and pool AKTS
             dept_name = dept_text.split('(')[0].strip()
-            internship_akts = 0
+            # Use a dict for stats to avoid nonlocal scope issues in older Python or nested try/except
+            stats = {'internship_akts': 0}
             project_courses = []
+            pool_current_akts = {} # AKTS in current selected semester
+            # We no longer scan other semesters for asterisk logic (semester-specific)
+            # Store valid pools for this semester to filter the calendar grid later
+            self.current_semester_pools = set()
+            
             try:
                 year = int(year_text)
                 dept_data = curriculum_data.DEPARTMENTS_DATA.get(dept_name)
@@ -1097,61 +1033,152 @@ class CalendarView(QWidget):
                     sem_year = (semester_num + 1) // 2
                     sem_season = "Güz" if semester_num % 2 != 0 else "Bahar"
                     sem_key = f"{semester_num}. Dönem / {sem_year}. Yıl {sem_season} Dönemi"
-                    for course in dept_data['curriculum'].get(sem_key, []):
-                        if len(course) < 3: continue
-                        code, name, akts = course[0], course[1], course[2]
-                        if code.startswith("PRK") or "Staj" in name or "Internship" in name:
-                            internship_akts += akts
-                        elif any(x in name.lower() for x in ["proje", "project", "tez"]):
-                            project_courses.append((code, name, akts))
-            except (ValueError, Exception):
-                pass
+                    
+                    # Helper to extract pool AKTS and USD/projects
+                    def process_semester_courses(courses_list, is_current_sem):
+                        for course in courses_list:
+                            if len(course) < 3: continue
+                            code, name, akts = course[0], course[1], course[2]
+                            
+                            is_matched_pool = False
+                            
+                            # Normalize code for matching (e.g., 'ZSD I' -> 'ZSD')
+                            import re
+                            normalized = re.sub(r'\s*(I|II|III|IV|V|VI|VII|VIII)$', '', code).strip().upper()
+                            code_upper = code.upper().strip()
 
-            # If checkboxes already exist for the same set of pools, preserve their state
-            existing_states = {code: chk.isChecked() for code, chk in self.pool_checkboxes.items()}
-            
-            if found_pools == set(existing_states.keys()):
-                # Same pools, no need to recreate — just ensure labels are there
-                return
+                            # Check match in found_pools (Must be in current semester to count)
+                            if code_upper in found_pools:
+                                pool_current_akts[code_upper] = max(pool_current_akts.get(code_upper, 0), akts)
+                                is_matched_pool = True
+                            elif normalized in found_pools:
+                                pool_current_akts[normalized] = max(pool_current_akts.get(normalized, 0), akts)
+                                is_matched_pool = True
+                                    
+                            # Capture special elements
+                            if is_current_sem:
+                                is_internship = code.startswith("PRK") or "Staj" in name or "Internship" in name
+                                is_project = any(x in name.lower() for x in ["proje", "project", "tez", "thesis", "bitirme"])
+                                is_usd = "usd" in code.lower() or "üsd" in code.lower() or "üniversite seçmeli" in name.lower() or "university elective" in name.lower()
+                                
+                                if is_internship:
+                                    stats['internship_akts'] += akts
+                                elif is_project:
+                                    project_courses.append((code, name, akts))
+                                elif is_usd:
+                                    if not any(code == pc[0] for pc in project_courses):
+                                        project_courses.append((code, name, akts))
+                                elif not is_matched_pool:
+                                    # If it's an unmatched elective pool in the current semester (e.g. SDVIII)
+                                    # we show it as a label so the user sees the AKTS requirement!
+                                    is_elective = "seçmeli" in name.lower() or "elective" in name.lower() or "havuz" in name.lower()
+                                    if is_elective and not any(code == pc[0] for pc in project_courses):
+                                        project_courses.append((code, name, akts))
 
-            self._clear_pool_checkboxes()
+                    # 1. Process CURRENT semester only
+                    current_courses = dept_data['curriculum'].get(sem_key, [])
+                    process_semester_courses(current_courses, is_current_sem=True)
+                    
+                    # Track valid pools for filtering the grid
+                    self.current_semester_pools = {p.upper().strip() for p in pool_current_akts.keys()}
+                            
+            except (ValueError, Exception) as e:
+                print(f"DEBUG: Error parsing curriculum for pool AKTS: {e}")
 
-            if not found_pools and internship_akts == 0 and not project_courses:
-                self.pool_checks_frame.hide()
-                return
-
-            self.pool_checks_frame.show()
-
-            # Auto-detect Semester for label
+            # Get semester name for context
             from datetime import datetime
             current_month = datetime.now().month
             is_fall = current_month in [8, 9, 10, 11, 12, 1]
             semester_name = "Güz" if is_fall else "Bahar"
 
-            label = QLabel(f"{semester_name} Seçmelileri:")
-            label.setStyleSheet("font-weight: bold; margin-right: 5px;")
-            self.pool_checks_layout.addWidget(label)
+            # Track filter context to detect changes and reset checkbox states if department/year/semester changes
+            current_context = (dept_text.strip(), year_text.strip(), semester_name)
+            if not hasattr(self, '_last_checkbox_context') or self._last_checkbox_context != current_context:
+                existing_states = {}
+                self._last_checkbox_context = current_context
+            else:
+                existing_states = {code.upper().strip(): chk.isChecked() for code, chk in self.pool_checkboxes.items()}
+            
+            # Remove the early return so that labels (like AKTS counts) get updated correctly 
+            # even if the set of pools is exactly the same as the previous view.
+
+            # Detect sub-pools: pool_b is a sub-pool if another pool_a is a prefix of it
+            sub_pools = set()
+            for pool_a in found_pools:
+                for pool_b in found_pools:
+                    if pool_a != pool_b and pool_b.startswith(pool_a):
+                        sub_pools.add(pool_b)
+
+            self._clear_pool_checkboxes()
+
+            if not found_pools and stats['internship_akts'] == 0 and not project_courses:
+                self.pool_checks_frame.hide()
+                self.semester_info_label.hide()
+                return
+
+            self.pool_checks_frame.show()
+
+            # Update the main filter bar's semester info label
+            self.semester_info_label.setText(f"| {semester_name} Dönemi")
+            self.semester_info_label.show()
 
             for pool_code in sorted(found_pools):
-                color = self._generate_color(pool_code)
-                chk = QCheckBox(f"{pool_code}")
-                chk.setStyleSheet(f"font-weight: bold; color: {color.name()};")
-                # Preserve old state if existed, default True for new
-                old_state = existing_states.get(pool_code, True)
+                pool_code_upper = pool_code.upper().strip()
+                color = self._generate_color(pool_code_upper)
+                color_hex = color.name()
+                
+                is_sub_pool = pool_code_upper in sub_pools
+                current_akts = pool_current_akts.get(pool_code_upper, 0)
+
+                # Sub-pool ise AKTS'in yanına * ekle (hangi üst poola dahil olduğunu işaret eder)
+                if is_sub_pool:
+                    akts_text = f" ({current_akts}* AKTS)"
+                else:
+                    akts_text = f" ({current_akts} AKTS)"
+                
+                chk = QCheckBox(f"{pool_code_upper}{akts_text}")
+                # Simple but clean style
+                chk.setCursor(Qt.PointingHandCursor)
+                
+                # Apply pool color to the checkbox text
+                style = f"""
+                    QCheckBox {{
+                        color: {color_hex};
+                        font-weight: bold;
+                        font-size: 9pt;
+                        margin-right: 5px;
+                    }}
+                    QCheckBox:unchecked {{
+                        color: #999;
+                    }}
+                """
+                chk.setStyleSheet(style)
+                
                 with QSignalBlocker(chk):
-                    chk.setChecked(old_state)
+                    # Checked eğer: AKTS > 0 VEYA yıldız varsa (sub-pool)
+                    # İkisi de yoksa unchecked gelir
+                    default_checked = (current_akts > 0) or is_sub_pool
+                    chk.setChecked(existing_states.get(pool_code_upper, default_checked))
+                    
+                # Store color in property for toggling
+                chk.setProperty("tag_color", color_hex)
+                
                 chk.toggled.connect(self._on_pool_toggled)
                 self.pool_checks_layout.addWidget(chk)
-                self.pool_checkboxes[pool_code] = chk
+                self.pool_checkboxes[pool_code_upper] = chk
 
-            if internship_akts > 0:
-                lbl = QLabel(f"Staj ({internship_akts} AKTS)")
-                lbl.setStyleSheet("font-weight: bold; color: black; margin-left: 10px;")
+            is_dark = QApplication.palette().color(QPalette.Window).lightness() < 128
+            label_color = "white" if is_dark else "black"
+            project_color = "#ccc" if is_dark else "#444"
+
+            if stats['internship_akts'] > 0:
+                lbl = QLabel(f"Staj ({stats['internship_akts']} AKTS)")
+                lbl.setStyleSheet(f"font-weight: bold; color: {label_color}; margin-left: 10px;")
                 self.pool_checks_layout.addWidget(lbl)
 
             for code, name, akts in project_courses:
                 lbl = QLabel(f"  [{code}] {name} ({akts} AKTS)")
-                lbl.setStyleSheet("font-weight: bold; color: #444; margin-left: 10px; font-size: 9pt;")
+                lbl.setStyleSheet(f"font-weight: bold; color: {project_color}; margin-left: 10px; font-size: 9pt;")
                 self.pool_checks_layout.addWidget(lbl)
 
         except Exception as e:
@@ -1160,9 +1187,15 @@ class CalendarView(QWidget):
             traceback.print_exc()
 
     def _on_pool_toggled(self, checked):
-        print(f"DEBUG: Checkbox toggled. State: {checked}")
+        # Update styling of the sender
+        chk = self.sender()
+        if isinstance(chk, QCheckBox):
+            color_hex = chk.property("tag_color")
+            if color_hex:
+                text_color = color_hex if checked else "#999"
+                chk.setStyleSheet(f"QCheckBox {{ color: {text_color}; font-weight: bold; font-size: 9pt; margin-right: 5px; }}")
+
         if self.last_schedule_data:
-            print("DEBUG: Calling display_schedule with last_schedule_data.")
             self.display_schedule(self.last_schedule_data)
     
     def _on_filter_1_changed(self):
@@ -1176,6 +1209,9 @@ class CalendarView(QWidget):
             self.filter_widget_3.addItems([str(i) for i in range(1, 5)])
             self.filter_widget_2.blockSignals(False)
             self.filter_widget_3.blockSignals(False)
+            self.pool_checks_frame.hide()
+            self.semester_info_label.hide()
+            self._clear_pool_checkboxes()
         self._on_filter_changed()
 
     def _on_filter_2_changed(self):
@@ -1237,8 +1273,10 @@ class CalendarView(QWidget):
             # Update metadata UI (Day Span)
             if 'day_span' in metadata and metadata['day_span'] > 0:
                 self.constraint_label.setText(f"Haftalık Gün Kısıtı: {metadata['day_span']} Gün")
+                self.constraint_label.show()
             else:
                 self.constraint_label.setText("")
+                self.constraint_label.hide()
 
             # 1. Prepare
             slots = self._prepare_slots(schedule_data)
@@ -1248,6 +1286,17 @@ class CalendarView(QWidget):
             
             # 3. Render
             self._render_grid(filtered_slots, seen_pools)
+            
+            # 4. Enforce Legend visibility
+            # If in Student Group view, we keep bottom legend hidden because we have checkboxes at top
+            if self.view_type_combo.currentText() == "Öğrenci Grubu":
+                self.legend.hide()
+            else:
+                # In Teacher/Room view, show legend only if it's not already empty
+                if seen_pools:
+                    self.legend.show()
+                else:
+                    self.legend.hide()
             
             print("DEBUG: display_schedule complete")
         except Exception as e:
@@ -1271,6 +1320,11 @@ class CalendarView(QWidget):
             full_text = self.filter_widget_2.currentText() 
             current_dept_name = full_text.split('(')[0].strip()
 
+        # Parse Start/End Time
+        def time_str_to_min(t_str):
+            h, m = map(int, t_str.split(':'))
+            return h * 60 + m
+
         for item in schedule_data:
             if len(item) < 4: continue
             day, start, end, course = item[0], item[1], item[2], item[3]
@@ -1282,12 +1336,12 @@ class CalendarView(QWidget):
             is_unavailability = False
             
             # Identify Unavailability (always at index 6 if present)
-            if len(item) > 6:
-                is_unavailability = (item[6] == "UNAVAILABLE")
+            if len(item) > 6 and item[6] is not None:
+                is_unavailability = (str(item[6]) == "UNAVAILABLE")
                 
             if len(item) > 8: 
                 is_elective = item[5]
-                pool_codes = set(item[8]) if item[8] else set()
+                pool_codes = {pc.upper().strip() for pc in item[8] if pc} if item[8] else set()
             
             # Identify Pools using Helper
             pools_found = set()
@@ -1299,16 +1353,11 @@ class CalendarView(QWidget):
                     if isinstance(extra, str):
                         search_text += " " + extra
                     # Use imported helper
-                    pools_found = identify_pools(search_text, current_dept_name)
+                    pools_found = {p.upper().strip() for p in identify_pools(search_text, current_dept_name) if p}
             
             if day not in day_map: continue
             
             try:
-                # Parse Start/End Time
-                def time_str_to_min(t_str):
-                    h, m = map(int, t_str.split(':'))
-                    return h * 60 + m
-                
                 start_min = time_str_to_min(start)
                 end_min = time_str_to_min(end)
                 
@@ -1354,8 +1403,6 @@ class CalendarView(QWidget):
         Phase 2: Apply active filters (checkboxes, view types).
         Returns: (filtered_slots, seen_pools_with_colors)
         """
-        active_pools = {name for name, chk in self.pool_checkboxes.items() if chk.isChecked()}
-        
         filtered_slots = {d: {} for d in slots}
         seen_pools = {} # {name: color}
         
@@ -1367,15 +1414,16 @@ class CalendarView(QWidget):
                 for data in course_list:
                     
                     # Student View Filtering Logic
-                    # Default: show ALL courses (including electives)
-                    # When checkboxes exist and some are unchecked, hide those pools
                     if is_student_view and data['is_elective']:
                         pools = data['pools_found']
-                        if self.pool_checkboxes:  # Only filter if checkboxes exist
-                            unchecked_pools = {name for name, chk in self.pool_checkboxes.items() if not chk.isChecked()}
+                        
+                        # Use checkboxes for filtering (Hand back control to user)
+                        if self.pool_checkboxes:  
+                            unchecked_pools = {name.upper().strip() for name, chk in self.pool_checkboxes.items() if not chk.isChecked()}
                             if pools:
                                 # If ALL of this course's pools are unchecked, hide it
-                                if pools.issubset(unchecked_pools) if isinstance(pools, set) else all(p in unchecked_pools for p in pools):
+                                normalized_pools = {p.upper().strip() for p in pools if p}
+                                if normalized_pools.issubset(unchecked_pools):
                                     continue
                             else:
                                 # Elective with no pool identified - show it always
@@ -1386,8 +1434,9 @@ class CalendarView(QWidget):
                     pool_colors = []
                     if data['pools_found']:
                         for p_name in sorted(data['pools_found']):
-                            color = self._generate_color(p_name)
-                            seen_pools[p_name] = color
+                            p_name_upper = p_name.upper().strip()
+                            color = self._generate_color(p_name_upper)
+                            seen_pools[p_name_upper] = color
                             pool_colors.append(color)
                     
                     data['pool_colors'] = pool_colors
@@ -1438,12 +1487,22 @@ class CalendarView(QWidget):
                 
             # Render using Polygon Architecture natively!
             canvas.set_events(events_flat)
-
-        self.legend.update_legend(seen_pools)
         
+        # 6. Update Legend after all canvases are rendered
+        self.legend.update_legend(seen_pools)
+
     def _generate_color(self, seed_text):
         """Generate a consistent pastel color from text string."""
-        hash_val = int(hashlib.md5(seed_text.encode()).hexdigest(), 16)
+        import hashlib
+        normalized = str(seed_text).upper().strip()
+        hash_val = int(hashlib.md5(normalized.encode()).hexdigest(), 16)
         hue = hash_val % 360
-        # Saturation 60-100, Value 90-100 for pastel/light
+        
+        # Check if dark theme is active
+        is_dark = QApplication.palette().color(QPalette.Window).lightness() < 128
+        if is_dark:
+            # Lower brightness (150) and slightly higher saturation (180) for dark mode contrast
+            return QColor.fromHsv(hue, 180, 150)
+        
+        # Saturation 150, Value 240 for vibrant but readable colors in light mode
         return QColor.fromHsv(hue, 150, 240)

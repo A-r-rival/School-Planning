@@ -124,6 +124,18 @@ class ScheduleView(QWidget):
         
         self.setLayout(layout)
 
+    def _toggle_theme(self, checked):
+        from PyQt5.QtWidgets import QApplication
+        app = QApplication.instance()
+        if checked:
+            self.btn_theme_toggle.setText("☀️ Aydınlık Mod")
+            from main import set_dark_theme
+            set_dark_theme(app)
+        else:
+            self.btn_theme_toggle.setText("🌙 Karanlık Mod")
+            from main import set_light_theme
+            set_light_theme(app)
+
     # Old input creation methods removed.
 
     def _create_action_buttons(self, layout: QVBoxLayout):
@@ -167,7 +179,25 @@ class ScheduleView(QWidget):
         curr_layout.addWidget(self.btn_view_curr)
         
         curr_group.setLayout(curr_layout)
-        layout.addWidget(curr_group)
+        
+        # Wrap curr_group and theme toggle in a horizontal layout
+        top_row = QHBoxLayout()
+        top_row.addWidget(curr_group, 1)
+        
+        self.btn_theme_toggle = QPushButton("🌙 Karanlık Mod")
+        self.btn_theme_toggle.setCheckable(True)
+        self.btn_theme_toggle.setStyleSheet("""
+            QPushButton {
+                background-color: #333; color: white; padding: 15px 25px; border-radius: 5px; font-weight: bold; font-size: 13px; margin-top: 10px;
+            }
+            QPushButton:checked {
+                background-color: #f1c40f; color: black;
+            }
+        """)
+        self.btn_theme_toggle.toggled.connect(self._toggle_theme)
+        top_row.addWidget(self.btn_theme_toggle)
+        
+        layout.addLayout(top_row)
         
         # --- Group 2: Schedule (Ad Hoc) Operations ---
         adhoc_group = QGroupBox("Program (Ad Hoc) İşlemleri")
@@ -467,22 +497,9 @@ class ScheduleView(QWidget):
             QTableWidget {
                 border: 2px solid #ddd;
                 border-radius: 5px;
-                background-color: #ffffff;
-                alternate-background-color: #f5f5f5;
-                gridline-color: #e0e0e0;
-            }
-            QHeaderView::section {
-                background-color: #e0e0e0;
-                padding: 4px;
-                border: 1px solid #d0d0d0;
-                font-weight: bold;
             }
             QTableWidget::item {
                 padding: 5px;
-            }
-            QTableWidget::item:selected {
-                background-color: #e3f2fd;
-                color: #000000;
             }
         """)
 

@@ -496,7 +496,13 @@ class ScheduleController:
                 items = self.calendar_builder.get_departments_for_faculty(data["faculty_id"])
                 self.calendar_view.update_filter_options(2, items)
                 return
-            
+
+            # Inject current semester from main view radio buttons
+            semester = "Güz"
+            if self.view.radio_bahar.isChecked(): semester = "Bahar"
+            elif self.view.radio_yaz.isChecked(): semester = "Yaz"
+            data["semester"] = semester
+
             # Build schedule data using service
             schedule_data = self.calendar_builder.build(data)
             

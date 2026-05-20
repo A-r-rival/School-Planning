@@ -42,9 +42,12 @@ Bu iki durum aynı evrende aynı anda var olamaz. Birini seçmeliyiz:
 
 **Hangisini tercih edersin? Merdiven yasağını (Staircase Penalty) kaldırıp ekranı kusursuz bir ızgaraya mı dönüştürelim?**
 
-# Piksel Hassasiyetli ve Bilgi Odaklı Yeni Yerleşim Motoru
+# Piksel Hassasiyetli ve Bilgi Odaklı Yeni Yerleşim Motoru (ARŞİV)
 
-Son güncellemelerle birlikte, takvim yerleşim motorunu tamamen "bilgi kazancı" (information gain) odaklı ve piksel hassasiyetli bir yapıya dönüştürdük. 
+> [!NOTE]
+> Bu sistem şu anda aktif değildir ve `archive/cp_solver_pixel_aware/` dizinine kaldırılmıştır. Mevcut takvim yerleşimi "midpoint" (orta nokta) mantığına geri dönmüştür, ancak metin render kalitesi (sabit puntolar ve word-wrap) korunmuştur.
+
+Son güncellemelerle birlikte, takvim yerleşim motorunu tamamen "bilgi kazancı" (information gain) odaklı ve piksel hassasiyetli bir yapıya dönüştürmüştük. 
 
 ### Yapılan Temel Değişiklikler:
 
