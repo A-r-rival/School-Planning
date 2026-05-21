@@ -293,7 +293,6 @@ class ScheduleController:
     
     def handle_semester_change(self):
         """Handle semester radio button toggle"""
-        # Trigger filter update in view
         self.view.trigger_filter_update()
 
     # --- History ---
@@ -511,7 +510,7 @@ class ScheduleController:
             self.student_view.filter_changed.connect(self.handle_student_filter)
             self.student_view.student_selected.connect(self.handle_student_selection)
             
-            faculties = self.model.get_all_faculties()
+            faculties = self.model.get_faculties()
             departments = self.model.get_all_departments()
             self.student_view.set_filter_options(faculties, departments)
             
@@ -787,14 +786,12 @@ class ScheduleController:
 
             # 1.5. Run Sanitization if requested (do it now so future relationships use clean names)
             if run_sanitize:
-                import subprocess
-                import os
                 print("Running sanitize_course_names...")
-                script_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts", "sanitize_course_names.py")
                 try:
-                    subprocess.run(["python", script_path], capture_output=True, text=True)
+                    from scripts.sanitize_course_names import main as sanitize_courses
+                    sanitize_courses()
                 except Exception as e:
-                    print(f"Sanitize script failed to execute: {e}")
+                    print(f"Sanitize script failed: {e}")
 
             # 2. Populate Rooms
             from scripts.populate_rooms import populate_rooms

@@ -90,7 +90,7 @@ class PhysicalCourse:
 # Services
 # ==========================================
 
-class CourseRepository:
+class SchedulerCourseRepository:
     """
     Responsible for fetching raw course data from the database.
     Does NOT apply high-level filtering (like 'Engineering only') unless strictly necessary for the query.

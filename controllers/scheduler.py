@@ -14,7 +14,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(BASE_DIR, "database"))
 import curriculum_data
 from controllers.scheduler_services import (
-    CourseRepository, CurriculumResolver, CourseMerger, 
+    SchedulerCourseRepository, CurriculumResolver, CourseMerger, 
     SchedulableCourseBuilder, CourseRole
 )
 
@@ -232,7 +232,7 @@ class ORToolsScheduler:
         4. Builder: Create Schedulable Blocks
         """
         # 1. Instantiate Services
-        repo = CourseRepository(self.db_model)
+        repo = SchedulerCourseRepository(self.db_model)
         resolver = CurriculumResolver()
         merger = CourseMerger()
         builder = SchedulableCourseBuilder()
@@ -509,7 +509,7 @@ class ORToolsScheduler:
             if not possible_rooms:
                 print(f"CRITICAL ERROR: No possible rooms found for course {course['name']} (duration {duration}). Capacity Filtered {capacity_filtered_count} rooms.", flush=True)
         
-        print(f"DEBUG: Created {len(self.starts)} start variables, {len(self.vars)} occupancy variables. Pruned {capacity_filtered_count} (Cap), {symmetry_filtered_count} (Symmetry).", flush=True)
+        print(f"DEBUG: Created {len(self.starts)} start variables, {len(self.vars)} occupancy variables. Total pruned: {capacity_filtered_count} (Capacity), {symmetry_filtered_count} (Symmetry).", flush=True)
 
     def add_hard_constraints(self, include_teacher_unavailability=True):
         """Add system-wide hard constraints."""

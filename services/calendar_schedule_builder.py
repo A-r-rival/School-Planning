@@ -134,9 +134,7 @@ class CalendarScheduleBuilder:
         """Strip to display format for teacher/classroom views (5-tuple)."""
         return item[:5]  # (day, start, end, display, extra)
     
-    def _strip_for_core_student(self, item: Tuple) -> Tuple:
-        """Strip to display format for core student courses (5-tuple)."""
-        return item[:5]  # (day, start, end, display, extra)
+
     
     # ==================== Schedule Builders ====================
     
@@ -437,6 +435,6 @@ class CalendarScheduleBuilder:
             else:
                 # Cores are stripped to 5-tuple for simpler rendering logic
                 # (day, start, end, display, extra)
-                final_data.append(self._strip_for_core_student(item))
+                final_data.append(self._strip_for_regular_view(item))
         
         return final_data

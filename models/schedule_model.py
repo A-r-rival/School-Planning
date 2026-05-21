@@ -28,7 +28,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 from models.entities import ScheduleSlot, CourseInput, ScheduledCourse
 from models.services.exceptions import ScheduleConflictError, CourseCreationError
 
-simdiki_sene = datetime.now().year
+
 
 
 class ScheduleModel(QObject):
@@ -172,7 +172,6 @@ class ScheduleModel(QObject):
                     # sem_key format is like "1. Dönem / 1. Yıl Güz Dönemi" or "1"
                     try:
                         # Extract the first number from the string
-                        import re
                         match = re.search(r'\d+', sem_key)
                         if match:
                             sem_num = int(match.group())
@@ -410,9 +409,8 @@ class ScheduleModel(QObject):
             List[str]: List of teacher names
         """
         try:
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT ad || ' ' || soyad FROM Ogretmenler ORDER BY ad, soyad")
-            return [row[0] for row in cursor.fetchall()]
+            self.c.execute("SELECT ad || ' ' || soyad FROM Ogretmenler ORDER BY ad, soyad")
+            return [row[0] for row in self.c.fetchall()]
         except Exception as e:
             self.error_occurred.emit(f"Error fetching teachers: {str(e)}")
             return []
@@ -1703,10 +1701,9 @@ class ScheduleModel(QObject):
                     
                     # Regular: No second major AND expected semester
                     # Expected semester = (Current Year - Entry Year) * 2 + 1 (For Fall)
-                    # We use the global simdiki_sene variable. 
                     # NOTE: Database seems to be in Fall 2024 state, but system year is 2025.
                     # Adjusting by -1 to match database state.
-                    effective_year = simdiki_sene - 1
+                    effective_year = datetime.now().year - 1
                     
                     if show_regular:
                         type_conditions.append(f"(o.ikinci_bolum_turu IS NULL AND o.kacinci_donem = ({effective_year} - o.girme_senesi) * 2 + 1)")
@@ -1733,14 +1730,7 @@ class ScheduleModel(QObject):
             print(f"Error fetching students: {e}")
             return []
 
-    def get_all_faculties(self) -> List[tuple]:
-        """Get all faculties (id, name)"""
-        try:
-            self.c.execute("SELECT fakulte_num, fakulte_adi FROM Fakulteler")
-            return self.c.fetchall()
-        except Exception as e:
-            print(f"Error fetching faculties: {e}")
-            return []
+    # get_all_faculties removed — use get_faculties() which is equivalent and ordered.
 
     def get_all_departments(self) -> List[tuple]:
         """Get all departments (id, name)"""
@@ -1932,8 +1922,9 @@ class ScheduleModel(QObject):
 
     def get_similar_course_groups(self) -> List[str]:
         """
-        Returns a list of base course names that have multiple occurrences (potential common courses).
-        Base name logic: split by ':' or '-' and take the first part.
+        Returns a list of (course_name, count) tuples where count > 1, indicating
+        multiple Dersler instances exist for that exact course name.
+        These are candidates to be configured as a common/shared scheduling block.
         """
         try:
             # We don't use DISTINCT so we can count multiple instances of the exact same name

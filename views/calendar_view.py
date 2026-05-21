@@ -231,7 +231,7 @@ class DayCanvas(QFrame):
         self.setMinimumHeight(len(time_labels) * 20)
         self.setMouseTracking(True)
         self.hovered_sig = None
-        self._solved_layout = None
+
         
     def get_slot_height(self):
         return max(20.0, self.height() / len(self.time_labels))
@@ -274,14 +274,10 @@ class DayCanvas(QFrame):
             for e in cluster:
                 e['base_center'] = (e['col_idx'] + 0.5) / max_cols
         
-        # 2. Solve optimal layout via CP-SAT
-        self._run_solver()
-                
         self.update() # trigger paintEvent
         
     def clear_events(self):
         self.events = []
-        self._solved_layout = None
         self.update()
 
     def resizeEvent(self, event):
@@ -289,10 +285,7 @@ class DayCanvas(QFrame):
         # No re-solve needed for midpoint heuristic as it is percentage-based
         self.update()
 
-    def _run_solver(self):
-        """CP-SAT solver disabled. Reverting to simple midpoint heuristic."""
-        self._solved_layout = None
-        self.update()
+
         
     def mouseMoveEvent(self, event):
         if not hasattr(self, 'drawn_paths'):
@@ -384,12 +377,9 @@ class DayCanvas(QFrame):
                 if sig not in event_rects:
                     event_rects[sig] = []
                     
-                # Use CP-SAT solved positions if available, else midpoint heuristic
-                if hasattr(self, '_solved_layout') and self._solved_layout and sig in self._solved_layout and i in self._solved_layout[sig]:
-                    left_bound, right_bound = self._solved_layout[sig][i]
-                else:
-                    left_bound = 0.0 if j == 0 else (occupants[j-1]['base_center'] + e['base_center']) / 2.0
-                    right_bound = 1.0 if j == K - 1 else (e['base_center'] + occupants[j+1]['base_center']) / 2.0
+                # Use midpoint heuristic for block positioning
+                left_bound = 0.0 if j == 0 else (occupants[j-1]['base_center'] + e['base_center']) / 2.0
+                right_bound = 1.0 if j == K - 1 else (e['base_center'] + occupants[j+1]['base_center']) / 2.0
                 
                 # Inset by 0.5px so pen stroke doesn't fall completely outside the widget, giving crisp solid borders
                 x = left_bound * (w - 1) + 0.5
