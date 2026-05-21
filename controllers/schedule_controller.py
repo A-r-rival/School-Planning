@@ -293,13 +293,6 @@ class ScheduleController:
     
     def handle_semester_change(self):
         """Handle semester radio button toggle"""
-        semester = "Güz"
-        if self.view.radio_bahar.isChecked():
-            semester = "Bahar"
-        elif self.view.radio_yaz.isChecked():
-            semester = "Yaz"
-            
-        # Trigger filter update in view
         # Trigger filter update in view
         self.view.trigger_filter_update()
 

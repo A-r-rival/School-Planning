@@ -331,8 +331,6 @@ class ORToolsScheduler:
             # 1. Create Room Variables
             possible_rooms = []
             viable_rooms_count = 0
-            capacity_filtered_count = 0
-            symmetry_filtered_count = 0
             
             # Determine if fixed_room is actually a valid room in our current list
             is_fixed_room_valid = False

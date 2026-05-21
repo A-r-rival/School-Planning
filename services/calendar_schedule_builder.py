@@ -270,15 +270,50 @@ class CalendarScheduleBuilder:
         
         for idx, item in enumerate(raw_schedule):
             try:
-                # Normalize various tuple lengths to 9-tuple format
-                if len(item) >= 9:
-                    day, start, end, course_disp, extra, is_elec, course_name, code, pool_data = item[:9]
+                # DB student group format (new 11-column format)
+                if len(item) == 11:
+                    day, start, end, course_name, teacher, room, code, ders_tipi, pool_data, is_pool, instance = item
+                    
+                    tip_label = ders_tipi if ders_tipi else "?"
+                    display_course = f"[{code}] {course_name} ({tip_label})"
+                    
+                    room_label = room if room else "Belirsiz"
+                    teacher_label = teacher if teacher else "Belirsiz"
+                    
+                    extra_lines = []
+                    if instance:
+                        extra_lines.append(f"Şube {instance}")
+                    extra_lines.append(f"Öğretmen: {teacher_label}")
+                    extra_lines.append(f"Oda: {room_label}")
+                    
+                    extra_info = "\n".join(extra_lines)
+                    
+                    is_elective = bool(is_pool)
                     
                     # Robust pool_data handling: ensure it's a list
                     if isinstance(pool_data, list):
                         p_list = pool_data
                     elif pool_data:
-                        # Split string or single value to list
+                        p_list = [x.strip() for x in str(pool_data).split(',') if x.strip()]
+                    else:
+                        p_list = []
+                        
+                    if not is_elective:
+                        # Fallback heuristic
+                        is_elective, p_list_detected = self._detect_elective(course_name, code, dept_name_for_lookup)
+                        if is_elective and not p_list:
+                            p_list = p_list_detected
+                            
+                    schedule_data.append((day, start, end, display_course, extra_info, is_elective, course_name, code, p_list))
+                
+                # Pre-normalized 9-tuple format
+                elif len(item) == 9:
+                    day, start, end, course_disp, extra, is_elec, course_name, code, pool_data = item
+                    
+                    # Robust pool_data handling
+                    if isinstance(pool_data, list):
+                        p_list = pool_data
+                    elif pool_data:
                         p_list = [x.strip() for x in str(pool_data).split(',') if x.strip()]
                     else:
                         p_list = []

@@ -1,0 +1,49 @@
+============================================================
+CURRICULUM PARSING LOG
+============================================================
+
+
+--- Enerji Bilimi ve Teknolojileri ---
+Enerji Bilimi ve Teknolojileri: Tum donemler 30 AKTS ✓
+
+--- Malzeme Bilimi ve Teknolojileri ---
+Malzeme Bilimi ve Teknolojileri: Tum donemler 30 AKTS ✓
+
+--- Moleküler Biyoteknoloji ---
+Moleküler Biyoteknoloji: Tum donemler 30 AKTS ✓
+
+--- Hukuk Fakültesi ---
+Hukuk Fakültesi: Tum donemler 30 AKTS ✓
+
+--- Kültür ve İletişim Bölümü ---
+Kültür ve İletişim Bölümü: Tum donemler 30 AKTS ✓
+
+--- Sosyoloji ---
+Sosyoloji: Tum donemler 30 AKTS ✓
+
+--- Bilgisayar Müh ---
+Bilgisayar Müh: Tum donemler 30 AKTS ✓
+
+--- Elektrik-Elektronik Müh ---
+Elektrik-Elektronik Müh: Tum donemler 30 AKTS ✓
+
+--- Endüstri Müh ---
+Endüstri Müh: Tum donemler 30 AKTS ✓
+
+--- Makine Müh ---
+Makine Müh: Tum donemler 30 AKTS ✓
+
+--- Mekatronik Müh ---
+Mekatronik Müh: Tum donemler 30 AKTS ✓
+
+--- İnşaat Müh ---
+İnşaat Müh: Tum donemler 30 AKTS ✓
+
+--- Siyaset Bilimi ve Uluslararası İlişkiler ---
+Siyaset Bilimi ve Uluslararası İlişkiler: Tum donemler 30 AKTS ✓
+
+--- İktisat ---
+İktisat: Tum donemler 30 AKTS ✓
+
+--- İşletme ---
+İşletme: Tum donemler 30 AKTS ✓

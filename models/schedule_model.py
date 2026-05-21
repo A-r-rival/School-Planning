@@ -651,7 +651,8 @@ class ScheduleModel(QObject):
                        (SELECT derslik_adi FROM Derslikler WHERE derslik_num = dp.derslik_id) as oda,
                        COALESCE(d.ders_kodu, 'CUSTOM') as ders_kodu, dp.ders_tipi,
                        NULL as havuz_kodu,
-                       0 as is_pool
+                       0 as is_pool,
+                       dp.ders_instance
                 FROM Ders_Programi dp
                 LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
@@ -667,7 +668,8 @@ class ScheduleModel(QObject):
                        (SELECT GROUP_CONCAT(dhi2.havuz_kodu) FROM Ders_Havuz_Iliskisi dhi2 
                         WHERE dhi2.ders_adi = dp.ders_adi AND dhi2.bolum_id = ? 
                         AND (dhi2.sinif_duzeyi = ? OR dhi2.sinif_duzeyi = 0)) as havuz_kodu,
-                       1 as is_pool
+                       1 as is_pool,
+                       dp.ders_instance
                 FROM Ders_Programi dp
                 LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 WHERE EXISTS (
@@ -1127,9 +1129,9 @@ class ScheduleModel(QObject):
 
     # Fakülte ekle
     def fakulte_ekle(self, fakulte_adi):
-        self.c.execute("INSERT INTO Fakulteler (fakulte_adi) VALUES (?)", (fakulte_adi,))
-        self.conn.commit()
-        return self.c.lastrowid
+        with self.conn:
+            self.c.execute("INSERT INTO Fakulteler (fakulte_adi) VALUES (?)", (fakulte_adi,))
+            return self.c.lastrowid
 
     def get_course_faculty_map(self) -> Dict[Tuple[str, int], List[str]]:
         """
@@ -1226,48 +1228,49 @@ class ScheduleModel(QObject):
     
     # Ders ekle (ders_instance otomatik atanır)
     def ders_ekle(self, ders_adi, ders_kodu=None, teori_odasi=None, lab_odasi=None, teori_saati=0, uygulama_saati=0, lab_saati=0):
-        self.c.execute('SELECT ders_instance FROM Dersler WHERE ders_adi = ?', (ders_adi,))
-        kullanilanlar = {row[0] for row in self.c.fetchall()}
+        with self.conn:
+            self.c.execute('SELECT ders_instance FROM Dersler WHERE ders_adi = ?', (ders_adi,))
+            kullanilanlar = {row[0] for row in self.c.fetchall()}
 
-        instance = 1
-        while instance in kullanilanlar:
-            instance += 1
-        # Kullanılmayan en küçük pozitif sayıyı bulana kadar devam eder.
+            instance = 1
+            while instance in kullanilanlar:
+                instance += 1
+            # Kullanılmayan en küçük pozitif sayıyı bulana kadar devam eder.
 
-        self.c.execute('''
-            INSERT INTO Dersler (ders_kodu, ders_adi, ders_instance, teori_odasi, lab_odasi, teori_saati, uygulama_saati, lab_saati)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (ders_kodu, ders_adi, instance, teori_odasi, lab_odasi, teori_saati, uygulama_saati, lab_saati))
-        self.conn.commit()
-        return instance
+            self.c.execute('''
+                INSERT INTO Dersler (ders_kodu, ders_adi, ders_instance, teori_odasi, lab_odasi, teori_saati, uygulama_saati, lab_saati)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (ders_kodu, ders_adi, instance, teori_odasi, lab_odasi, teori_saati, uygulama_saati, lab_saati))
+            return instance
     
     def ogrenci_ekle(self, ad, soyad, bolum_num, fakulte_num, 
                  girme_senesi=None, kacinci_donem=None):
         program_tipi = 0  # Normal öğrenci
 
         if girme_senesi is None:
-            girme_senesi = simdiki_sene
+            from datetime import datetime
+            girme_senesi = datetime.now().year - 1
 
-        self.c.execute('''
-            SELECT COUNT(*) FROM Ogrenciler
-            WHERE girme_senesi = ? AND bolum_num = ? AND fakulte_num = ? AND ikinci_bolum_turu IS NULL
-        ''', (girme_senesi, bolum_num, fakulte_num))
-        sira = self.c.fetchone()[0] + 1
+        with self.conn:
+            self.c.execute('''
+                SELECT COUNT(*) FROM Ogrenciler
+                WHERE girme_senesi = ? AND bolum_num = ? AND fakulte_num = ? AND ikinci_bolum_turu IS NULL
+            ''', (girme_senesi, bolum_num, fakulte_num))
+            sira = self.c.fetchone()[0] + 1
 
-        ogrenci_num = self._format_ogrenci_num(girme_senesi, fakulte_num, bolum_num, program_tipi, sira)
+            ogrenci_num = self._format_ogrenci_num(girme_senesi, fakulte_num, bolum_num, program_tipi, sira)
 
-        self.c.execute('''
-            INSERT INTO Ogrenciler (
+            self.c.execute('''
+                INSERT INTO Ogrenciler (
+                    ogrenci_num, ad, soyad, girme_senesi, kacinci_donem,
+                    bolum_num, fakulte_num
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (
                 ogrenci_num, ad, soyad, girme_senesi, kacinci_donem,
                 bolum_num, fakulte_num
-            ) VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            ogrenci_num, ad, soyad, girme_senesi, kacinci_donem,
-            bolum_num, fakulte_num
-        ))
+            ))
 
-        self.conn.commit()
-        return ogrenci_num
+            return ogrenci_num
 
     def ogrenci_ekle2(self, ogrenci_num, ikinci_bolumu, ikinci_bolum_turu,
                      girme_senesi2=None, kacinci_donem2=None,):
@@ -1281,37 +1284,38 @@ class ScheduleModel(QObject):
             raise ValueError("Geçersiz ikinci bölüm türü: 'Yandal' veya 'Anadal' olmalı.")
         
         if girme_senesi2 is None:
-            girme_senesi2 = simdiki_sene
+            from datetime import datetime
+            girme_senesi2 = datetime.now().year - 1
 
-        # İkinci bölüm farklı fakülteden olabilir, fakulte_num'u ikinci bölümden al
-        self.c.execute('SELECT fakulte_num FROM Bolumler WHERE bolum_adi = ?', (ikinci_bolumu,))
-        fakulte_result = self.c.fetchone()
-        if not fakulte_result:
-            raise ValueError(f"İkinci bölüm '{ikinci_bolumu}' bulunamadı.")
-        fakulte_num2 = fakulte_result[0]
-        
-        bolum_num2 = self.bolum_numarasini_al(ikinci_bolumu, fakulte_num2)
+        with self.conn:
+            # İkinci bölüm farklı fakülteden olabilir, fakulte_num'u ikinci bölümden al
+            self.c.execute('SELECT fakulte_num FROM Bolumler WHERE bolum_adi = ?', (ikinci_bolumu,))
+            fakulte_result = self.c.fetchone()
+            if not fakulte_result:
+                raise ValueError(f"İkinci bölüm '{ikinci_bolumu}' bulunamadı.")
+            fakulte_num2 = fakulte_result[0]
+            
+            bolum_num2 = self.bolum_numarasini_al(ikinci_bolumu, fakulte_num2)
 
-        # Aynı yıl, fakülte, bölüm ve program tipinde kaç kişi kayıtlı?
-        self.c.execute('''
-            SELECT COUNT(*) FROM Ogrenciler
-            WHERE girme_senesi2 = ?
-              AND ikinci_bolum_num = ?
-              AND ikinci_bolum_turu = ?
-        ''', (girme_senesi2, bolum_num2, ikinci_bolum_turu))
-        sira = self.c.fetchone()[0] + 1
+            # Aynı yıl, fakülte, bölüm ve program tipinde kaç kişi kayıtlı?
+            self.c.execute('''
+                SELECT COUNT(*) FROM Ogrenciler
+                WHERE girme_senesi2 = ?
+                  AND ikinci_bolum_num = ?
+                  AND ikinci_bolum_turu = ?
+            ''', (girme_senesi2, bolum_num2, ikinci_bolum_turu))
+            sira = self.c.fetchone()[0] + 1
 
-        # Öğrenci numarası: YY0FBBPSSS (ikinci fakülte numarası kullanılır)
-        ogrenci_num2 = self._format_ogrenci_num(girme_senesi2, fakulte_num2, bolum_num2, program_tipi, sira)
+            # Öğrenci numarası: YY0FBBPSSS (ikinci fakülte numarası kullanılır)
+            ogrenci_num2 = self._format_ogrenci_num(girme_senesi2, fakulte_num2, bolum_num2, program_tipi, sira)
 
-        self.c.execute('''
-            UPDATE Ogrenciler
-            SET ikinci_bolum_num = ?, ikinci_bolum_turu = ?, ogrenci_num2 = ?, girme_senesi2 = ?, kacinci_donem2 = ?
-            WHERE ogrenci_num = ?
-        ''', (bolum_num2, ikinci_bolum_turu, ogrenci_num2, girme_senesi2, kacinci_donem2, ogrenci_num))
+            self.c.execute('''
+                UPDATE Ogrenciler
+                SET ikinci_bolum_num = ?, ikinci_bolum_turu = ?, ogrenci_num2 = ?, girme_senesi2 = ?, kacinci_donem2 = ?
+                WHERE ogrenci_num = ?
+            ''', (bolum_num2, ikinci_bolum_turu, ogrenci_num2, girme_senesi2, kacinci_donem2, ogrenci_num))
 
-        self.conn.commit()
-        return ogrenci_num2
+            return ogrenci_num2
     
     def verilen_ders_ekle(self, ogrenci_num, yeni_dersler):
         # Mevcut ders_listesini al
@@ -1413,7 +1417,7 @@ class ScheduleModel(QObject):
 
     def tum_derslikleri_getir(self):
         """Tüm derslikleri getir (silinmiş olanlar dahil)"""
-        self.c.execute('SELECT derslik_num, derslik_adi, tip, kapasite, silindi, silinme_tarihi FROM Derslikler')
+        self.c.execute('SELECT derslik_num, derslik_adi, derslik_tipi, kapasite, silindi, silinme_tarihi FROM Derslikler')
         return self.c.fetchall()
 
     # ════════════════════════════════════════════════════════════════
@@ -1776,8 +1780,7 @@ class ScheduleModel(QObject):
             self.c.execute("""
                 SELECT DISTINCT dhi.havuz_kodu 
                 FROM Ders_Havuz_Iliskisi dhi
-                JOIN Bolumler b ON dhi.bolum_num = b.bolum_num
-                WHERE b.bolum_id = ? 
+                WHERE dhi.bolum_id = ? 
                 ORDER BY dhi.havuz_kodu
             """, (dept_id,))
             return [row[0] for row in self.c.fetchall() if row[0]]

@@ -37,6 +37,8 @@ def extract_ects(parts):
 def clean_course_name(name):
     # Remove (Z), (S), (TR/DE) etc.
     name = re.sub(r'\s*\(.*?\)\s*$', '', name)
+    if ' / ' in name:
+        name = name.split(' / ')[0]
     return name.strip()
 
 def is_pool_code_pattern(code):
@@ -204,19 +206,35 @@ def parse_file(filepath, log_file=None):
             if Regexes.pool_header.search(line) and line.count('|') < 6:
                 found_codes = []
 
-                matches1 = Regexes.pool_code.findall(line)
-                if matches1:
-                    for m in matches1:
-                        c = m[0].strip()
-                        if m[1]:
-                            c = f"{c} {m[1].strip()}"
-                        c = c.strip()
-                        if len(c) >= 2:
-                             found_codes.append(c)
-
-
-
-                # Note: Fallback patterns removed - main regex handles all cases
+                # First try to parse bracketed lists like [SDIa/IIa/III/IV]
+                bracket_match = re.search(r'\[(.*?)\]', line)
+                if bracket_match and ("SD" in bracket_match.group(1).upper() or "/" in bracket_match.group(1)):
+                    inner_text = bracket_match.group(1)
+                    parts = [p.strip() for p in inner_text.split('/')]
+                    prefix = ""
+                    for p in parts:
+                        prefix_match = re.match(r'^([A-ZİĞÜŞÖÇ_]*SD)', p, re.IGNORECASE)
+                        if prefix_match:
+                            prefix = prefix_match.group(1)
+                            found_codes.append(p)
+                        else:
+                            if prefix:
+                                if p.startswith(' '):
+                                    found_codes.append(prefix + p)
+                                else:
+                                    found_codes.append(prefix + p)
+                            else:
+                                found_codes.append(p)
+                else:
+                    matches1 = Regexes.pool_code.findall(line)
+                    if matches1:
+                        for m in matches1:
+                            c = m[0].strip()
+                            if m[1]:
+                                c = f"{c} {m[1].strip()}"
+                            c = c.strip()
+                            if len(c) >= 2:
+                                 found_codes.append(c)
 
                 if found_codes:
                     current_pool_codes = found_codes

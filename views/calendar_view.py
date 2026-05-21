@@ -474,6 +474,34 @@ class DayCanvas(QFrame):
                 border_pen.setWidth(1)
                 
             painter.fillPath(path, QBrush(gradient))
+            
+            # If there are multiple pools, draw stripes in the bottom right corner
+            if p_colors and len(p_colors) > 1:
+                painter.save()
+                painter.setClipPath(path)
+                
+                bottom_rect = merged_rects[-1]
+                bx = bottom_rect.right()
+                by = bottom_rect.bottom()
+                
+                extra_colors = p_colors[1:]
+                from PyQt5.QtGui import QPolygonF
+                from PyQt5.QtCore import QPointF
+                
+                for idx, ec in enumerate(reversed(extra_colors)):
+                    size = (len(extra_colors) - idx) * 16 + 8
+                    poly = QPolygonF([
+                        QPointF(bx - size, by),
+                        QPointF(bx, by - size),
+                        QPointF(bx, by)
+                    ])
+                    
+                    stripe_path = QPainterPath()
+                    stripe_path.addPolygon(poly)
+                    painter.fillPath(stripe_path, QBrush(ec))
+                    
+                painter.restore()
+
             painter.setPen(border_pen)
             painter.drawPath(path)
             
@@ -1049,16 +1077,17 @@ class CalendarView(QWidget):
 
                             # Check match in found_pools (Must be in current semester to count)
                             if code_upper in found_pools:
-                                pool_current_akts[code_upper] = max(pool_current_akts.get(code_upper, 0), akts)
+                                pool_current_akts[code_upper] = pool_current_akts.get(code_upper, 0) + akts
                                 is_matched_pool = True
                             elif normalized in found_pools:
-                                pool_current_akts[normalized] = max(pool_current_akts.get(normalized, 0), akts)
+                                pool_current_akts[normalized] = pool_current_akts.get(normalized, 0) + akts
                                 is_matched_pool = True
                                     
                             # Capture special elements
                             if is_current_sem:
                                 is_internship = code.startswith("PRK") or "Staj" in name or "Internship" in name
-                                is_project = any(x in name.lower() for x in ["proje", "project", "tez", "thesis", "bitirme"])
+                                is_elective_kw = "seçmeli" in name.lower() or "elective" in name.lower() or "havuz" in name.lower()
+                                is_project = any(x in name.lower() for x in ["proje", "project", "tez", "thesis", "bitirme"]) and not is_elective_kw
                                 is_usd = "usd" in code.lower() or "üsd" in code.lower() or "üniversite seçmeli" in name.lower() or "university elective" in name.lower()
                                 
                                 if is_internship:
@@ -1066,14 +1095,14 @@ class CalendarView(QWidget):
                                 elif is_project:
                                     project_courses.append((code, name, akts))
                                 elif is_usd:
-                                    if not any(code == pc[0] for pc in project_courses):
-                                        project_courses.append((code, name, akts))
+                                    found_pools.add(code_upper)
+                                    pool_current_akts[code_upper] = pool_current_akts.get(code_upper, 0) + akts
                                 elif not is_matched_pool:
                                     # If it's an unmatched elective pool in the current semester (e.g. SDVIII)
-                                    # we show it as a label so the user sees the AKTS requirement!
-                                    is_elective = "seçmeli" in name.lower() or "elective" in name.lower() or "havuz" in name.lower()
-                                    if is_elective and not any(code == pc[0] for pc in project_courses):
-                                        project_courses.append((code, name, akts))
+                                    # we show it as a checkbox by adding it to found_pools!
+                                    if is_elective_kw:
+                                        found_pools.add(code_upper)
+                                        pool_current_akts[code_upper] = pool_current_akts.get(code_upper, 0) + akts
 
                     # 1. Process CURRENT semester only
                     current_courses = dept_data['curriculum'].get(sem_key, [])
@@ -1103,24 +1132,40 @@ class CalendarView(QWidget):
             # even if the set of pools is exactly the same as the previous view.
 
             # Detect sub-pools: pool_b is a sub-pool if another pool_a is a prefix of it
+            # Or if pool_b is a sub-pool of a required curriculum wildcard (like SDUX -> SDUa)
             sub_pools = set()
-            for pool_a in found_pools:
-                for pool_b in found_pools:
+            
+            all_req_codes = [pc[0].upper().strip() for pc in project_courses] + list(pool_current_akts.keys())
+            
+            for pool_b in found_pools:
+                pool_b_upper = pool_b.upper().strip()
+                
+                # Check wildcard matching (e.g., SDUX requires SDUA, SDUB...)
+                for req_code in all_req_codes:
+                    if req_code.endswith('X'):
+                        prefix = req_code[:-1]
+                        if pool_b_upper.startswith(prefix) and pool_b_upper != req_code:
+                            sub_pools.add(pool_b_upper)
+                            break
+                            
+                for pool_a in found_pools:
                     if pool_a != pool_b and pool_b.startswith(pool_a):
-                        sub_pools.add(pool_b)
+                        # Prevent Roman numeral suffixes from being considered sub-pools (e.g. ZSDII is not a sub-pool of ZSDI)
+                        remainder = pool_b[len(pool_a):]
+                        if not all(c in 'IVX ' for c in remainder):
+                            sub_pools.add(pool_b_upper)
 
             self._clear_pool_checkboxes()
-
-            if not found_pools and stats['internship_akts'] == 0 and not project_courses:
-                self.pool_checks_frame.hide()
-                self.semester_info_label.hide()
-                return
-
-            self.pool_checks_frame.show()
 
             # Update the main filter bar's semester info label
             self.semester_info_label.setText(f"| {semester_name} Dönemi")
             self.semester_info_label.show()
+
+            if not found_pools and stats['internship_akts'] == 0 and not project_courses:
+                self.pool_checks_frame.hide()
+                return
+
+            self.pool_checks_frame.show()
 
             for pool_code in sorted(found_pools):
                 pool_code_upper = pool_code.upper().strip()
@@ -1129,6 +1174,10 @@ class CalendarView(QWidget):
                 
                 is_sub_pool = pool_code_upper in sub_pools
                 current_akts = pool_current_akts.get(pool_code_upper, 0)
+
+                # Do not show checkboxes for pools that have 0 AKTS in this semester and are not sub-pools.
+                if current_akts == 0 and not is_sub_pool:
+                    continue
 
                 # Sub-pool ise AKTS'in yanına * ekle (hangi üst poola dahil olduğunu işaret eder)
                 if is_sub_pool:
@@ -1196,7 +1245,7 @@ class CalendarView(QWidget):
                 chk.setStyleSheet(f"QCheckBox {{ color: {text_color}; font-weight: bold; font-size: 9pt; margin-right: 5px; }}")
 
         if self.last_schedule_data:
-            self.display_schedule(self.last_schedule_data)
+            self.display_schedule(self.last_schedule_data, refresh_checkboxes=False)
     
     def _on_filter_1_changed(self):
         view_type = self.view_type_combo.currentText()
@@ -1252,7 +1301,7 @@ class CalendarView(QWidget):
             import traceback
             traceback.print_exc()
 
-    def display_schedule(self, schedule_data):
+    def display_schedule(self, schedule_data, refresh_checkboxes=True):
         """
         Display schedule using Prepare-Filter-Render pipeline
         """
@@ -1268,7 +1317,8 @@ class CalendarView(QWidget):
             self.last_schedule_data = schedule_data
             
             # Update pool checkboxes from actual schedule data (DB truth)
-            self.update_pool_checkboxes()
+            if refresh_checkboxes:
+                self.update_pool_checkboxes()
             
             # Update metadata UI (Day Span)
             if 'day_span' in metadata and metadata['day_span'] > 0:
@@ -1417,23 +1467,37 @@ class CalendarView(QWidget):
                     if is_student_view and data['is_elective']:
                         pools = data['pools_found']
                         
-                        # Use checkboxes for filtering (Hand back control to user)
-                        if self.pool_checkboxes:  
-                            unchecked_pools = {name.upper().strip() for name, chk in self.pool_checkboxes.items() if not chk.isChecked()}
-                            if pools:
-                                # If ALL of this course's pools are unchecked, hide it
-                                normalized_pools = {p.upper().strip() for p in pools if p}
-                                if normalized_pools.issubset(unchecked_pools):
+                        if pools:
+                            # It belongs to some pools. Check if any of these pools are active (have checkboxes)
+                            if self.pool_checkboxes:
+                                course_checkbox_pools = {p.upper().strip() for p in pools if p and p.upper().strip() in self.pool_checkboxes}
+                                
+                                if course_checkbox_pools:
+                                    # Intersect with checked boxes
+                                    checked_pools = {name for name, chk in self.pool_checkboxes.items() if chk.isChecked()}
+                                    if not course_checkbox_pools.intersection(checked_pools):
+                                        continue
+                                else:
+                                    # Course belongs to pools, but NONE are relevant to this semester (no checkboxes).
                                     continue
                             else:
-                                # Elective with no pool identified - show it always
-                                pass
+                                # There are no elective checkboxes for this semester at all.
+                                continue
+                        else:
+                            # Elective with no pool identified - probably just show it as fallback
+                            pass
                     
                     
                     # Prepare colors for display
                     pool_colors = []
                     if data['pools_found']:
-                        for p_name in sorted(data['pools_found']):
+                        pools_to_color = data['pools_found']
+                        if is_student_view and self.pool_checkboxes and data.get('is_elective'):
+                            relevant = {p for p in pools_to_color if p.upper().strip() in self.pool_checkboxes}
+                            if relevant:
+                                pools_to_color = relevant
+
+                        for p_name in sorted(pools_to_color):
                             p_name_upper = p_name.upper().strip()
                             color = self._generate_color(p_name_upper)
                             seen_pools[p_name_upper] = color

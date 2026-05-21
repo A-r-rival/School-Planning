@@ -202,9 +202,6 @@ class CourseRepository:
         # We now rely on the SQL join (od.sinif_duzeyi = dhi.sinif_duzeyi) for filtering.
         rows = raw_rows
         pool_filtered_count = 0
-        
-        if pool_filtered_count > 0:
-            print(f"DEBUG: Pool year filter removed {pool_filtered_count} unnecessary rows.")
 
         # 3. Fetch Common Course Groups Mapping
         self.db_model.c.execute("SELECT grup_id, ders_adi, ders_instance FROM Ortak_Ders_Gruplari")
@@ -284,6 +281,9 @@ class CourseRepository:
                 semester_season=semester_season if semester_season else "",
                 host_department=host_dept
             ))
+            
+        if pool_filtered_count > 0:
+            print(f"DEBUG: Pool year filter removed {pool_filtered_count} unnecessary rows.")
             
         print(f"DEBUG: Repository fetched {len(result_rows)} raw rows.")
         return result_rows
