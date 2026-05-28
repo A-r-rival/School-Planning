@@ -282,6 +282,10 @@ class DayCanvas(QFrame):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
+        # Re-calculate the pool checkboxes container height on resize
+        if hasattr(self, 'pool_checks_frame') and self.pool_checks_frame.isVisible():
+            self._adjust_pool_frame_height()
+            
         # No re-solve needed for midpoint heuristic as it is percentage-based
         self.update()
 
@@ -1216,14 +1220,36 @@ class CalendarView(QWidget):
                 self.pool_checks_layout.addWidget(lbl)
 
             for code, name, akts in project_courses:
-                lbl = QLabel(f"  [{code}] {name} ({akts} AKTS)")
+                lbl = QLabel(f"[{code}] {name} ({akts} AKTS)")
                 lbl.setStyleSheet(f"font-weight: bold; color: {project_color}; margin-left: 10px; font-size: 9pt;")
                 self.pool_checks_layout.addWidget(lbl)
+                
+            # Force the frame to allocate vertical space for the FlowLayout so it doesn't overlap the calendar
+            QTimer.singleShot(0, self._adjust_pool_frame_height)
 
         except Exception as e:
             print(f"ERROR in update_pool_checkboxes: {e}")
             import traceback
             traceback.print_exc()
+
+    def _adjust_pool_frame_height(self):
+        """Calculates and sets the proper height for the FlowLayout container to prevent overlapping."""
+        if not self.pool_checks_frame.isVisible() or self.pool_checks_layout.count() == 0:
+            return
+        
+        # Calculate height based on current width minus some margins
+        target_width = self.pool_checks_frame.width()
+        if target_width <= 0:
+            target_width = self.width() - 40
+            
+        needed_height = self.pool_checks_layout.heightForWidth(target_width)
+        
+        # Add layout margins
+        margins = self.pool_checks_layout.contentsMargins()
+        needed_height += margins.top() + margins.bottom()
+        
+        # Set minimum height so the QVBoxLayout allocates space for it
+        self.pool_checks_frame.setMinimumHeight(needed_height)
 
     def _on_pool_toggled(self, checked):
         # Update styling of the sender

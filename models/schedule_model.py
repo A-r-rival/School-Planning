@@ -68,10 +68,16 @@ class ScheduleModel(QObject):
         seeder.seed()
         
         # Initialize repositories
-        from models.repositories import TeacherRepository, ScheduleRepository, CourseRepository
+        from models.repositories import (
+            TeacherRepository, ScheduleRepository, CourseRepository,
+            RoomRepository, StudentRepository, FacultyDepartmentRepository
+        )
         self.teacher_repo = TeacherRepository(self.c, self.conn)
         self.schedule_repo = ScheduleRepository(self.c, self.conn)
         self.course_repo = CourseRepository(self.c)  # Course repo doesn't need conn
+        self.room_repo = RoomRepository(self.c, self.conn)
+        self.student_repo = StudentRepository(self.c, self.conn)
+        self.faculty_dept_repo = FacultyDepartmentRepository(self.c, self.conn)
         
         # Initialize service layer
         from models.services import ScheduleService
@@ -459,14 +465,15 @@ class ScheduleModel(QObject):
     def get_courses_assigned_to_teacher(self, teacher_id: int) -> List[tuple]:
         """
         Get courses assigned to a teacher in the CURRICULUM (not schedule).
-        Returns: List of (Course Name, Instance) tuples.
+        Returns: List of (Course Name, Instance, Course Code).
         """
         try:
             self.c.execute("""
-                SELECT ders_adi, ders_instance
-                FROM Ders_Ogretmen_Iliskisi
-                WHERE ogretmen_id = ?
-                ORDER BY ders_adi, ders_instance
+                SELECT i.ders_adi, i.ders_instance, d.ders_kodu
+                FROM Ders_Ogretmen_Iliskisi i
+                LEFT JOIN Dersler d ON i.ders_adi = d.ders_adi AND i.ders_instance = d.ders_instance
+                WHERE i.ogretmen_id = ?
+                ORDER BY i.ders_adi, i.ders_instance
             """, (teacher_id,))
             return self.c.fetchall()
         except Exception as e:
@@ -476,13 +483,14 @@ class ScheduleModel(QObject):
     def get_all_courses_assigned_to_teachers(self) -> List[tuple]:
         """
         Get all courses assigned to any teacher
-        Returns: List of (ders_adi, ders_instance, ogretmen_adi_soyadi, ogretmen_id)
+        Returns: List of (ders_adi, ders_instance, ogretmen_adi_soyadi, ogretmen_id, ders_kodu)
         """
         try:
             query = """
-                SELECT i.ders_adi, i.ders_instance, (o.ad || ' ' || o.soyad) as hoca, o.ogretmen_num
+                SELECT i.ders_adi, i.ders_instance, (o.ad || ' ' || o.soyad) as hoca, o.ogretmen_num, d.ders_kodu
                 FROM Ders_Ogretmen_Iliskisi i
                 JOIN Ogretmenler o ON i.ogretmen_id = o.ogretmen_num
+                LEFT JOIN Dersler d ON i.ders_adi = d.ders_adi AND i.ders_instance = d.ders_instance
                 ORDER BY i.ders_adi, i.ders_instance
             """
             self.c.execute(query)
@@ -494,11 +502,11 @@ class ScheduleModel(QObject):
     def get_unassigned_courses(self) -> List[tuple]:
         """
         Get all course instances that do NOT have any teacher assigned in Ders_Ogretmen_Iliskisi.
-        Returns: List of (ders_adi, ders_instance)
+        Returns: List of (ders_adi, ders_instance, ders_kodu)
         """
         try:
             query = """
-                SELECT DISTINCT d.ders_adi, d.ders_instance
+                SELECT DISTINCT d.ders_adi, d.ders_instance, d.ders_kodu
                 FROM Dersler d
                 WHERE NOT EXISTS (
                     SELECT 1 FROM Ders_Ogretmen_Iliskisi doi
@@ -517,108 +525,13 @@ class ScheduleModel(QObject):
     # ════════════════════════════════════════════════════════════════
 
     def delete_curriculum_course(self, course_name: str) -> bool:
-        """
-        Delete a course from the curriculum + all related tables.
-        """
-        try:
-            with self.conn:
-                # 1. Delete from Curriculum (Dersler)
-                self.c.execute("DELETE FROM Dersler WHERE ders_adi = ?", (course_name,))
-                
-                # 2. Delete Relations
-                self.c.execute("DELETE FROM Ders_Sinif_Iliskisi WHERE ders_adi = ?", (course_name,))
-                self.c.execute("DELETE FROM Ders_Havuz_Iliskisi WHERE ders_adi = ?", (course_name,))
-                
-                # 3. Delete from Schedule (Cascade logically)
-                self.c.execute("DELETE FROM Ders_Programi WHERE ders_adi = ?", (course_name,))
-                self.c.execute("DELETE FROM Ders_Ogretmen_Iliskisi WHERE ders_adi = ?", (course_name,))
-                
-            self.course_removed.emit(course_name)
-            return True
-        except Exception as e:
-            print(f"Error deleting curriculum course: {e}")
-            self.error_occurred.emit(f"Ders silinirken hata: {e}")
-            return False
+        return self.course_repo.delete_curriculum_course(course_name)
 
 
-    def add_curriculum_course_as_template(self, data: Dict) -> bool:
-        """
-        Add a course template to the curriculum (Dersler + Ders_Sinif_Iliskisi).
-        This is for the 'Template' button.
-        
-        Args:
-            data: {
-                'code': str, 'name': str, 'dept_id': int, 'year': int,
-                't': int, 'u': int, 'l': int, 'akts': int,
-                'type': str (Core/Elective) - currently ignored, logic is implicit
-            }
-        """
-        try:
-            # 1. Determine Instance ID (Auto-increment logic)
-            # Find max instance for this course name to separate sections if name exists
-            self.c.execute("SELECT MAX(ders_instance) FROM Dersler WHERE ders_adi = ?", (data['name'],))
-            row = self.c.fetchone()
-            instance = 1
-            if row and row[0]:
-                instance = row[0] + 1
-            
-            # 2. Add to Dersler
-            with self.conn:
-                self.c.execute("""
-                    INSERT INTO Dersler (ders_kodu, ders_instance, ders_adi, teori_saati, uygulama_saati, lab_saati, akts)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                """, (data['code'], instance, data['name'], data['t'], data['u'], data['l'], data['akts']))
-                
-                is_pool = data.get('is_pool', False)
-                
-                if is_pool:
-                    # 3a. Add to Ders_Havuz_Iliskisi (Pool Course)
-                    # Schema: (ders_instance, ders_adi, bolum_num, havuz_kodu)
-                    pool_code = data.get('pool_code', 'GENEL')
-                    
-                    # Resolve bolum_num from dept_id
-                    self.c.execute("SELECT bolum_num FROM Bolumler WHERE bolum_id = ?", (data['dept_id'],))
-                    row_bn = self.c.fetchone()
-                    if not row_bn:
-                        raise ValueError(f"Bölüm bulunamadı (ID: {data['dept_id']})")
-                    bolum_num = row_bn[0]
-                    
-                    self.c.execute("""
-                        INSERT INTO Ders_Havuz_Iliskisi (ders_instance, ders_adi, bolum_id, havuz_kodu)
-                        VALUES (?, ?, ?, ?)
-                    """, (instance, data['name'], bolum_num, pool_code))
-                    
-                    self.course_added.emit(f"[Havuz] {data['name']} (Şube {instance}, Havuz: {pool_code}) eklendi.")
-                    
-                else:
-                    # 3b. Add to Ders_Sinif_Iliskisi (Class Course)
-                    # Resolve donem_sinif_num from dept_id + year
-                    
-                    # First get department info to find donem_sinif_num
-                    self.c.execute("""
-                        SELECT donem_sinif_num FROM Ogrenci_Donemleri 
-                        WHERE bolum_num = ? AND sinif_duzeyi = ?
-                    """, (data['dept_id'], data['year']))
-                    
-                    rows = self.c.fetchall()
-                    if not rows:
-                         raise ValueError(f"Bu bölüm/sınıf için dönem kaydı bulunamadı (Bölüm: {data['dept_id']}, Sınıf: {data['year']})")
-                    
-                    # Add for ALL matching periods
-                    for r in rows:
-                        ds_num = r[0]
-                        self.c.execute("""
-                            INSERT INTO Ders_Sinif_Iliskisi (ders_adi, ders_instance, donem_sinif_num)
-                            VALUES (?, ?, ?)
-                        """, (data['name'], instance, ds_num))
-                        
-                    self.course_added.emit(f"[Template] {data['name']} (Şube {instance}) eklendi.")
 
-            return True
-            
-        except Exception as e:
-            self.error_occurred.emit(f"Şablon ders eklenirken hata: {str(e)}")
-            return False
+    def add_curriculum_course_as_template(self, data: dict) -> bool:
+        return self.course_repo.add_curriculum_course_as_template(data)
+
 
 
     def get_schedule_by_classroom(self, classroom_id: int) -> List[tuple]:
@@ -684,220 +597,26 @@ class ScheduleModel(QObject):
             return []
 
     def get_all_curriculum_details(self, dept_id: Optional[int] = None, year: Optional[int] = None, faculty_id: Optional[int] = None, semester_filter: Optional[str] = None) -> List[tuple]:
-        """
-        Fetch detailed curriculum list, merging Class-Specific and Pool courses.
-        Returns list of tuples:
-        (Code, Name, T, U, L, AKTS, Type, Dept/Pool Info, SortKey_Year, IsPool, PoolCode)
-        
-        Note: semester_filter is currently ignored due to database limitations (no semester column).
-        """
-        results = []
-        try:
-            # 1. Fetch Class-Specific Courses
-            query_class = """
-                SELECT DISTINCT 
-                    d.ders_kodu, d.ders_adi, d.teori_saati, d.uygulama_saati, d.lab_saati, d.akts,
-                    'Bölüm Dersi' as tip,
-                    b.bolum_adi || ' - ' || od.sinif_duzeyi || '. Sınıf' as detay,
-                    od.sinif_duzeyi as sort_year,
-                    0 as is_pool,
-                    NULL as pool_code
-                FROM Dersler d
-                JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
-                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
-                JOIN Bolumler b ON od.bolum_num = b.bolum_id
-                WHERE 1=1
-            """
-            params_class = []
-            if dept_id:
-                 query_class += " AND od.bolum_num = ?"
-                 params_class.append(dept_id)
-            if faculty_id:
-                 query_class += " AND b.fakulte_num = ?"
-                 params_class.append(faculty_id)
-            if year:
-                 query_class += " AND od.sinif_duzeyi = ?"
-                 params_class.append(year)
-                 
-            self.c.execute(query_class, tuple(params_class))
-            results.extend(self.c.fetchall())
-            
-            # 2. Fetch Pool Courses
-            query_pool = """
-                SELECT DISTINCT
-                    d.ders_kodu, d.ders_adi, d.teori_saati, d.uygulama_saati, d.lab_saati, d.akts,
-                    'Havuz Dersi' as tip,
-                    'Havuz: ' || dhi.havuz_kodu,
-                    99 as sort_year,
-                    1 as is_pool,
-                    dhi.havuz_kodu as pool_code
-                FROM Dersler d
-                JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
-                LEFT JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
-                WHERE 1=1
-            """
-            params_pool = []
-            if dept_id:
-                query_pool += " AND b.bolum_id = ?"
-                params_pool.append(dept_id)
-            if faculty_id:
-                query_pool += " AND b.fakulte_num = ?"
-                params_pool.append(faculty_id)
-            
-            if year is None or year == 99: # 99 for Havuz filter
-                 self.c.execute(query_pool, tuple(params_pool))
-                 results.extend(self.c.fetchall())
-                 
-            # Sort by: 
-            # 1. Year (ASC)
-            # 2. IsPool (ASC)
-            # 3. Pool Code (ASC) - Ensure string & stripped
-            # 4. Name (ASC)
-            results.sort(key=lambda x: (
-                x[8], 
-                x[9], 
-                str(x[10]).strip().upper() if x[10] else "ZZZZZ", 
-                x[1]
-            ))
-            # --- Semester Filtering & Column Injection (Always Run) ---
-            # Always run to ensure the "Semester" column is added at index 6
-            filtered_results = []
-            for row in results:
-                # Row: 0:Code, 1:Name, ... 8:Year, 9:IsPool
-                
-                if semester_filter == "Yaz":
-                    # We don't support Yaz yet in DB, just skip or show empty?
-                    # For now, let's just filtering logic handle it.
-                    pass
+        return self.course_repo.get_all_curriculum_details(dept_id, year, faculty_id, semester_filter)
 
-                code = row[0] # Fix: Define code
-                name = row[1]
-                code_str = str(code).strip()
-                detay = row[7] # Contains dept info e.g. "Makine Müh - 1. Sınıf"
-                
-                sem_str = "Belirsiz" # Default if unknown
-                
-                # Extract dept from detay string if it's a department course
-                bolum_adi = None
-                if detay and " - " in detay and not str(detay).startswith("Havuz:"):
-                    bolum_adi = str(detay).split(" - ")[0].strip()
-                    
-                # 1. Lookup from Curriculum Data (Strict Source of Truth)
-                sem_set = None
-                
-                # Prioritize department-specific timing over global timing
-                if bolum_adi and hasattr(self, 'semester_lookup_by_dept') and (bolum_adi, code_str) in self.semester_lookup_by_dept:
-                    sem_set = self.semester_lookup_by_dept[(bolum_adi, code_str)]
-                
-                # Fallback to global if unmapped or pool
-                if not sem_set and hasattr(self, 'semester_lookup') and code_str in self.semester_lookup:
-                    sem_set = self.semester_lookup[code_str]
-                    
-                if sem_set:
-                    if "Güz" in sem_set and "Bahar" in sem_set:
-                        sem_str = "Güz / Bahar"
-                    elif "Güz" in sem_set:
-                        sem_str = "Güz"
-                    elif "Bahar" in sem_set:
-                        sem_str = "Bahar"
-                
-                # Apply Filter for View
-                show_row = False
-                if semester_filter == "Güz":
-                    if "Güz" in sem_str or sem_str == "Belirsiz": show_row = True
-                elif semester_filter == "Bahar":
-                    if "Bahar" in sem_str or sem_str == "Belirsiz": show_row = True
-                elif semester_filter == "Hepsi" or not semester_filter:
-                     show_row = True
-                     
-                if show_row:
-                    # Construct new row tuple with Semester Column at index 6
-                    # Original: Code, Name, T, U, L, AKTS, Type, Detail, SortKey, IsPool, PoolCode
-                    # New:      Code, Name, T, U, L, AKTS, Sem,  Type, Detail, SortKey, IsPool, PoolCode
-                    
-                    new_row = list(row)
-                    new_row.insert(6, sem_str)
-                    filtered_results.append(tuple(new_row))
-            
-            results = filtered_results
-
-            return results
-            
-        except Exception as e:
-            print(f"Error fetching curriculum details: {e}")
-            return []
 
     def get_curriculum_courses(self) -> List[str]:
-        """Get unique course names from curriculum"""
-        try:
-            self.c.execute("SELECT DISTINCT ders_adi FROM Dersler ORDER BY ders_adi")
-            return [r[0] for r in self.c.fetchall()]
-        except Exception as e:
-            print(f"Error fetching curriculum courses: {e}")
-            return []
+        return self.course_repo.get_curriculum_courses()
 
-
-    # ════════════════════════════════════════════════════════════════
-    # TEACHER & CLASSROOM LOOKUPS
-    # ════════════════════════════════════════════════════════════════
 
     def get_all_teachers_with_ids(self) -> List[Tuple[int, str, Optional[str]]]:
-        """Get all teachers with their IDs and room preferences"""
-        try:
-            # Check if column exists first to be safe (migration should have added it)
-            self.c.execute("SELECT ogretmen_num, ad || ' ' || soyad, room_request FROM Ogretmenler ORDER BY ad")
-            return self.c.fetchall()
-        except Exception as e:
-            print(f"Error fetching teachers: {e}")
-            return []
-            
+        return self.teacher_repo.get_all_teachers_with_ids()
     def get_all_classrooms_with_ids(self) -> List[Tuple[int, str, int]]:
-        """
-        Get all classrooms with their IDs and Floor info sorted naturally.
-        Returns: List of (id, name, floor)
-        """
-        try:
-            # Try to fetch floor, if column doesn't exist yet (before migration runs), handle gracefully
-            try:
-                self.c.execute("SELECT derslik_num, derslik_adi, floor FROM Derslikler WHERE silindi = 0")
-            except Exception:
-                # Fallback
-                self.c.execute("SELECT derslik_num, derslik_adi, 0 as floor FROM Derslikler WHERE silindi = 0")
-                
-            rows = self.c.fetchall()
-            
-            # Natural sort helper - sorts "Derslik 2" before "Derslik 10"
-            def natural_keys(classroom_tuple):
-                classroom_name = classroom_tuple[1]  # Get name from (id, name, floor) tuple
-                parts = re.split(r'(\d+)', classroom_name)  # Split into text and numbers
-                
-                # Convert number strings to integers, keep text as lowercase
-                converted_parts = []
-                for part in parts:
-                    if part.isdigit():
-                        converted_parts.append(int(part))  # "10" -> 10
-                    else:
-                        converted_parts.append(part.lower())  # "Derslik " -> "derslik "
-                
-                return converted_parts
-                
-            return sorted(rows, key=natural_keys)
-        except Exception as e:
-            print(f"Error fetching classrooms: {e}")
-            return []
+        return self.room_repo.get_all_classrooms_with_ids()
+
 
     # ════════════════════════════════════════════════════════════════
     # FACULTY & DEPARTMENT
     # ════════════════════════════════════════════════════════════════
 
     def get_departments_by_faculty(self, faculty_id: int) -> List[Tuple[int, str]]:
-        """Get departments for a faculty"""
-        try:
-            self.c.execute("SELECT bolum_id, bolum_adi FROM Bolumler WHERE fakulte_num = ? ORDER BY bolum_adi", (faculty_id,))
-            return self.c.fetchall()
-        except Exception as e:
-            print(f"Error fetching departments: {e}")
-            return []  # Return True to be safe
+        return self.faculty_dept_repo.get_departments_by_faculty(faculty_id)
+
 
     def get_courses_by_faculty(self, faculty_id: int, year: str = None, day: str = None) -> List[str]:
         """Fetch all scheduled courses for a faculty from Ders_Programi""" 
@@ -929,34 +648,7 @@ class ScheduleModel(QObject):
             return []
 
     def get_courses_by_department(self, dept_id: int, year: str = None, day: str = None) -> List[str]:
-        """Fetch scheduled courses for a specific department from Ders_Programi"""
-        try:
-            from models.services.query_builder import ScheduleQueryBuilder, ScheduleQueryFilter
-            
-            # Build query using DRY builder
-            filters = ScheduleQueryFilter(
-                department_id=dept_id,
-                year=int(year) if year and str(year).isdigit() else None,
-                day=day
-            )
-            sql, params = ScheduleQueryBuilder().build(filters)
-            
-            self.c.execute(sql, params)
-            rows = self.c.fetchall()
-            
-            # Format: [CODE] Name - Teacher (Day Time) [Classes]
-            result = []
-            for r in rows:
-                ders_adi, codes, hoca, gun, baslangic, bitis, siniflar = r
-                hoca = hoca if hoca else "Belirsiz"
-                saat = f"{baslangic}-{bitis}"
-                classes_str = f" [{siniflar}]" if siniflar else ""
-                result.append(f"[{codes}] {ders_adi} - {hoca} ({gun} {saat}){classes_str}")
-            return result
-        except Exception as e:
-            print(f"Error fetching dept courses: {e}")
-            return []
-            
+        return self.course_repo.get_courses_by_department(dept_id, year, day)
     def get_schedule_for_faculty_common(self, faculty_id: int, year: int) -> List[Tuple]:
         """Get schedule for Common Courses of a faculty, including pool courses."""
         try:
@@ -1016,54 +708,11 @@ class ScheduleModel(QObject):
     
     # Advanced database operations using DbManager
     def add_faculty(self, faculty_name: str) -> Optional[int]:
-        """
-        Add a new faculty using DbManager
-        
-        Args:
-            faculty_name: Name of the faculty
-        
-        Returns:
-            Optional[int]: Faculty ID if successful, None otherwise
-        """
-        try:
-            faculty_id = self.fakulte_ekle(faculty_name)
-            return faculty_id
-        except Exception as e:
-            self.error_occurred.emit(f"Fakülte eklenirken hata oluştu: {str(e)}")
-            return None
-    
+        return self.faculty_dept_repo.add_faculty(faculty_name)
     def add_department(self, faculty_id: int, department_name: str) -> Optional[int]:
-        """
-        Add a new department using DbManager
-        
-        Args:
-            faculty_id: Faculty ID
-            department_name: Name of the department
-        
-        Returns:
-            Optional[int]: Department ID if successful, None otherwise
-        """
-        try:
-            department_id = self.bolum_ekle(faculty_id, department_name)
-            return department_id
-        except Exception as e:
-            self.error_occurred.emit(f"Bölüm eklenirken hata oluştu: {str(e)}")
-            return None
-    
+        return self.faculty_dept_repo.add_department(faculty_id, department_name)
     def get_faculties(self) -> List[Tuple[int, str]]:
-        """
-        Get all faculties
-        
-        Returns:
-            List[Tuple[int, str]]: List of (faculty_id, faculty_name) tuples
-        """
-        try:
-            self.c.execute("SELECT fakulte_num, fakulte_adi FROM Fakulteler ORDER BY fakulte_adi")
-            return self.c.fetchall()
-        except Exception as e:
-            self.error_occurred.emit(f"Fakülteler yüklenirken hata oluştu: {str(e)}")
-            return []
-    
+        return self.faculty_dept_repo.get_faculties()
     def close_connections(self):
         """Close database connections"""
         try:
@@ -1078,32 +727,12 @@ class ScheduleModel(QObject):
     # ════════════════════════════════════════════════════════════════
 
     def fakulte_numarasini_al(self, ogrenci_num2: int) -> int:
-        numara_str = str(ogrenci_num2).zfill(10)  # 10 haneye tamamla, güvenlik için
-        return int(numara_str[2:4])
-    
+        return self.faculty_dept_repo.fakulte_numarasini_al(ogrenci_num2)
     def bolum_numarasini_al(self, bolum_adi: str, fakulte_num: int) -> int:
-        self.c.execute('''
-            SELECT bolum_num 
-            FROM Bolumler 
-            WHERE bolum_adi = ? AND fakulte_num = ?
-        ''', (bolum_adi, fakulte_num))
-        
-        sonuc = self.c.fetchone()
-        
-        if sonuc:
-            return sonuc[0]
-        else:
-            return 0
-            
+        return self.faculty_dept_repo.bolum_numarasini_al(bolum_adi, fakulte_num)
     def get_department_name(self, dept_id: int) -> Optional[str]:
-        """Get department name from ID"""
-        try:
-            self.c.execute("SELECT bolum_adi FROM Bolumler WHERE bolum_id = ?", (dept_id,))
-            row = self.c.fetchone()
-            return row[0] if row else None
-        except Exception as e:
-            print(f"Error fetching dept name: {e}")
-            return None
+        return self.faculty_dept_repo.get_department_name(dept_id)
+
 
     def _format_ogrenci_num(self, girme_senesi, fakulte_num, bolum_num, program_tipi, sira):
         """Öğrenci numarası formatını oluştur: YY0FBBPSSS"""
@@ -1355,414 +984,68 @@ class ScheduleModel(QObject):
     # ════════════════════════════════════════════════════════════════
 
     def derslik_ekle(self, derslik_adi, tip, kapasite, floor=0, ozellikler=None, notlar=None):
-        """Derslik ekle"""
-        # Ensure tipping matches schema (derslik_tipi)
-        self.c.execute('''
-            INSERT INTO Derslikler (derslik_adi, derslik_tipi, kapasite, floor, ozellikler, notlar)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (derslik_adi, tip, kapasite, floor, ozellikler, notlar))
-        self.conn.commit()
-        return self.c.lastrowid
+        return self.room_repo.derslik_ekle(derslik_adi, tip, kapasite, floor, ozellikler, notlar)
+
 
     def derslik_guncelle(self, derslik_num, data):
-        """Derslik bilgilerini güncelle"""
-        # data keys: derslik_adi, derslik_tipi, kapasite, floor, notlar
-        query = 'UPDATE Derslikler SET '
-        params = []
-        updates = []
-        
-        for key, value in data.items():
-            updates.append(f"{key} = ?")
-            params.append(value)
-            
-        query += ", ".join(updates)
-        query += " WHERE derslik_num = ?"
-        params.append(derslik_num)
-        
-        self.c.execute(query, tuple(params))
-        self.conn.commit()
-        return True
+        return self.room_repo.derslik_guncelle(derslik_num, data)
+
 
     def get_derslik_by_id(self, derslik_num):
-        """Derslik detaylarını getir"""
-        self.c.execute('SELECT derslik_num, derslik_adi, derslik_tipi, kapasite, floor, notlar FROM Derslikler WHERE derslik_num = ?', (derslik_num,))
-        return self.c.fetchone()
+        return self.room_repo.get_derslik_by_id(derslik_num)
+
 
     def derslik_sil(self, derslik_num):
-        """Derslik soft delete - gerçekten silmez, sadece işaretler"""
-        from datetime import datetime
-        self.c.execute('''
-            UPDATE Derslikler 
-            SET silindi = 1, silinme_tarihi = ?
-            WHERE derslik_num = ?
-        ''', (datetime.now(), derslik_num))
-        self.conn.commit()
+        return self.room_repo.derslik_sil(derslik_num)
+
 
     def aktif_derslikleri_getir(self):
-        """Sadece aktif (silinmemiş) derslikleri getir"""
-        # Ensure column 'floor' and 'notlar' exist or handle it gracefully? 
-        # Assuming migration ran.
-        try:
-            self.c.execute('SELECT derslik_num, derslik_adi, derslik_tipi, kapasite, floor, notlar FROM Derslikler WHERE silindi = 0')
-            return self.c.fetchall()
-        except sqlite3.OperationalError:
-            # Fallback for old schema if migration failed silently (shouldn't happen)
-            print("WARNING: 'floor' or 'notlar' column missing in Derslikler. Returning default.")
-            self.c.execute('SELECT derslik_num, derslik_adi, derslik_tipi, kapasite FROM Derslikler WHERE silindi = 0')
-            rows = self.c.fetchall()
-            # Append default floor 0 and empty notlar
-            return [r + (0, "") for r in rows]
+        return self.room_repo.aktif_derslikleri_getir()
+
 
     def tum_derslikleri_getir(self):
-        """Tüm derslikleri getir (silinmiş olanlar dahil)"""
-        self.c.execute('SELECT derslik_num, derslik_adi, derslik_tipi, kapasite, silindi, silinme_tarihi FROM Derslikler')
-        return self.c.fetchall()
+        return self.room_repo.tum_derslikleri_getir()
 
-    # ════════════════════════════════════════════════════════════════
-    # TEACHER AVAILABILITY & UNAVAILABILITY
-    # ════════════════════════════════════════════════════════════════
 
     def add_teacher_unavailability(self, teacher_id: int, day: str, start_time: str, end_time: str, yil: str = "Hepsi", donem: str = "Hepsi", description: str = "") -> bool:
-        """
-        Add a time slot where the teacher is NOT available.
-        """
-        try:
-            # Check for existing overlap for this teacher within the same year/semester scope
-            self.c.execute('''
-                SELECT id FROM Ogretmen_Musaitlik 
-                WHERE ogretmen_id = ? AND gun = ? AND yil = ? AND donem = ?
-                AND (
-                    (baslangic <= ? AND bitis >= ?) OR
-                    (baslangic <= ? AND bitis >= ?) OR
-                    (baslangic >= ? AND bitis <= ?)
-                )
-            ''', (teacher_id, day, yil, donem, start_time, start_time, end_time, end_time, start_time, end_time))
-            
-            if self.c.fetchone():
-                return False # Already marked as unavailable
-            
-            self.c.execute('''
-                INSERT INTO Ogretmen_Musaitlik (ogretmen_id, gun, baslangic, bitis, yil, donem, description)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            ''', (teacher_id, day, start_time, end_time, yil, donem, description))
-            self.conn.commit()
-            return True
-        except Exception as e:
-            self.error_occurred.emit(f"Müsaitlik eklenirken hata: {str(e)}")
-            return False
+        return self.teacher_repo.add_teacher_unavailability(teacher_id, day, start_time, end_time, yil, donem, description)
+
 
     def get_teacher_unavailability(self, teacher_id: int, yil: str = None, donem: str = None) -> List[tuple]:
-        """Get all unavailable slots for a teacher"""
-        try:
-            # Controller expects: (day, start, end, id, description, ...)
-            query = '''
-                SELECT om.gun, om.baslangic, om.bitis, om.id, om.description, o.preferred_day_span, om.yil, om.donem
-                FROM Ogretmen_Musaitlik om
-                JOIN Ogretmenler o ON om.ogretmen_id = o.ogretmen_num
-                WHERE om.ogretmen_id = ? 
-            '''
-            params = [teacher_id]
-            
-            if yil:
-                query += " AND (om.yil = 'Hepsi' OR om.yil = ?)"
-                params.append(yil)
-                
-            if donem:
-                query += " AND (om.donem = 'Hepsi' OR om.donem = ?)"
-                params.append(donem)
-                
-            query += '''
-                ORDER BY 
-                    CASE om.gun 
-                        WHEN 'Pazartesi' THEN 1 
-                        WHEN 'Salı' THEN 2 
-                        WHEN 'Çarşamba' THEN 3 
-                        WHEN 'Perşembe' THEN 4 
-                        WHEN 'Cuma' THEN 5 
-                        WHEN 'Cumartesi' THEN 6 
-                        WHEN 'Pazar' THEN 7 
-                    END, om.baslangic
-            '''
-            self.c.execute(query, tuple(params))
-            return self.c.fetchall()
-        except Exception as e:
-            print(f"Error fetching unavailability: {e}")
-            return []
+        return self.teacher_repo.get_teacher_unavailability(teacher_id, yil, donem)
+
 
     def get_combined_availability(self, teacher_id: int = None) -> List[dict]:
-        """
-        Get both Day Spans and Unavailability Slots combined.
-        Returns list of dicts:
-        {
-            'type': 'span' | 'slot',
-            'teacher_id': int,
-            'teacher_name': str,
-            # For Span:
-            'span_value': int,
-            # For Slot:
-            'id': int,
-            'day': str,
-            'start': str,
-            'end': str,
-            'yil': str,
-            'donem': str,
-            'description': str
-        }
-        """
-        results = []
-        try:
-            # 1. Fetch Teachers (Filtered or All)
-            if teacher_id:
-                self.c.execute("SELECT ogretmen_num, ad, soyad, preferred_day_span, room_request FROM Ogretmenler WHERE ogretmen_num = ?", (teacher_id,))
-            else:
-                self.c.execute("SELECT ogretmen_num, ad, soyad, preferred_day_span, room_request FROM Ogretmenler ORDER BY ad, soyad")
-            
-            teachers = self.c.fetchall()
-            
-            for t in teachers:
-                t_num, t_ad, t_soyad, t_span, t_room = t
-                t_name = f"{t_ad} {t_soyad}"
-                
-                # Add Span Entry if exists or if we need to pass room_pref to UI
-                if (t_span and t_span > 0) or t_room:
-                    results.append({
-                        'type': 'span',
-                        'teacher_id': t_num,
-                        'teacher_name': t_name,
-                        'span_value': t_span or 0,
-                        'room_pref': t_room or ""
-                    })
-                
-                # 2. Fetch Slots for this teacher
-                self.c.execute('''
-                    SELECT id, gun, baslangic, bitis, yil, donem, description 
-                    FROM Ogretmen_Musaitlik 
-                    WHERE ogretmen_id = ?
-                    ORDER BY 
-                    CASE gun 
-                        WHEN 'Pazartesi' THEN 1 
-                        WHEN 'Salı' THEN 2 
-                        WHEN 'Çarşamba' THEN 3 
-                        WHEN 'Perşembe' THEN 4 
-                        WHEN 'Cuma' THEN 5 
-                        WHEN 'Cumartesi' THEN 6 
-                        WHEN 'Pazar' THEN 7 
-                    END, baslangic
-                ''', (t_num,))
-                slots = self.c.fetchall()
-                
-                for s in slots:
-                    results.append({
-                        'type': 'slot',
-                        'teacher_id': t_num,
-                        'teacher_name': t_name,
-                        'id': s[0],
-                        'day': s[1],
-                        'start': s[2],
-                        'end': s[3],
-                        'yil': s[4],
-                        'donem': s[5],
-                        'description': s[6]
-                    })
-                    
-            return results
-            
-        except Exception as e:
-            print(f"Error fetching combined availability: {e}")
-            return []
+        return self.teacher_repo.get_combined_availability(teacher_id)
+
 
     def remove_teacher_unavailability(self, unavailability_id: int) -> bool:
-        """Remove an unavailability slot"""
-        try:
-            self.c.execute("DELETE FROM Ogretmen_Musaitlik WHERE id = ?", (unavailability_id,))
-            self.conn.commit()
-            return True
-        except Exception as e:
-            self.error_occurred.emit(f"Müsaitlik silinirken hata: {str(e)}")
-            return False
+        return self.teacher_repo.remove_teacher_unavailability(unavailability_id)
+
 
     def update_teacher_unavailability(self, u_id: int, teacher_id: int, day: str, start: str, end: str, yil: str = "Hepsi", donem: str = "Hepsi", description: str = "") -> bool:
-        """Update unavailability slot"""
-        try:
-            # Check for existing overlap (excluding self)
-            self.c.execute('''
-                SELECT id FROM Ogretmen_Musaitlik 
-                WHERE ogretmen_id = ? AND gun = ? AND yil = ? AND donem = ? AND id != ?
-                AND (
-                    (baslangic <= ? AND bitis >= ?) OR
-                    (baslangic <= ? AND bitis >= ?) OR
-                    (baslangic >= ? AND bitis <= ?)
-                )
-            ''', (teacher_id, day, yil, donem, u_id, start, start, end, end, start, end))
-            
-            if self.c.fetchone():
-                return False # Overlap
-            
-            self.c.execute('''
-                UPDATE Ogretmen_Musaitlik 
-                SET gun = ?, baslangic = ?, bitis = ?, yil = ?, donem = ?, description = ?
-                WHERE id = ?
-            ''', (day, start, end, yil, donem, description, u_id))
-            self.conn.commit()
-            return True
-        except Exception as e:
-            self.error_occurred.emit(f"Müsaitlik güncellenirken hata: {str(e)}")
-            return False
+        return self.teacher_repo.update_teacher_unavailability(u_id, teacher_id, day, start, end, yil, donem, description)
 
-
-
-    # ════════════════════════════════════════════════════════════════
-    # STUDENT QUERIES & GRADES
-    # ════════════════════════════════════════════════════════════════
 
     def get_student_grades(self, student_id: int, show_history: bool = False) -> List[tuple]:
-        """
-        Get student grades.
-        If show_history is False, returns only the latest attempt for each course.
-        """
-        try:
-            if show_history:
-                query = '''
-                    SELECT t1.*, (SELECT akts FROM Dersler WHERE ders_kodu = t1.ders_kodu LIMIT 1) as akts 
-                    FROM Ogrenci_Notlari t1 
-                    WHERE t1.ogrenci_num = ? 
-                    ORDER BY t1.donem DESC
-                '''
-                self.c.execute(query, (student_id,))
-            else:
-                # Filter out grades that are referenced as 'previous' by another grade
-                query = '''
-                    SELECT t1.*, (SELECT akts FROM Dersler WHERE ders_kodu = t1.ders_kodu LIMIT 1) as akts
-                    FROM Ogrenci_Notlari t1
-                    LEFT JOIN Ogrenci_Notlari t2 ON t1.id = t2.onceki_not_id
-                    WHERE t1.ogrenci_num = ? AND t2.id IS NULL
-                    ORDER BY t1.donem DESC
-                '''
-                self.c.execute(query, (student_id,))
-            return self.c.fetchall()
-        except Exception as e:
-            print(f"Error fetching grades: {e}")
-            return []
+        return self.student_repo.get_student_grades(student_id, show_history)
+
 
     def get_students(self, filters: Dict[str, any] = None) -> List[tuple]:
-        """
-        Get students based on filters.
-        filters: {
-            'fakulte_id': int, 
-            'bolum_id': int, 
-            'sinif': int, 
-            'search': str,
-            'show_regular': bool,
-            'show_irregular': bool,
-            'show_cap_yandal': bool
-        }
-        Returns: List of (ogrenci_num, ad, soyad, bolum_adi, sinif)
-        """
-        try:
-            query = '''
-                SELECT o.ogrenci_num, o.ad, o.soyad, b.bolum_adi, o.kacinci_donem
-                FROM Ogrenciler o
-                JOIN Bolumler b ON o.bolum_num = b.bolum_id
-                WHERE 1=1
-            '''
-            params = []
+        return self.student_repo.get_students(filters)
 
-            if filters:
-                if filters.get('fakulte_id'):
-                    query += " AND o.fakulte_num = ?"
-                    params.append(filters['fakulte_id'])
-                
-                if filters.get('bolum_id'):
-                    query += " AND o.bolum_num = ?"
-                    params.append(filters['bolum_id'])
-                
-                if filters.get('sinif'):
-                    # kacinci_donem is semester count (1-8). Year = (kacinci_donem + 1) // 2
-                    target_year = filters['sinif']
-                    min_sem = (target_year * 2) - 1
-                    max_sem = target_year * 2
-                    query += " AND o.kacinci_donem BETWEEN ? AND ?"
-                    params.extend([min_sem, max_sem])
-                
-                if filters.get('search'):
-                    search_term = f"%{filters['search']}%"
-                    query += " AND (o.ad LIKE ? OR o.soyad LIKE ? OR CAST(o.ogrenci_num AS TEXT) LIKE ?)"
-                    params.extend([search_term, search_term, search_term])
-
-                # Student Type Filters
-                # Default to showing all if keys are missing (backward compatibility)
-                show_regular = filters.get('show_regular', True)
-                show_irregular = filters.get('show_irregular', True)
-                show_cap_yandal = filters.get('show_cap_yandal', True)
-
-                # If all are true, no need to filter (optimization)
-                if not (show_regular and show_irregular and show_cap_yandal):
-                    type_conditions = []
-                    
-                    # Regular: No second major AND expected semester
-                    # Expected semester = (Current Year - Entry Year) * 2 + 1 (For Fall)
-                    # NOTE: Database seems to be in Fall 2024 state, but system year is 2025.
-                    # Adjusting by -1 to match database state.
-                    effective_year = datetime.now().year - 1
-                    
-                    if show_regular:
-                        type_conditions.append(f"(o.ikinci_bolum_turu IS NULL AND o.kacinci_donem = ({effective_year} - o.girme_senesi) * 2 + 1)")
-                    
-                    # Irregular: No second major AND NOT expected semester
-                    if show_irregular:
-                        type_conditions.append(f"(o.ikinci_bolum_turu IS NULL AND o.kacinci_donem != ({effective_year} - o.girme_senesi) * 2 + 1)")
-                    
-                    # ÇAP/Yandal: Has second major
-                    if show_cap_yandal:
-                        type_conditions.append("(o.ikinci_bolum_turu IS NOT NULL)")
-                    
-                    if type_conditions:
-                        query += " AND (" + " OR ".join(type_conditions) + ")"
-                    else:
-                        # If all are false, show nothing
-                        query += " AND 0"
-
-            query += " ORDER BY o.ad, o.soyad"
-            
-            self.c.execute(query, params)
-            return self.c.fetchall()
-        except Exception as e:
-            print(f"Error fetching students: {e}")
-            return []
-
-    # get_all_faculties removed — use get_faculties() which is equivalent and ordered.
 
     def get_all_departments(self) -> List[tuple]:
-        """Get all departments (id, name)"""
-        try:
-            self.c.execute("SELECT bolum_id, bolum_adi FROM Bolumler")
-            return self.c.fetchall()
-        except Exception as e:
-            print(f"Error fetching departments: {e}")
-            return []
+        return self.faculty_dept_repo.get_all_departments()
+
 
     def get_teacher_span(self, teacher_id: int) -> int:
-        """Get preferred day span for a teacher"""
-        try:
-            self.c.execute("SELECT preferred_day_span FROM Ogretmenler WHERE ogretmen_num = ?", (teacher_id,))
-            row = self.c.fetchone()
-            # Return 0 if NULL or not set
-            return row[0] if row and row[0] is not None else 0
-        except Exception as e:
-            print(f"Error getting teacher span: {e}")
-            return 0
+        return self.teacher_repo.get_teacher_span(teacher_id)
+
 
     def get_all_teacher_day_spans(self) -> List[tuple]:
-        """Get (teacher_id, preferred_day_span) for all teachers with a span set."""
-        try:
-            self.c.execute(
-                "SELECT ogretmen_num, preferred_day_span FROM Ogretmenler "
-                "WHERE preferred_day_span IS NOT NULL AND preferred_day_span > 0"
-            )
-            return self.c.fetchall()
-        except Exception as e:
-            print(f"Error fetching teacher day spans: {e}")
-            return []
+        return self.teacher_repo.get_all_teacher_day_spans()
+
 
     def get_pool_codes_by_department(self, dept_id: int) -> List[str]:
         """Get unique pool codes used by a department"""
@@ -1779,41 +1062,16 @@ class ScheduleModel(QObject):
             return []
 
     def update_teacher_span(self, teacher_id: int, span: int) -> bool:
-        """Update preferred day span for a teacher"""
-        try:
-            # Clean span value: 0 for "No Constraint"
-            val = span if span > 0 else None
-            self.c.execute("UPDATE Ogretmenler SET preferred_day_span = ? WHERE ogretmen_num = ?", (val, teacher_id))
-            self.conn.commit()
-            return True
-        except Exception as e:
-            self.error_occurred.emit(f"Çalışma bloğu güncellenirken hata: {str(e)}")
-            return False
+        return self.teacher_repo.update_teacher_span(teacher_id, span)
+
 
     def get_teacher_room_request(self, teacher_id: int) -> str:
-        """Get room request note for a teacher"""
-        try:
-            self.c.execute("SELECT room_request FROM Ogretmenler WHERE ogretmen_num = ?", (teacher_id,))
-            row = self.c.fetchone()
-            return row[0] if row and row[0] else ""
-        except Exception as e:
-            print(f"Error getting room request: {e}")
-            return ""
+        return self.teacher_repo.get_teacher_room_request(teacher_id)
+
 
     def update_teacher_room_request(self, teacher_id: int, request: str) -> bool:
-        """Update room request note for a teacher"""
-        try:
-            val = request if request.strip() else None
-            self.c.execute("UPDATE Ogretmenler SET room_request = ? WHERE ogretmen_num = ?", (val, teacher_id))
-            self.conn.commit()
-            return True
-        except Exception as e:
-            self.error_occurred.emit(f"Oda tercihi güncellenirken hata: {str(e)}")
-            return False
+        return self.teacher_repo.update_teacher_room_request(teacher_id, request)
 
-    # ════════════════════════════════════════════════════════════════
-    # MASTER VIEW & SNAPSHOTS
-    # ════════════════════════════════════════════════════════════════
 
     def get_master_schedule_data(self) -> List[Dict]:
         """

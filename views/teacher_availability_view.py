@@ -314,6 +314,13 @@ class TeacherAvailabilityView(QDialog):
         # Assignment List
         # Filters specific to this tab
         filter_layout = QHBoxLayout()
+        
+        self.search_assignments = QLineEdit()
+        self.search_assignments.setPlaceholderText("Ders Ara...")
+        self.search_assignments.setMinimumWidth(150)
+        self.search_assignments.textChanged.connect(lambda: self._load_assignments(self.teacher_combo.currentData()))
+        filter_layout.addWidget(self.search_assignments)
+
         self.chk_show_assigned = QCheckBox("Atanan Dersler")
         self.chk_show_assigned.setChecked(True)
         self.chk_show_assigned.stateChanged.connect(lambda: self._load_assignments(self.teacher_combo.currentData()))
@@ -327,7 +334,7 @@ class TeacherAvailabilityView(QDialog):
         filter_layout.addStretch()
         
         # Move Curriculum Button here and align right
-        self.btn_quick_template = QPushButton("Müfredatı Düzenle / Yeni Ders")
+        self.btn_quick_template = QPushButton("Müfredatı Düzenle")
         self.btn_quick_template.setToolTip("Müfredat listesini görüntüle ve düzenle")
         self.btn_quick_template.clicked.connect(self._open_curriculum_view)
         filter_layout.addWidget(self.btn_quick_template)
@@ -496,27 +503,26 @@ class TeacherAvailabilityView(QDialog):
                 self.assign_table.setSpan(row, 0, 1, 6) # Span all 6 columns
                 
             # Helper to add row
-            def add_row(name, detail, semester_text, status_text, item_type, teacher_name=None, row_teacher_id=None):
+            def add_row(display_name, db_course_name, detail, semester_text, status_text, item_type, teacher_name="", row_teacher_id=None):
                 row = self.assign_table.rowCount()
                 self.assign_table.insertRow(row)
                 
-                final_teacher_name = teacher_name if teacher_name else current_teacher_name
-                
-                # Use provided row_teacher_id if available (from new All query)
-                # Otherwise use the main teacher_id (if single view)
-                if row_teacher_id is None and not is_all:
+                final_teacher_name = teacher_name
+                if item_type == "ASSIGNMENT" and not is_all:
+                     final_teacher_name = self.teacher_combo.currentText()
                      row_teacher_id = teacher_id
-                    
-                self.assign_table.setItem(row, 0, QTableWidgetItem(name))
+                
+                self.assign_table.setItem(row, 0, QTableWidgetItem(display_name))
                 self.assign_table.setItem(row, 1, QTableWidgetItem(detail))
                 self.assign_table.setItem(row, 2, QTableWidgetItem(semester_text))
                 self.assign_table.setItem(row, 3, QTableWidgetItem(final_teacher_name))
                 self.assign_table.setItem(row, 4, QTableWidgetItem(status_text))
                 
-                self.assign_table.item(row, 0).setData(Qt.UserRole, (item_type, name, detail, row_teacher_id))
+                self.assign_table.item(row, 0).setData(Qt.UserRole, (item_type, db_course_name, detail, row_teacher_id))
 
             # --- Section 1: Assigned ---
             target_term = self.term_filter_combo.currentText()
+            search_text = self.search_assignments.text().lower() if hasattr(self, 'search_assignments') else ""
             lookup = getattr(self.controller.model, 'semester_lookup', {})
             
             if self.chk_show_assigned.isChecked() and assigned:
@@ -526,6 +532,16 @@ class TeacherAvailabilityView(QDialog):
                 for item in assigned:
                     # Resolve semester strings
                     course_name = item[0]
+                    if search_text and search_text not in course_name.lower():
+                        continue
+                        
+                    if is_all:
+                        course_code = item[4] if len(item) >= 5 else ""
+                    else:
+                        course_code = item[2] if len(item) >= 3 else ""
+                        
+                    display_name = f"{course_name} ({course_code})" if course_code else course_name
+                        
                     sem_set = lookup.get(course_name, set())
                     if not sem_set:
                         # try base name split
@@ -542,14 +558,14 @@ class TeacherAvailabilityView(QDialog):
                             continue
                 
                     if is_all:
-                        # item: (ders, instance, hoca, teacher_id)
+                        # item: (ders, instance, hoca, teacher_id, ders_kodu)
                         try:
                             # Safe unpacking with debug
-                            if len(item) == 4:
+                            if len(item) >= 4:
                                 instance = item[1]
                                 hoca = item[2]
                                 t_id = item[3]
-                            elif len(item) == 3:
+                            elif len(item) >= 3:
                                 # Legacy/Fallback: Missing teacher ID
                                 instance = item[1]
                                 hoca = item[2]
@@ -558,19 +574,27 @@ class TeacherAvailabilityView(QDialog):
                                 print(f"ERROR: Invalid item shape in assigned list: {item}")
                                 continue
                                 
-                            add_row(course_name, f"Şube {instance}", sem_str, "Atandı", "ASSIGNMENT", teacher_name=hoca, row_teacher_id=t_id)
+                            add_row(display_name, course_name, f"Şube {instance}", sem_str, "Atandı", "ASSIGNMENT", teacher_name=hoca, row_teacher_id=t_id)
                         except IndexError as e:
                             print(f"IndexError unpacking item: {item}. Error: {e}")
                             continue
                     else:
-                        course_name, instance = item
-                        add_row(course_name, f"Şube {instance}", sem_str, "Atandı", "ASSIGNMENT")
+                        instance = item[1]
+                        add_row(display_name, course_name, f"Şube {instance}", sem_str, "Atandı", "ASSIGNMENT")
 
             # --- Section 2: Unassigned ---
             unassigned = self.controller.model.get_unassigned_courses()
             if unassigned and self.chk_show_unassigned.isChecked():
                 add_banner("Atanmamış Dersler", "#FFCDD2") # Light Red
-                for course_name, instance in unassigned:
+                for item in unassigned:
+                     course_name = item[0]
+                     instance = item[1]
+                     course_code = item[2] if len(item) >= 3 else ""
+                     display_name = f"{course_name} ({course_code})" if course_code else course_name
+
+                     if search_text and search_text not in course_name.lower():
+                         continue
+                         
                      # Resolve semester
                      sem_set = lookup.get(course_name, set())
                      if not sem_set:
@@ -586,7 +610,7 @@ class TeacherAvailabilityView(QDialog):
                          if target_term == "Güz" and "Güz" not in sem_set and "Bahar" in sem_set:
                              continue
 
-                     add_row(course_name, f"Şube {instance}", sem_str, "Atanmamış", "UNASSIGNED", teacher_name="-", row_teacher_id=None)
+                     add_row(display_name, course_name, f"Şube {instance}", sem_str, "Atanmamış", "UNASSIGNED", teacher_name="-", row_teacher_id=None)
             
         except Exception as e:
             print(f"Error loading assignments: {e}")

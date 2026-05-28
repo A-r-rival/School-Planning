@@ -1,0 +1,3742 @@
+{
+    "Fizik I / Physik I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kimya I / Chemie I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Enerji Bilimi ve Teknolojilerine Giriş / Einführung...": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Analiz I / Analysis I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Teknik Çizim ve CAD / Technisches Zeichnen und CAD": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Teknik Almanca I / Technisches Deutsch I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İngilizce I / Englisch I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Fizik II / Physik II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kimya II / Chemie II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Analiz II ve Lineer Cebir / Analysis II und Lineare Algebra": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilimsel Programlama / Wissenschaftliches Programmierung": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Proje Yönetimi / Projektmanagement": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Teknik Almanca II / Technisches Deutsch II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İngilizce II / Englisch II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yenilenebilir Enerji Teknolojileri / Erneuerbare...": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrokimya / Electrochemie": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Diferansiyel Denklemler / Diferentialgleichungen": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektroteknik / Elektrotechnik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Türkçe I / Türkisch I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Atatürk İlkeleri ve İnkılap Tarihi I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İngilizce III / Englisch III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Termodinamik / Thermodynamik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Katıhal Fiziği / Festkörperphysik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Türkçe II / Türkisch II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Atatürk İlkeleri ve İnkılap Tarihi II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İngilizce IV / Englisch IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zorunlu Seçmeli Ders": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Ders": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Akışkanlar Mekaniği / Strömungsmechanik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İstatistik / Statistik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Uygulamalı Enerji Bilimi Laboratuvarı / Angewandtes...": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Nümerik Analiz / Numerische Analyse": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Isı Transferi / Wärmeübertragung": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Proje I (Tez Hazırlık ve Seminer) / Projekt I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İş Sağlığı ve Güvenliği I / Arbeitsschutz... I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İleri İngilizce I / Fortgeschrittenes Englisch I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Üniversite Seçmeli Ders": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Proje II (Bitirme Tezi) / Projekt II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seminer / Seminar": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Enerji Yönetimi / Energiemanagement": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Endüstri Stajı Semineri / Industriepraktikum Seminar": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İş Sağlığı ve Güvenliği II / Arbeitsschutz... II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İleri İngilizce II / Fortgeschrittenes Englisch II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Hidrojen Enerjisi ve Yakıt Hücreleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Enerji Sistemlerinde Optimizasyon": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Güneş Enerjisi Sistemleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Rüzgar Enerjisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Hammadde ve Enerjiye Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kuantum Enerji Sistemlerine Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yenilenebilir Enerji – Malzeme, Yapı, İşlev": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sürdürülebilir Enerji": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Enerji Depolama Sistemleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Güneş Hücreleri Fiziği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Nükleer Enerji": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İleri Nükleer Enerji": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İleri Kuantum Enerji Sistemleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İnce Film Kaplama Teknolojileri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Soğutma Teknolojisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sürdürülebilir Biyoyakıt Teknolojileri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Heterojen Kataliz": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Makine Öğrenmesine Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Enerji Ekonomisi ve Politikaları": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Enerji Sistem Modellemesi ve Simülasyonu": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kömür İşleme ve Teknolojisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Temiz Yanma Teknolojileri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzemelerin İleri Karakterizasyon Teknikleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Fiziksel Kimya 2": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Veri Analizinin İstatistiksel Yöntemleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzeme Üretim ve İşleme Teknolojileri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Akıllı Şebekeler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İklim Sistemine Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilimsel Çalışma Yöntemleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik Makineleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Fonksiyonel Malzemeler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Polimerik Malzemeler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Fikri Mülkiyet Hukuku": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Felsefe Tarihi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İktisadi Tarihi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Girişimcilik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgisayar Bilimine ve Programlamaya Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Statik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Muhasebe ve Bilanço": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Doğa Bilimlerine Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "-": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Fizik I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kimya I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyoloji": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Analiz I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzeme Bilimi: Kariyere Giriş ve Etik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Teknik Almanca I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İngilizce I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Fizik II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kimya II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Analiz II ve Lineer Cebir": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Programlamaya Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Proje Yönetimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Teknik Almanca II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İngilizce II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Fiziksel Kimya I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzeme Biliminin Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Türkçe I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İngilizce III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zorunlu Seçmeli Ders I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Fiziksel Kimya II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Ölçüm Teknikleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Katıların Termodinamiği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Türkçe II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İngilizce IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zorunlu Seçmeli Ders II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Diferansiyel Denklemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Reel Kristaller ve Özellikleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Teknik Mekanik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzeme Biliminde Karakterizasyon Metotları": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zorunlu Seçmeli Ders III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İstatistiksel ve Sayısal Yöntemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzemelerin Mekanik Özellikleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zorunlu Seçmeli Ders IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Proje I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İş Sağlığı ve İş Güvenliği I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İleri İngilizce I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zorunlu Seçmeli Ders V": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Proje II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seminer": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Endüstri Stajı Semineri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İş Sağlığı ve İş Güvenliği II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İleri İngilizce II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Üniversite Seçmeli Dersi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zorunlu Sosyal Seçmeli Ders VI": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sayısal Tasarım": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzeme Kimyası": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzeme Yapısı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Tasarım Teknikleri I: Teknik Çizim ve CAD": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrotekniğe Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yoğun Maddenin Fonksiyonel Özellikleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzeme Teknolojisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzeme Muayenesi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı Malzemeleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Toz Metalurjisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyomalzemeler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kompozit Malzemeler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Metalik Malzemeler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Reel Kristallerde Difüzyon ve Taşınım": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yoğun Madde Fiziği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yenilenebilir Enerji Teknolojileri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Temel Hukuk": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "BIO111 - Biyoloji": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "CHE111 - Kimya I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "DEU121 - Teknik Almanca I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "ENG101 - İngilizce I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MAT103 - Analiz I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MBT101 - Moleküler Biyoteknoloji'ye Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "PHY111 - Fizik I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "CHE112 - Kimya II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "DEU122 - Teknik Almanca II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "ENG102 - İngilizce II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MAT112 - Analiz II ve Lineer Cebir": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "NWI102 - Programlamaya Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "NWI106 - Proje Yönetimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "PHY112 - Fizik II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "AIT001 - Atatürk İlkeleri ve İnkılap Tarihi I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "ENG201 - İngilizce III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MAT201 - Diferansiyel Denklemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MBT201 - Hücre Biyolojisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MBT211 - Biyokimya I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "NWI201 - Fiziksel Kimya I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "TUR001 - Türkçe I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "AIT002 - Atatürk İlkeleri ve İnkılap Tarihi II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "ENG202 - İngilizce IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MBT204 - Mikrobiyoloji I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MBT206 - Biyoenformatik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MBT212 - Biyokimya II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MBT222 - Moleküler Biyoteknoloji I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "TUR002 - Türkçe II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "ENG301 - İleri İngilizce I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "ISG001 - İş Sağlığı ve Güvenliği I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MBT323 - Moleküler Biyoteknoloji II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "SDBIOI - Seçmeli Dersler-BIO I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "ÜSD000 - Üniversite Seçmeli Ders Havuzu": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "ENG302 - İleri İngilizce II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "ISG002 - İş Sağlığı ve İş Güvenliği II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MBT324 - Moleküler Biyoteknoloji III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MBT332 - Biyoteknoloji İşletmeleri Sist. Tek. I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MBT364 - Biyoanalitik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "NWI300 - Temel Hukuk": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "SDBIOII - Seçmeli Dersler - Bio II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MBT441 - Proje I (Tez Hazırlık)": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "PRK401 - Staj": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "SDBIOIII - Seçmeli Dersler - Bio III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "SDMATI - Seçmeli Dersler - Mat I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "MBT442 - Proje II (Bitirme Tezi)": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "SDBIOIV - Seçmeli Dersler - Bio IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "SDMATII - Seçmeli Dersler - Mat II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mikrobiyoloji II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İmmünoloji": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Ekoloji": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Evrim Biyolojisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyobilimler için Organik Kimya": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İnşaat Mühendisliğine Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Pazarlamanın Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Stratejik Pazarlama": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik-Elektronik Mühendisliğine Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Nesnel Programlama": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Makine Mühendisliğine Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzeme Teknolojisi I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İktisadi Tarih": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Endüstri Mühendisliğine Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyofiziksel Kimya": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyoelektrokimya": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyokataliz": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyoteknoloji İşletmeleri için Sistem Teknikleri II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Hücre-Malzeme Etkileşimleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Doku Mühendisliği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyosensörler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Nanobiyoteknoloji": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Hedeflendirilmiş İlaç Taşıma": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Popülasyon Genetiği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Etken Madde Araştırmaları": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Doğal Madde Üretimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Egzersizin Moleküler Biyolojisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyomatematik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyofizik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Nicel Biyoloji": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyoistatistik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Duyu Organlarının Biyofiziği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyomedikal İşaret işleme ve Yapay Zeka Uygulamaları": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyobilimler için MATLAB": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mantık": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgisayar Organizasyonu": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Lineer Cebir": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Özdevinirler ve Biçimsel Diller": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşletim Sistemleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Ayrık Yapılar": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Algoritmalar ve Veri Yapıları I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Veritabanı Sistemleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgisayar Ağları": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgisayar ve Toplum Semineri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yazılım Mühendisliği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Algoritmalar ve Veri Yapıları II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Gömülü Sistemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgisayar Mühendisleri için Etik Semineri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Alan - Proje": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli I - Uygulamalı Bilgisayar Mühendisliği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli I - Bilgisayar Donanımı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli I - Bilg. Müh. Kuramsal Temelleri ve Matematik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Üniversite Seçmeli Ders Havuzu I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İş Sağlığı ve Güvenliği I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli II - Uygulamalı Bilgisayar Müh.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli II - Bilgisayar Donanımı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli II - Bilg. Müh. Kuramsal Temelleri ve Matematik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Üniversite Seçmeli Ders Havuzu II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İş Sağlığı ve Güvenliği II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mesleki Alan Stajı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Dersler III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bitirme Tezi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Dersler IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Proje I: Yenilik ve Teknoloji Yönetimi Projesi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mekatronik Projesi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yazılım Mühendisliği Projesi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik ve Elektronik Mühendisliği Projesi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Akıllı Sistemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Makine Öğrenmesi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapay Sinir Ağları": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Doğal Dil İşleme": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Veri Madenciliği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Veri Analizi Yöntemleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgi Getirimi ve Çıkarımı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Önerici Sistemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Derin Jeneratif Modeller": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilişim Sistemleri Güvenliği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Dağıtık Sistemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yazılım Bağlamında Validasyon ve Verifikasyon": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Derin Öğrenme": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgisayar Grafiği I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgisayar Grafiği II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Pekiştirmeli Öğrenme": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Tıbbi Görüntü İşleme": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgisayar Görmesinin Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Oyun Tasarımı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Oyun Motoru Mimarisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgi Görselleme": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Web Mühendisliği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İnsan-Makine İletişimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Uygulamalı Bilg. Müh: Seçilmiş Konular I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Uyg. Bilg. Müh. Seç. Kon. II - Multimedya İçerik Arama": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Uygulamalı Bilg. Müh: Seçilmiş Konular III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Uygulamalı Bilg. Müh: Seçilmiş Konular IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Uygulamalı Bilg. Müh: Seçilmiş Konular V": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Uygulamalı Bilg. Müh: Seçilmiş Konular VI": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yazılım Projesi I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yazılım Projesi II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yazılım Projesi III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Tıp Alanında Yapay Zeka": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyoinfomartiğe Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Gerçek Zamanlı Sistemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Derleyici Tasarımı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mobil Komünikasyon": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "GPU Programlama": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Görüntü İşlemenin Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Donanımsal Bilg. Müh: Seçilmiş Konular I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Donanımsal Bilg. Müh: Seçilmiş Konular II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Donanımsal Bilg. Müh: Seçilmiş Konular III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Donanımsal Bilg. Müh: Seçilmiş Konular IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Donanımsal Bilg. Müh: Seçilmiş Konular V": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Donanımsal Bilg. Müh: Seçilmiş Konular VI": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Donanım Projesi I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Donanım Projesi II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Donanım Projesi III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik ve Manyetizma": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik Devreleri I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik Devreleri II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sinyaller ve Sistemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektronik I: Yarı İletken Elemanlar": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Telekomünikasyon": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "VLSI Tasarımına Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Haberleşme Ağları": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Dijital Görüntü İşleme": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Dijital Sinyal İşleme": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Teknik Çizim ve Bilgisayar Destekli Tasarım": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzeme Teknolojisi II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Tasarım Tek. I: Teknik Çizim ve Bilg. Destekli Tasarım": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Endüstriyel Otomasyon Teknolojisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Endüstriyel Robotik I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Görüntü Tabanlı Otomasyon I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Görüntü Tabanlı Otomasyon II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapay Zeka": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgi Gösterimi ve Akıl Yürütme": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kodlama Teorisi ve Kriptoloji": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Algoritmik Geometrinin Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Algoritma Mühendisliği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilg. Müh. Teorik Temelleri: II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular V": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilg. Müh. Teorik Temelleri: Seçilmiş Konular VI": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgisayar Destekli İstatistik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Diferansiyel Denklemler ve Nümerik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgisayar Mühendisleri için İleri Matematik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Algoritmalar ve Karmaşıklık Teorisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Programlama Paradigmaları": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Analiz II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Numerik Matematik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yöneylem Araştırması I - Doğrusal Modeller": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yöneylem Araştırması II - Rassal Modeller": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşletme Enformatiği: Seçilmiş Konular I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşletme Enformatiği: Seçilmiş Konular II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşletme Enformatiği: Seçilmiş Konular III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşletme Enformatiği: Seçilmiş Konular IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşletme Enformatiği: Seçilmiş Konular V": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşletme Enformatiği: Seçilmiş Konular VI": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Dijital Pazarlama": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Karar Teorisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Örgütsel Davranış": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Personel Yönetimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşletmesel Veri Analizi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşletmeye Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşletme Enformatiğinin Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Operasyon Yönetimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "E-İş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yöneylem Araştırması": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İktisada Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Oyun Teorisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Uluslararası İktisat 1": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Üretim ve Lojistik için Enformasyon Sistemleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Pazarlama": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Lojistik Yönetimi ve Teknolojileri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kalite Yönetimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Dijital Dönüşüm Yönetimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mühendisler İçin Hukuk": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sosyal Beceriler I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sosyal Beceriler II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sosyal Beceriler III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sosyal Beceriler IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sosyal Beceriler V": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sosyal Beceriler VI": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sosyal Beceriler VII": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sosyal Beceriler VIII": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sosyal Beceriler IX": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sosyal Beceriler X": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgisayar Mühendisliği Semineri I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgisayar Mühendisliği Semineri II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mekaniğin Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Modern Fizik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Biyokimya I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mikrobiyoloji I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Moleküler Biyoteknoloji I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mekaniğin Temelleri / Fundamentals of Mechanics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sayısal Tasarım / Digital Design": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilg. Bil. ve Prog. Giriş / Intro to CS & Programming": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik-Elektronik Müh. Giriş / Intro to EE Engineering": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Teknik Almanca I / Technical German I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İngilizce I / English I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Analiz II / Analysis II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik ve Manyetizma / Electricity and Magnetism": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Lineer Cebir / Linear Algebra": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Ders Alanı II / Elective Pool II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilimsel Çalışma Yöntemleri / Scientific Work": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Teknik Almanca II / Technical German II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İngilizce II / English II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Diferansiyel Denklemler / Differential Equations": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik Devreleri I / Electrical Circuits I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Modern Fizik / Modern Physics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzeme Teknolojisi / Material Science": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Temel Staj / Basic Internship": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Türkçe I / Turkish I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İngilizce III / English III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Veri Analizinin İstat. Yönt. / Stat. Methods of Data Anal.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik Devreleri II / Electrical Circuits II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Ölçüm Teknikleri / Measurement Techniques": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Proje Yönetimi / Project Management": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Türkçe II / Turkish II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İngilizce IV / English IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Üniversite Seçmeli Ders Havuzu / University Elective Pool": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektromanyetik Alanlar / Electromagnetic Fields": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sinyaller ve Sistemler / Signals and Systems": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektronik I: Yarı İletken El. / Electronics I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik Makineleri I / Electrical Machines I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Ders Alanı V / Elective Pool V": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kontrol Müh. Temelleri / Fund. of Control Eng.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Telekomünikasyon / Telecommunications": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Ders Alanı T / Elective Pool T": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Ders Alanı M / Elective Pool M": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Ders Alanı VI / Elective Pool VI": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mesleki Alan Stajı / Specialized Internship": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İş Sağlığı ve Güvenliği I / OHS I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İleri İngilizce I / Advanced English I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Alan - Proje / Elective Courses - Project": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Ders Alanı VII": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Lisans Bitirme Çalışması / Bachelor Thesis": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İş Sağlığı ve Güvenliği II / OHS II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İleri İngilizce II / Advanced English II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Ders Alanı VIII": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mikroişlemciler / Microprocessors": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Nesnel Programlama / Object Oriented Programming": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Numerik Matematik / Numerical Mathematics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kompleks Analiz / Complex Analysis": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektronik II: Devre Teknolojisi / Circuit Technology": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sayısal Sinyal İşlemenin Temelleri / Fund. of DSP": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik-Elektronik Müh. Projesi / EEE Project": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mekatronik Projesi / Mechatronics Project": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yazılım Mühendisliği Projesi / Software Eng. Project": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektronik II: Devre Teknolojisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sayısal Sinyal İşlemenin Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektroteknik: Seçilmiş Konular I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektroteknik: Seçilmiş Konular II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Optik Haberleşme Tekniği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşlemsel Yükselteçler ile Devre Tasarımı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektronik Laboratuvarı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "RF Ön Uç Bileşenleri ve Devreler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektromanyetik Dalgaların Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Anten Teorisine Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik Makineleri II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik Enerjisi Kaynakları": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Güç Elektroniği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "FPGA Programlama": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Donanım Betimleme Dili ile Tasarım": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Analog Tümdevreler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Doğrusal Olmayan Kontrol Sistemleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Hibrit Sistemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Ayrık Zamanlı Kontrol Sistemleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Çok Girdili Çok Çıktılı Sistemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Ayrık Olaylı Sistemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sistem Tanımlama ve Akıllı Kontrol": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Doğrusal Olmayan Dinamik Sistemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Klinik Veri Yönetimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Makine Öğrenmesiyle Biyomedikal Modelleme": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Güvenilir Yapay Zeka": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sayısal Haberleşme Sistemleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sayısal Görüntü İşleme": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sayısal Sinyal İşleme": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilgi Kuramı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektroakustik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yüksek Frekans Tekniği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Aydınlatma Teknolojisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yüksek Gerilim Tekniği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Güç Dağıtım Sistemleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yenilenebilir Enerji Teknolojisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşletmede Mesleki Eğitim": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektroteknik: Seçilmiş Konular III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektroteknik: Seçilmiş Konular IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Tıbbi Cihazlarda Kalite Yönetim Sisteminin Kurulması": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Tıbbi Cihazlarda Test, Kontrol ve Kalibrasyon": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapay Zekâ": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kompleks Analiz": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Uygulamalı Kontrol Mühendisliği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Endüstriyel Robotik II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mukavemet": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşletme Almancası": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yatırım ve Finansman": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Temel Staj": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik ve Elektronik Mühendisliğinin Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Alan I - İktisadi Bilimler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zorunlu Seçmeli Alan I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Fabrika Yönetimine Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Alan II - Endüstri Müh. Araştırma Alanı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zorunlu Seçmeli Alan II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Üniversite Seçmeli Ders Havuzu": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Proje II: Endüstri Projesi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Pazarlama ve Üretim Yönetimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mühendisler için Yöneticilik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Para, Banka ve Finans Piyasaları": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Havayolu Yönetimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sürdürülebilir Üretim için Ürün Yaşam Döngüsü": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Endüstriyel Enformasyon Tek. ve Sanal Ürün Geliştirme": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Üretim Planlama ve Yönetimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektromobilite için Pil Üretim Teknolojisi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Endüstri Mühendisliği: Seçilmiş Konular I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Altı Sigma ve Problem Çözme": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İnsan-Makine Etkileşimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Tasarım Teknikleri II: Mekanik Parça Tasarımı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Takım Tezgahları": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Termodinamik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İmalat Teknolojisi I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Ergonomi: Metod-Zaman Ölçümü ve İş Bilimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Montaj Teknolojisi Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Endüstri Mühendisliği: Seçilmiş Konular II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Havaalanı Yönetimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mühendisler için Python": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İmalat Teknolojisinin Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Araç Teknolojisinin Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Analiz I / Calculus I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Teknik Çizim ve CAD / Technical Drawing and CAD": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Statik / Statics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilg. Bil. ve Prog. Giriş / Intro to CS and Programming": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Makine Mühendisliğine Giriş / Intro to Mech. Engineering": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Analiz II / Calculus II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mukavemet / Strength of Materials": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Tasarım Tek. I: Teknik Çizim 2 / Design Methods I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bilimsel Çalışma Yöntemleri / Scientific Research Methods": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elektrik ve Elektronik Müh. Temelleri / Fund. of EE Eng.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Tasarım Tek. II: Mekanik Parça Tas. / Design Methods II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kinematik ve Dinamik / Kinematics and Dynamics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzeme Teknolojisi I / Material Technology I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İmalat Teknolojisinin Temelleri / Fund. Manufacturing Tech.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Veri Analizinin İstat. Yönt. / Stat. Methods for Data Anal.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Dif. Denk. ve Sayısal Yönt. / Diff. Eq. & Numerical Meth.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Takım Tezgâhları / Machine Tools": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Titreşim ve Makine Dinamiği / Vibration & Machine Dynamics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Termodinamik / Thermodynamics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zorunlu Seçmeli I - Uzmanlık A, B, C veya D": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Isı Transferi / Heat Transfer": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Akışkanlar Mekaniği / Fluid Mechanics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zorunlu Seçmeli - Kontrol / Compulsary Elective - Control": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Seçmeli Ders Alanı - Proje / Elective Course - Project": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mesleki Alan Stajı / Vocational Internship": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zorunlu Seçmeli - Uygulamalı Proje / Applied Project": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zorunlu Seçmeli - Uzmanlık A, B, C veya D": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bitirme Tezi / Bachelor Thesis": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kontrol Mühendisliğinin Temelleri / Fund. of Control Eng.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Proje: Üretim Teknikleri / Project: Production Tech.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Proje: Tasarım / Project: Design": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Proje: Uzay Havacılık / Project: Aerospace Tech.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Proje: Taşıt Sistemleri / Project: Transport Systems": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İnterdisipliner Proje / Interdisciplinary Project": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Endüstri Projesi / Industry Project": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Fabrika Yönetimine Giriş / Intro to Factory Management": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İmalat Teknolojisi I / Manufacturing Technology I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İmalat Teknolojisi II / Manufacturing Technology II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yüzey Teknolojisi / Surface Technology": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Üretim: Seçilmiş Konular I / Selected Topics in Prod. I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Malzeme Teknolojisi II / Material Technology II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İmalat Tesisleri / Manufacturing Facilities": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kaynak Teknolojisi / Welding Technology": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kalite İçin Veri İşleme / Data Processing for Quality": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Endüstriyel Robotik I / Industrial Robotics I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İmalatta Sonlu Elemanlar / FEM Apps in Production": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mikroprodüksiyon Teknolojileri / Microproduction Tech.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Endüstriyel Otomasyon Tek. / Industrial Automation Tech.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Endüstriyel Robotik II / Industrial Robotics II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Üretim: Seçilmiş Konular III / Selected Topics in Prod III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Takım Tezgahları II / Machine Tools II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Tasarım Tek. III / Design Methods III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sonlu Elemanlar Yöntemi / Finite-Element-Methods": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sürekli Ortamlar Mekaniği / Continuum Mechanics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Makine Müh. Bilişim Tek. / IT in Mech. Engineering": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Tasarım: Seçilmiş Konular I / Selected Topics in Design I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Metodik Tasarım / Methodical Design": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yorulma Dayanımı / Fatigue Strength": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mekanikte Enerji Yöntemleri / Methods of Energy in Mech.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Katı Cisim Simulasyonu / Rigid Body Simulation": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapısal Mekanik / Structural Mechanics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Dişli Teorisi ve Mekanizmalar / Gear Theory & Mechanisms": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Tasarım: Seçilmiş Konular II / Selected Topics Design II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Tasarım: Seçilmiş Konular III / Selected Topics Design III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Akışkan Makineleri / Fluid Machines": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Hesaplamalı Akışkanlar Dinamiği I / CFD I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Havacılık Endüstrisine Giriş / Intro to Aerospace Tech.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Proje: Uzay Havacılık / Project: Aerospace Technology": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Uzay Havacılık: Seç. Konular I / Sel. Topics Aerospace I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Akıllı Sistemler / Intelligent Systems": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Makine Öğrenmesi / Machine Learning": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Aerodinamik / Aerodynamics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Uzay Teknolojisinin Temelleri / Basics of Aerospace Tech.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Hesaplamalı Akışkanlar Dinamiği II / CFD II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Hesaplamalı Akışkanlar Dinamiği III / CFD III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Uzay Havacılık: Seç. Konular II / Sel. Topics Aerospace II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Uzay Havacılık: Seç. Konular III / Sel. Topics Aerospace III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Araç Teknolojisinin Temelleri / Basics of Automotive Eng.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Taşıt Sist.: Seç. Konular I / Sel. Topics Transport Sys I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Motor Teknolojilerinin Temelleri / Basics of Power Engines": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Raylı Taşıt Teknolojisi / Railed Vehicles Systems": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Raylı Sistemlerin Temelleri / Basics of Railway Systems": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Taşıt Sist.: Seç. Konular II / Sel. Topics Transport Sys II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Araç Tasarımının Temelleri / Fund. of Vehicle Construction": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Ticari Araç Mühendisliği / Commercial Vehicle Engineering": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Taşıt Sist.: Seç. Konular III / Sel. Topics Transport III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşletmede Mesleki Eğitim / Co-operative Education": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Analysis I / Calculus I / Analiz I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Design Techniques I (CAD) / Tasarım Tek. I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Statik / Statics / Statik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Intro to Computer Sci. / Bilg. Bil. Giris": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Intro to Engineering / Mühendisliğe Giris": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Technical German I / Teknik Almanca I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "English I / İngilizce I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Analysis II / Analysis II / Analiz II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Electricity & Magnetism / Elektrik ve Manyetizma": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Strength of Materials / Mukavemet": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Linear Algebra / Lineer Cebir": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Scientific Research Methods / Bilimsel Yöntemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Technical German II / Teknik Almanca II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "English II / İngilizce II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Differential Equations / Diferansiyel Denklemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Electrical Circuits I / Elektrik Devreleri I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kinematics and Dynamics / Kinematik ve Dinamik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Material Technology I / Malzeme Teknolojisi I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Basic Internship / Temel Staj": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Turkish I / Türkçe I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "English III / İngilizce III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Stat. Methods for Data Analysis / İstatistik": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Electrical Circuits II / Elektrik Devreleri II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Measuring Techniques / Ölçüm Teknikleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "OOP / Nesnel Programlama": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Project Management / Proje Yönetimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Turkish II / Türkçe II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "English IV / İngilizce IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Industrial Automation / End. Otomasyon Tek.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Signals and Systems / Sinyaller ve Sistemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Algorithms & Data Struct. I / Algoritma ve Veri Y.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mechatronics Project / Mekatronik Projesi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elective I / Zorunlu Seçmeli Ders I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Industrial Robotics I / Endüstriyel Robotik I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Control Engineering / Kontrol Müh. Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elective Project I / Seçmeli Proje I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elective II / Zorunlu Seçmeli Ders II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "University Elective / Üniversite Seçmeli": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Advanced Internship / Mesleki Alan Stajı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Occupational Safety I / İş Sağlığı ve Güvenliği I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Atatürks Principles I / Atatürk İlkeleri I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Advanced English I / İleri İngilizce I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elective Project II / Seçmeli Proje II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elective III / Zorunlu Seçmeli Ders III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Bachelor Thesis / Bitirme Tezi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Occupational Safety II / İş Sağlığı ve Güv. II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Atatürks Principles II / Atatürk İlkeleri II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Advanced English II / İleri İngilizce II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Elective IV / Zorunlu Seçmeli Ders IV": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Robotics Project I / Robotik Projesi I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Production Auto. Project I / Üretim Projesi I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Intelligent Sys. Project I / Akıllı Sis. Proj. I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Robotics Project II / Robotik Projesi II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Production Auto. Project II / Üretim Projesi II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Intelligent Sys. Project II / Akıllı Sis. Proj. II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Image-Based Auto. I / Görüntü Tabanlı Oto. I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Applied Control Tech. / Uygulamalı Kontrol Müh.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Image-Based Auto. II / Görüntü Tabanlı Oto. II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Electronic Components / Elektrik Devre Elemanlari": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Manufacturing Tech. I / İmalat Teknolojileri I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Industrial Robotics II / Endüstriyel Robotik II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Database Systems / Veritabanı Sistemleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Machine Tools / Takım Tezgahları": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Thermodynamics I / Termodinamik I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Software Engineering / Yazılım Mühendisliği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sys. ID & Intelligent Ctrl / Sis. Tnm. ve Akıllı K.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Human-Machine Interaction / Bilg.-Makine Etkileşimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Electrical Machines I / Elektrik Makinaları I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Microprocessors / Mikroişlemciler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Intro to Factory Ops / Fabrika Yönetimine Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Machine Learning / Makine Öğrenmesi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Digital Design / Sayısal Tasarım": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Electronics I / Elektronik I : Yarı İletken El.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "CS Selected Topics I / Bilg. Müh. Seçilmiş K. I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "CS Selected Topics II / Bilg. Müh. Seçilmiş K. II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "EE Selected Topics I / Elektrotek. Seçilmiş K. I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "EE Selected Topics II / Elektrotek. Seçilmiş K. II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "ME Selected Topics I / Makine Müh. Seçilmiş K. I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "ME Selected Topics II / Makine Müh. Seçilmiş K. II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Embedded Systems / Gömülü Sistemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mechatronics Topics II / Mekatronik Seçilmiş K. II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Power Electronics / Güç Elektroniği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Materials Technology II / Malzeme Teknolojisi II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Ind. Info Tech / End. Enf. Tek. ve Sanal Ürün Gel.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Quality Management / Kalite Yönetimi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Assembly Tech / Montaj Teknolojisi Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Fluid Mechanics / Akışkanlar Mekaniği": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Heat Transfer / Isı Transferi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "FPGA Programming / FPGA Programlama": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Intro to VLSI Design / VLSI Tasarımına Giriş": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Intelligent Systems / Akıllı Sistemler": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Neural Networks / Yapay Sinir Ağları": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Deep Learning / Derin Öğrenme": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Artificial Intelligence / Yapay Zeka": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Tasarım Teknikleri / Design Techniques": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İnşaat Mühendisliğine Giriş / Intro to Civil Engineering": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Taşıyıcı Sistemlerin Esasları ve Yapı Tasarımı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı Malzemesi ve Kimyası I / Const. Chemicals & Materials": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı Statiği I / Structural Analysis I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı İnşaatı I / Building Construction I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı Statiği II / Structural Analysis II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı Malzemesi ve Kimyası II / Const. Chem. & Materials II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zorunlu Seçmeli Ders Alanı": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı İnşaatı II / Construction Engineering II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Ulaştırma / Transportation": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zemin Mekaniği ve Temel İnşaatı I / Soil Mechanics I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Şantiye Stajı / Internship in Site": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Büro Stajı / Internship in Office": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Zemin Mekaniği ve Temel İnşaatı II / Soil Mechanics II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İnşaat Müh. Nümerik Metotlar / Numerical Methods": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı Fiziği / Building Physics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Stokastik Sistemler / Stochastic Systems": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İnşaat Mühendisliği Projesi I / Civil Eng. Projects I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Sistem Tekniği / System Technics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Nesnel Programlama / OOP": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı İşletmesi I / Construction Management I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İnşaat Hukuku / Construction Law": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı Statiği III / Structural Analysis III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Geodezi ve Geoinformatik / Geodasy and Geoinformatics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İnş. Müh. için Jeoloji / Geology for Civil Engineers": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İnşaat Bilişimi / Computer Applications in Civil Eng.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Su Kaynakları / Water Resources": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kentsel Su Yönetiminin Temelleri": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İnş. Müh. 3D Hesaplamalar / 3D Calculations in CE": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı İnşaatı III / Structural Engineering III": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı İşletmesi II / Construction Management II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı Kimyası ve Malzeme Testi": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı Dinamiği I / Building Dynamics I": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Demiryolu Ulaşımının Temelleri / Rail Transport": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yapı Bilgi Modellemesi / Building Information Modeling": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Mühendisler İçin Hukuk / Law for Engineering": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İnşaat Mühendisliği Projesi II / Civil Eng. Project II": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Deneysel Zemin Mekaniği / Experimental Soil Mechanics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Yığma Yapı İnşaatı / Masonry Construction": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Beton ve Kalıp İnşaatı / Concrete and Formwork Const.": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Taşkın Koruma ve Yönetimi / Flood Protection & Mgmt": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Liman Tasarımı / Port Design": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kıyı Mühendisliğine Giriş / Intro to Coastal Engineering": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Kaya Mekaniği / Rock Mechanics": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "İşletmede Mesleki Eğitim / Cooperative Education": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    },
+    "Girişimcilik / Entrepreneurship": {
+        "TR": "",
+        "EN": "",
+        "DE": ""
+    }
+}

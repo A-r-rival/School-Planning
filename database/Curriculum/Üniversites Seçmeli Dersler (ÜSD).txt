@@ -1,0 +1,33 @@
+----------------------------------------------------------------------------------------------------
+                        ÜNİVERSİTE SEÇMELİ DERSLER (ÜSD)
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+[ÜSD] ÜNİVERSİTE SEÇMELİ DERSLER HAVUZU
+----------------------------------------------------------------------------------------------------
++--------+------------------------------------------------------------+--------+-----+---+---+---+------+
+| KOD    | DERS ADI                                                   | ÖN KOS | DİL | T | U | L | AKTS |
++--------+------------------------------------------------------------+--------+-----+---+---+---+------+
+| MBT361 | Mikrobiyoloji II                                           | -      | D/E | 3 | - | 2 |   6  |
+| MBT363 | İmmünoloji                                                 | -      | D/E | 3 | 2 | - |   6  |
+| MBT365 | Ekoloji                                                    | -      | D/E | 3 | - | 2 |   6  |
+| MBT367 | Evrim Biyolojisi                                           | -      | D/E | 3 | - | 2 |   6  |
+| NWI301 | Biyobilimler için Organik Kimya                            | -      | D/E | 3 | 3 | - |   6  |
+| BAU091 | İnşaat Mühendisliğine Giriş                                | -      | D/E | 2 | - | - |   2  |
+| BWL201 | Pazarlamanın Temelleri                                     | -      | D/E | 2 | 2 | - |   5  |
+| BWL212 | Stratejik Pazarlama                                        | -      | D/E | 2 | 2 | - |   5  |
+| ETE091 | Elektrik-Elektronik Mühendisliğine Giriş                   | -      | D/E | 2 | 1 | - |   2  |
+| ETE101 | Sayısal Tasarım                                            | -      | D/E | 2 | 1 | 1 |   6  |
+| INF102 | Nesnel Programlama                                         | -      | D/E | 2 | - | 2 |   6  |
+| MAB091 | Makine Mühendisliğine Giriş                                | -      | D/E | 2 | - | - |   2  |
+| MAB109 | Statik                                                     | -      | D/E | 3 | 2 | - |   6  |
+| MAB207 | Malzeme Teknolojisi I                                      | -      | D/E | 3 | 2 | - |   6  |
+| VWL203 | İktisadi Tarih                                             | -      | D/E | 3 | - | - |   6  |
+| WIN091 | Endüstri Mühendisliğine Giriş                              | -      | D/E | 2 | - | - |   2  |
+| WIN204 | Muhasebe ve Bilanço                                        | -      | D/E | 2 | 2 | 1 |   6  |
+| HUK553 | Fikri Mülkiyet Hukuku                                      | -      | D/E | 2 | - | - |   2  |
+| KKW321 | Felsefe Tarihi                                             | -      | D/E | 3 | - | - |   4  |
+| ING404 | Girişimcilik                                               | -      | D/E | 2 | - | - |   2  |
+| INF101 | Bilgisayar Bilimine ve Programlamaya Giriş                 | -      | D/E | 2 | - | 2 |   6  |
+| NWI107 | Doğa Bilimlerine Giriş                                     | -      | D/E | 2 | - | - |   2  |
++--------+------------------------------------------------------------+--------+-----+---+---+---+------+

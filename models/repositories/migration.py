@@ -47,6 +47,7 @@ class DatabaseMigration:
             self._011_add_group_size,
             self._012_pool_sinif_duzeyi,
             self._013_add_semester_to_unavailability,
+            self._014_pool_flags,
         ]
 
     def _009_add_room_notes(self) -> None:
@@ -188,3 +189,16 @@ class DatabaseMigration:
         from .migrations.migration_010_common_course_groups import up
         up(self._conn)
         self._log("✅ Ortak_Ders_Gruplari table created")
+
+    def _014_pool_flags(self) -> None:
+        """
+        Creates Havuzlar table for advanced pool metadata.
+        """
+        if self._table_exists("Havuzlar"):
+            return
+
+        self._log("Creating Havuzlar table")
+        from .migrations.migration_014_pool_flags import upgrade
+        upgrade(self._conn)
+        self._log("✅ Havuzlar table created")
+

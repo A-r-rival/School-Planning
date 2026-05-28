@@ -11,7 +11,7 @@ import json
 #kodları şu ana kadar küçük harfle görmedim ama onun için if de koy
 #iktisat seçmelilerini kontrol et manuel olarak düzeltildi
 
-CURRICULUM_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database", "Curriculum")
+CURRICULUM_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database", "Curriculum_Reformatted", "TR")
 OUTPUT_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database", "curriculum_data.py")
 
 
@@ -41,44 +41,9 @@ def clean_course_name(name):
         name = name.split(' / ')[0]
     return name.strip()
 
-def is_pool_code_pattern(code):
-    """
-    Check if a code matches pool code patterns (SD*, ZSD*, ÜSD*, etc.)
-    These should not be treated as actual course codes.
-    """
-    if not code:
-        return False
-    
-    code_upper = code.strip().upper()
-    pool_patterns = [
-        r'^SD[IVX]*$',           # SD, SDI, SDII, SDIII, SDV, SDVI, SDVII, SDVIII
-        r'^ZSD[IVX]*$',          # ZSD, ZSDI, ZSDII, etc.
-        r'^ÜSD[IVX]*$',          # ÜSD, ÜSDI, etc.
-        r'^HUKSD[0-9]*$',        # HUKSD, HUKSD1, etc.
-        r'^POLSD[IVXa-z]*$',     # POLSDI, POLSDV, etc.
-        r'^SDBIO[IVXa-z]*$',     # SDBIOI, SDBIOII, etc.
-        r'^SDMAT[IVXa-z]*$',     # SDMATI, SDMATII, etc.
-        r'^SDP$', r'^SDT$', r'^SDM$',  # Special project/topic/math pools
-        r'^USD[0-9]*$',          # USD000, USD001, etc.
-    ]
-    
-    for pattern in pool_patterns:
-        if re.match(pattern, code_upper):
-            return True
-    return False
-
-class Regexes:
-    # Matches "1. YARIYIL", "I. YARIYIL", "1. DÖNEM", "I. DÖNEM"
-    semester_term = re.compile(r'([IVX]+|\d+)\.\s*(YARIYIL|DÖNEM|SEMESTER|SEMESTIR)', re.IGNORECASE)
-    # Matches "1. YIL", "I. YIL"
-    year = re.compile(r'([IVX]+|\d+)\.\s*YIL', re.IGNORECASE)
-    # Matches "1. GÜZ", "2. BAHAR"
-    season = re.compile(r'([IVX]+|\d+)\.\s*(GÜZ|BAHAR)', re.IGNORECASE)
-    
-    pool_header = re.compile(r'SEÇMELİ DERS|SEÇMELİLER|MODÜL|SD|HAVUZU', re.IGNORECASE)
-
-
-    pool_code = re.compile(r'([A-ZİĞÜŞÖÇ0-9_]*SD[A-ZİĞÜŞÖÇ0-9_]*)\s*([IVX0-9]+[a-zA-Z]?)?', re.IGNORECASE)
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from scripts.curriculum_rules import Regexes, is_pool_code_pattern
 
 def semester_key(sem_num):
     """
@@ -162,6 +127,8 @@ def parse_file(filepath, log_file=None):
 
     curriculum = {}
     pools = {}
+    pool_metadata = {}
+
     
     current_semester = 0
     in_pool_section = False
@@ -238,9 +205,28 @@ def parse_file(filepath, log_file=None):
 
                 if found_codes:
                     current_pool_codes = found_codes
+                    
+                    # Extract metadata if exists e.g. {TIP:KISITLI, SECIM:2}
+                    # Not: Şu an için .txt dosyalarında bu flag'ler bulunmuyor. İleride tüm 
+                    # bölümler/fakülteler için ortak bir müfredat formatı hazırlandığında eklenecek.
+                    # Bu nedenle şu an tarandığında flag bulunamayacaktır, hazırlık amacıyla eklenmiştir.
+                    meta_match = re.search(r'\{(.*?)\}', line)
+                    current_meta = {}
+                    if meta_match:
+                        meta_str = meta_match.group(1)
+                        for pair in meta_str.split(','):
+                            if ':' in pair:
+                                k, v = pair.split(':', 1)
+                                current_meta[k.strip().upper()] = v.strip()
+                    
                     for c in current_pool_codes:
                         if c not in pools:
                             pools[c] = []
+                        if c not in pool_metadata:
+                            pool_metadata[c] = current_meta
+                        elif current_meta: # Update if found new metadata
+                            pool_metadata[c].update(current_meta)
+                            
                     # Only skip course processing if this is clearly just a header line (few pipes)
                     # If it's a full course table row (8+ pipes), we should still process it as a course
                     if line.count('|') < 6:
@@ -369,7 +355,7 @@ def parse_file(filepath, log_file=None):
                     if not exists:
                         curriculum[sem_k].append(course_tuple)
 
-    return curriculum, pools
+    return curriculum, pools, pool_metadata
 
 
 def main():
@@ -389,7 +375,7 @@ def main():
                 if file.endswith(".txt"):
                     # Determine Department Name
                     # If file is "X Öğretim Planı.txt", Dept is X.
-                    dept_name = file.replace(" Öğretim Planı.txt", "").strip()
+                    dept_name = file.replace(" Öğretim Planı.txt", "").replace(".txt", "").strip()
                     
                     # If file is just "Öğretim Planı.txt" (unlikely based on list), use parent dir?
                     # Based on file list, they are named properly.
@@ -398,10 +384,11 @@ def main():
                     print(f"Parsing {dept_name}...")
                     log_file.write(f"\n--- {dept_name} ---\n")
                     try:
-                        curriculum, pools = parse_file(filepath, log_file)
+                        curriculum, pools, pool_metadata = parse_file(filepath, log_file)
                         departments_data[dept_name] = {
                             "curriculum": curriculum,
-                            "pools": pools
+                            "pools": pools,
+                            "pool_metadata": pool_metadata
                         }
                         
                         # Check AKTS for each semester
@@ -416,10 +403,23 @@ def main():
                     except Exception as e:
                         print(f"Error parsing {file}: {e}")
 
-
-
+    # Post-processing: Dynamic Super Pool Fallback
+    for dept_name, dept_info in departments_data.items():
+        for sem, courses in dept_info['curriculum'].items():
+            new_courses = []
+            for course in courses:
+                code = course[0]
+                if "SD" in code and code not in dept_info['pools']:
+                    # Try to find a super pool by stripping numerals/letters at the end
+                    super_pool = re.sub(r'[0-9IVXa-z]+$', '', code)
+                    if super_pool in dept_info['pools']:
+                        course = (super_pool,) + course[1:]
+                    elif super_pool + 'X' in dept_info['pools']: # For SDUx
+                        course = (super_pool + 'X',) + course[1:]
+                new_courses.append(course)
+            dept_info['curriculum'][sem] = new_courses
+            
 # region sdfsdfsdf
-
 
     # Write to curriculum_data.py
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
@@ -464,6 +464,7 @@ def main():
             # Pretty print with indent, trailing comma for PEP8
             f.write(f'        "pool_codes": {json.dumps(pool_codes_dict, ensure_ascii=False, indent=4, sort_keys=True)},\n')
             f.write(f'        "pools": {json.dumps(dept_info["pools"], ensure_ascii=False, indent=4)},\n')
+            f.write(f'        "pool_metadata": {json.dumps(dept_info["pool_metadata"], ensure_ascii=False, indent=4)},\n')
             f.write('    },\n')
         f.write("}\n")
     

@@ -142,6 +142,7 @@ def populate():
             "Alinan_Dersler",
             "Ders_Ogretmen_Iliskisi",
             "Ders_Havuz_Iliskisi",
+            "Havuzlar",
             "Ders_Sinif_Iliskisi",
             "Ders_Programi",
             "Dersler",
@@ -316,8 +317,22 @@ def populate():
                             pool_year_map[course_code] = sinif_duzeyi
         
         # Step 2: Insert pool relationships with sinif_duzeyi
+        pool_metadata = dept_data.get("pool_metadata", {})
         for pool_code, courses in pools.items():
             sinif_duzeyi = pool_year_map.get(pool_code, 0)  # Default to 0 if not found
+            
+            # Populate Havuzlar table
+            pm = pool_metadata.get(pool_code, {})
+            havuz_tipi = pm.get('TIP', 'GENEL')
+            zorunlu = int(pm.get('SECIM', 0)) if pm.get('SECIM', '').isdigit() else 0
+            ust_havuz = pm.get('UST', None)
+            donem_kisiti = pm.get('DONEM', None)
+            
+            model.c.execute("""
+                INSERT OR REPLACE INTO Havuzlar (havuz_kodu, bolum_id, havuz_adi, havuz_tipi, zorunlu_secim_sayisi, ust_havuz_kodu, donem_kisiti)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (pool_code, bolum_id, pool_code, havuz_tipi, zorunlu, ust_havuz, donem_kisiti))
+
             for course_data in courses:
                 if len(course_data) >= 3:
                     code, name, ects = course_data[0], course_data[1], course_data[2]
