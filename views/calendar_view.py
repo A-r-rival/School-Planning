@@ -795,7 +795,7 @@ class CalendarView(QWidget):
         filter_layout.addWidget(QLabel("Görünüm:"))
         self.view_type_combo = QComboBox()
         self.view_type_combo.setView(QListView())  # Prevent popup window
-        self.view_type_combo.addItems(["Öğretmen", "Derslik", "Öğrenci Grubu"])
+        self.view_type_combo.addItems(["Öğrenci Grubu", "Öğretmen", "Derslik"])
         self.view_type_combo.currentIndexChanged.connect(self._on_view_type_changed)
         filter_layout.addWidget(self.view_type_combo)
         

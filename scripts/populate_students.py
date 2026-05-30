@@ -97,7 +97,11 @@ def get_courses_for_slot(code, department, faculty, required_ects, taken_codes=N
     
     # Check generic USD
     elif "USD" in code or "ÜSD" in code:
-        pool_courses = COMMON_USD_POOL
+        usd_key = "Üniversites Seçmeli Dersler (ÜSD)"
+        if usd_key in DEPARTMENTS_DATA and "ÜSD" in DEPARTMENTS_DATA[usd_key].get("pools", {}):
+            pool_courses = DEPARTMENTS_DATA[usd_key]["pools"]["ÜSD"]
+        else:
+            pool_courses = COMMON_USD_POOL
         
     if not pool_courses:
         return None
@@ -137,6 +141,8 @@ def populate():
 
         # Clear all data (but keep schema)
         tables_to_clear = [
+            "Ortak_Ders_Gruplari",
+            "Ogretmen_Ders_Tercihleri",
             "Ogrenci_Notlari",
             "Verilen_Dersler",
             "Alinan_Dersler",
@@ -216,6 +222,9 @@ def populate():
     
     # 2. Generate Students
     for dept_name, dept_data in DEPARTMENTS_DATA.items():
+        if dept_name not in dept_info_map:
+            print(f"Skipping {dept_name} (not a mapped department)")
+            continue
         print(f"Processing {dept_name}...")
         bolum_id, bolum_num, fac_id = dept_info_map[dept_name]
         curriculum = dept_data["curriculum"]
@@ -293,6 +302,8 @@ def populate():
     import re
     
     for dept_name, dept_data in DEPARTMENTS_DATA.items():
+        if dept_name not in dept_info_map:
+            continue
         bolum_id, bolum_num, fac_id = dept_info_map[dept_name]
         pools = dept_data.get("pools", {})
         pool_codes_def = dept_data.get("pool_codes", {})
@@ -352,7 +363,8 @@ def populate():
 
     model.conn.commit()
     print(f"✅ Successfully created {student_count} students.")
-    model.conn.close()
+    if 'model' in locals() and hasattr(model, 'conn'):
+        model.conn.close()
 
 def create_student(model, s_num, dept_name, year, entry_year, current_semester, bolum_id, fac_id, curriculum, faculty_name, is_irregular):
     # Name generation

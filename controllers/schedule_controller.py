@@ -763,16 +763,10 @@ class ScheduleController:
             "Bu işlem biraz zaman alabilir. Devam etmek istiyor musunuz?")
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         
-        cb = QCheckBox("Kurulumdan sonra isim temizleme scriptini de çalıştır (Roma rakamlarını arabik yap, sadece Türkçe isimleri tut)")
-        cb.setChecked(True) # Checked by default
-        msg_box.setCheckBox(cb)
-        
         reply = msg_box.exec_()
 
         if reply != QMessageBox.Yes:
             return
-            
-        run_sanitize = cb.isChecked()
 
         # Show wait cursor
         QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -783,15 +777,6 @@ class ScheduleController:
             from scripts.populate_students import populate as populate_students_and_courses
             print("Running populate_students...")
             populate_students_and_courses()
-
-            # 1.5. Run Sanitization if requested (do it now so future relationships use clean names)
-            if run_sanitize:
-                print("Running sanitize_course_names...")
-                try:
-                    from scripts.sanitize_course_names import main as sanitize_courses
-                    sanitize_courses()
-                except Exception as e:
-                    print(f"Sanitize script failed: {e}")
 
             # 2. Populate Rooms
             from scripts.populate_rooms import populate_rooms

@@ -520,6 +520,50 @@ class ScheduleModel(QObject):
             print(f"Error fetching unassigned courses: {e}")
             return []
 
+    def get_departments_for_course_instance(self, ders_adi: str, ders_instance: int) -> str:
+        """
+        Returns a formatted string of departments and years this course instance belongs to.
+        Used for UI tooltips.
+        """
+        try:
+            query = """
+                SELECT DISTINCT b.bolum_adi, od.sinif_duzeyi
+                FROM Ders_Sinif_Iliskisi dsi
+                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                JOIN Bolumler b ON od.bolum_num = b.bolum_id
+                WHERE dsi.ders_adi = ? AND dsi.ders_instance = ?
+                
+                UNION ALL
+                
+                SELECT DISTINCT b.bolum_adi, dhi.sinif_duzeyi
+                FROM Ders_Havuz_Iliskisi dhi
+                JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
+                WHERE dhi.ders_adi = ? AND dhi.ders_instance = ?
+            """
+            self.c.execute(query, (ders_adi, ders_instance, ders_adi, ders_instance))
+            rows = self.c.fetchall()
+            
+            if not rows:
+                return "Bağlı bölüm bulunamadı."
+                
+            depts = {}
+            for dept, year in rows:
+                if dept not in depts:
+                    depts[dept] = []
+                if year == 0:
+                    depts[dept].append("Genel")
+                else:
+                    depts[dept].append(f"{year}.Sınıf")
+                    
+            lines = []
+            for dept, years in depts.items():
+                lines.append(f"• {dept} ({', '.join(sorted(years))})")
+                
+            return "\n".join(lines)
+        except Exception as e:
+            print(f"Error fetching departments for course {ders_adi}: {e}")
+            return ""
+
     # ════════════════════════════════════════════════════════════════
     # CURRICULUM MANAGEMENT
     # ════════════════════════════════════════════════════════════════
@@ -1006,6 +1050,28 @@ class ScheduleModel(QObject):
     def tum_derslikleri_getir(self):
         return self.room_repo.tum_derslikleri_getir()
 
+    def get_lab_cleanup_settings(self) -> dict:
+        """Returns {derslik_num: {'temizlik_tipi': type, 'sure_dk': mins, 'gun': day, 'baslangic': time}}"""
+        try:
+            self.c.execute("SELECT derslik_num, temizlik_tipi, sure_dk, gun, baslangic FROM Derslik_Temizlik_Ayarlari")
+            return {r[0]: {'temizlik_tipi': r[1], 'sure_dk': r[2], 'gun': r[3], 'baslangic': r[4]} for r in self.c.fetchall()}
+        except Exception as e:
+            print(f"Error fetching lab cleanup settings: {e}")
+            return {}
+
+    def set_lab_cleanup_settings(self, derslik_num: int, temizlik_tipi: str, sure_dk: int, gun: str = None, baslangic: str = None):
+        try:
+            with self.conn:
+                self.c.execute('''
+                    INSERT OR REPLACE INTO Derslik_Temizlik_Ayarlari (derslik_num, temizlik_tipi, sure_dk, gun, baslangic)
+                    VALUES (?, ?, ?, ?, ?)
+                ''', (derslik_num, temizlik_tipi, sure_dk, gun, baslangic))
+            return True
+        except Exception as e:
+            print(f"Error saving lab cleanup settings: {e}")
+            self.error_occurred.emit(f"Temizlik ayarları kaydedilirken hata: {str(e)}")
+            return False
+
 
     def add_teacher_unavailability(self, teacher_id: int, day: str, start_time: str, end_time: str, yil: str = "Hepsi", donem: str = "Hepsi", description: str = "") -> bool:
         return self.teacher_repo.add_teacher_unavailability(teacher_id, day, start_time, end_time, yil, donem, description)
@@ -1121,6 +1187,44 @@ class ScheduleModel(QObject):
             print(f"Error fetching master schedule: {e}")
             self.error_occurred.emit(f"Genel takvim verisi çekilirken hata: {e}")
             return []
+
+    def get_department_course_categories(self) -> dict:
+        """
+        Returns { department_name: { category_name: [(course_name, code), ...] } }
+        where category_name is e.g. "1. Sınıf" or "ZSDII".
+        """
+        try:
+            query_regular = """
+                SELECT b.bolum_adi, od.sinif_duzeyi || '. Sınıf' as category, d.ders_adi, d.ders_kodu
+                FROM Bolumler b
+                JOIN Ogrenci_Donemleri od ON b.bolum_id = od.bolum_num
+                JOIN Ders_Sinif_Iliskisi dsi ON od.donem_sinif_num = dsi.donem_sinif_num
+                JOIN Dersler d ON dsi.ders_adi = d.ders_adi AND dsi.ders_instance = d.ders_instance
+            """
+            self.c.execute(query_regular)
+            regular = self.c.fetchall()
+            
+            query_pool = """
+                SELECT b.bolum_adi, dhi.havuz_kodu as category, d.ders_adi, d.ders_kodu
+                FROM Bolumler b
+                JOIN Ders_Havuz_Iliskisi dhi ON b.bolum_id = dhi.bolum_id
+                JOIN Dersler d ON dhi.ders_adi = d.ders_adi AND dhi.ders_instance = d.ders_instance
+            """
+            self.c.execute(query_pool)
+            pools = self.c.fetchall()
+            
+            results = {}
+            for dept, cat, c_name, code in regular + pools:
+                if dept not in results:
+                    results[dept] = {}
+                if cat not in results[dept]:
+                    results[dept][cat] = set()
+                results[dept][cat].add((c_name, code or ""))
+                
+            return {d: {c: sorted(list(v)) for c, v in cats.items()} for d, cats in results.items()}
+        except Exception as e:
+            print(f"Error fetching department categories: {e}")
+            return {}
 
     # --- Schedule History / Snapshots ---
 

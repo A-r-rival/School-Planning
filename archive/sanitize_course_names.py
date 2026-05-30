@@ -126,8 +126,8 @@ def main():
             rows = cursor.fetchall()
             for row in rows:
                 ders_kodu, ders_instance, current_name = row
-                if ders_kodu in replacements:
-                    new_name = replacements[ders_kodu]
+                if current_name in replacements:
+                    new_name = replacements[current_name]
                     if current_name != new_name:
                         try:
                             # Update the name
