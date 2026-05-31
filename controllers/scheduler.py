@@ -104,59 +104,64 @@ class ORToolsScheduler:
         if semester_filter and semester_filter not in ("Hepsi", "Yaz"):
             print(f"DEBUG: Filtering courses for semester: {semester_filter}")
             semester_courses = []
+            # Move lookups outside loop for performance and correctness
+            lookup_by_dept = getattr(self.db_model, 'semester_lookup_by_dept', {})
             lookup = getattr(self.db_model, 'semester_lookup', {})
-            
+
             for c in self.courses:
                 code = str(c.get('code', '')).strip()
                 name = str(c.get('name', '')).strip()
-                
-                valid_groups = []
-                has_any_match = False
-                
-                lookup_by_dept = getattr(self.db_model, 'semester_lookup_by_dept', {})
-                lookup = getattr(self.db_model, 'semester_lookup', {})
-                
+
+                # Build union of semester sets across ALL program contexts
+                # A course is included if ANY context maps it to the desired semester
+                # If NOT found in lookup → include always (safe default for electives/pool courses)
+                course_sem_set = set()
+                found_in_lookup = False
+
                 if 'program_contexts' in c and c['program_contexts']:
                     for ctx in c['program_contexts']:
                         dept = str(ctx.department).strip() if hasattr(ctx, 'department') else ""
-                        
+
                         sem_set = set()
                         if dept and (dept, code) in lookup_by_dept:
                             sem_set = lookup_by_dept[(dept, code)]
+                            found_in_lookup = True
                         elif dept and (dept, name) in lookup_by_dept:
                             sem_set = lookup_by_dept[(dept, name)]
+                            found_in_lookup = True
                         elif code and code in lookup:
                             sem_set = lookup[code]
+                            found_in_lookup = True
                         elif name and name in lookup:
                             sem_set = lookup[name]
-                            
-                        # Include if ONLY for selected semester OR if it explicitly spans BOTH
-                        if semester_filter in sem_set or ("Güz" in sem_set and "Bahar" in sem_set):
-                            if hasattr(ctx, 'group_id'):
-                                valid_groups.append(ctx.group_id)
-                            has_any_match = True
+                            found_in_lookup = True
+
+                        course_sem_set |= sem_set
                 else:
                     # Fallback for old tests or edge cases without program_contexts
                     dept = str(c.get('department', '')).strip()
-                    sem_set = set()
                     if dept and (dept, code) in lookup_by_dept:
-                        sem_set = lookup_by_dept[(dept, code)]
+                        course_sem_set = lookup_by_dept[(dept, code)]
+                        found_in_lookup = True
                     elif dept and (dept, name) in lookup_by_dept:
-                        sem_set = lookup_by_dept[(dept, name)]
+                        course_sem_set = lookup_by_dept[(dept, name)]
+                        found_in_lookup = True
                     elif code and code in lookup:
-                        sem_set = lookup[code]
+                        course_sem_set = lookup[code]
+                        found_in_lookup = True
                     elif name and name in lookup:
-                        sem_set = lookup[name]
-                        
-                    if semester_filter in sem_set or ("Güz" in sem_set and "Bahar" in sem_set):
-                        has_any_match = True
-                        valid_groups = c.get('groups', [])
-                        
-                if has_any_match:
-                    # PRUNE: Mathematically strip cohorts that do NOT belong to this semester
-                    c['groups'] = valid_groups
+                        course_sem_set = lookup[name]
+                        found_in_lookup = True
+
+                # Decision logic:
+                # - Not in lookup → always include (electives, pool courses not in curriculum keys)
+                # - In lookup → include only if matches semester OR explicitly spans both
+                if not found_in_lookup:
                     semester_courses.append(c)
-            
+                elif semester_filter in course_sem_set or ("Güz" in course_sem_set and "Bahar" in course_sem_set):
+                    semester_courses.append(c)
+                # else: course is explicitly for the OTHER semester → exclude
+
             self.courses = semester_courses
             print(f"DEBUG: Loaded {len(self.courses)} courses after Semester Filter ({semester_filter}).")
         else:
@@ -285,6 +290,10 @@ class ORToolsScheduler:
         capacity_filtered_count = 0
         symmetry_filtered_count = 0
         
+        # --- FIX: Max Capacity Fallback ---
+        # Calculate maximum possible room capacity in the school
+        max_school_capacity = max([r[3] for r in self.rooms if len(r) > 3] + [0])
+        
         active_count = len(active_indices) if active_indices is not None else len(self.courses)
         print(f"DEBUG: Creating variables for {active_count} courses...", flush=True)
         if hasattr(self, 'cp_model') and self.cp_model:
@@ -299,15 +308,23 @@ class ORToolsScheduler:
             # Optimization: Skip variable creation for courses not in active phase
             if active_indices is not None and c_idx not in active_indices:
                 continue
-                
-            duration = course['duration']
+
+            # Fetch Course Duration (T, U, or L depending on type)
+            # Duration is pre-calculated in SchedulableCourseBuilder as (hours * 2)
+            duration = course.get('duration', 0)
             
-            # Duration Safety Check
+            # --- CAP DURATION FIX ---
             if duration > self.slots_per_day:
-                 print(f"CRITICAL WARNING: Course {course['name']} duration ({duration}) exceeds SLOTS_PER_DAY ({self.slots_per_day}). It will verify be infeasible.")
-                 # We could skip it to avoid breaking the solver, or let it fail.
-                 # Let's skip creating variables for it so it doesn't crash calculations
-                 continue
+                print(f"CRITICAL WARNING: Course {course['name']} duration ({duration}) exceeds SLOTS_PER_DAY ({self.slots_per_day}). Capping to {self.slots_per_day} to prevent crash.", flush=True)
+                duration = self.slots_per_day
+                course['duration'] = duration
+                
+            # --- CAP STUDENT COUNT FIX ---
+            # If student count exceeds the absolute max school capacity, cap it.
+            # This prevents common courses from being completely un-schedulable.
+            c_student_count = course.get('student_count', 0)
+            if c_student_count > max_school_capacity and max_school_capacity > 0:
+                 course['student_count'] = max_school_capacity
 
             # PHASE 2 OPTIMIZATION: If course was fixed in Phase 1, ONLY build the assigned path!
             if c_idx in fixed_assignments:
@@ -591,6 +608,11 @@ class ORToolsScheduler:
         # 7. Lunch Break Constraint (NEW)
         self.add_lunch_break_constraints()
         print("DEBUG: Executed add_lunch_break_constraints", flush=True)
+        
+        # 8. Lab Cleanup Constraints (NEW)
+        self.add_lab_cleanup_constraints()
+        print("DEBUG: Executed add_lab_cleanup_constraints", flush=True)
+
         print(f"DEBUG: add_hard_constraints DONE.", flush=True)
 
 
@@ -600,6 +622,81 @@ class ORToolsScheduler:
             if ctx.department == group_dept and ctx.year == group_year:
                 return ctx.role
         return CourseRole.CORE
+
+    def add_lab_cleanup_constraints(self):
+        """
+        Adds constraints for Lab Cleanup times.
+        Handles AFTER_LESSON and WEEKLY cleanup types.
+        """
+        try:
+            settings = self.db_model.get_lab_cleanup_settings()
+        except Exception as e:
+            print(f"DEBUG: Failed to load lab cleanup settings: {e}")
+            return
+            
+        print(f"DEBUG: Applying lab cleanup settings for {len(settings)} rooms.", flush=True)
+        after_lesson_count = 0
+        weekly_count = 0
+        
+        for r in self.rooms:
+            r_id = r[0]
+            if r_id not in settings:
+                continue
+                
+            lab_set = settings[r_id]
+            t_type = lab_set['temizlik_tipi']
+            
+            if t_type == 'AFTER_LESSON' and lab_set['sure_dk'] > 0:
+                c_slots = max(1, lab_set['sure_dk'] // 30)
+                
+                for c_idx in range(len(self.courses)):
+                    d_slots = self.courses[c_idx].get('duration', 1)
+                    for s in self.time_slots:
+                        s_id = s['id']
+                        start_var_key = (c_idx, r_id, s_id)
+                        
+                        if start_var_key in self.starts:
+                            start_var = self.starts[start_var_key]
+                            for k in range(c_slots):
+                                cleanup_slot_id = s_id + d_slots + k
+                                valid_cleanup_slot = False
+                                for cs in self.time_slots:
+                                    if cs['id'] == cleanup_slot_id and cs['day'] == s['day']:
+                                        valid_cleanup_slot = True
+                                        break
+                                        
+                                if not valid_cleanup_slot:
+                                    continue 
+                                    
+                                for other_c_idx in range(len(self.courses)):
+                                    if other_c_idx != c_idx:
+                                        other_var_key = (other_c_idx, r_id, cleanup_slot_id)
+                                        if other_var_key in self.vars:
+                                            self.cp_model.AddImplication(start_var, self.vars[other_var_key].Not())
+                                            after_lesson_count += 1
+                                            
+            elif t_type == 'WEEKLY' and lab_set['sure_dk'] > 0:
+                gun = lab_set.get('gun', '')
+                baslangic = lab_set.get('baslangic', '')
+                if not gun or not baslangic:
+                    continue
+                    
+                try:
+                    u_start_min = to_minutes(baslangic)
+                    u_end_min = u_start_min + lab_set['sure_dk']
+                    
+                    for s in self.time_slots:
+                        if s['day'] == gun:
+                            if (u_start_min < s['end_min'] and u_end_min > s['start_min']):
+                                for c_idx in range(len(self.courses)):
+                                    var_key = (c_idx, r_id, s['id'])
+                                    if var_key in self.vars:
+                                        self.cp_model.Add(self.vars[var_key] == 0)
+                                        weekly_count += 1
+                except Exception as e:
+                    print(f"ERROR: Invalid WEEKLY time format for room {r_id}: {e}", flush=True)
+                    
+        print(f"DEBUG: Added {after_lesson_count} implications for AFTER_LESSON and {weekly_count} fixed blocks for WEEKLY cleanup.", flush=True)
 
     def add_student_group_conflicts(self):
         """
@@ -661,7 +758,7 @@ class ORToolsScheduler:
                  # O(1) duration lookup instead of O(N) per course
                  total_hours = sum([course_duration_map.get(c_name, 0) for c_name in courses])
                  if total_hours > 50:
-                     course_list_str = ", ".join(sorted(list(courses)))
+                     course_list_str = ", ".join(sorted([f"{c[0]} (Şube {c[1]})" if c[1] else c[0] for c in courses]))
                      print(f"WARNING: Group {g_dept}-{g_year} has VERY HIGH Core Demand: {total_hours} slots ({len(courses)} courses).", flush=True)
                      print(f"  -> Courses causing demand: {course_list_str}", flush=True)
 
@@ -738,6 +835,15 @@ class ORToolsScheduler:
                     # FIX: Changed back to HARD Constraint
                     # Core + Any Elective <= 1
                     self.cp_model.Add(sum(core_vars) + any_elec <= 1)
+                    
+                # New Soft Constraint: Spread out Electives
+                if len(elective_vars) > 1:
+                    safe_dept = "".join(x for x in str(g_dept) if x.isalnum())
+                    overlap_penalty = self.cp_model.NewIntVar(0, len(elective_vars), f'elec_ov_{safe_dept}_{g_year}_{s_id}')
+                    self.cp_model.Add(overlap_penalty >= sum(elective_vars) - 1)
+                    if not hasattr(self, 'elective_overlap_penalties'):
+                         self.elective_overlap_penalties = []
+                    self.elective_overlap_penalties.append(overlap_penalty)
 
         except Exception as e:
             import traceback
@@ -1182,7 +1288,7 @@ class ORToolsScheduler:
                         if b1 is not None and b2 is not None:
                             conflict = self.cp_model.NewBoolVar(f'dd_c_{idx1}_{idx2}_{d_idx}')
                             self.cp_model.AddBoolOr([b1.Not(), b2.Not(), conflict])
-                            self.soft_penalties.append(conflict)
+                            self.soft_penalties.append(conflict * 50) # Increased weight to prevent parts on same day
                             penalty_count += 1
 
         print(f"DEBUG: add_soft_constraints_consecutive added {penalty_count} day-separation penalties.", flush=True)
@@ -1340,7 +1446,7 @@ class ORToolsScheduler:
             print(f"DEBUG: Phase 1 objective: minimize soft penalties.", flush=True)
         
         try:
-            if not self._run_solver("PHASE1_CORE", timeout=120.0, save_to_db=False):
+            if not self._run_solver("PHASE1_CORE", timeout=80.0, save_to_db=False):
                 print("FAILED to schedule Core courses within time limit. Schedule is overconstrained. Aborting.")
                 return False
         except Exception as e:
@@ -1450,7 +1556,11 @@ class ORToolsScheduler:
             
             # Integrate soft penalties (day separation)
             if hasattr(self, 'soft_penalties') and self.soft_penalties:
-                objective = objective - 5 * sum(self.soft_penalties)
+                objective = objective - sum(self.soft_penalties) # Penalty is already multiplied by 50 in add_soft_constraints_consecutive
+                
+            # Elective Spread Penalty
+            if hasattr(self, 'elective_overlap_penalties') and self.elective_overlap_penalties:
+                objective = objective - 2 * sum(self.elective_overlap_penalties)
                 
             # Teacher Day Span Penalty (User request: -15)
             if hasattr(self, 'teacher_span_penalties') and self.teacher_span_penalties:
@@ -1542,8 +1652,9 @@ class ORToolsScheduler:
             print(f"DEBUG: Starting Solve ({mode_name})...", flush=True)
             # print(f"DEBUG: Model Stats:\n{self.cp_model.ModelStats()}", flush=True) 
             
-            # Dump Model for Debugging Infeasible states
-            DUMP_MODEL = True
+            # Dump Model for Debugging Infeasible states (DISABLED by default)
+            # Enable via: DEBUG_SOLVER=1 python ... (dumps 194MB+ file, causes memory spike)
+            DUMP_MODEL = os.environ.get('DEBUG_SOLVER') == '1'
             if DUMP_MODEL:
                 with open(os.path.join(DIAG_DIR, f"model_dump_{mode_name}.txt"), "w", encoding="utf-8") as f:
                     f.write(str(self.cp_model.Proto()))
@@ -1586,15 +1697,17 @@ class ORToolsScheduler:
             raise
     
     def clear_previous_schedule(self):
-        """Clear existing schedule from database"""
+        """Create a new schedule version instead of clearing the database."""
         try:
-            self.db_model.c.execute("DELETE FROM Ders_Programi")
-            self.db_model.conn.commit()
-            print("Existing schedule cleared.")
+            import datetime
+            now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+            self.current_version_id = self.db_model.create_schedule_version(f"Otomatik Program ({now_str})", "Sistem tarafından oluşturuldu")
+            if self.current_version_id == -1:
+                raise Exception("Yeni versiyon oluşturulamadı.")
+            print(f"Created new schedule version: {self.current_version_id}")
         except Exception as e:
-            print(f"Error clearing schedule: {e}")
+            print(f"Error creating schedule version: {e}")
             raise
-            
     def _commit_assignments(self, assignments):
         """
         Shared logic to commit assignments to the database.
@@ -1640,9 +1753,9 @@ class ORToolsScheduler:
                 
                 # Insert into DB
                 self.db_model.c.execute('''
-                    INSERT INTO Ders_Programi (ders_adi, ders_instance, ogretmen_id, derslik_id, gun, baslangic, bitis, ders_tipi)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                ''', (course['name'], course['instance'], main_teacher_id, r_id, 
+                    INSERT INTO Ders_Programi (versiyon_id, ders_adi, ders_instance, ogretmen_id, derslik_id, gun, baslangic, bitis, ders_tipi)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (getattr(self, 'current_version_id', 1), course['name'], course['instance'], main_teacher_id, r_id, 
                       start_slot['day'], start_slot['start_time_string'], end_slot['end_time_string'], course['type']))
                 
                 # Store room assignments separately for T and L
