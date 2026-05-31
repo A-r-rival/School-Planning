@@ -12,6 +12,7 @@ class ScheduleCompareView(QWidget):
         self.model = model
         self.schedule_v1 = []
         self.schedule_v2 = []
+        self.selected_course_data = None
         self._setup_ui()
         self._load_versions()
         
@@ -42,6 +43,7 @@ class ScheduleCompareView(QWidget):
         self.btn_manual_edit = QPushButton("Seçili Dersi Taşı (Manuel Düzenle)")
         self.btn_manual_edit.clicked.connect(self._open_manual_edit_dialog)
         self.btn_manual_edit.setStyleSheet("background-color: #9C27B0; color: white;")
+        self.btn_manual_edit.setEnabled(False)
         top_bar.addWidget(self.btn_manual_edit)
         
         top_bar.addSpacing(20)
@@ -77,6 +79,9 @@ class ScheduleCompareView(QWidget):
         # Connect signals for both calendars
         self.cal_v1.filter_changed.connect(self._on_cal_v1_filter_changed)
         self.cal_v2.filter_changed.connect(self._on_cal_v2_filter_changed)
+        
+        self.cal_v1.course_selected.connect(self._on_course_selected)
+        self.cal_v2.course_selected.connect(self._on_course_selected)
         
         # Initialize builder
         from services.calendar_schedule_builder import CalendarScheduleBuilder
@@ -243,14 +248,75 @@ class ScheduleCompareView(QWidget):
         self.cal_v1.display_schedule(res_v1)
         self.cal_v2.display_schedule(res_v2)
         
+    def _on_course_selected(self, data):
+        self.selected_course_data = data
+        if self.selected_course_data and self.selected_course_data.get('program_id'):
+            self.btn_manual_edit.setEnabled(True)
+            self.btn_manual_edit.setText(f"Taşı: {data.get('course')}")
+        else:
+            self.btn_manual_edit.setEnabled(False)
+            self.btn_manual_edit.setText("Seçili Dersi Taşı (Manuel Düzenle)")
+
     def _open_manual_edit_dialog(self):
-        QMessageBox.information(self, "Manuel Düzenleme", 
-            "Ders taşıma diyalogu yapım aşamasındadır.\n"
-            "Bu diyalog açıldığında:\n"
-            "1. Taşınacak dersi seçeceksiniz.\n"
-            "2. Hedef gün ve saati belirteceksiniz.\n"
-            "3. Sistem öğretmen ve derslik çakışmasını kontrol edip taşıyacaktır."
-        )
+        if not self.selected_course_data or not self.selected_course_data.get('program_id'):
+            QMessageBox.warning(self, "Uyarı", "Geçerli bir ders seçilmedi veya dersin ID'si yok.")
+            return
+            
+        from views.manual_edit_dialog import ManualEditDialog
+        dialog = ManualEditDialog(self.selected_course_data, self.model, self)
+        
+        if dialog.exec_():
+            result = dialog.result_data
+            if result:
+                # Call controller to update
+                # ScheduleCompareView doesn't have direct access to controller,
+                # but we can emit a signal or call a global method.
+                # Actually, wait. We can just use the model repository directly if it's safe,
+                # or better, use a signal.
+                # Wait, I'll update the database directly here using a repository if needed,
+                # but let's check what controller we have access to.
+                # I'll just import schedule_repo directly or use self.model.
+                success = self._update_course_slot(result)
+                if success:
+                    QMessageBox.information(self, "Başarılı", "Ders başarıyla taşındı.")
+                    self._on_compare() # Refresh views
+                else:
+                    QMessageBox.warning(self, "Hata", "Ders taşınırken bir hata oluştu veya çakışma var.")
+
+    def _update_course_slot(self, result):
+        # Result has: 'day', 'start', 'end', 'room_id', 'program_id'
+        program_id = result['program_id']
+        day = result['day']
+        start = result['start']
+        end = result['end']
+        room_id = result['room_id']
+        
+        # Conflict check
+        from models.repositories.schedule_repo import ScheduleRepository
+        repo = ScheduleRepository(self.model.conn)
+        
+        # Get teacher of the course
+        cursor = self.model.conn.cursor()
+        cursor.execute("SELECT ogretmen_id FROM Ders_Programi WHERE program_id = ?", (program_id,))
+        row = cursor.fetchone()
+        
+        if row and row[0]:
+            teacher_id = row[0]
+            from models.entities import ScheduleSlot
+            # repo.has_conflict expects a ScheduleSlot object for the first argument!
+            slot = ScheduleSlot(day=day, start_str=start, end_str=end)
+            conflict = repo.has_conflict(slot, teacher_id=teacher_id, exclude_id=program_id)
+            if conflict:
+                return False
+                
+        if room_id:
+            slot = ScheduleSlot(day=day, start_str=start, end_str=end)
+            conflict = repo.has_conflict(slot, room_id=room_id, exclude_id=program_id)
+            if conflict:
+                return False
+                
+        return repo.update_slot(program_id, day, start, end, room_id)
+
 
     def _copy_calendar_filters(self, source_cal, target_cal):
         """Helper to copy filters from source calendar to target calendar"""

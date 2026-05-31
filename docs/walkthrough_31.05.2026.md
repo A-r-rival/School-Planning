@@ -34,3 +34,13 @@ The core scheduling algorithm was making mathematically optimal but practically 
 
 > [!NOTE]  
 > All changes have been tested locally and ensure both backward compatibility with existing saved schedules and a much more realistic distribution of classes in newly generated schedules.
+
+## 4. Manual Schedule Editing Workflow
+**Files:** `views/manual_edit_dialog.py`, `views/schedule_compare_view.py`, `models/repositories/schedule_repo.py`, `services/calendar_schedule_builder.py`
+
+Implemented a complete end-to-end workflow to manually edit the time and room for any scheduled block directly from the comparison view.
+
+*   **Database Pipeline Upgrade:** `program_id` is now fetched across all schedule querying routines and propagated down through the UI tuple rendering sequence (`CalendarScheduleBuilder`).
+*   **UI Integration (`DayCanvas`):** The calendar's polygon rendering engine was enhanced to detect mouse clicks precisely on non-rectangular SVG-style blocks, emitting the relevant course data payload (including `program_id`).
+*   **Manual Edit Dialog:** Added a dynamic UI component allowing the user to select a new Day, Start Time, End Time, and Room (Classroom) for a specific course block.
+*   **Conflict Validation:** The backend now intercepts the move request and tests it against `ScheduleRepository.has_conflict`. The move is blocked and a warning is issued if the teacher or the requested room is already occupied during the target slot (excluding its own current footprint).

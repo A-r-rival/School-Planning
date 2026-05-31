@@ -239,6 +239,9 @@ class TimeCanvas(QFrame):
 
 class DayCanvas(QFrame):
     """A custom widget for drawing SVG/Polygon calendar events and background grid."""
+    
+    courseClicked = pyqtSignal(dict)
+    
     def __init__(self, day_name, time_labels):
         super().__init__()
         self.day_name = day_name
@@ -339,6 +342,22 @@ class DayCanvas(QFrame):
             QToolTip.hideText()
             self.update()
         super().leaveEvent(event)
+        
+    def mousePressEvent(self, event):
+        if not hasattr(self, 'drawn_paths'):
+            return
+            
+        for sig, data_dict in self.drawn_paths.items():
+            if data_dict['path'].contains(event.pos()):
+                # Find the matching event data to emit
+                for e in self.events:
+                    d = e['course_data']
+                    e_sig = (d['course'], str(d['extra']).strip(), d['start_str'], d['end_str'])
+                    if e_sig == sig:
+                        self.courseClicked.emit(d)
+                        break
+                break
+        super().mousePressEvent(event)
             
     def paintEvent(self, event):
         super().paintEvent(event)
@@ -793,6 +812,7 @@ class CalendarView(QWidget):
     """
     # Signals
     filter_changed = pyqtSignal(str, dict) # filter_type, filter_data
+    course_selected = pyqtSignal(dict)
     
     def __init__(self):
         super().__init__()
@@ -959,6 +979,7 @@ class CalendarView(QWidget):
             canvas = DayCanvas(day, self.time_labels)
             # Remove thick CSS border, handled by ultra-thin QPainter line in canvas
             canvas.setStyleSheet("background-color: transparent;")
+            canvas.courseClicked.connect(self.course_selected.emit)
             
             day_layout.addWidget(canvas)
             # Note: No addStretch() so DayCanvas dynamically fills the vertical space!
@@ -1451,6 +1472,10 @@ class CalendarView(QWidget):
             if len(item) > 9:
                 diff_color = item[9]
                 
+            program_id = None
+            if len(item) > 10:
+                program_id = item[10]
+                
             # Identify Pools using Helper
             pools_found = set()
             if is_elective and current_dept_name:
@@ -1490,6 +1515,7 @@ class CalendarView(QWidget):
                                  slots[day][label] = []
                              
                              slots[day][label].append({
+                                 'day': day,
                                  'start_str': start, 
                                  'end_str': end, 
                                  'course': course, 
@@ -1497,7 +1523,8 @@ class CalendarView(QWidget):
                                  'pools_found': pools_found,
                                  'is_elective': is_elective,
                                  'is_unavailability': is_unavailability,
-                                 'diff_color': diff_color
+                                 'diff_color': diff_color,
+                                 'program_id': program_id
                              })
 
             except Exception as e:

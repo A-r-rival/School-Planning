@@ -213,6 +213,25 @@ class ScheduleRepository:
         self.c.execute("DELETE FROM Ders_Programi WHERE program_id = ?", (program_id,))
         return self.c.rowcount > 0
 
+    def update_slot(
+        self,
+        program_id: int,
+        new_day: str,
+        new_start: str,
+        new_end: str,
+        new_room_id: Optional[int]
+    ) -> bool:
+        """Update the day, time, and room of a schedule entry."""
+        self.c.execute(
+            """
+            UPDATE Ders_Programi 
+            SET gun = ?, baslangic = ?, bitis = ?, derslik_id = ?
+            WHERE program_id = ?
+            """,
+            (new_day, new_start, new_end, new_room_id, program_id)
+        )
+        return self.c.rowcount > 0
+
     def get_by_id(self, program_id: int) -> Optional[ScheduledCourse]:
         """Get full course details by program_id."""
         self.c.execute(

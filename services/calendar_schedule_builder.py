@@ -135,8 +135,10 @@ class CalendarScheduleBuilder:
     # ==================== Internal Tuple Format Helpers ====================
     
     def _strip_for_regular_view(self, item: Tuple) -> Tuple:
-        """Strip to display format for teacher/classroom views (5-tuple)."""
-        return item[:5]  # (day, start, end, display, extra)
+        """Strip to display format for teacher/classroom views, keeping program_id at the end."""
+        # Create a new tuple with the first 5 elements, pad with None, and append program_id if exists
+        program_id = item[10] if len(item) > 10 else None
+        return item[:5] + (False, "", "", [], None, program_id)
     
 
     
@@ -152,28 +154,27 @@ class CalendarScheduleBuilder:
         
         # 1. Add booked courses
         for item in raw_schedule:
-            if len(item) == 7:
-                day, start, end, course, room, code, ders_tipi = item
+            if len(item) == 8:
+                day, start, end, course, room, code, ders_tipi, program_id = item
                 tip_label = ders_tipi if ders_tipi else "?"
                 display_course = f"[{code}] {course} ({tip_label})"
                 room_label = room if room else "Belirsiz"
                 extra = f"Oda: {room_label}"
                 
-                # Normalize to 9-tuple
+                # Normalize to 11-tuple (index 10 is program_id)
                 schedule_data.append((
                     day, start, end, display_course, extra,
-                    False, course, code, []
+                    False, course, code, [], None, program_id
                 ))
-            elif len(item) == 6:  # Fallback
-                day, start, end, course, room, code = item
+            elif len(item) == 7:  # Fallback
+                day, start, end, course, room, code, program_id = item
                 display_course = f"[{code}] {course}"
                 room_label = room if room else "Belirsiz"
                 extra = f"Oda: {room_label}"
                 
-                # Normalize to 9-tuple
                 schedule_data.append((
                     day, start, end, display_course, extra,
-                    False, course, code, []
+                    False, course, code, [], None, program_id
                 ))
         
         # 2. Add unavailability (restricted hours)
@@ -182,7 +183,7 @@ class CalendarScheduleBuilder:
         for gun, baslangic, bitis, u_id, desc, *rest in unavailability:
             schedule_data.append((
                 gun, baslangic, bitis, "KISITLI / MÜSAİT DEĞİL", desc,
-                False, "UNAVAILABLE", "", []
+                False, "UNAVAILABLE", "", [], None, None
             ))
         
         return schedule_data
@@ -196,28 +197,26 @@ class CalendarScheduleBuilder:
         schedule_data = []
         
         for item in raw_schedule:
-            if len(item) == 7:
-                day, start, end, course, teacher, code, ders_tipi = item
+            if len(item) == 8:
+                day, start, end, course, teacher, code, ders_tipi, program_id = item
                 tip_label = ders_tipi if ders_tipi else "?"
                 display_course = f"[{code}] {course} ({tip_label})"
                 teacher_label = teacher if teacher else "Belirsiz"
                 extra = f"Öğretmen: {teacher_label}"
                 
-                # Normalize to 9-tuple
                 schedule_data.append((
                     day, start, end, display_course, extra,
-                    False, course, code, []
+                    False, course, code, [], None, program_id
                 ))
-            elif len(item) == 6:  # Fallback
-                day, start, end, course, teacher, code = item
+            elif len(item) == 7:  # Fallback
+                day, start, end, course, teacher, code, program_id = item
                 display_course = f"[{code}] {course}"
                 teacher_label = teacher if teacher else "Belirsiz"
                 extra = f"Öğretmen: {teacher_label}"
                 
-                # Normalize to 9-tuple
                 schedule_data.append((
                     day, start, end, display_course, extra,
-                    False, course, code, []
+                    False, course, code, [], None, program_id
                 ))
             # Skip malformed items
         
@@ -274,9 +273,9 @@ class CalendarScheduleBuilder:
         
         for idx, item in enumerate(raw_schedule):
             try:
-                # DB student group format (new 11-column format)
-                if len(item) == 11:
-                    day, start, end, course_name, teacher, room, code, ders_tipi, pool_data, is_pool, instance = item
+                # DB student group format (new 12-column format)
+                if len(item) == 12:
+                    day, start, end, course_name, teacher, room, code, ders_tipi, pool_data, is_pool, instance, program_id = item
                     
                     tip_label = ders_tipi if ders_tipi else "?"
                     display_course = f"[{code}] {course_name} ({tip_label})"
@@ -294,7 +293,6 @@ class CalendarScheduleBuilder:
                     
                     is_elective = bool(is_pool)
                     
-                    # Robust pool_data handling: ensure it's a list
                     if isinstance(pool_data, list):
                         p_list = pool_data
                     elif pool_data:
@@ -303,18 +301,16 @@ class CalendarScheduleBuilder:
                         p_list = []
                         
                     if not is_elective:
-                        # Fallback heuristic
                         is_elective, p_list_detected = self._detect_elective(course_name, code, dept_name_for_lookup)
                         if is_elective and not p_list:
                             p_list = p_list_detected
                             
-                    schedule_data.append((day, start, end, display_course, extra_info, is_elective, course_name, code, p_list))
+                    schedule_data.append((day, start, end, display_course, extra_info, is_elective, course_name, code, p_list, None, program_id))
                 
-                # Pre-normalized 9-tuple format
-                elif len(item) == 9:
-                    day, start, end, course_disp, extra, is_elec, course_name, code, pool_data = item
+                # Faculty Common courses format
+                elif len(item) == 11:
+                    day, start, end, course_disp, extra, is_elec, course_name, code, pool_data, is_pool, program_id = item
                     
-                    # Robust pool_data handling
                     if isinstance(pool_data, list):
                         p_list = pool_data
                     elif pool_data:
@@ -322,7 +318,19 @@ class CalendarScheduleBuilder:
                     else:
                         p_list = []
                         
-                    schedule_data.append((day, start, end, course_disp, extra, bool(is_elec), course_name, code, p_list))
+                    schedule_data.append((day, start, end, course_disp, extra, bool(is_elec), course_name, code, p_list, None, program_id))                
+                # Pre-normalized 10-tuple format
+                elif len(item) == 10:
+                    day, start, end, course_disp, extra, is_elec, course_name, code, pool_data, program_id = item
+                    
+                    if isinstance(pool_data, list):
+                        p_list = pool_data
+                    elif pool_data:
+                        p_list = [x.strip() for x in str(pool_data).split(',') if x.strip()]
+                    else:
+                        p_list = []
+                        
+                    schedule_data.append((day, start, end, course_disp, extra, bool(is_elec), course_name, code, p_list, None, program_id))
                 elif len(item) == 8:  # Old format with ders_tipi
                     day, start, end, course, teacher, room, code, ders_tipi = item
                     tip_label = ders_tipi if ders_tipi else "?"
