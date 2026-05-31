@@ -206,10 +206,18 @@ class TeacherAvailabilityView(QDialog):
         self.search_common_groups.textChanged.connect(self._filter_common_groups)
         left_panel.addWidget(self.search_common_groups)
         
+        filter_layout = QHBoxLayout()
         self.chk_hide_single_common = QCheckBox("Tekil Dersleri Gizle")
         self.chk_hide_single_common.setChecked(True)
         self.chk_hide_single_common.stateChanged.connect(lambda: self._filter_common_groups(self.search_common_groups.text()))
-        left_panel.addWidget(self.chk_hide_single_common)
+        filter_layout.addWidget(self.chk_hide_single_common)
+        
+        self.btn_manage_templates = QPushButton("Şablonları Yönet")
+        self.btn_manage_templates.setStyleSheet("background-color: #2196F3; color: white;")
+        self.btn_manage_templates.clicked.connect(self._open_template_manager)
+        filter_layout.addWidget(self.btn_manage_templates)
+        
+        left_panel.addLayout(filter_layout)
         
         # QListWidget is now globally imported
         self.list_common_groups = QListWidget()
@@ -218,9 +226,22 @@ class TeacherAvailabilityView(QDialog):
         left_panel.addWidget(self.list_common_groups)
         # QPushButton and QMessageBox are now globally imported
         
+        auto_group_layout = QHBoxLayout()
+        
         self.btn_auto_group_all = QPushButton("Tüm Aynı İsimlileri Grupla")
         self.btn_auto_group_all.clicked.connect(self._auto_group_all_common_courses)
-        left_panel.addWidget(self.btn_auto_group_all)
+        auto_group_layout.addWidget(self.btn_auto_group_all)
+        
+        self.btn_auto_group_three = QPushButton("3'lü Grupla")
+        self.btn_auto_group_three.clicked.connect(self._auto_group_three_common_courses)
+        auto_group_layout.addWidget(self.btn_auto_group_three)
+        
+        self.btn_clear_all_groups = QPushButton("Tüm Grupları Temizle (Tekilleştir)")
+        self.btn_clear_all_groups.setStyleSheet("color: red;")
+        self.btn_clear_all_groups.clicked.connect(self._clear_all_common_groups)
+        auto_group_layout.addWidget(self.btn_clear_all_groups)
+        
+        left_panel.addLayout(auto_group_layout)
         
         cc_layout.addLayout(left_panel)
         
@@ -259,9 +280,18 @@ class TeacherAvailabilityView(QDialog):
         self.tabs.addTab(self.tab_common_courses, "Ortak Ders Grupları")
         
         layout.addWidget(self.tabs)
-        
         self.setLayout(layout)
         # Note: Do NOT call _on_teacher_changed(0) here because controller is not set yet.
+        
+    def _open_template_manager(self):
+        from views.template_manager_dialog import TemplateManagerDialog
+        if not hasattr(self, 'controller') or not self.controller:
+            QMessageBox.warning(self, "Hata", "Sistem yükleniyor, lütfen bekleyin.")
+            return
+            
+        dialog = TemplateManagerDialog(self.controller.model, self)
+        if dialog.exec_() == QDialog.Accepted:
+            self._load_common_course_groups()
             
     def set_controller(self, controller):
         self.controller = controller
@@ -820,7 +850,7 @@ class TeacherAvailabilityView(QDialog):
     def _auto_group_all_common_courses(self):
         # QMessageBox is globally imported
         reply = QMessageBox.question(self, 'Otomatik Gruplama', 
-            "Mevcut sistemde birden fazla şubesi olan (aynı isim ve krediye sahip) TÜM DERSLER kendi adıyla oluşturulacak ortak gruplara otomatik olarak EKLENECEKTİR.\\n\\nBu işlemi onaylıyor musunuz?",
+            "Mevcut sistemde birden fazla şubesi olan (aynı isim ve krediye sahip) TÜM DERSLER kendi adıyla oluşturulacak ortak gruplara otomatik olarak EKLENECEKTİR.\n\nBu işlemi onaylıyor musunuz?",
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             
         if reply == QMessageBox.Yes:
@@ -832,6 +862,34 @@ class TeacherAvailabilityView(QDialog):
                 self.list_common_instances.clear()
             else:
                 QMessageBox.warning(self, "Hata", result.get("message", "Bir hata oluştu."))
+
+    def _auto_group_three_common_courses(self):
+        reply = QMessageBox.question(self, "3'lü Gruplama", 
+            "Mevcut sistemde birden fazla şubesi olan TÜM DERSLER en fazla 3 şube içerecek şekilde alt gruplara (Örn: Ders 1. Grup, Ders 2. Grup) ayrılacaktır.\n\nÖzellikle çok bölümlü büyük kapasiteli derslerin çakışmasını önlemek için idealdir. Onaylıyor musunuz?",
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            
+        if reply == QMessageBox.Yes:
+            result = self.controller.model.auto_group_all_common_courses(chunk_size=3)
+            if result.get("success"):
+                QMessageBox.information(self, "Başarılı", result.get("message", "İşlem başarılı."))
+                self._load_common_course_groups()
+                self.list_common_instances.clear()
+            else:
+                QMessageBox.warning(self, "Hata", result.get("message", "Bilinmeyen hata."))
+
+    def _clear_all_common_groups(self):
+        reply = QMessageBox.question(self, "Tüm Grupları Temizle", 
+            "Oluşturulmuş TÜM Ortak Ders Grupları silinecek ve dersler tamamen tekilleştirilecektir.\n\nBu işlem geri alınamaz. Onaylıyor musunuz?",
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            
+        if reply == QMessageBox.Yes:
+            result = self.controller.model.clear_all_common_groups()
+            if result.get("success"):
+                QMessageBox.information(self, "Başarılı", result.get("message", "Tüm gruplar temizlendi."))
+                self._load_common_course_groups()
+                self.list_common_instances.clear()
+            else:
+                QMessageBox.warning(self, "Hata", result.get("message", "Bilinmeyen hata."))
 
     def _filter_common_groups(self, text):
         """Filter the left panel list of common groups"""

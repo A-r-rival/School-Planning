@@ -455,7 +455,6 @@ class SchedulableCourseBuilder:
                 'semester_season': pc.semester_season
             }
             
-            # Generate Sub-blocks (Theory, Practice, Lab)
             if pc.t > 0:
                 blocks.append({
                     **common_props,
@@ -480,5 +479,9 @@ class SchedulableCourseBuilder:
                     'duration': pc.l * 2,
                     'fixed_room': pc.fixed_l_room
                 })
+                
+            # Placeholder pool headers should NOT be scheduled.
+            if pc.t == 0 and pc.u == 0 and pc.l == 0:
+                continue
                 
         return blocks

@@ -218,7 +218,53 @@ The full GPL v3 text is included in the `LICENSE` file of this repository.
 
 ---
 
-## 4. Python Standard Library
+## 4. XlsxWriter
+
+| Field       | Detail |
+|-------------|--------|
+| **Package** | `XlsxWriter` |
+| **Version** | See `requirements.txt` |
+| **Author**  | John McNamara |
+| **License** | BSD 2-Clause License |
+| **Source**  | https://github.com/jmcnamara/XlsxWriter |
+| **Used for**| Excel (.xlsx) export functionality |
+
+### What BSD 2-Clause Requires of This Project
+
+- ✅ **Include the BSD copyright notice** in distributed copies (see below).
+- ✅ **Include the conditions and disclaimer** in documentation or other materials provided with the distribution.
+- ❌ You do **NOT** need to open-source your own application code.
+
+### BSD 2-Clause License (Full Text)
+
+```
+Copyright (c) 2013-2024, John McNamara <jmcnamara@cpan.org>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```
+
+---
+
+## 5. Python Standard Library
 
 All other imports (`sys`, `os`, `sqlite3`, `json`, `logging`, `hashlib`,
 `collections`, `re`, `shutil`, `glob`, `html`, `typing`, `functools`,
@@ -230,4 +276,4 @@ No additional action is required for stdlib use.
 
 ---
 
-*Last updated: 2026-03-03*
+*Last updated: 2026-05-29*

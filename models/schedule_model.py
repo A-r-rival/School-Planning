@@ -311,7 +311,7 @@ class ScheduleModel(QObject):
             print(f"[ERROR] {error_msg}")
             return False
     
-    def get_all_schedule_items(self, semester_filter: Optional[str] = None) -> List[Dict]:
+    def get_all_schedule_items(self, semester_filter: Optional[str] = None, versiyon_id: int = None) -> List[Dict]:
         """
         Get all scheduled items with structured data for Table View.
         semester_filter: 'Güz' (Odd semesters), 'Bahar' (Even semesters), 'Yaz' (Empty)
@@ -320,6 +320,9 @@ class ScheduleModel(QObject):
             id (list of ints for merged), pool, code, name, teacher, day, start, end, classes,
             metadata: faculty_ids, dept_ids, years (lists of ints)
         """
+        if versiyon_id is None:
+            versiyon_id = self.get_active_schedule_version()
+            
         try:
             query = '''
                 SELECT dp.program_id, dp.ders_adi, COALESCE(o.ad || ' ' || o.soyad, 'Atanmamış'), dp.gun, dp.baslangic, dp.bitis, d.ders_kodu,
@@ -335,9 +338,10 @@ class ScheduleModel(QObject):
                 LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
                 LEFT JOIN Bolumler b ON od.bolum_num = b.bolum_id
                 LEFT JOIN Ders_Havuz_Iliskisi dhi ON d.ders_adi = dhi.ders_adi AND d.ders_instance = dhi.ders_instance
+                WHERE dp.versiyon_id = ?
                 GROUP BY dp.program_id, dp.ders_adi, o.ad, o.soyad, dp.gun, dp.baslangic, dp.bitis, d.ders_kodu, d.ders_instance
             '''
-            self.c.execute(query)
+            self.c.execute(query, (versiyon_id,))
             rows = self.c.fetchall()
             
             items = []
@@ -597,8 +601,11 @@ class ScheduleModel(QObject):
             print(f"Error fetching classroom schedule: {e}")
             return []
 
-    def get_schedule_by_student_group(self, bolum_id: int, sinif_duzeyi: int) -> List[tuple]:
+    def get_schedule_by_student_group(self, bolum_id: int, sinif_duzeyi: int, versiyon_id: int = None) -> List[tuple]:
         """Get schedule for a specific student group (Department + Year)"""
+        if versiyon_id is None:
+            versiyon_id = self.get_active_schedule_version()
+            
         try:
             query = '''
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi,
@@ -612,7 +619,7 @@ class ScheduleModel(QObject):
                 LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
                 JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
-                WHERE od.bolum_num = ? AND od.sinif_duzeyi = ?
+                WHERE od.bolum_num = ? AND od.sinif_duzeyi = ? AND dp.versiyon_id = ?
                 
                 UNION ALL
                 
@@ -627,14 +634,14 @@ class ScheduleModel(QObject):
                        dp.ders_instance
                 FROM Ders_Programi dp
                 LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
-                WHERE EXISTS (
+                WHERE dp.versiyon_id = ? AND EXISTS (
                     SELECT 1 FROM Ders_Havuz_Iliskisi dhi
                     WHERE dhi.ders_adi = dp.ders_adi
                     AND dhi.bolum_id = ?
                     AND (dhi.sinif_duzeyi = ? OR dhi.sinif_duzeyi = 0)
                 )
             '''
-            self.c.execute(query, (bolum_id, sinif_duzeyi, bolum_id, sinif_duzeyi, bolum_id, sinif_duzeyi))
+            self.c.execute(query, (bolum_id, sinif_duzeyi, versiyon_id, bolum_id, sinif_duzeyi, versiyon_id, bolum_id, sinif_duzeyi))
             return self.c.fetchall()
         except Exception as e:
             print(f"Error fetching student schedule: {e}")
@@ -693,8 +700,11 @@ class ScheduleModel(QObject):
 
     def get_courses_by_department(self, dept_id: int, year: str = None, day: str = None) -> List[str]:
         return self.course_repo.get_courses_by_department(dept_id, year, day)
-    def get_schedule_for_faculty_common(self, faculty_id: int, year: int) -> List[Tuple]:
+    def get_schedule_for_faculty_common(self, faculty_id: int, year: int, versiyon_id: int = None) -> List[Tuple]:
         """Get schedule for Common Courses of a faculty, including pool courses."""
+        if versiyon_id is None:
+            versiyon_id = self.get_active_schedule_version()
+            
         try:
             query = """
                 SELECT dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, 
@@ -710,7 +720,7 @@ class ScheduleModel(QObject):
                 JOIN Ders_Sinif_Iliskisi dsi ON dsi.ders_instance = d.ders_instance AND dsi.ders_adi = d.ders_adi
                 JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
                 JOIN Bolumler b ON od.bolum_num = b.bolum_id
-                WHERE b.fakulte_num = ? AND od.sinif_duzeyi = ?
+                WHERE b.fakulte_num = ? AND od.sinif_duzeyi = ? AND dp.versiyon_id = ?
                 GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, o.ad, o.soyad, dp.derslik_id, dp.ders_tipi
                 
                 UNION ALL
@@ -727,7 +737,7 @@ class ScheduleModel(QObject):
                 FROM Ders_Programi dp
                 LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
                 LEFT JOIN Ogretmenler o ON dp.ogretmen_id = o.ogretmen_num
-                WHERE EXISTS (
+                WHERE dp.versiyon_id = ? AND EXISTS (
                     SELECT 1 FROM Ders_Havuz_Iliskisi dhi
                     JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
                     WHERE dhi.ders_adi = dp.ders_adi
@@ -736,7 +746,7 @@ class ScheduleModel(QObject):
                 )
                 GROUP BY dp.gun, dp.baslangic, dp.bitis, dp.ders_adi, o.ad, o.soyad, dp.derslik_id, dp.ders_tipi
             """
-            self.c.execute(query, (faculty_id, year, faculty_id, faculty_id, year))
+            self.c.execute(query, (faculty_id, year, versiyon_id, faculty_id, versiyon_id, faculty_id, year))
             rows = self.c.fetchall()
             
             result = []
@@ -1139,11 +1149,14 @@ class ScheduleModel(QObject):
         return self.teacher_repo.update_teacher_room_request(teacher_id, request)
 
 
-    def get_master_schedule_data(self) -> List[Dict]:
+    def get_master_schedule_data(self, versiyon_id: int = None) -> List[Dict]:
         """
         Fetch ALL schedule data for Master View (Teachers & Classrooms).
         Includes IDs and Names for both resources.
         """
+        if versiyon_id is None:
+            versiyon_id = self.get_active_schedule_version()
+            
         try:
             query = '''
                 SELECT dp.program_id, 
@@ -1160,10 +1173,11 @@ class ScheduleModel(QObject):
                 LEFT JOIN Ders_Sinif_Iliskisi dsi ON d.ders_adi = dsi.ders_adi AND d.ders_instance = dsi.ders_instance
                 LEFT JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
                 LEFT JOIN Bolumler b ON od.bolum_num = b.bolum_id
+                WHERE dp.versiyon_id = ?
                 GROUP BY dp.program_id, dp.ders_adi, dp.gun, dp.baslangic, dp.bitis, 
                          dp.ogretmen_id, o.ad, o.soyad, dp.derslik_id, dlk.derslik_adi, dlk.derslik_tipi
             '''
-            self.c.execute(query)
+            self.c.execute(query, (versiyon_id,))
             rows = self.c.fetchall()
             
             data = []
@@ -1377,10 +1391,22 @@ class ScheduleModel(QObject):
             self.error_occurred.emit(f"Ortak ders grubu kaydedilirken hata: {str(e)}")
             return False
 
-    def auto_group_all_common_courses(self) -> dict:
+    def clear_all_common_groups(self) -> dict:
+        """
+        Deletes all common course groupings, reverting courses to single instances.
+        """
+        try:
+            with self.conn:
+                self.c.execute('DELETE FROM Ortak_Ders_Gruplari')
+            return {"success": True, "message": "Tüm gruplamalar başarıyla temizlendi."}
+        except Exception as e:
+            return {"success": False, "message": str(e)}
+
+    def auto_group_all_common_courses(self, chunk_size=None) -> dict:
         """
         Automatically groups all identical-named courses into their own groups,
         provided they share the exact same T, U, and L hours.
+        If chunk_size is provided, it splits the instances into multiple groups of max size chunk_size.
         """
         try:
             with self.conn:
@@ -1407,6 +1433,7 @@ class ScheduleModel(QObject):
                     self.c.execute('''
                         SELECT ders_instance, teori_saati, uygulama_saati, lab_saati 
                         FROM Dersler WHERE ders_adi = ?
+                        ORDER BY ders_instance
                     ''', (ders_adi,))
                     instances = self.c.fetchall()
                     
@@ -1422,30 +1449,47 @@ class ScheduleModel(QObject):
                         # Skip this course as it has mismatched hours
                         continue
                         
-                    # Find if already grouped
-                    self.c.execute('SELECT ders_instance, grup_id FROM Ortak_Ders_Gruplari WHERE ders_adi = ?', (ders_adi,))
-                    existing = self.c.fetchall()
-                    existing_instances = {r[0] for r in existing}
-                    
-                    # Instances to add
-                    to_add = [r[0] for r in instances if r[0] not in existing_instances]
-                    
-                    if len(to_add) > 1 or (len(to_add) == 1 and existing_instances):
-                        # Find existing grup_id or mint new one
-                        if existing:
-                            grup_id = existing[0][1]
-                        else:
-                            current_grup_id += 1
-                            grup_id = current_grup_id
-                            
-                        # Insert
-                        for inst in to_add:
-                            self.c.execute('''
-                                INSERT INTO Ortak_Ders_Gruplari (grup_id, ders_adi, ders_instance)
-                                VALUES (?, ?, ?)
-                            ''', (grup_id, ders_adi, inst))
+                    if chunk_size:
+                        # Clear existing for this course so we can re-chunk cleanly
+                        self.c.execute('DELETE FROM Ortak_Ders_Gruplari WHERE ders_adi = ?', (ders_adi,))
+                        inst_list = [r[0] for r in instances]
                         
-                        grouped_count += 1
+                        # Chunk the instances
+                        for i in range(0, len(inst_list), chunk_size):
+                            chunk = inst_list[i:i+chunk_size]
+                            if len(chunk) > 1:
+                                current_grup_id += 1
+                                for inst in chunk:
+                                    self.c.execute('''
+                                        INSERT INTO Ortak_Ders_Gruplari (grup_id, ders_adi, ders_instance)
+                                        VALUES (?, ?, ?)
+                                    ''', (current_grup_id, ders_adi, inst))
+                                grouped_count += 1
+                    else:
+                        # Find if already grouped
+                        self.c.execute('SELECT ders_instance, grup_id FROM Ortak_Ders_Gruplari WHERE ders_adi = ?', (ders_adi,))
+                        existing = self.c.fetchall()
+                        existing_instances = {r[0] for r in existing}
+                        
+                        # Instances to add
+                        to_add = [r[0] for r in instances if r[0] not in existing_instances]
+                        
+                        if len(to_add) > 1 or (len(to_add) == 1 and existing_instances):
+                            # Find existing grup_id or mint new one
+                            if existing:
+                                grup_id = existing[0][1]
+                            else:
+                                current_grup_id += 1
+                                grup_id = current_grup_id
+                                
+                            # Insert
+                            for inst in to_add:
+                                self.c.execute('''
+                                    INSERT INTO Ortak_Ders_Gruplari (grup_id, ders_adi, ders_instance)
+                                    VALUES (?, ?, ?)
+                                ''', (grup_id, ders_adi, inst))
+                            
+                            grouped_count += 1
                         
             return {"success": True, "message": f"Tüm aynı isimli dersler tarandı. Toplam {grouped_count} yeni ders grubu oluşturuldu veya güncellendi."}
         except Exception as e:
@@ -1504,3 +1548,93 @@ class ScheduleModel(QObject):
             print(f"Error deleting common course group {grup_id}: {e}")
             self.error_occurred.emit(f"Ortak ders grubu silinirken hata: {str(e)}")
             return False
+
+    # -------------------------------------------------------------------------
+    # VERSIONING & TEMPLATING
+    # -------------------------------------------------------------------------
+    
+    def create_schedule_version(self, ad: str, aciklama: str = "") -> int:
+        try:
+            with self.conn:
+                self.c.execute("UPDATE Program_Versiyonlari SET is_active = 0")
+                self.c.execute("INSERT INTO Program_Versiyonlari (ad, aciklama, is_active) VALUES (?, ?, 1)", (ad, aciklama))
+                return self.c.lastrowid
+        except Exception as e:
+            print(f"Error creating schedule version: {e}")
+            return -1
+
+    def get_active_schedule_version(self) -> int:
+        try:
+            self.c.execute("SELECT versiyon_id FROM Program_Versiyonlari WHERE is_active = 1 LIMIT 1")
+            row = self.c.fetchone()
+            if row:
+                return row[0]
+            return self.create_schedule_version("Varsayılan Program", "Otomatik oluşturuldu")
+        except Exception as e:
+            print(f"Error getting active version: {e}")
+            return 1
+            
+    def get_all_schedule_versions(self) -> list:
+        try:
+            self.c.execute("SELECT versiyon_id, ad, aciklama, tarih, is_active FROM Program_Versiyonlari ORDER BY tarih DESC")
+            return [{"versiyon_id": r[0], "ad": r[1], "aciklama": r[2], "tarih": r[3], "is_active": r[4]} for r in self.c.fetchall()]
+        except Exception as e:
+            print(f"Error getting schedule versions: {e}")
+            return []
+            
+    def set_active_schedule_version(self, versiyon_id: int) -> bool:
+        try:
+            with self.conn:
+                self.c.execute("UPDATE Program_Versiyonlari SET is_active = 0")
+                self.c.execute("UPDATE Program_Versiyonlari SET is_active = 1 WHERE versiyon_id = ?", (versiyon_id,))
+            return True
+        except Exception as e:
+            print(f"Error setting active version: {e}")
+            return False
+
+    def save_group_template(self, ad: str, aciklama: str = "") -> bool:
+        try:
+            with self.conn:
+                self.c.execute("INSERT INTO Ortak_Grup_Sablonlari (ad, aciklama) VALUES (?, ?)", (ad, aciklama))
+                sablon_id = self.c.lastrowid
+                
+                self.c.execute("SELECT ders_adi, ders_instance, grup_id FROM Ortak_Ders_Gruplari")
+                for row in self.c.fetchall():
+                    self.c.execute("INSERT INTO Ortak_Grup_Sablon_Detay (sablon_id, ders_adi, ders_instance, grup_id) VALUES (?, ?, ?, ?)", (sablon_id, row[0], row[1], row[2]))
+            return True
+        except Exception as e:
+            print(f"Error saving group template: {e}")
+            self.error_occurred.emit(f"Şablon kaydedilirken hata: {str(e)}")
+            return False
+
+    def load_group_template(self, sablon_id: int) -> bool:
+        try:
+            with self.conn:
+                self.c.execute("DELETE FROM Ortak_Ders_Gruplari")
+                self.c.execute("SELECT ders_adi, ders_instance, grup_id FROM Ortak_Grup_Sablon_Detay WHERE sablon_id = ? ORDER BY grup_id", (sablon_id,))
+                for row in self.c.fetchall():
+                    self.c.execute("INSERT INTO Ortak_Ders_Gruplari (grup_id, ders_adi, ders_instance) VALUES (?, ?, ?)", (row[2], row[0], row[1]))
+            return True
+        except Exception as e:
+            print(f"Error loading group template: {e}")
+            self.error_occurred.emit(f"Şablon yüklenirken hata: {str(e)}")
+            return False
+            
+    def get_group_templates(self) -> list:
+        try:
+            self.c.execute("SELECT sablon_id, ad, aciklama, tarih FROM Ortak_Grup_Sablonlari ORDER BY tarih DESC")
+            return [{"sablon_id": r[0], "ad": r[1], "aciklama": r[2], "tarih": r[3]} for r in self.c.fetchall()]
+        except Exception as e:
+            print(f"Error getting group templates: {e}")
+            return []
+            
+    def delete_group_template(self, sablon_id: int) -> bool:
+        try:
+            with self.conn:
+                self.c.execute("DELETE FROM Ortak_Grup_Sablonlari WHERE sablon_id = ?", (sablon_id,))
+            return True
+        except Exception as e:
+            print(f"Error deleting group template: {e}")
+            self.error_occurred.emit(f"Şablon silinirken hata: {str(e)}")
+            return False
+

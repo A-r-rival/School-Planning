@@ -103,6 +103,12 @@ class ScheduleController:
         
         self.view.btn_save_snapshot.clicked.connect(self.save_snapshot_requested)
         self.view.btn_view_history.clicked.connect(self.show_history_requested)
+        self.view.btn_compare_versions.clicked.connect(self.open_schedule_compare)
+    
+    def open_schedule_compare(self):
+        from views.schedule_compare_view import ScheduleCompareView
+        self.compare_view = ScheduleCompareView(self.model)
+        self.compare_view.show()
     
     def _initialize_view(self):
         """Initialize view with existing data from model"""
@@ -806,8 +812,6 @@ class ScheduleController:
                 "- Fakülteler, Bölümler, Dersler ve Öğrenciler yüklendi.\n"
                 "- Öğretmenler atandı."
             )
-            if run_sanitize:
-                success_msg += "\n- Müfredat isimleri başarıyla temizlendi."
                 
             self.view.show_success_message(success_msg)
 

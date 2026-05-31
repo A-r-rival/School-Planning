@@ -373,6 +373,10 @@ def main():
         for root, dirs, files in os.walk(CURRICULUM_DIR):
             for file in files:
                 if file.endswith(".txt"):
+                    # Only process Fen Fakültesi, Mühendislik Fakültesi, and ÜSD
+                    if not ('Fen Fakültesi' in root or 'Mühendislik Fakültesi' in root or 'ÜSD' in file or 'Üniversites Seçmeli Dersler' in file):
+                        continue
+                        
                     # Determine Department Name
                     # If file is "X Öğretim Planı.txt", Dept is X.
                     dept_name = file.replace(" Öğretim Planı.txt", "").replace(".txt", "").strip()

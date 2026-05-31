@@ -301,13 +301,30 @@ def populate():
     # and contain pool slot entries like ["SDIa", "Seçmeli 1...", 6, ...]
     import re
     
+    usd_data = DEPARTMENTS_DATA.get("Üniversites Seçmeli Dersler (ÜSD)", {})
+    global_pools = usd_data.get("pools", {})
+    global_pool_metadata = usd_data.get("pool_metadata", {})
+    
     for dept_name, dept_data in DEPARTMENTS_DATA.items():
         if dept_name not in dept_info_map:
             continue
         bolum_id, bolum_num, fac_id = dept_info_map[dept_name]
-        pools = dept_data.get("pools", {})
+        
+        pools = dict(dept_data.get("pools", {}))
+        # Inject global USD pools
+        for g_k, g_v in global_pools.items():
+            if g_k not in pools:
+                pools[g_k] = g_v
+            else:
+                pools[g_k].extend(g_v)
+                
         pool_codes_def = dept_data.get("pool_codes", {})
         curriculum = dept_data.get("curriculum", {})
+        
+        pool_metadata = dict(dept_data.get("pool_metadata", {}))
+        for m_k, m_v in global_pool_metadata.items():
+            if m_k not in pool_metadata:
+                pool_metadata[m_k] = m_v
         
         # Step 1: Map pool_code -> sinif_duzeyi from curriculum semesters
         pool_year_map = {}  # pool_code -> sinif_duzeyi
@@ -328,7 +345,6 @@ def populate():
                             pool_year_map[course_code] = sinif_duzeyi
         
         # Step 2: Insert pool relationships with sinif_duzeyi
-        pool_metadata = dept_data.get("pool_metadata", {})
         for pool_code, courses in pools.items():
             sinif_duzeyi = pool_year_map.get(pool_code, 0)  # Default to 0 if not found
             

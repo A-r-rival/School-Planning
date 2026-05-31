@@ -43,14 +43,21 @@ def assign_teachers():
     
     assignments = []
     
+    # Initialize teacher hours
+    teacher_hours = {tid: 0 for tid, _ in all_teachers}
+    
+    # Pre-fill with existing hours
+    model.c.execute("""
+        SELECT do.ogretmen_id, SUM(d.teori_saati + d.uygulama_saati + d.lab_saati)
+        FROM Ders_Ogretmen_Iliskisi do
+        JOIN Dersler d ON do.ders_adi = d.ders_adi AND do.ders_instance = d.ders_instance
+        GROUP BY do.ogretmen_id
+    """)
+    for tid, hrs in model.c.fetchall():
+        if tid in teacher_hours:
+            teacher_hours[tid] = hrs or 0
+    
     for course_name, instance in all_courses:
-        # Try to find a teacher from the course's department
-        # We need to guess department from course code or known list.
-        # But 'Dersler' doesn't have department. 'Ders_Sinif_Iliskisi' connects to 'Ogrenci_Donemleri' which has 'Bolum_Num'.
-        # Let's simple random for now, but try to match if possible.
-        
-        # Or simpler: Just Pick Random. The user asked for "randomised".
-        
         # Check if already assigned
         try:
             model.c.execute("""
@@ -64,10 +71,16 @@ def assign_teachers():
         if model.c.fetchone():
             continue # Already has a teacher
             
-        # Pick a random teacher
-        tid = random.choice(all_teachers)[0]
+        # Get course hours
+        model.c.execute("SELECT teori_saati, uygulama_saati, lab_saati FROM Dersler WHERE ders_adi=? AND ders_instance=?", (course_name, instance))
+        hours_row = model.c.fetchone()
+        course_hours = sum(hours_row) if hours_row else 2
+        
+        # Pick the teacher with the LEAST hours so far
+        tid = min(teacher_hours, key=teacher_hours.get)
         
         assignments.append((course_name, instance, tid))
+        teacher_hours[tid] += course_hours
         
     print(f"Creating {len(assignments)} new assignments...")
     
@@ -78,7 +91,7 @@ def assign_teachers():
         """, (course_name, instance, tid))
         
     model.conn.commit()
-    print("Assignment complete.")
+    print("Assignment complete. Max teacher load:", max(teacher_hours.values()), "hours.")
     model.close_connections()
 
 if __name__ == "__main__":

@@ -97,6 +97,10 @@ class CalendarScheduleBuilder:
         # Student group view (faculty-based)
         elif data.get("faculty_id"):
             schedule_data = self._build_student_group_schedule(data)
+            
+        # Inject the explicit semester from data if provided
+        if "semester" in data:
+            metadata["semester"] = data["semester"]
         
         if schedule_data:
             # Merge consecutive blocks
@@ -138,12 +142,12 @@ class CalendarScheduleBuilder:
     
     # ==================== Schedule Builders ====================
     
-    def _build_teacher_schedule(self, teacher_id: int) -> List[Tuple]:
+    def _build_teacher_schedule(self, teacher_id: int, versiyon_id=None) -> List[Tuple]:
         """
         Build schedule for teacher view.
         Returns normalized 9-tuples.
         """
-        raw_schedule = self.model.get_schedule_by_teacher(teacher_id)
+        raw_schedule = self.model.get_teacher_schedule(teacher_id, versiyon_id=versiyon_id) if hasattr(self.model, 'get_teacher_schedule') else self.model.get_schedule_by_teacher(teacher_id)
         schedule_data = []
         
         # 1. Add booked courses
@@ -183,12 +187,12 @@ class CalendarScheduleBuilder:
         
         return schedule_data
     
-    def _build_classroom_schedule(self, classroom_id: int) -> List[Tuple]:
+    def _build_classroom_schedule(self, classroom_id: int, versiyon_id=None) -> List[Tuple]:
         """
         Build schedule for classroom view.
         Returns normalized 9-tuples.
         """
-        raw_schedule = self.model.get_schedule_by_classroom(classroom_id)
+        raw_schedule = self.model.get_room_schedule(classroom_id, versiyon_id=versiyon_id) if hasattr(self.model, 'get_room_schedule') else self.model.get_schedule_by_classroom(classroom_id)
         schedule_data = []
         
         for item in raw_schedule:
@@ -238,16 +242,18 @@ class CalendarScheduleBuilder:
             
         department_id = int(department_id)
         
+        versiyon_id = data.get("versiyon_id")
+        
         # Fetch schedule (common courses or department-specific)
         if department_id == -1:
             if faculty_id is None:
                 return []
             raw_schedule = self.model.get_schedule_for_faculty_common(
-                faculty_id, int(year)
+                faculty_id, int(year), versiyon_id=versiyon_id
             )
         else:
             raw_schedule = self.model.get_schedule_by_student_group(
-                department_id, int(year)
+                department_id, int(year), versiyon_id=versiyon_id
             )
         
         return self._process_student_schedule(raw_schedule, data)

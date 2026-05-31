@@ -291,7 +291,9 @@ class StudentView(QWidget):
             
         self.dept_combo.clear()
         self.dept_combo.addItem("Tüm Bölümler", None)
-        for d_id, d_name in departments:
+        for d_row in departments:
+            d_id = d_row[0]
+            d_name = d_row[1]
             self.dept_combo.addItem(d_name, d_id)
             
         # Restore selection if possible

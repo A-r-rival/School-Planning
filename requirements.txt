@@ -16,6 +16,9 @@ PyQt5==5.15.11
 # Attribution required; see NOTICE and THIRD_PARTY_LICENSES.md.
 ortools==9.14.6206
 
+# Excel export library — BSD License
+xlsxwriter==3.2.0
+
 # ── Development / testing dependencies (not shipped to end users) ─────────────
 
 # Test runner — MIT License (no end-user obligations).

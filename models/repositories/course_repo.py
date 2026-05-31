@@ -366,8 +366,8 @@ class CourseRepository:
                  query_class += " AND od.sinif_duzeyi = ?"
                  params_class.append(year)
                  
-            self.c.execute(query_class, tuple(params_class))
-            results.extend(self.c.fetchall())
+            self._cursor.execute(query_class, tuple(params_class))
+            results.extend(self._cursor.fetchall())
             
             # 2. Fetch Pool Courses
             query_pool = """
@@ -392,8 +392,8 @@ class CourseRepository:
                 params_pool.append(faculty_id)
             
             if year is None or year == 99: # 99 for Havuz filter
-                 self.c.execute(query_pool, tuple(params_pool))
-                 results.extend(self.c.fetchall())
+                 self._cursor.execute(query_pool, tuple(params_pool))
+                 results.extend(self._cursor.fetchall())
                  
             # Sort by: 
             # 1. Year (ASC)

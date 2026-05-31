@@ -4,9 +4,12 @@ from PyQt5.QtWidgets import (
     QListWidget, QComboBox, QLabel, QHBoxLayout, QCompleter, 
     QMessageBox, QInputDialog, QDialog, QFormLayout, QDialogButtonBox,
     QGroupBox, QTableWidget, QTableWidgetItem, QAbstractItemView, QHeaderView,
-    QRadioButton
+    QRadioButton, QFileDialog
 )
 from PyQt5.QtCore import QTime, pyqtSignal, Qt
+from typing import List, Tuple, Optional, Dict, Union
+from views.add_curriculum_course_dialog import AddCurriculumCourseDialog
+from services.excel_exporter import ExcelExporter
 from typing import List, Tuple, Optional, Dict, Union
 from views.add_curriculum_course_dialog import AddCurriculumCourseDialog
 
@@ -271,8 +274,22 @@ class ScheduleView(QWidget):
             QPushButton:hover { background-color: #512DA8; }
         """)
         
+        self.btn_compare_versions = QPushButton("🔄 Karşılaştır ve Düzenle")
+        self.btn_compare_versions.setToolTip("İki versiyonu karşılaştırın veya programı manuel düzenleyin")
+        self.btn_compare_versions.setStyleSheet("""
+            QPushButton {
+                background-color: #FF9800; 
+                color: white; 
+                padding: 10px; 
+                font-weight: bold; 
+                border-radius: 5px;
+            }
+            QPushButton:hover { background-color: #F57C00; }
+        """)
+        
         hist_layout.addWidget(self.btn_save_snapshot)
         hist_layout.addWidget(self.btn_view_history)
+        hist_layout.addWidget(self.btn_compare_versions)
         hist_group.setLayout(hist_layout)
         layout.addWidget(hist_group)
     
@@ -628,7 +645,7 @@ class ScheduleView(QWidget):
         row1_layout = QHBoxLayout()
         
         # Open Calendar button
-        self.calendar_button = QPushButton("Takvimi Göster")
+        self.calendar_button = QPushButton("Takvimleri Göster")
         self.calendar_button.setStyleSheet("""
             QPushButton {
                 background-color: #673AB7;
@@ -643,7 +660,7 @@ class ScheduleView(QWidget):
         row1_layout.addWidget(self.calendar_button)
         
         # MASTER VIEW BUTTON (NEW)
-        self.btn_master_view = QPushButton("Genel Takvim")
+        self.btn_master_view = QPushButton("Genel Toplu Takvimleri Göster")
         self.btn_master_view.setStyleSheet("""
             QPushButton {
                 background-color: #3F51B5;
@@ -749,9 +766,20 @@ class ScheduleView(QWidget):
         
         self.struct_menu.addSeparator()
         
+        action_lab_cleanup = self.struct_menu.addAction("🧪 Lab Temizlik Ayarları")
+        action_lab_cleanup.triggered.connect(self._open_lab_cleanup_dialog)
+        
+        self.struct_menu.addSeparator()
+        
         # New Setup Action
         action_run_setup = self.struct_menu.addAction("⚙️ Otomatik Kurulum / Veri Yükle")
         action_run_setup.triggered.connect(self.run_setup_requested.emit)
+        
+        self.struct_menu.addSeparator()
+        
+        # New Export Action
+        action_export = self.struct_menu.addAction("📥 Dışa Aktar (Excel/CSV)")
+        action_export.triggered.connect(self._on_export_clicked)
         
         self.struct_menu.addSeparator()
         action_gen_custom = self.struct_menu.addAction("📅 Farklı Bir Dönem İçin Program Oluştur...")
@@ -759,6 +787,25 @@ class ScheduleView(QWidget):
         
         self.struct_ops_button.setMenu(self.struct_menu)
         row2_layout.addWidget(self.struct_ops_button)
+        
+        # About / Licenses Button
+        self.btn_about = QPushButton("ℹ️ Hakkında: Lisanslar")
+        self.btn_about.setStyleSheet("""
+            QPushButton {
+                background-color: #333;
+                color: white;
+                border: none;
+                padding: 12px;
+                font-size: 13px;
+                border-radius: 3px;
+                font-family: 'Segoe UI Emoji', 'Segoe UI', Arial;
+            }
+            QPushButton:hover {
+                background-color: #555;
+            }
+        """)
+        self.btn_about.clicked.connect(self._show_about_dialog)
+        row2_layout.addWidget(self.btn_about)
         
         layout.addLayout(row2_layout)
         
@@ -792,6 +839,110 @@ class ScheduleView(QWidget):
         self.teacher_availability_button.clicked.connect(self.open_teacher_availability_requested.emit)
         self.btn_view_rooms.clicked.connect(self.open_room_list_requested.emit)
         self.generate_schedule_button.clicked.connect(self.generate_schedule_requested.emit)
+
+    def _show_about_dialog(self):
+        """Displays the THIRD_PARTY_LICENSES.md file in a dialog"""
+        from PyQt5.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QPushButton
+        import os
+        
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Hakkında & Üçüncü Parti Lisanslar")
+        dialog.setGeometry(200, 200, 750, 550)
+        
+        layout = QVBoxLayout()
+        text_edit = QTextEdit()
+        text_edit.setReadOnly(True)
+        
+        try:
+            # Assuming we are in views/ so we go one up
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            license_path = os.path.join(base_dir, "THIRD_PARTY_LICENSES.md")
+            if os.path.exists(license_path):
+                with open(license_path, "r", encoding="utf-8") as f:
+                    text_edit.setMarkdown(f.read())
+            else:
+                text_edit.setPlainText("Lisans dosyası bulunamadı. Lütfen proje dizinindeki THIRD_PARTY_LICENSES.md dosyasını kontrol edin.")
+        except Exception as e:
+            text_edit.setPlainText(f"Lisans dosyası okunamadı: {e}")
+            
+        layout.addWidget(text_edit)
+        
+        close_btn = QPushButton("Kapat")
+        close_btn.setStyleSheet("padding: 10px; font-weight: bold;")
+        close_btn.clicked.connect(dialog.accept)
+        layout.addWidget(close_btn)
+        
+        dialog.setLayout(layout)
+        dialog.exec_()
+        
+    def _open_lab_cleanup_dialog(self):
+        """Opens the Lab Cleanup settings dialog"""
+        try:
+            from views.lab_cleanup_dialog import LabCleanupDialog
+            dialog = LabCleanupDialog(self.controller, self)
+            dialog.exec_()
+        except Exception as e:
+            from PyQt5.QtWidgets import QMessageBox
+            QMessageBox.critical(self, "Hata", f"Lab temizlik ekranı açılamadı: {e}")
+
+    def _on_export_clicked(self):
+        """Export the schedule and assignments to Excel or CSV directly from the main view"""
+        try:
+            if not hasattr(self, 'controller') or not hasattr(self.controller, 'model'):
+                QMessageBox.warning(self, "Hata", "Sistem henüz yüklenmedi.")
+                return
+                
+            if not hasattr(self.controller.model, 'get_all_courses_assigned_to_teachers'):
+                QMessageBox.warning(self, "Hata", "Dışa aktarma fonksiyonu modelde bulunamadı.")
+                return
+                
+            faculty_prefix = "Genel"
+            semester = "Bahar"
+            year = "2025-2026"
+            
+            if hasattr(self, 'filter_combo_faculty') and self.filter_combo_faculty.currentText() != "Tümü":
+                fac_name = self.filter_combo_faculty.currentText()
+                faculty_prefix = "".join([w[0].upper() for w in fac_name.split() if w.lower() not in ["ve", "ile"]])
+            
+            if hasattr(self, 'radio_guz') and self.radio_guz.isChecked(): semester = "Güz"
+            elif hasattr(self, 'radio_bahar') and self.radio_bahar.isChecked(): semester = "Bahar"
+            elif hasattr(self, 'radio_yaz') and self.radio_yaz.isChecked(): semester = "Yaz"
+            
+            if hasattr(self, 'filter_combo_year') and self.filter_combo_year.currentText() != "Tümü":
+                year = self.filter_combo_year.currentText()
+
+            import os
+            if not os.path.exists("exports"):
+                os.makedirs("exports")
+            default_filename = os.path.join("exports", f"{faculty_prefix} {year} {semester} Ders Programı.xlsx")
+                
+            options = QFileDialog.Options()
+            file_path, selected_filter = QFileDialog.getSaveFileName(
+                self, "Ders Programını Kaydet", default_filename, 
+                "Excel Dosyası (*.xlsx);;CSV Dosyası (*.csv)", options=options
+            )
+            if file_path:
+                assigned = self.controller.model.get_all_courses_assigned_to_teachers()
+                unassigned = self.controller.model.get_unassigned_courses()
+                
+                if file_path.endswith('.xlsx') or 'Excel' in selected_filter:
+                    if not file_path.endswith('.xlsx'):
+                        file_path += '.xlsx'
+                    
+                    schedule_data = self.controller.model.get_master_schedule_data()
+                    dept_data = self.controller.model.get_department_course_categories()
+                    ExcelExporter.export_schedule_to_excel(file_path, schedule_data, assigned, unassigned, dept_data)
+                    QMessageBox.information(self, "Başarılı", "Ders programı başarıyla Excel'e aktarıldı!")
+                else:
+                    if not file_path.endswith('.csv'):
+                        file_path += '.csv'
+                    ExcelExporter.export_assignments_to_csv(file_path, assigned, unassigned)
+                    QMessageBox.information(self, "Başarılı", "CSV dosyası başarıyla dışa aktarıldı!")
+                    
+        except Exception as e:
+            QMessageBox.critical(self, "Dışa Aktarma Hatası", f"Dosya kaydedilirken bir hata oluştu:\n{str(e)}")
+            import traceback
+            traceback.print_exc()
 
     def set_controller(self, controller):
         """Set controller reference for dialogs"""
