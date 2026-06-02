@@ -1,9 +1,3 @@
-Şu anki bölümlerin sistemini kullanmak için extreme regex yapmak yerine
-çeşitli alt sistemler, sub pool etc. bulacak şekilde dönüştür ve bu 
-dönüştürülmüş sistemi okumak için ayrı regex file Yazılım
-
-
-bu file şu an için de var mıydı emin değilim, bul ve diğerlerine bağla!
 
 Lab temizleme çizelgeleri ve aidetlerini ayarla.
 

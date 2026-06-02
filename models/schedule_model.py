@@ -74,7 +74,7 @@ class ScheduleModel(QObject):
         )
         self.teacher_repo = TeacherRepository(self.c, self.conn)
         self.schedule_repo = ScheduleRepository(self.c, self.conn)
-        self.course_repo = CourseRepository(self.c)  # Course repo doesn't need conn
+        self.course_repo = CourseRepository(self.c, self.conn)
         self.room_repo = RoomRepository(self.c, self.conn)
         self.student_repo = StudentRepository(self.c, self.conn)
         self.faculty_dept_repo = FacultyDepartmentRepository(self.c, self.conn)
@@ -573,12 +573,25 @@ class ScheduleModel(QObject):
     # ════════════════════════════════════════════════════════════════
 
     def delete_curriculum_course(self, course_name: str) -> bool:
-        return self.course_repo.delete_curriculum_course(course_name)
+        try:
+            success = self.course_repo.delete_curriculum_course(course_name)
+            if success:
+                self.course_removed.emit(course_name)
+            return success
+        except Exception as e:
+            self.error_occurred.emit(f"Ders silinirken hata: {e}")
+            return False
 
 
 
     def add_curriculum_course_as_template(self, data: dict) -> bool:
-        return self.course_repo.add_curriculum_course_as_template(data)
+        try:
+            msg = self.course_repo.add_curriculum_course_as_template(data)
+            self.course_added.emit(msg)
+            return True
+        except Exception as e:
+            self.error_occurred.emit(f"Şablon ders eklenirken hata: {str(e)}")
+            return False
 
 
 
@@ -628,7 +641,7 @@ class ScheduleModel(QObject):
                        (SELECT derslik_adi FROM Derslikler WHERE derslik_num = dp.derslik_id) as oda,
                        COALESCE(d.ders_kodu, 'CUSTOM') as ders_kodu, dp.ders_tipi,
                        (SELECT GROUP_CONCAT(dhi2.havuz_kodu) FROM Ders_Havuz_Iliskisi dhi2 
-                        WHERE dhi2.ders_adi = dp.ders_adi AND dhi2.bolum_id = ? 
+                        WHERE dhi2.ders_adi = dp.ders_adi AND dhi2.ders_instance = dp.ders_instance AND dhi2.bolum_id = ? 
                         AND (dhi2.sinif_duzeyi = ? OR dhi2.sinif_duzeyi = 0)) as havuz_kodu,
                        1 as is_pool,
                        dp.ders_instance, dp.program_id
@@ -637,6 +650,7 @@ class ScheduleModel(QObject):
                 WHERE dp.versiyon_id = ? AND EXISTS (
                     SELECT 1 FROM Ders_Havuz_Iliskisi dhi
                     WHERE dhi.ders_adi = dp.ders_adi
+                    AND dhi.ders_instance = dp.ders_instance
                     AND dhi.bolum_id = ?
                     AND (dhi.sinif_duzeyi = ? OR dhi.sinif_duzeyi = 0)
                 )
@@ -732,7 +746,7 @@ class ScheduleModel(QObject):
                        dp.ders_tipi,
                        (SELECT dhi2.havuz_kodu FROM Ders_Havuz_Iliskisi dhi2
                         JOIN Bolumler b2 ON dhi2.bolum_id = b2.bolum_id
-                        WHERE dhi2.ders_adi = dp.ders_adi AND b2.fakulte_num = ? LIMIT 1) as havuz_kodu,
+                        WHERE dhi2.ders_adi = dp.ders_adi AND dhi2.ders_instance = dp.ders_instance AND b2.fakulte_num = ? LIMIT 1) as havuz_kodu,
                        1 as is_pool, dp.program_id
                 FROM Ders_Programi dp
                 LEFT JOIN Dersler d ON dp.ders_adi = d.ders_adi AND dp.ders_instance = d.ders_instance
@@ -741,6 +755,7 @@ class ScheduleModel(QObject):
                     SELECT 1 FROM Ders_Havuz_Iliskisi dhi
                     JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
                     WHERE dhi.ders_adi = dp.ders_adi
+                    AND dhi.ders_instance = dp.ders_instance
                     AND b.fakulte_num = ?
                     AND (dhi.sinif_duzeyi = ? OR dhi.sinif_duzeyi = 0)
                 )
@@ -1138,7 +1153,11 @@ class ScheduleModel(QObject):
             return []
 
     def update_teacher_span(self, teacher_id: int, span: int) -> bool:
-        return self.teacher_repo.update_teacher_span(teacher_id, span)
+        try:
+            return self.teacher_repo.update_teacher_span(teacher_id, span)
+        except Exception as e:
+            self.error_occurred.emit(f"Çalışma bloğu güncellenirken hata: {str(e)}")
+            return False
 
 
     def get_teacher_room_request(self, teacher_id: int) -> str:
@@ -1146,8 +1165,87 @@ class ScheduleModel(QObject):
 
 
     def update_teacher_room_request(self, teacher_id: int, request: str) -> bool:
-        return self.teacher_repo.update_teacher_room_request(teacher_id, request)
+        try:
+            return self.teacher_repo.update_teacher_room_request(teacher_id, request)
+        except Exception as e:
+            self.error_occurred.emit(f"Oda tercihi güncellenirken hata: {str(e)}")
+            return False
 
+
+    def get_classes_for_programs(self, program_ids: List[int]) -> dict:
+        """
+        Fetch the formatted class string ('Bilgisayar Müh. 1. Sınıf') for multiple program_ids.
+        Returns a dictionary {program_id: "Classes string"}.
+        """
+        if not program_ids:
+            return {}
+            
+        try:
+            placeholders = ','.join('?' for _ in program_ids)
+            
+            # Fetch Regular Classes
+            query_regular = f'''
+                SELECT dp.program_id, b.bolum_adi, od.sinif_duzeyi
+                FROM Ders_Programi dp
+                JOIN Ders_Sinif_Iliskisi dsi ON dp.ders_adi = dsi.ders_adi AND dp.ders_instance = dsi.ders_instance
+                JOIN Ogrenci_Donemleri od ON dsi.donem_sinif_num = od.donem_sinif_num
+                JOIN Bolumler b ON od.bolum_num = b.bolum_id
+                WHERE dp.program_id IN ({placeholders})
+            '''
+            self.c.execute(query_regular, program_ids)
+            rows_regular = self.c.fetchall()
+            
+            # Fetch Pool/Havuz Classes
+            query_pool = f'''
+                SELECT dp.program_id, b.bolum_adi, dhi.sinif_duzeyi, dhi.havuz_kodu
+                FROM Ders_Programi dp
+                JOIN Ders_Havuz_Iliskisi dhi ON dp.ders_adi = dhi.ders_adi AND dp.ders_instance = dhi.ders_instance
+                JOIN Bolumler b ON dhi.bolum_id = b.bolum_id
+                WHERE dp.program_id IN ({placeholders})
+            '''
+            self.c.execute(query_pool, program_ids)
+            rows_pool = self.c.fetchall()
+            
+            from collections import defaultdict
+            data = defaultdict(lambda: defaultdict(lambda: {'regular': set(), 'pools': defaultdict(set)}))
+            
+            for pid, bolum, sinif in rows_regular:
+                data[pid][bolum]['regular'].add(sinif)
+                
+            for pid, bolum, sinif, havuz in rows_pool:
+                data[pid][bolum]['pools'][sinif].add(havuz)
+                
+            result = {}
+            for pid, depts in data.items():
+                dept_strings = []
+                for bolum, info in depts.items():
+                    regular_classes = sorted(list(info['regular']))
+                    pools = info['pools']
+                    
+                    parts = []
+                    for r_sinif in regular_classes:
+                        parts.append(f"{r_sinif}. Sınıf")
+                        
+                    if pools:
+                        pool_parts = []
+                        for p_sinif in sorted(pools.keys()):
+                            pool_codes = ", ".join(sorted(list(pools[p_sinif])))
+                            if p_sinif > 0:
+                                pool_parts.append(f"{p_sinif}.Sınıf: {pool_codes}")
+                            else:
+                                pool_parts.append(f"Ortak: {pool_codes}")
+                        parts.append("(" + " ; ".join(pool_parts) + ")")
+                        
+                    if parts:
+                        dept_strings.append(f"{bolum} {' '.join(parts)}")
+                        
+                result[pid] = ", ".join(dept_strings)
+                
+            return result
+            
+        except Exception as e:
+            print(f"Error fetching classes for programs: {e}")
+            return {}
 
     def get_master_schedule_data(self, versiyon_id: int = None) -> List[Dict]:
         """

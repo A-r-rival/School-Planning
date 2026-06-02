@@ -89,14 +89,32 @@ class CalendarScheduleBuilder:
         if data.get("teacher_id"):
             schedule_data = self._build_teacher_schedule(data["teacher_id"])
             metadata['day_span'] = self.model.get_teacher_span(data["teacher_id"])
+            try:
+                self.model.c.execute("SELECT ad || ' ' || soyad FROM Ogretmenler WHERE ogretmen_num = ?", (data["teacher_id"],))
+                row = self.model.c.fetchone()
+                metadata['title'] = f"Öğretmen: {row[0]}" if row else "Öğretmen"
+            except: pass
         
         # Classroom view
         elif data.get("classroom_id"):
             schedule_data = self._build_classroom_schedule(data["classroom_id"])
+            try:
+                self.model.c.execute("SELECT derslik_adi FROM Derslikler WHERE derslik_num = ?", (data["classroom_id"],))
+                row = self.model.c.fetchone()
+                metadata['title'] = f"Oda: {row[0]}" if row else "Oda"
+            except: pass
         
-        # Student group view (faculty-based)
-        elif data.get("faculty_id"):
+        # Student group view (faculty-based or department-based)
+        elif data.get("faculty_id") or data.get("dept_id"):
             schedule_data = self._build_student_group_schedule(data)
+            try:
+                if int(data.get("dept_id", 0)) == -1:
+                    metadata['title'] = f"Ortak Dersler ({data.get('year')}. Sınıf)"
+                else:
+                    self.model.c.execute("SELECT bolum_adi FROM Bolumler WHERE bolum_id = ?", (data["dept_id"],))
+                    row = self.model.c.fetchone()
+                    metadata['title'] = f"Bölüm: {row[0]} {data.get('year')}. Sınıf" if row else "Öğrenci Grubu"
+            except: pass
             
         # Inject the explicit semester from data if provided
         if "semester" in data:
@@ -152,6 +170,10 @@ class CalendarScheduleBuilder:
         raw_schedule = self.model.get_teacher_schedule(teacher_id, versiyon_id=versiyon_id) if hasattr(self.model, 'get_teacher_schedule') else self.model.get_schedule_by_teacher(teacher_id)
         schedule_data = []
         
+        # Fetch classes for tooltips
+        program_ids = [item[-1] for item in raw_schedule if item[-1]]
+        classes_map = self.model.get_classes_for_programs(program_ids) if hasattr(self.model, 'get_classes_for_programs') else {}
+        
         # 1. Add booked courses
         for item in raw_schedule:
             if len(item) == 8:
@@ -159,7 +181,11 @@ class CalendarScheduleBuilder:
                 tip_label = ders_tipi if ders_tipi else "?"
                 display_course = f"[{code}] {course} ({tip_label})"
                 room_label = room if room else "Belirsiz"
-                extra = f"Oda: {room_label}"
+                
+                extra_lines = [f"Oda: {room_label}"]
+                if program_id and classes_map.get(program_id):
+                    extra_lines.append(f"Sınıflar: {classes_map[program_id]}")
+                extra = "\n".join(extra_lines)
                 
                 # Normalize to 11-tuple (index 10 is program_id)
                 schedule_data.append((
@@ -170,7 +196,11 @@ class CalendarScheduleBuilder:
                 day, start, end, course, room, code, program_id = item
                 display_course = f"[{code}] {course}"
                 room_label = room if room else "Belirsiz"
-                extra = f"Oda: {room_label}"
+                
+                extra_lines = [f"Oda: {room_label}"]
+                if program_id and classes_map.get(program_id):
+                    extra_lines.append(f"Sınıflar: {classes_map[program_id]}")
+                extra = "\n".join(extra_lines)
                 
                 schedule_data.append((
                     day, start, end, display_course, extra,
@@ -196,13 +226,21 @@ class CalendarScheduleBuilder:
         raw_schedule = self.model.get_room_schedule(classroom_id, versiyon_id=versiyon_id) if hasattr(self.model, 'get_room_schedule') else self.model.get_schedule_by_classroom(classroom_id)
         schedule_data = []
         
+        # Fetch classes for tooltips
+        program_ids = [item[-1] for item in raw_schedule if item[-1]]
+        classes_map = self.model.get_classes_for_programs(program_ids) if hasattr(self.model, 'get_classes_for_programs') else {}
+        
         for item in raw_schedule:
             if len(item) == 8:
                 day, start, end, course, teacher, code, ders_tipi, program_id = item
                 tip_label = ders_tipi if ders_tipi else "?"
                 display_course = f"[{code}] {course} ({tip_label})"
                 teacher_label = teacher if teacher else "Belirsiz"
-                extra = f"Öğretmen: {teacher_label}"
+                
+                extra_lines = [f"Öğretmen: {teacher_label}"]
+                if program_id and classes_map.get(program_id):
+                    extra_lines.append(f"Sınıflar: {classes_map[program_id]}")
+                extra = "\n".join(extra_lines)
                 
                 schedule_data.append((
                     day, start, end, display_course, extra,
@@ -212,7 +250,11 @@ class CalendarScheduleBuilder:
                 day, start, end, course, teacher, code, program_id = item
                 display_course = f"[{code}] {course}"
                 teacher_label = teacher if teacher else "Belirsiz"
-                extra = f"Öğretmen: {teacher_label}"
+                
+                extra_lines = [f"Öğretmen: {teacher_label}"]
+                if program_id and classes_map.get(program_id):
+                    extra_lines.append(f"Sınıflar: {classes_map[program_id]}")
+                extra = "\n".join(extra_lines)
                 
                 schedule_data.append((
                     day, start, end, display_course, extra,
@@ -270,6 +312,10 @@ class CalendarScheduleBuilder:
         # Get department name for curriculum lookup
         if data.get("dept_id") and int(data["dept_id"]) != -1:
             dept_name_for_lookup = self.model.get_department_name(int(data["dept_id"]))
+            
+        # Fetch classes for tooltips
+        program_ids = [item[-1] for item in raw_schedule if item[-1]]
+        classes_map = self.model.get_classes_for_programs(program_ids) if hasattr(self.model, 'get_classes_for_programs') else {}
         
         for idx, item in enumerate(raw_schedule):
             try:
@@ -284,11 +330,13 @@ class CalendarScheduleBuilder:
                     teacher_label = teacher if teacher else "Belirsiz"
                     
                     extra_lines = []
-                    if instance:
-                        extra_lines.append(f"Şube {instance}")
                     extra_lines.append(f"Öğretmen: {teacher_label}")
                     extra_lines.append(f"Oda: {room_label}")
-                    
+                    if instance:
+                        extra_lines.append(f"Şube {instance}")
+                    if program_id and classes_map.get(program_id):
+                        extra_lines.append(f"Sınıflar: {classes_map[program_id]}")
+                        
                     extra_info = "\n".join(extra_lines)
                     
                     is_elective = bool(is_pool)
@@ -337,7 +385,10 @@ class CalendarScheduleBuilder:
                     display_course = f"[{code}] {course} ({tip_label})"
                     room_label = room if room else "Belirsiz"
                     teacher_label = teacher if teacher else "Belirsiz"
-                    extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
+                    
+                    extra_lines = [f"Öğretmen: {teacher_label}", f"Oda: {room_label}"]
+                    # No program_id in this old 8-tuple format, unfortunately
+                    extra_info = "\n".join(extra_lines)
                     
                     # Detect electives
                     is_elective, pool_codes = self._detect_elective(
@@ -355,7 +406,9 @@ class CalendarScheduleBuilder:
                     display_course = f"[{code}] {course}"
                     room_label = room if room else "Belirsiz"
                     teacher_label = teacher if teacher else "Belirsiz"
-                    extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
+                    
+                    extra_lines = [f"Öğretmen: {teacher_label}", f"Oda: {room_label}"]
+                    extra_info = "\n".join(extra_lines)
                     
                     # Simple elective detection (fallback)
                     is_elective, pool_codes = self._detect_elective(course, code, dept_name_for_lookup)
@@ -370,7 +423,9 @@ class CalendarScheduleBuilder:
                     day, start, end, course, teacher, room = item
                     room_label = room if room else "Belirsiz"
                     teacher_label = teacher if teacher else "Belirsiz"
-                    extra_info = f"Öğretmen: {teacher_label}\nOda: {room_label}"
+                    
+                    extra_lines = [f"Öğretmen: {teacher_label}", f"Oda: {room_label}"]
+                    extra_info = "\n".join(extra_lines)
                     
                     is_elective = "seçmeli" in course.lower()
                     

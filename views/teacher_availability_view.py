@@ -254,10 +254,17 @@ class TeacherAvailabilityView(QDialog):
         
         # Action layout
         cc_action_layout = QHBoxLayout()
+        
+        self.chk_filter_by_selected = QCheckBox("Sadece Seçili dersin gruplarını göster")
+        self.chk_filter_by_selected.setChecked(False)
+        self.chk_filter_by_selected.stateChanged.connect(self._apply_configured_groups_filter)
+        cc_action_layout.addWidget(self.chk_filter_by_selected)
+        
+        cc_action_layout.addStretch()
+        
         self.btn_save_common_group = QPushButton("Seçilileri Ortak Ders Olarak Kaydet")
         self.btn_save_common_group.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
         self.btn_save_common_group.clicked.connect(self._on_save_common_group_clicked)
-        cc_action_layout.addStretch()
         cc_action_layout.addWidget(self.btn_save_common_group)
         
         right_panel.addLayout(cc_action_layout)
@@ -272,6 +279,9 @@ class TeacherAvailabilityView(QDialog):
         header_cc.setSectionResizeMode(0, QHeaderView.ResizeToContents)
         header_cc.setSectionResizeMode(2, QHeaderView.Fixed)
         self.table_common_groups.setColumnWidth(2, 60)
+        self.table_common_groups.verticalHeader().setVisible(False)
+        self.table_common_groups.itemClicked.connect(self._on_configured_group_clicked)
+        self.table_common_groups.setSelectionBehavior(QTableWidget.SelectRows)
         right_panel.addWidget(self.table_common_groups)
         
         cc_layout.addLayout(right_panel)
@@ -846,6 +856,56 @@ class TeacherAvailabilityView(QDialog):
                 
         # 3. Apply filter using current search text to hide single-variation courses correctly on load
         self._filter_common_groups(self.search_common_groups.text())
+        
+        # 4. Apply selection filter
+        self._apply_configured_groups_filter()
+
+    def _apply_configured_groups_filter(self):
+        """Filter right side table based on left side selection if checkbox is checked"""
+        is_checked = self.chk_filter_by_selected.isChecked()
+        selected_base_name = None
+        
+        if is_checked:
+            current_item = self.list_common_groups.currentItem()
+            if current_item:
+                selected_base_name = current_item.data(Qt.UserRole + 1)
+                
+        for row in range(self.table_common_groups.rowCount()):
+            if not is_checked or not selected_base_name:
+                self.table_common_groups.setRowHidden(row, False)
+                continue
+                
+            item = self.table_common_groups.item(row, 1)
+            if item and selected_base_name in item.text():
+                self.table_common_groups.setRowHidden(row, False)
+            else:
+                self.table_common_groups.setRowHidden(row, True)
+
+    def _on_configured_group_clicked(self, item):
+        """When a group is clicked, select its base name on the left and check its items in the middle"""
+        row = item.row()
+        grup_id_str = self.table_common_groups.item(row, 0).text()
+        if not grup_id_str.isdigit(): return
+        target_grup_id = int(grup_id_str)
+        
+        course_text = self.table_common_groups.item(row, 1).text()
+        base_name = course_text.split(' (Şube')[0].strip()
+        
+        # Select base name in the left list
+        for i in range(self.list_common_groups.count()):
+            list_item = self.list_common_groups.item(i)
+            if list_item.data(Qt.UserRole + 1) == base_name:
+                self.list_common_groups.setCurrentItem(list_item)
+                self._on_common_group_clicked(list_item)
+                break
+                
+        # Check the items in the middle list
+        for i in range(self.list_common_instances.count()):
+            mid_item = self.list_common_instances.item(i)
+            if f"[Grup: {target_grup_id}]" in mid_item.text():
+                mid_item.setCheckState(Qt.Checked)
+            else:
+                mid_item.setCheckState(Qt.Unchecked)
 
     def _auto_group_all_common_courses(self):
         # QMessageBox is globally imported
@@ -927,6 +987,8 @@ class TeacherAvailabilityView(QDialog):
                 # Store tuple data
                 list_item.setData(Qt.UserRole, (inst['ders_adi'], inst['ders_instance'], inst['t'], inst['u'], inst['l']))
                 self.list_common_instances.addItem(list_item)
+                
+        self._apply_configured_groups_filter()
 
 
     def _on_save_common_group_clicked(self):

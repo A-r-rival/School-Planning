@@ -241,8 +241,8 @@ class TeacherRepository:
             self.conn.commit()
             return True
         except Exception as e:
-            self.error_occurred.emit(f"Müsaitlik silinirken hata: {str(e)}")
-            return False
+            print(f"Error removing teacher unavailability: {e}")
+            raise
     def get_teacher_span(self, teacher_id: int) -> int:
         """Get preferred day span for a teacher"""
         try:
@@ -273,8 +273,8 @@ class TeacherRepository:
             self.conn.commit()
             return True
         except Exception as e:
-            self.error_occurred.emit(f"Çalışma bloğu güncellenirken hata: {str(e)}")
-            return False
+            print(f"Error updating teacher span: {e}")
+            raise
     def get_teacher_room_request(self, teacher_id: int) -> str:
         """Get room request note for a teacher"""
         try:
@@ -292,8 +292,8 @@ class TeacherRepository:
             self.conn.commit()
             return True
         except Exception as e:
-            self.error_occurred.emit(f"Oda tercihi güncellenirken hata: {str(e)}")
-            return False
+            print(f"Error updating room request: {e}")
+            raise
 
     # ════════════════════════════════════════════════════════════════
     # MASTER VIEW & SNAPSHOTS
@@ -325,8 +325,8 @@ class TeacherRepository:
             self.conn.commit()
             return True
         except Exception as e:
-            self.error_occurred.emit(f"Müsaitlik eklenirken hata: {str(e)}")
-            return False
+            print(f"Error adding teacher unavailability: {e}")
+            raise
     def update_teacher_unavailability(self, u_id: int, teacher_id: int, day: str, start: str, end: str, yil: str = "Hepsi", donem: str = "Hepsi", description: str = "") -> bool:
         """Update unavailability slot"""
         try:
@@ -352,8 +352,8 @@ class TeacherRepository:
             self.conn.commit()
             return True
         except Exception as e:
-            self.error_occurred.emit(f"Müsaitlik güncellenirken hata: {str(e)}")
-            return False
+            print(f"Error updating teacher unavailability: {e}")
+            raise
 
 
 

@@ -33,8 +33,9 @@ class CourseRepository:
     Transaction boundaries are managed by the calling service/model.
     """
 
-    def __init__(self, cursor: sqlite3.Cursor):
+    def __init__(self, cursor: sqlite3.Cursor, conn: sqlite3.Connection = None):
         self._cursor = cursor
+        self.conn = conn
 
     # ---------- Queries ----------
 
@@ -189,26 +190,23 @@ class CourseRepository:
         """
         Delete a course from the curriculum + all related tables.
         """
-        try:
-            with self.conn:
-                # 1. Delete from Curriculum (Dersler)
-                self.c.execute("DELETE FROM Dersler WHERE ders_adi = ?", (course_name,))
-                
-                # 2. Delete Relations
-                self.c.execute("DELETE FROM Ders_Sinif_Iliskisi WHERE ders_adi = ?", (course_name,))
-                self.c.execute("DELETE FROM Ders_Havuz_Iliskisi WHERE ders_adi = ?", (course_name,))
-                
-                # 3. Delete from Schedule (Cascade logically)
-                self.c.execute("DELETE FROM Ders_Programi WHERE ders_adi = ?", (course_name,))
-                self.c.execute("DELETE FROM Ders_Ogretmen_Iliskisi WHERE ders_adi = ?", (course_name,))
-                
-            self.course_removed.emit(course_name)
-            return True
-        except Exception as e:
-            print(f"Error deleting curriculum course: {e}")
-            self.error_occurred.emit(f"Ders silinirken hata: {e}")
-            return False
-    def add_curriculum_course_as_template(self, data: Dict) -> bool:
+        if not self.conn:
+            raise ValueError("Connection not provided to CourseRepository")
+        
+        with self.conn:
+            # 1. Delete from Curriculum (Dersler)
+            self._cursor.execute("DELETE FROM Dersler WHERE ders_adi = ?", (course_name,))
+            
+            # 2. Delete Relations
+            self._cursor.execute("DELETE FROM Ders_Sinif_Iliskisi WHERE ders_adi = ?", (course_name,))
+            self._cursor.execute("DELETE FROM Ders_Havuz_Iliskisi WHERE ders_adi = ?", (course_name,))
+            
+            # 3. Delete from Schedule (Cascade logically)
+            self._cursor.execute("DELETE FROM Ders_Programi WHERE ders_adi = ?", (course_name,))
+            self._cursor.execute("DELETE FROM Ders_Ogretmen_Iliskisi WHERE ders_adi = ?", (course_name,))
+            
+        return True
+    def add_curriculum_course_as_template(self, data: Dict) -> str:
         """
         Add a course template to the curriculum (Dersler + Ders_Sinif_Iliskisi).
         This is for the 'Template' button.
@@ -219,78 +217,78 @@ class CourseRepository:
                 't': int, 'u': int, 'l': int, 'akts': int,
                 'type': str (Core/Elective) - currently ignored, logic is implicit
             }
+        Returns:
+            Success message string.
+        Raises:
+            Exception on database error.
         """
-        try:
-            # 1. Determine Instance ID (Auto-increment logic)
-            # Find max instance for this course name to separate sections if name exists
-            self.c.execute("SELECT MAX(ders_instance) FROM Dersler WHERE ders_adi = ?", (data['name'],))
-            row = self.c.fetchone()
-            instance = 1
-            if row and row[0]:
-                instance = row[0] + 1
-            
-            # 2. Add to Dersler
-            with self.conn:
-                self.c.execute("""
-                    INSERT INTO Dersler (ders_kodu, ders_instance, ders_adi, teori_saati, uygulama_saati, lab_saati, akts)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                """, (data['code'], instance, data['name'], data['t'], data['u'], data['l'], data['akts']))
-                
-                is_pool = data.get('is_pool', False)
-                
-                if is_pool:
-                    # 3a. Add to Ders_Havuz_Iliskisi (Pool Course)
-                    # Schema: (ders_instance, ders_adi, bolum_num, havuz_kodu)
-                    pool_code = data.get('pool_code', 'GENEL')
-                    
-                    # Resolve bolum_num from dept_id
-                    self.c.execute("SELECT bolum_num FROM Bolumler WHERE bolum_id = ?", (data['dept_id'],))
-                    row_bn = self.c.fetchone()
-                    if not row_bn:
-                        raise ValueError(f"Bölüm bulunamadı (ID: {data['dept_id']})")
-                    bolum_num = row_bn[0]
-                    
-                    self.c.execute("""
-                        INSERT INTO Ders_Havuz_Iliskisi (ders_instance, ders_adi, bolum_id, havuz_kodu)
-                        VALUES (?, ?, ?, ?)
-                    """, (instance, data['name'], bolum_num, pool_code))
-                    
-                    self.course_added.emit(f"[Havuz] {data['name']} (Şube {instance}, Havuz: {pool_code}) eklendi.")
-                    
-                else:
-                    # 3b. Add to Ders_Sinif_Iliskisi (Class Course)
-                    # Resolve donem_sinif_num from dept_id + year
-                    
-                    # First get department info to find donem_sinif_num
-                    self.c.execute("""
-                        SELECT donem_sinif_num FROM Ogrenci_Donemleri 
-                        WHERE bolum_num = ? AND sinif_duzeyi = ?
-                    """, (data['dept_id'], data['year']))
-                    
-                    rows = self.c.fetchall()
-                    if not rows:
-                         raise ValueError(f"Bu bölüm/sınıf için dönem kaydı bulunamadı (Bölüm: {data['dept_id']}, Sınıf: {data['year']})")
-                    
-                    # Add for ALL matching periods
-                    for r in rows:
-                        ds_num = r[0]
-                        self.c.execute("""
-                            INSERT INTO Ders_Sinif_Iliskisi (ders_adi, ders_instance, donem_sinif_num)
-                            VALUES (?, ?, ?)
-                        """, (data['name'], instance, ds_num))
-                        
-                    self.course_added.emit(f"[Template] {data['name']} (Şube {instance}) eklendi.")
+        if not self.conn:
+            raise ValueError("Connection not provided to CourseRepository")
 
-            return True
+        # 1. Determine Instance ID (Auto-increment logic)
+        # Find max instance for this course name to separate sections if name exists
+        self._cursor.execute("SELECT MAX(ders_instance) FROM Dersler WHERE ders_adi = ?", (data['name'],))
+        row = self._cursor.fetchone()
+        instance = 1
+        if row and row[0]:
+            instance = row[0] + 1
+        
+        # 2. Add to Dersler
+        with self.conn:
+            self._cursor.execute("""
+                INSERT INTO Dersler (ders_kodu, ders_instance, ders_adi, teori_saati, uygulama_saati, lab_saati, akts)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (data['code'], instance, data['name'], data['t'], data['u'], data['l'], data['akts']))
             
-        except Exception as e:
-            self.error_occurred.emit(f"Şablon ders eklenirken hata: {str(e)}")
-            return False
+            is_pool = data.get('is_pool', False)
+            
+            if is_pool:
+                # 3a. Add to Ders_Havuz_Iliskisi (Pool Course)
+                # Schema: (ders_instance, ders_adi, bolum_num, havuz_kodu)
+                pool_code = data.get('pool_code', 'GENEL')
+                
+                # Resolve bolum_num from dept_id
+                self._cursor.execute("SELECT bolum_num FROM Bolumler WHERE bolum_id = ?", (data['dept_id'],))
+                row_bn = self._cursor.fetchone()
+                if not row_bn:
+                    raise ValueError(f"Bölüm bulunamadı (ID: {data['dept_id']})")
+                bolum_num = row_bn[0]
+                
+                self._cursor.execute("""
+                    INSERT INTO Ders_Havuz_Iliskisi (ders_instance, ders_adi, bolum_id, havuz_kodu)
+                    VALUES (?, ?, ?, ?)
+                """, (instance, data['name'], bolum_num, pool_code))
+                
+                return f"[Havuz] {data['name']} (Şube {instance}, Havuz: {pool_code}) eklendi."
+                
+            else:
+                # 3b. Add to Ders_Sinif_Iliskisi (Class Course)
+                # Resolve donem_sinif_num from dept_id + year
+                
+                # First get department info to find donem_sinif_num
+                self._cursor.execute("""
+                    SELECT donem_sinif_num FROM Ogrenci_Donemleri 
+                    WHERE bolum_num = ? AND sinif_duzeyi = ?
+                """, (data['dept_id'], data['year']))
+                
+                rows = self._cursor.fetchall()
+                if not rows:
+                     raise ValueError(f"Bu bölüm/sınıf için dönem kaydı bulunamadı (Bölüm: {data['dept_id']}, Sınıf: {data['year']})")
+                
+                # Add for ALL matching periods
+                for r in rows:
+                    ds_num = r[0]
+                    self._cursor.execute("""
+                        INSERT INTO Ders_Sinif_Iliskisi (ders_adi, ders_instance, donem_sinif_num)
+                        VALUES (?, ?, ?)
+                    """, (data['name'], instance, ds_num))
+                    
+                return f"[Template] {data['name']} (Şube {instance}) eklendi."
     def get_curriculum_courses(self) -> List[str]:
         """Get unique course names from curriculum"""
         try:
-            self.c.execute("SELECT DISTINCT ders_adi FROM Dersler ORDER BY ders_adi")
-            return [r[0] for r in self.c.fetchall()]
+            self._cursor.execute("SELECT DISTINCT ders_adi FROM Dersler ORDER BY ders_adi")
+            return [r[0] for r in self._cursor.fetchall()]
         except Exception as e:
             print(f"Error fetching curriculum courses: {e}")
             return []
@@ -312,8 +310,8 @@ class CourseRepository:
             )
             sql, params = ScheduleQueryBuilder().build(filters)
             
-            self.c.execute(sql, params)
-            rows = self.c.fetchall()
+            self._cursor.execute(sql, params)
+            rows = self._cursor.fetchall()
             
             # Format: [CODE] Name - Teacher (Day Time) [Classes]
             result = []
@@ -330,7 +328,7 @@ class CourseRepository:
             
 
 
-    def get_all_curriculum_details(self, dept_id: Optional[int] = None, year: Optional[int] = None, faculty_id: Optional[int] = None, semester_filter: Optional[str] = None) -> List[tuple]:
+    def get_all_curriculum_details(self, dept_id: Optional[int] = None, year: Optional[int] = None, faculty_id: Optional[int] = None, semester_filter: Optional[str] = None, semester_lookup: Optional[dict] = None, semester_lookup_by_dept: Optional[dict] = None) -> List[tuple]:
         """
         Fetch detailed curriculum list, merging Class-Specific and Pool courses.
         Returns list of tuples:
@@ -433,12 +431,12 @@ class CourseRepository:
                 sem_set = None
                 
                 # Prioritize department-specific timing over global timing
-                if bolum_adi and hasattr(self, 'semester_lookup_by_dept') and (bolum_adi, code_str) in self.semester_lookup_by_dept:
-                    sem_set = self.semester_lookup_by_dept[(bolum_adi, code_str)]
+                if bolum_adi and semester_lookup_by_dept and (bolum_adi, code_str) in semester_lookup_by_dept:
+                    sem_set = semester_lookup_by_dept[(bolum_adi, code_str)]
                 
                 # Fallback to global if unmapped or pool
-                if not sem_set and hasattr(self, 'semester_lookup') and code_str in self.semester_lookup:
-                    sem_set = self.semester_lookup[code_str]
+                if not sem_set and semester_lookup and code_str in semester_lookup:
+                    sem_set = semester_lookup[code_str]
                     
                 if sem_set:
                     if "Güz" in sem_set and "Bahar" in sem_set:

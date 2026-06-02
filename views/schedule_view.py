@@ -660,7 +660,7 @@ class ScheduleView(QWidget):
         row1_layout.addWidget(self.calendar_button)
         
         # MASTER VIEW BUTTON (NEW)
-        self.btn_master_view = QPushButton("Genel Toplu Takvimleri Göster")
+        self.btn_master_view = QPushButton("Genel Toplu Takvimler")
         self.btn_master_view.setStyleSheet("""
             QPushButton {
                 background-color: #3F51B5;

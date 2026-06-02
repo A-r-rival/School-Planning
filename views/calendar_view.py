@@ -826,11 +826,11 @@ class CalendarView(QWidget):
         layout = QVBoxLayout()
         
         # Filter Section
-        filter_frame = QFrame()
-        filter_frame.setFrameShape(QFrame.StyledPanel)
+        self.filter_frame = QFrame()
+        self.filter_frame.setFrameShape(QFrame.StyledPanel)
         # Style removed entirely to diagnose "detached window" issue
-        # filter_frame.setStyleSheet("#FilterFrame { background-color: #f5f5f5; border-radius: 5px; }")
-        filter_layout = QHBoxLayout(filter_frame)
+        # self.filter_frame.setStyleSheet("#FilterFrame { background-color: #f5f5f5; border-radius: 5px; }")
+        filter_layout = QHBoxLayout(self.filter_frame)
         
         # Filter Type Selection
         filter_layout.addWidget(QLabel("Görünüm:"))
@@ -892,7 +892,7 @@ class CalendarView(QWidget):
         filter_layout.addWidget(self.semester_info_label)
         
         filter_layout.addStretch()
-        layout.addWidget(filter_frame)
+        layout.addWidget(self.filter_frame)
         
         # Dynamic Pool Checkboxes Container (In a new row for proper wrap-around)
         self.pool_checks_frame = QWidget()

@@ -36,21 +36,21 @@ def db_conn() -> Generator[sqlite3.Connection, None, None]:
 def teacher_repo(db_conn) -> TeacherRepository:
     """Create TeacherRepository instance."""
     cursor = db_conn.cursor()
-    return TeacherRepository(cursor)
+    return TeacherRepository(cursor, db_conn)
 
 
 @pytest.fixture
 def course_repo(db_conn) -> CourseRepository:
     """Create CourseRepository instance."""
     cursor = db_conn.cursor()
-    return CourseRepository(cursor)
+    return CourseRepository(cursor, db_conn)
 
 
 @pytest.fixture
 def schedule_repo(db_conn) -> ScheduleRepository:
     """Create ScheduleRepository instance."""
     cursor = db_conn.cursor()
-    return ScheduleRepository(cursor)
+    return ScheduleRepository(cursor, db_conn)
 
 
 @pytest.fixture

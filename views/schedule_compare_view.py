@@ -1,15 +1,19 @@
 import copy
+import re
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QComboBox, 
     QLabel, QPushButton, QSplitter, QMessageBox
 )
 from PyQt5.QtCore import Qt
 from views.calendar_view import CalendarView
+from services.calendar_schedule_builder import CalendarScheduleBuilder
+from views.course_move_preview_dialog import CourseMovePreviewDialog
 
 class ScheduleCompareView(QWidget):
-    def __init__(self, model):
+    def __init__(self, model, controller=None):
         super().__init__()
         self.model = model
+        self.controller = controller
         self.schedule_v1 = []
         self.schedule_v2 = []
         self.selected_course_data = None
@@ -26,10 +30,6 @@ class ScheduleCompareView(QWidget):
         
         # Top controls
         top_bar = QHBoxLayout()
-        
-        top_bar.addWidget(QLabel("Eski Versiyon:"))
-        self.combo_v1 = QComboBox()
-        top_bar.addWidget(self.combo_v1)
         
         top_bar.addWidget(QLabel("Yeni Versiyon:"))
         self.combo_v2 = QComboBox()
@@ -49,19 +49,24 @@ class ScheduleCompareView(QWidget):
         top_bar.addSpacing(20)
         
         # Copy Filter Buttons
-        self.btn_copy_l2r = QPushButton("➡️")
-        self.btn_copy_l2r.setToolTip("Filtreleri Sağa Taşı")
-        self.btn_copy_l2r.clicked.connect(self._copy_filters_l2r)
-        self.btn_copy_l2r.setStyleSheet("background-color: #607D8B; color: white; font-size: 16px; font-weight: bold; width: 40px;")
-        top_bar.addWidget(self.btn_copy_l2r)
-        
         self.btn_copy_r2l = QPushButton("⬅️")
-        self.btn_copy_r2l.setToolTip("Filtreleri Sola Taşı")
-        self.btn_copy_r2l.clicked.connect(self._copy_filters_r2l)
+        self.btn_copy_r2l.setToolTip("Filtreleri Sola Taşı (Eskiden Yeniye)")
+        self.btn_copy_r2l.clicked.connect(lambda: self._copy_calendar_filters(self.cal_v1, self.cal_v2))
         self.btn_copy_r2l.setStyleSheet("background-color: #607D8B; color: white; font-size: 16px; font-weight: bold; width: 40px;")
         top_bar.addWidget(self.btn_copy_r2l)
         
+        self.btn_copy_l2r = QPushButton("➡️")
+        self.btn_copy_l2r.setToolTip("Filtreleri Sağa Taşı (Yeniden Eskiye)")
+        self.btn_copy_l2r.clicked.connect(lambda: self._copy_calendar_filters(self.cal_v2, self.cal_v1))
+        self.btn_copy_l2r.setStyleSheet("background-color: #607D8B; color: white; font-size: 16px; font-weight: bold; width: 40px;")
+        top_bar.addWidget(self.btn_copy_l2r)
+        
         top_bar.addStretch()
+        
+        top_bar.addWidget(QLabel("Eski Versiyon (Karşılaştırma):"))
+        self.combo_v1 = QComboBox()
+        top_bar.addWidget(self.combo_v1)
+        
         layout.addLayout(top_bar)
         
         # Since CalendarView requires controller to feed data based on its combo boxes,
@@ -72,19 +77,18 @@ class ScheduleCompareView(QWidget):
         self.cal_v1 = CalendarView()
         self.cal_v2 = CalendarView()
         
-        self.splitter.addWidget(self.cal_v1)
-        self.splitter.addWidget(self.cal_v2)
+        self.splitter.addWidget(self.cal_v2) # Yeni (Sol)
+        self.splitter.addWidget(self.cal_v1) # Eski (Sağ)
         layout.addWidget(self.splitter)
         
         # Connect signals for both calendars
         self.cal_v1.filter_changed.connect(self._on_cal_v1_filter_changed)
         self.cal_v2.filter_changed.connect(self._on_cal_v2_filter_changed)
         
-        self.cal_v1.course_selected.connect(self._on_course_selected)
-        self.cal_v2.course_selected.connect(self._on_course_selected)
+        self.cal_v1.course_selected.connect(lambda data: self._on_course_selected(data, self.cal_v1))
+        self.cal_v2.course_selected.connect(lambda data: self._on_course_selected(data, self.cal_v2))
         
         # Initialize builder
-        from services.calendar_schedule_builder import CalendarScheduleBuilder
         self.builder = CalendarScheduleBuilder(self.model)
 
     def _load_versions(self):
@@ -96,7 +100,14 @@ class ScheduleCompareView(QWidget):
             ad = v["ad"]
             tarih = v["tarih"]
             active = v["is_active"]
-            text = f"{ad} ({tarih})"
+            
+            # If version name already contains a date like (YYYY-MM-DD HH:MM), use it directly.
+            # Otherwise, append the database creation date/time.
+            if re.search(r'\(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}\)', ad):
+                text = ad
+            else:
+                text = f"{ad} ({tarih})"
+                
             if active: text += " [Aktif]"
             self.combo_v1.addItem(text, v_id)
             self.combo_v2.addItem(text, v_id)
@@ -202,43 +213,42 @@ class ScheduleCompareView(QWidget):
         
         # Compare V1 against V2
         for sig, item in v1_items.items():
+            # Ensure it is at least an 11-tuple for uniform parsing
+            new_item = list(item)
+            while len(new_item) < 11: new_item.append(None)
+            
             # If the exact same slot+course is in V2, it's unchanged.
             if sig in v2_items:
                 # Add without diff color
-                final_v1.append(item)
+                final_v1.append(tuple(new_item))
             else:
                 # Not in V2. Did it move?
                 c_sig = get_course_sig(item)
                 if c_sig in v2_courses:
                     # Moved! Yellow.
-                    new_item = list(item)
-                    while len(new_item) < 9: new_item.append(None)
-                    new_item.append("#FFD54F") # Yellow
+                    new_item[9] = "#FFD54F" # Yellow
                     final_v1.append(tuple(new_item))
                 else:
                     # Removed completely! Red.
-                    new_item = list(item)
-                    while len(new_item) < 9: new_item.append(None)
-                    new_item.append("#EF5350") # Red
+                    new_item[9] = "#EF5350" # Red
                     final_v1.append(tuple(new_item))
                     
         # Compare V2 against V1
         for sig, item in v2_items.items():
+            new_item = list(item)
+            while len(new_item) < 11: new_item.append(None)
+            
             if sig in v1_items:
-                final_v2.append(item)
+                final_v2.append(tuple(new_item))
             else:
                 c_sig = get_course_sig(item)
                 if c_sig in v1_courses:
                     # Moved! Yellow.
-                    new_item = list(item)
-                    while len(new_item) < 9: new_item.append(None)
-                    new_item.append("#FFD54F") # Yellow
+                    new_item[9] = "#FFD54F" # Yellow
                     final_v2.append(tuple(new_item))
                 else:
                     # Added completely! Green.
-                    new_item = list(item)
-                    while len(new_item) < 9: new_item.append(None)
-                    new_item.append("#66BB6A") # Green
+                    new_item[9] = "#66BB6A" # Green
                     final_v2.append(tuple(new_item))
                     
         # Replace the schedule lists in results
@@ -248,8 +258,9 @@ class ScheduleCompareView(QWidget):
         self.cal_v1.display_schedule(res_v1)
         self.cal_v2.display_schedule(res_v2)
         
-    def _on_course_selected(self, data):
+    def _on_course_selected(self, data, sender_cal):
         self.selected_course_data = data
+        self.last_clicked_cal = sender_cal
         if self.selected_course_data and self.selected_course_data.get('program_id'):
             self.btn_manual_edit.setEnabled(True)
             self.btn_manual_edit.setText(f"Taşı: {data.get('course')}")
@@ -262,60 +273,50 @@ class ScheduleCompareView(QWidget):
             QMessageBox.warning(self, "Uyarı", "Geçerli bir ders seçilmedi veya dersin ID'si yok.")
             return
             
-        from views.manual_edit_dialog import ManualEditDialog
-        dialog = ManualEditDialog(self.selected_course_data, self.model, self)
+        cal = getattr(self, 'last_clicked_cal', self.cal_v2)
+        orig_schedule = getattr(cal, 'last_schedule_data', [])
+        orig_metadata = getattr(cal, 'last_metadata', {})
+        active_pools = getattr(cal, 'active_pools', set())
+        
+        view_type = cal.view_type_combo.currentText()
+        dept_text = cal.filter_widget_2.currentText()
+        year_text = cal.filter_widget_3.currentText()
+        
+        v_id = self.combo_v1.currentData() if cal == self.cal_v1 else self.combo_v2.currentData()
+        
+        dialog = CourseMovePreviewDialog(
+            self.selected_course_data, 
+            orig_schedule, 
+            orig_metadata, 
+            self.model, 
+            v_id,
+            self,
+            active_pools=active_pools,
+            view_type=view_type,
+            dept_text=dept_text,
+            year_text=year_text
+        )
         
         if dialog.exec_():
             result = dialog.result_data
             if result:
-                # Call controller to update
-                # ScheduleCompareView doesn't have direct access to controller,
-                # but we can emit a signal or call a global method.
-                # Actually, wait. We can just use the model repository directly if it's safe,
-                # or better, use a signal.
-                # Wait, I'll update the database directly here using a repository if needed,
-                # but let's check what controller we have access to.
-                # I'll just import schedule_repo directly or use self.model.
-                success = self._update_course_slot(result)
+                if self.controller and hasattr(self.controller, 'move_course_slot'):
+                    success = self.controller.move_course_slot(
+                        result['program_id'], 
+                        result['day'], 
+                        result['start'], 
+                        result['end'], 
+                        result['room_id']
+                    )
+                else:
+                    QMessageBox.warning(self, "Hata", "Controller move_course_slot desteği yok.")
+                    return
+                    
                 if success:
                     QMessageBox.information(self, "Başarılı", "Ders başarıyla taşındı.")
                     self._on_compare() # Refresh views
                 else:
                     QMessageBox.warning(self, "Hata", "Ders taşınırken bir hata oluştu veya çakışma var.")
-
-    def _update_course_slot(self, result):
-        # Result has: 'day', 'start', 'end', 'room_id', 'program_id'
-        program_id = result['program_id']
-        day = result['day']
-        start = result['start']
-        end = result['end']
-        room_id = result['room_id']
-        
-        # Conflict check
-        from models.repositories.schedule_repo import ScheduleRepository
-        repo = ScheduleRepository(self.model.conn)
-        
-        # Get teacher of the course
-        cursor = self.model.conn.cursor()
-        cursor.execute("SELECT ogretmen_id FROM Ders_Programi WHERE program_id = ?", (program_id,))
-        row = cursor.fetchone()
-        
-        if row and row[0]:
-            teacher_id = row[0]
-            from models.entities import ScheduleSlot
-            # repo.has_conflict expects a ScheduleSlot object for the first argument!
-            slot = ScheduleSlot(day=day, start_str=start, end_str=end)
-            conflict = repo.has_conflict(slot, teacher_id=teacher_id, exclude_id=program_id)
-            if conflict:
-                return False
-                
-        if room_id:
-            slot = ScheduleSlot(day=day, start_str=start, end_str=end)
-            conflict = repo.has_conflict(slot, room_id=room_id, exclude_id=program_id)
-            if conflict:
-                return False
-                
-        return repo.update_slot(program_id, day, start, end, room_id)
 
 
     def _copy_calendar_filters(self, source_cal, target_cal):
@@ -338,8 +339,3 @@ class ScheduleCompareView(QWidget):
             idx = target_cal.filter_widget_3.findText(source_cal.filter_widget_3.currentText())
             if idx >= 0: target_cal.filter_widget_3.setCurrentIndex(idx)
 
-    def _copy_filters_l2r(self):
-        self._copy_calendar_filters(self.cal_v1, self.cal_v2)
-
-    def _copy_filters_r2l(self):
-        self._copy_calendar_filters(self.cal_v2, self.cal_v1)

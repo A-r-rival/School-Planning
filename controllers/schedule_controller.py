@@ -107,7 +107,7 @@ class ScheduleController:
     
     def open_schedule_compare(self):
         from views.schedule_compare_view import ScheduleCompareView
-        self.compare_view = ScheduleCompareView(self.model)
+        self.compare_view = ScheduleCompareView(self.model, self)
         self.compare_view.show()
     
     def _initialize_view(self):
@@ -149,10 +149,10 @@ class ScheduleController:
         # Model will handle validation and database operations
         success = self.model.add_course(course_input)
         
+        # Note: self.refresh_data() already handles updating the teacher completer,
+        # so we don't need to do it here manually anymore.
         if success:
-            # Update teacher completer with new teacher if needed
-            teachers = self.model.get_teachers()
-            self.view.update_teacher_completer(teachers)
+            pass
 
     def add_curriculum_course_as_template(self, data: dict) -> bool:
         """Add new course to curriculum via model (Template)"""
@@ -168,8 +168,6 @@ class ScheduleController:
         
         if success_count > 0:
              self.refresh_data()
-             teachers = self.model.get_teachers()
-             self.view.update_teacher_completer(teachers)
 
     def delete_curriculum_course(self, course_name: str):
         """Delete a course from curriculum completely"""
@@ -222,15 +220,19 @@ class ScheduleController:
         if department_id:
             self.view.show_success_message(f"Bölüm başarıyla eklendi! ID: {department_id}")
         # Error message will be shown by model signal if failed
+
+    def _get_current_semester(self) -> str:
+        """Helper to get currently selected semester from radio buttons"""
+        if hasattr(self.view, 'radio_bahar') and self.view.radio_bahar.isChecked():
+            return "Bahar"
+        elif hasattr(self.view, 'radio_yaz') and self.view.radio_yaz.isChecked():
+            return "Yaz"
+        return "Güz"
     
     def refresh_data(self):
         """Refresh all data from model to view"""
         # Determine Semester Filter from View
-        semester_filter = "Güz"
-        if hasattr(self.view, 'radio_bahar') and self.view.radio_bahar.isChecked():
-            semester_filter = "Bahar"
-        elif hasattr(self.view, 'radio_yaz') and self.view.radio_yaz.isChecked():
-            semester_filter = "Yaz"
+        semester_filter = self._get_current_semester()
 
         # Reload courses using NEW structured method with filter
         items = self.model.get_all_schedule_items(semester_filter=semester_filter)
@@ -249,29 +251,6 @@ class ScheduleController:
         """Handle application close event"""
         # Close database connections through model
         self.model.close_connections()
-    
-    # --- FUTURE: Export/Import (Not yet implemented) ---
-    
-    def export_schedule(self, format_type: str = "text"):
-        """
-        FUTURE: Export schedule to Excel/CSV/JSON.
-        Planned for eventual Excel export feature.
-        
-        Args:
-            format_type: Export format ('text', 'csv', 'json')
-        """
-        # TODO: Implement Excel export using openpyxl or similar
-        pass
-    
-    def import_schedule(self, file_path: str):
-        """
-        FUTURE: Import schedule from file.
-        
-        Args:
-            file_path: Path to import file
-        """
-        # TODO: Implement schedule import from Excel/CSV
-        pass
     
     
     def open_master_view(self, mode: str = 'teacher'):
@@ -309,9 +288,7 @@ class ScheduleController:
         name, ok = QInputDialog.getText(self.view, "Programı Kaydet", "Program Adı:")
         if ok and name:
             # Get current semester
-            if self.view.radio_guz.isChecked(): sem = "Güz"
-            elif self.view.radio_bahar.isChecked(): sem = "Bahar"
-            else: sem = "Yaz"
+            sem = self._get_current_semester()
             
             if self.model.save_snapshot(name, sem):
                 self.view.show_success_message("Program başarıyla kaydedildi.")
@@ -496,10 +473,7 @@ class ScheduleController:
                 return
 
             # Inject current semester from main view radio buttons
-            semester = "Güz"
-            if self.view.radio_bahar.isChecked(): semester = "Bahar"
-            elif self.view.radio_yaz.isChecked(): semester = "Yaz"
-            data["semester"] = semester
+            data["semester"] = self._get_current_semester()
 
             # Build schedule data using service
             schedule_data = self.calendar_builder.build(data)
@@ -667,11 +641,7 @@ class ScheduleController:
         Called by the BIG BUTTON.
         """
         # Determine current semester from radio buttons
-        semester = "Güz"
-        if self.view.radio_bahar.isChecked():
-            semester = "Bahar"
-        elif self.view.radio_yaz.isChecked():
-            semester = "Yaz"
+        semester = self._get_current_semester()
             
         self._run_scheduler(semester)
 
@@ -683,9 +653,7 @@ class ScheduleController:
         # Prompt for Semester
         items = ["Güz", "Bahar", "Yaz"]
         # Default to current selection
-        current = "Güz"
-        if self.view.radio_bahar.isChecked(): current = "Bahar"
-        elif self.view.radio_yaz.isChecked(): current = "Yaz"
+        current = self._get_current_semester()
         
         try:
             default_idx = items.index(current)
@@ -723,8 +691,6 @@ class ScheduleController:
         self._worker = GenerateScheduleWorker(self._scheduler_inst, semester)
         
         # Show Progress Dialog to inform user
-        
-        # Show Progress Dialog to inform user
         self.progress_dialog = QProgressDialog("Otomatik Ders Programı oluşturuluyor...\nLütfen Bekleyiniz. (Bu işlem 2-10 dakika sürebilir)", None, 0, 0, self.view)
         self.progress_dialog.setWindowTitle("Program Hesaplanıyor")
         self.progress_dialog.setWindowModality(Qt.WindowModal)
@@ -747,8 +713,6 @@ class ScheduleController:
 
         self._worker.finished.connect(on_finished)
         self._worker.start()
-
-    # Merging utilities moved to utils/schedule_merger.py
 
     def _on_run_setup_requested(self):
         """Run initial setup scripts (Reset DB, Seed, Populate, Assign)"""
@@ -841,3 +805,32 @@ class ScheduleController:
     def delete_common_course_group(self, grup_id: int) -> bool:
         """Deletes a common scheduling block group"""
         return self.model.delete_common_course_group(grup_id)
+
+    def move_course_slot(self, program_id: int, day: str, start: str, end: str, room_id: int = None) -> bool:
+        """
+        Move a specific course slot to a new time or room.
+        Used by ScheduleCompareView manual edit.
+        """
+        repo = self.model.schedule_repo
+        
+        # Get teacher of the course
+        cursor = self.model.conn.cursor()
+        cursor.execute("SELECT ogretmen_id FROM Ders_Programi WHERE program_id = ?", (program_id,))
+        row = cursor.fetchone()
+        
+        from models.entities import ScheduleSlot
+        
+        if row and row[0]:
+            teacher_id = row[0]
+            slot = ScheduleSlot(day=day, start_str=start, end_str=end)
+            conflict = repo.has_conflict(slot, teacher_id=teacher_id, exclude_id=program_id)
+            if conflict:
+                return False
+                
+        if room_id:
+            slot = ScheduleSlot(day=day, start_str=start, end_str=end)
+            conflict = repo.has_conflict(slot, room_id=room_id, exclude_id=program_id)
+            if conflict:
+                return False
+                
+        return repo.update_slot(program_id, day, start, end, room_id)
